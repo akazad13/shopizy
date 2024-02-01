@@ -1,6 +1,6 @@
-# eStore API
+# Shopizy API
 
-- [eStore API](#estore-api)
+- [Shopizy API](#Shopizy-api)
   - [Auth](#auth)
     - [Register](#register)
       - [Register Request](#register-request)

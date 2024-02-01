@@ -1,0 +1,80 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Shopizy.Application.Common.Interfaces;
+using Shopizy.Infrastructure.Authentication;
+using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Security.CurrentUserProvider;
+using Shopizy.Infrastructure.Security.TokenGenerator;
+using Shopizy.Infrastructure.Security.TokenValidation;
+using Shopizy.Infrastructure.Services;
+
+namespace Shopizy.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        return services
+            .AddHttpContextAccessor()
+            .AddServices()
+            .AddBackgroundServices(configuration)
+            .AddAuthentication(configuration)
+            .AddAuthorization()
+            .AddPersistence(configuration);
+    }
+
+    private static IServiceCollection AddBackgroundServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorization(this IServiceCollection services)
+    {
+        services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
+
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+        services
+            .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
+            .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
+
+        return services;
+    }
+
+    public static IServiceCollection AddPersistence(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        services.AddDbContext<AppDbContext>(
+            options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+        );
+        return services;
+    }
+}
