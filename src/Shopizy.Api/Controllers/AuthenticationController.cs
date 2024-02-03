@@ -1,11 +1,13 @@
+using MapsterMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Application.Authentication.Queries.login;
 using Shopizy.Contracts.Authentication;
 
 namespace Shopizy.Api.Controllers;
 
-[ApiController]
 [Route("auth")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpPost("register")]
     public IActionResult Register(RegisterRequest request)
@@ -14,8 +16,13 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        return Ok(request);
+        var query = _mapper.Map<LoginQuery>(request);
+        var authResult = await _mediator.Send(query);
+
+        return authResult.Match(
+            authResult => Ok(_mapper.Map<AuthResponse>(authResult)),
+            errors => Problem(errors));
     }
 }

@@ -23,7 +23,7 @@ POST {{host}}/auth/register
 {
     "firstName": "John",
     "LastName": "Doe",
-    "email": "john.doe@gmail.com",
+    "phone": "+3584573969860",
     "password": "John123!"
 }
 ```
@@ -39,7 +39,7 @@ POST {{host}}/auth/register
     "id": "",
     "firstName": "John",
     "LastName": "Doe",
-    "email": "john.doe@gmail.com",
+    "phone": "+3584573969860",
     "token": "eyjhb.z9dqcnYoX"
 }
 ```
@@ -54,7 +54,7 @@ POST {{host}}/auth/login
 
 ```json
 {
-    "email": "john.doe@gmail.com",
+    "phone": "+3584573969860",
     "password": "John123!"
 }
 ```
@@ -70,7 +70,7 @@ POST {{host}}/auth/login
     "id": "",
     "firstName": "John",
     "LastName": "Doe",
-    "email": "john.doe@gmail.com",
+    "phone": "+3584573969860",
     "token": "eyjhb.z9dqcnYoX"
 }
 ```

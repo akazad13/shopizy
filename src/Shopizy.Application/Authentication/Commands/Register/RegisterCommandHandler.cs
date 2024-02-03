@@ -4,16 +4,9 @@ using Shopizy.Application.Common.Interfaces;
 
 namespace Shopizy.Application.Authentication.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthenticationResult>
+public class RegisterCommandHandler(IJwtTokenGenerator _jwtTokenGenerator) : IRequestHandler<RegisterCommand, AuthResult>
 {
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
-    public RegisterCommandHandler(IJwtTokenGenerator jwtTokenGenerator)
-    {
-        _jwtTokenGenerator = jwtTokenGenerator;
-    }
-
-    public async Task<AuthenticationResult> Handle(
+    public async Task<AuthResult> Handle(
         RegisterCommand command,
         CancellationToken cancellationToken
     )
@@ -25,13 +18,16 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Authentic
         // Create JWT Token
         Guid userId = Guid.NewGuid();
 
-        var token = _jwtTokenGenerator.GenerateToken(userId, command.FirstName, command.LastName);
+        var roles = new List<string>();
+        var permissions = new List<string>();
 
-        return new AuthenticationResult(
+        var token = _jwtTokenGenerator.GenerateToken(userId, command.FirstName, command.LastName, roles, permissions);
+
+        return new AuthResult(
             Guid.NewGuid(),
             command.FirstName,
             command.LastName,
-            command.Email,
+            command.Phone,
             "token"
         );
     }
