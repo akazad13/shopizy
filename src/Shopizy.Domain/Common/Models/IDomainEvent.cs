@@ -1,5 +1,5 @@
 using MediatR;
 
-namespace Shopizy.Domain.Common;
+namespace Shopizy.Domain.Common.Models;
 
 public interface IDomainEvent : INotification { }

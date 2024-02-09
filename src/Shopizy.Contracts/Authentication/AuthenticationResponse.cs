@@ -1,9 +1,3 @@
 namespace Shopizy.Contracts.Authentication;
 
-public record AuthenticationResponse(
-    Guid Id,
-    string FirstName,
-    string LastName,
-    string Email,
-    string Token
-);
+public record AuthResponse(Guid Id, string FirstName, string LastName, string Phone, string Token);

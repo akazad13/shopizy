@@ -1,42 +1,41 @@
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Shopizy.Application.Common.Interfaces;
+using Shopizy.Application.Common.Interfaces.Authentication;
+using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Infrastructure.Security.TokenGenerator;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Shopizy.Infrastructure.Authentication;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {
-    public string GenerateToken(Guid userId, string firstName, string LastName)
+    private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
+    public string GenerateToken(UserId userId, string firstName, string LastName, List<string> roles, List<string> Permissions)
     {
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.GivenName, firstName),
-            new Claim(ClaimTypes.Surname, LastName)
+            new(JwtRegisteredClaimNames.NameId, userId.Value.ToString()),
+            new(JwtRegisteredClaimNames.Name, firstName),
+            new(JwtRegisteredClaimNames.FamilyName, LastName)
         };
 
-        // user roles
-
-        // signing credentials
+        roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
+        Permissions.ForEach(permission => claims.Add(new("permissions", permission)));
 
         var creds = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes("lsdfjsdlf")),
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
             SecurityAlgorithms.HmacSha256
         );
 
-        var validIssuer = "";
-        var validAudience = "";
-        var expiryDuration = 30;
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Issuer = validIssuer,
-            Audience = validAudience,
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
             IssuedAt = DateTime.UtcNow,
             NotBefore = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddMinutes(expiryDuration),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpirationMinutes),
             Subject = new ClaimsIdentity(claims),
             SigningCredentials = creds
         };

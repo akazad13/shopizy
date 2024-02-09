@@ -1,9 +1,3 @@
 namespace Shopizy.Application.Authentication.Common;
 
-public record AuthenticationResult(
-    Guid Id,
-    string FirstName,
-    string LastName,
-    string Email,
-    string Token
-);
+public record AuthResult(Guid Id, string FirstName, string LastName, string Phone, string Token);

@@ -1,11 +1,15 @@
+using BuberDinner.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shopizy.Application.Common.Interfaces;
+using Shopizy.Application.Common.Interfaces.Authentication;
+using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Infrastructure.Authentication;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
+using Shopizy.Infrastructure.Security.Hashing;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
@@ -26,7 +30,8 @@ public static class DependencyInjection
             .AddBackgroundServices(configuration)
             .AddAuthentication(configuration)
             .AddAuthorization()
-            .AddPersistence(configuration);
+            .AddPersistence(configuration)
+            .AddRepositories();
     }
 
     private static IServiceCollection AddBackgroundServices(
@@ -40,6 +45,8 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+        services.AddScoped<IAppDbContext, AppDbContext>();
+        services.AddScoped<DbMigrationsHelper>();
         return services;
     }
 
@@ -58,6 +65,7 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
 
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IPasswordManager, PasswordManager>();
 
         services
             .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
@@ -75,6 +83,12 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(
             options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
         return services;
     }
 }

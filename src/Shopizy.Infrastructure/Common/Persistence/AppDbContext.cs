@@ -1,16 +1,19 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Shopizy.Domain.Common;
+using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Common.Models;
+using Shopizy.Domain.Users;
 using Shopizy.Infrastructure.Common.Middleware;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
-public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options)
+public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
 {
+    public DbSet<User> Users { get; set; }
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         // Get the domain events from the entity framework change tracker
-        var domainEvents = ChangeTracker.Entries<Entity>()
+        var domainEvents = ChangeTracker.Entries<IHasDomainEvents>()
             .SelectMany(entry => entry.Entity.PopDomainEvents())
             .ToList();
 
@@ -27,7 +30,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

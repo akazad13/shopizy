@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Shopizy.Api.Controllers;
 
+[ApiController]
 public class ApiController : ControllerBase
 {
     protected ActionResult Problem(List<Error> errors)

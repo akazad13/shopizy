@@ -1,4 +1,4 @@
-namespace Shopizy.Application.Common.Interfaces;
+namespace Shopizy.Application.Common.Interfaces.Services;
 
 public interface IDateTimeProvider
 {

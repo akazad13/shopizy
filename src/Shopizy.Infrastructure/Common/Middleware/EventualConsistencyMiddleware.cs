@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Shopizy.Domain.Common;
+using Shopizy.Domain.Common.Models;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Common.Middleware;
