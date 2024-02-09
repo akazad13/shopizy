@@ -6,7 +6,7 @@ using Shopizy.Contracts.Authentication;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("auth")]
+[Route("api/auth")]
 public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpPost("register")]

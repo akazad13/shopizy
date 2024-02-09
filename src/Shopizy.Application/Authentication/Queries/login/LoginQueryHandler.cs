@@ -1,7 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Authentication.Common;
-using Shopizy.Application.Common.Interfaces;
+using Shopizy.Application.Common.Interfaces.Authentication;
 
 namespace Shopizy.Application.Authentication.Queries.login;
 
@@ -23,14 +23,12 @@ public class LoginQueryHandler(IJwtTokenGenerator _jwtTokenGenerator) : IRequest
 
         var token = _jwtTokenGenerator.GenerateToken(userId, firstName, lastName, roles, permissions);
 
-        var authResult =  new AuthResult(
+        return new AuthResult(
             Guid.NewGuid(),
             firstName,
             lastName,
             query.Phone,
             token
         );
-
-        return ErrorOrFactory.From(authResult);
     }
 }

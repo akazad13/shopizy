@@ -1,6 +1,7 @@
 using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
+using Shopizy.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,5 +25,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
+    await initialiser.MigrateAsync();
+}
 
 app.Run();

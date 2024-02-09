@@ -11,11 +11,11 @@ public class CurrentUserProvider(IHttpContextAccessor _httpContextAccessor) : IC
     {
         _httpContextAccessor.HttpContext.ThrowIfNull();
 
-        var id = Guid.Parse(GetSingleClaimValue("id"));
+        var id = Guid.Parse(GetSingleClaimValue(JwtRegisteredClaimNames.NameId));
         var permissions = GetClaimValues("permissions");
         var roles = GetClaimValues(ClaimTypes.Role);
         var firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
-        var lastName = GetSingleClaimValue(ClaimTypes.Surname);
+        var lastName = GetSingleClaimValue(JwtRegisteredClaimNames.FamilyName);
         var phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
 
         return new CurrentUser(id, firstName, lastName, phone, permissions, roles);

@@ -1,4 +1,4 @@
-namespace Shopizy.Application.Common.Interfaces;
+namespace Shopizy.Application.Common.Interfaces.Authentication;
 
 public interface IJwtTokenGenerator
 {

@@ -1,4 +1,4 @@
-using Shopizy.Application.Common.Interfaces;
+using Shopizy.Application.Common.Interfaces.Services;
 
 namespace Shopizy.Infrastructure.Services;
 
