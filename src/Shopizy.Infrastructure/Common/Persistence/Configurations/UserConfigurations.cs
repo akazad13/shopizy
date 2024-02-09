@@ -17,6 +17,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.ToTable("Users");
 
         builder.HasKey(u => u.Id);
+        builder.HasIndex(u => u.Phone);
 
         builder
             .Property(u => u.Id)

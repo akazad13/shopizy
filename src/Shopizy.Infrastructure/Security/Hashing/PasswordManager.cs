@@ -6,8 +6,6 @@ namespace Shopizy.Infrastructure.Security.Hashing;
 
 public class PasswordManager : IPasswordManager
 {
-    private const int _defaultIterations = 10000;
-
     private sealed class HashVersion
     {
         public short Version { get; set; }
@@ -35,11 +33,18 @@ public class PasswordManager : IPasswordManager
 
     public bool Verify(string clearText, string data)
     {
-        var dataBytes = Convert.FromBase64String(data);
-        return Verify(clearText, dataBytes);
+        try
+        {
+            var dataBytes = Convert.FromBase64String(data);
+            return Verify(clearText, dataBytes);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
-    public string CreateHashString(string clearText, int iterations = _defaultIterations)
+    public string CreateHashString(string clearText, int iterations = default)
     {
         var data = Hash(clearText, iterations);
         return Convert.ToBase64String(data);
@@ -67,7 +72,7 @@ public class PasswordManager : IPasswordManager
         return data;
     }
 
-    private byte[] Hash(string clearText, int iterations = _defaultIterations)
+    private byte[] Hash(string clearText, int iterations)
     {
         var currentVersion = DefaultVersion;
 
@@ -83,13 +88,18 @@ public class PasswordManager : IPasswordManager
         );
 
         var indexVersion = 0;
-        var indexIteration = indexVersion + 4;
-        var indexSalt = indexIteration + 8;
+        var indexIteration = indexVersion + versionBytes.Length;
+        var indexSalt = indexIteration + iterationBytes.Length;
         var indexHash = indexSalt + currentVersion.SaltSize;
 
-        var resultBytes = new byte[4 + 8 + currentVersion.SaltSize + currentVersion.HashSize];
-        Array.Copy(versionBytes, 0, resultBytes, indexVersion, 4);
-        Array.Copy(iterationBytes, 0, resultBytes, indexIteration, 8);
+        var resultBytes = new byte[
+            versionBytes.Length
+                + iterationBytes.Length
+                + currentVersion.SaltSize
+                + currentVersion.HashSize
+        ];
+        Array.Copy(versionBytes, 0, resultBytes, indexVersion, versionBytes.Length);
+        Array.Copy(iterationBytes, 0, resultBytes, indexIteration, iterationBytes.Length);
         Array.Copy(saltBytes, 0, resultBytes, indexSalt, currentVersion.SaltSize);
         Array.Copy(hashBytes, 0, resultBytes, indexHash, currentVersion.HashSize);
         return resultBytes;
@@ -99,14 +109,14 @@ public class PasswordManager : IPasswordManager
     {
         //Get the current version and number of iterations
         var currentVersion = _versions[BitConverter.ToInt16(data, 0)];
-        var iteration = BitConverter.ToInt32(data, 4);
+        var iteration = BitConverter.ToInt32(data, 2);
 
         //Create the byte arrays for the salt and hash
         var saltBytes = new byte[currentVersion.SaltSize];
         var hashBytes = new byte[currentVersion.HashSize];
 
         //Calculate the indexes of the salt and the hash
-        var indexSalt = 4 + 8; // Int16 (Version) and Int32 (Iteration)
+        var indexSalt = 2 + 4; // Int16 (Version) and Int32 (Iteration)
         var indexHash = indexSalt + currentVersion.SaltSize;
 
         //Fill the byte arrays with salt and hash

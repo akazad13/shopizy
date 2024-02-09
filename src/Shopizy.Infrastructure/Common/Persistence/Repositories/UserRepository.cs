@@ -16,4 +16,9 @@ public class UserRepository(AppDbContext _dbContext) : IUserRepository
     {
         await _dbContext.Users.AddAsync(user);
     }
+
+    public async Task<bool> Commit(CancellationToken cancellationToken)
+{
+    return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+}
 }

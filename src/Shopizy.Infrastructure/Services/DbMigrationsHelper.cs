@@ -13,7 +13,7 @@ public class DbMigrationsHelper(
     {
         try
         {
-            if (context.Database.IsSqlServer())
+            if (context.Database.IsSqlServer() && (await context.Database.GetPendingMigrationsAsync()).Any())
             {
                 await context.Database.MigrateAsync();
             }

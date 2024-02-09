@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
+using Shopizy.Domain.Users.ValueObject;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,11 +12,11 @@ namespace Shopizy.Infrastructure.Authentication;
 public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
-    public string GenerateToken(Guid userId, string firstName, string LastName, List<string> roles, List<string> Permissions)
+    public string GenerateToken(UserId userId, string firstName, string LastName, List<string> roles, List<string> Permissions)
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.NameId, userId.ToString()),
+            new(JwtRegisteredClaimNames.NameId, userId.Value.ToString()),
             new(JwtRegisteredClaimNames.Name, firstName),
             new(JwtRegisteredClaimNames.FamilyName, LastName)
         };

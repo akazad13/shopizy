@@ -1,4 +1,5 @@
 using Mapster;
+using Shopizy.Application.Authentication.Commands.Register;
 using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Authentication.Queries.login;
 using Shopizy.Contracts.Authentication;
@@ -11,5 +12,6 @@ public class AuthenticationMappingConfig : IRegister
     {
         config.NewConfig<AuthResult, AuthResponse>();
         config.NewConfig<LoginRequest, LoginQuery>();
+        config.NewConfig<RegisterRequest, RegisterCommand>();
     }
 }
