@@ -22,7 +22,7 @@ POST {{host}}/auth/register
 ```json
 {
     "firstName": "John",
-    "LastName": "Doe",
+    "lastName": "Doe",
     "phone": "+3584573969860",
     "password": "John123!"
 }
@@ -36,9 +36,9 @@ POST {{host}}/auth/register
 
 ```json
 {
-    "id": "",
+    "id": "0000000-0000-0000-0000-000000000000",
     "firstName": "John",
-    "LastName": "Doe",
+    "lastName": "Doe",
     "phone": "+3584573969860",
     "token": "eyjhb.z9dqcnYoX"
 }
@@ -67,9 +67,9 @@ POST {{host}}/auth/login
 
 ```json
 {
-    "id": "",
+    "id": "0000000-0000-0000-0000-000000000000",
     "firstName": "John",
-    "LastName": "Doe",
+    "lastName": "Doe",
     "phone": "+3584573969860",
     "token": "eyjhb.z9dqcnYoX"
 }
