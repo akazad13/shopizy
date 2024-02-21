@@ -1,7 +1,7 @@
 # Domain Model - Product
 
 ```csharp
-class Product
+class Product : AggregateRoot<Guid>
 {
     Product Create();
     void Update(Product product);
@@ -21,10 +21,8 @@ class Product
     },
     "createdDateTime": "2024-01-01T00:00:00.000Z",
     "updatedDateTime": "2024-01-01T00:00:00.000Z",
-    "price": {
-        "currency": "usd",
-        "amount": 960
-    },
+    "unitPrice": 960,
+    "currency" : "usd",
     "discount": 30.00,
     "sku": "111111111111111",
     "Brand": "Apple",
@@ -53,6 +51,16 @@ class Product
         "Electronics",
         "Mobile",
         "Apple"
+    ],
+    "productImages" : [
+        {
+            "url" : "",
+            "order" : ""
+        },
+        {
+            "url" : "",
+            "order" : ""
+        }
     ]
 }
 ```

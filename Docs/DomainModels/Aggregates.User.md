@@ -1,7 +1,7 @@
 # Domain Model - User
 
 ```csharp
-class User
+class User : AggregateRoot<Guid>
 {
     User Create();
 }
