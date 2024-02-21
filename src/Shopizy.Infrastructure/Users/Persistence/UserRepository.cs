@@ -3,7 +3,7 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Users;
 using Shopizy.Infrastructure.Common.Persistence;
 
-namespace BuberDinner.Infrastructure.Persistence.Repositories;
+namespace Shopizy.Infrastructure.Users.Persistence;
 
 public class UserRepository(AppDbContext _dbContext) : IUserRepository
 {

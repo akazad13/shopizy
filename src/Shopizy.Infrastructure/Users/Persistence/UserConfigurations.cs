@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObject;
 
-namespace Shopizy.Infrastructure.Common.Persistence.Configurations;
+namespace Shopizy.Infrastructure.Users.Persistence;
 
 public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 {

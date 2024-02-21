@@ -1,4 +1,3 @@
-using BuberDinner.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +12,7 @@ using Shopizy.Infrastructure.Security.Hashing;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
+using Shopizy.Infrastructure.Users.Persistence;
 
 namespace Shopizy.Infrastructure;
 
