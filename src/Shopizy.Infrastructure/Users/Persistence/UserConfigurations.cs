@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Users;
-using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Users.Persistence;
 

@@ -13,6 +13,8 @@ class User : AggregateRoot<Guid>
     "firstName": "John",
     "lastName": "Doe",
     "phone": "+3584573969860",
-    "password": "xxxxxxxxxxxx"
+    "password": "xxxxxxxxxxxx",
+    "createdDateTime": "2024-01-01T00:00:00.000Z",
+    "updatedDateTime": "2024-01-01T00:00:00.000Z"
 }
 ```

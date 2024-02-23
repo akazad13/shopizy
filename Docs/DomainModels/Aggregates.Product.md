@@ -28,7 +28,7 @@ class Product : AggregateRoot<Guid>
     "Brand": "Apple",
     "Tags": "iphone, apple",
     "barcode": "asdlnqwezxcljqwelndfdsaf0u343lef9u234",
-    "quantity": 100,
+    "stockQuantity": 100,
     "averageRating": 4.6,
     "specifications": [
         {

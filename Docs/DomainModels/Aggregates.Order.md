@@ -22,11 +22,16 @@ class Address : ValueObject
 {
     Address Create();
     IEnumerable<object> GetEqualityComponents();
-    // yield return Street;
 }
 
 class OrderItem : Entity
 {
+    OrderItemId Id;
+    string Name;
+    string PictureUrl;
+    decimal UnitPrice;
+    int Quantity;
+    decimal Discount;
     OrderItem Create();
     decimal GetCurrentDiscount();
     int GetUnits();
@@ -34,13 +39,33 @@ class OrderItem : Entity
     void AddUnits(int units);
 }
 
-public enum OrderStatus{
+class Bill : Entity
+{
+    BillId Id;
+    string PaymentMethod;
+    string TransactionId;
+    string BillingStatus;
+    decimal Total;
+    Address BillingAddress;
+    DateTime CreatedDateTime;
+    DateTime UpdatedDateTime;
+    Bill Create();
+}
+
+public enum OrderStatus
+{
     Submitted = 1,
     AwaitingValidation = 2,
     StockConfirmed = 3,
     Paid = 4,
     Shipped = 5,
     Cancelled = 6
+}
+public enum Currency
+{
+    usd = 0,
+    bdt = 1,
+    euro = 2
 }
 ```
 
@@ -49,29 +74,28 @@ public enum OrderStatus{
     "id": "0000000-0000-0000-0000-000000000000",
     "customerId": "0000000-0000-0000-0000-000000000000",
     "totalAmount": 150,
-    "discount": 20,
+    "totalDiscount": 20,
     "deliveryCharges": 10,
     "finalAmount": 140,
+    "currency": "usd",
+    "orderStatus" : "",
+    "promoCode": "WELCOME20",
     "createdDateTime": "2024-01-01T00:00:00.000Z",
     "updatedDateTime": "2024-01-01T00:00:00.000Z",
-    "paymentMethod": "Amex Credit Card",
-    "transactionId": "13543423",
-    "promoId": "0000000-0000-0000-0000-000000000000",
-    "currency": "usd",
     "shippingAddress": {
-        "street" : "",
+        "line" : "",
         "city": "",
         "state" : "",
         "country" : "",
         "zipCode": ""
     },
-    "orderStatus" : "",
     "orderItems": [
         {
             "id": "0000000-0000-0000-0000-000000000000",
             "name": "iPhone 15 pro",
             "pictureUrl": "",
             "unitPrice": "",
+            "quantity": 4,
             "discount": ""
         },
         {
@@ -79,14 +103,16 @@ public enum OrderStatus{
             "name": "iPhone 15 pro max",
             "pictureUrl": "",
             "unitPrice": "",
+            "quantity": 2,
             "discount": ""
         }
     ],
     "bill" : {
         "id" : "0000000-0000-0000-0000-000000000000",
-        "paymentType" : "",
+        "paymentMethod": "Credit Card",
+        "transactionId": "13543423",
         "billingAddress": {
-            "street" : "",
+            "line" : "",
             "city": "",
             "state" : "",
             "country" : "",
