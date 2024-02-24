@@ -12,8 +12,8 @@ class Customer : AggregateRoot<Guid>
     "id": "0000000-0000-0000-0000-000000000000",
     "userId": "0000000-0000-0000-0000-000000000000",
     "profileImageUrl" : "",
-    "createdDateTime": "2024-01-01T00:00:00.000Z",
-    "updatedDateTime": "2024-01-01T00:00:00.000Z",
+    "createdOn": "2024-01-01T00:00:00.000Z",
+    "modifiedOn": "2024-01-01T00:00:00.000Z",
     "address": {
         "street" : "",
         "city": "",

@@ -13,14 +13,14 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public string SKU { get; private set; }
     public int StockQuantity { get; private set; }
     public Price UnitPrice { get; private set; }
-    public float Discount { get; private set; }
+    public decimal Discount { get; private set; }
     public string Brand { get; private set; }
     public string Barcode { get; private set; }
     public string Tags { get; private set; }
     public AverageRating AverageRating { get; private set; }
     public string BreadCrums { get; private set; }
-    public DateTime CreatedDateTime { get; private set; }
-    public DateTime UpdatedDateTime { get; private set; }
+    public DateTime CreatedOn { get; private set; }
+    public DateTime ModifiedOn { get; private set; }
 
     private readonly List<ProductImage> _productImages = [];
     public IReadOnlyList<ProductImage> Reservations => _productImages.AsReadOnly();
@@ -32,7 +32,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string sku,
         int stockQuantity,
         Price unitPrice,
-        float discount,
+        decimal discount,
         string brand,
         string barcode,
         string tags,
@@ -54,30 +54,30 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             tags,
             AverageRating.CreateNew(0),
             breadCrums,
-            DateTime.Now,
-            DateTime.Now,
+            DateTime.UtcNow,
+            DateTime.UtcNow,
             productImages ?? []
         );
     }
 
     private Product(
-        ProductId id,
+        ProductId productId,
         string name,
         string description,
         string category,
         string sku,
         int stockQuantity,
         Price unitPrice,
-        float discount,
+        decimal discount,
         string brand,
         string barcode,
         string tags,
         AverageRating averageRating,
         string breadCrums,
-        DateTime createdDateTime,
-        DateTime updatedDateTime,
+        DateTime createdOn,
+        DateTime modifiedOn,
         List<ProductImage> productImages
-    ) : base(id)
+    ) : base(productId)
     {
         Name = name;
         Description = description;
@@ -91,8 +91,8 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Tags = tags;
         AverageRating = averageRating;
         BreadCrums = breadCrums;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
+        CreatedOn = createdOn;
+        ModifiedOn = modifiedOn;
         _productImages = productImages;
     }
 

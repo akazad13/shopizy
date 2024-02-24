@@ -32,11 +32,8 @@ namespace shopizy.Infrastructure.Migrations
                             nullable: false
                         ),
                         Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                        CreatedDateTime = table.Column<DateTime>(
-                            type: "datetime2",
-                            nullable: false
-                        ),
-                        UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                        CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                        ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                     },
                 constraints: table =>
                 {

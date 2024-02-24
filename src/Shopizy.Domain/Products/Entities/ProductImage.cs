@@ -13,7 +13,8 @@ public sealed class ProductImage : Entity<ProductImageId>
         return new ProductImage(ProductImageId.CreateUnique(), productId, productUrl);
     }
 
-    private ProductImage(ProductImageId id, ProductId productId, string productUrl) : base(id)
+    private ProductImage(ProductImageId productImageId, ProductId productId, string productUrl)
+        : base(productImageId)
     {
         ProductId = productId;
         ProductUrl = productUrl;

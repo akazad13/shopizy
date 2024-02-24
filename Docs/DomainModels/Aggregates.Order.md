@@ -47,8 +47,8 @@ class Bill : Entity
     string BillingStatus;
     decimal Total;
     Address BillingAddress;
-    DateTime CreatedDateTime;
-    DateTime UpdatedDateTime;
+    DateTime CreatedOn;
+    DateTime ModifiedOn;
     Bill Create();
 }
 
@@ -80,8 +80,8 @@ public enum Currency
     "currency": "usd",
     "orderStatus" : "",
     "promoCode": "WELCOME20",
-    "createdDateTime": "2024-01-01T00:00:00.000Z",
-    "updatedDateTime": "2024-01-01T00:00:00.000Z",
+    "createdOn": "2024-01-01T00:00:00.000Z",
+    "modifiedOn": "2024-01-01T00:00:00.000Z",
     "shippingAddress": {
         "line" : "",
         "city": "",
@@ -119,8 +119,8 @@ public enum Currency
             "zipCode": ""
         },
         "billingStatus" : "",
-        "createdDateTime": "2024-01-01T00:00:00.000Z",
-        "updatedDateTime": "2024-01-01T00:00:00.000Z",
+        "createdOn": "2024-01-01T00:00:00.000Z",
+        "modifiedOn": "2024-01-01T00:00:00.000Z",
     }
 }
 ```

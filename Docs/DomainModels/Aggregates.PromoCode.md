@@ -19,6 +19,8 @@ class PromoCode : Entity
     "description": "",
     "discount": 20,
     "isPerchantage": true,
-    "isActive": true
+    "isActive": true,
+    "createdOn": "2024-01-01T00:00:00.000Z",
+    "modifiedOn": "2024-01-01T00:00:00.000Z",
 }
 ```

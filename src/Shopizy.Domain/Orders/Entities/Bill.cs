@@ -10,8 +10,8 @@ public sealed class Bill : Entity<BillId>
     public string BillingStatus { get; private set; }
     public decimal Total { get; private set; }
     public Address BillingAddress { get; }
-    public DateTime CreatedDateTime { get; private set; }
-    public DateTime UpdatedDateTime { get; private set; }
+    public DateTime CreatedOn { get; private set; }
+    public DateTime ModifiedOn { get; private set; }
 
     public static Bill Create(
         string paymentMethod,
@@ -28,29 +28,29 @@ public sealed class Bill : Entity<BillId>
             billingStatus,
             total,
             billingAddress,
-            DateTime.Now,
-            DateTime.Now
+            DateTime.UtcNow,
+            DateTime.UtcNow
         );
     }
 
     private Bill(
-        BillId id,
+        BillId billId,
         string paymentMethod,
         string transactionId,
         string billingStatus,
         decimal total,
         Address billingAddress,
-        DateTime createdDateTime,
-        DateTime updatedDateTime
-    ) : base(id)
+        DateTime createdOn,
+        DateTime modifiedOn
+    ) : base(billId)
     {
         PaymentMethod = paymentMethod;
         TransactionId = transactionId;
         BillingStatus = billingStatus;
         Total = total;
         BillingAddress = billingAddress;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
+        CreatedOn = createdOn;
+        ModifiedOn = modifiedOn;
     }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Bill() { }
