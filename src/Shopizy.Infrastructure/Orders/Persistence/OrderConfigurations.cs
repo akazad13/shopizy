@@ -62,29 +62,4 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         );
         builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
-
-    private static void ConfigureBillsTable(EntityTypeBuilder<Order> builder)
-    {
-        builder.OwnsMany(
-            o => o.OrderItems,
-            ib =>
-            {
-                ib.ToTable("OrderItems");
-                ib.WithOwner().HasForeignKey("OrderId");
-                ib.HasKey(nameof(OrderItem.Id), "OrderId");
-
-                ib.Property(oi => oi.Id)
-                    .ValueGeneratedNever()
-                    .HasConversion(id => id.Value, value => OrderItemId.Create(value));
-
-                ib.Property(oi => oi.Name).HasMaxLength(100);
-                ib.Property(oi => oi.PictureUrl);
-                ib.Property(oi => oi.Quantity);
-                ib.Property(oi => oi.Discount);
-
-                ib.OwnsOne(oi => oi.UnitPrice);
-            }
-        );
-        builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);
-    }
 }

@@ -25,7 +25,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         Price deliveryCharge,
         OrderStatus orderStatus,
         string promoCode,
-        Address shippingAddress
+        Address shippingAddress,
+        string paymentStatus
     )
     {
         return new Order(
@@ -35,6 +36,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
             orderStatus,
             promoCode,
             shippingAddress,
+            paymentStatus,
             DateTime.UtcNow,
             DateTime.UtcNow);
     }
@@ -45,6 +47,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         OrderStatus orderStatus,
         string promoCode,
         Address shippingAddress,
+        string paymentStatus,
         DateTime createdOn,
         DateTime modifiedOn
     ) : base(orderId)
@@ -54,6 +57,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         OrderStatus = orderStatus;
         PromoCode = promoCode;
         ShippingAddress = shippingAddress;
+        PaymentStatus = paymentStatus;
         CreatedOn = createdOn;
         ModifiedOn = modifiedOn;
     }

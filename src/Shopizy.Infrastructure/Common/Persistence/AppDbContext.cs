@@ -3,12 +3,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.Models;
+using Shopizy.Domain.Categories;
+using Shopizy.Domain.Customers;
+using Shopizy.Domain.Orders;
+using Shopizy.Domain.Payments;
+using Shopizy.Domain.ProductReviews;
+using Shopizy.Domain.Products;
+using shopizy.Domain.PromoCodes;
 using Shopizy.Domain.Users;
 using Shopizy.Infrastructure.Common.Middleware;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
 public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
 {
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductReview> ProductReviews { get; set; }
+    public DbSet<PromoCode> PromoCodes { get; set; }
     public DbSet<User> Users { get; set; }
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

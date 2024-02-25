@@ -1,10 +1,11 @@
+using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Customers.ValueObject;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.ValueObjects;
 
-namespace Shopizy.Domain.Orders.Entities;
+namespace Shopizy.Domain.Payments;
 
 public sealed class Payment : Entity<PaymentId>
 {
@@ -12,7 +13,7 @@ public sealed class Payment : Entity<PaymentId>
     public CustomerId CustomerId { get; set; }
     public string PaymentMethod { get; private set; }
     public string TransactionId { get; private set; }
-    public string PaymentStatus { get; private set; }
+    public PaymentStatus PaymentStatus { get; private set; }
     public Price Total { get; private set; }
     public Address BillingAddress { get; }
     public DateTime CreatedOn { get; private set; }
@@ -23,7 +24,7 @@ public sealed class Payment : Entity<PaymentId>
         OrderId orderId,
         string paymentMethod,
         string transactionId,
-        string paymentStatus,
+        PaymentStatus paymentStatus,
         Price total,
         Address billingAddress
     )
@@ -48,7 +49,7 @@ public sealed class Payment : Entity<PaymentId>
         OrderId orderId,
         string paymentMethod,
         string transactionId,
-        string paymentStatus,
+        PaymentStatus paymentStatus,
         Price total,
         Address billingAddress,
         DateTime createdOn,
