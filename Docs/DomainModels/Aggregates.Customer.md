@@ -1,4 +1,4 @@
-# Domain Model - User
+# Domain Model - Customer
 
 ```csharp
 class Customer : AggregateRoot<Guid>
