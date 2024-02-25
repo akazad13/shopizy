@@ -28,23 +28,35 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description).HasMaxLength(200);
         builder.Property(p => p.SKU).HasMaxLength(50);
         builder.Property(p => p.StockQuantity);
-        builder.Property(p => p.Discount);
+        builder.Property(p => p.Discount).HasPrecision(18, 2);
         builder.Property(p => p.Brand).HasMaxLength(50);
         builder.Property(p => p.Barcode).HasMaxLength(50);
         builder.Property(p => p.Tags).HasMaxLength(200);
         builder.Property(p => p.BreadCrums).HasMaxLength(100);
-        builder.Property(p => p.CreatedOn);
-        builder.Property(p => p.ModifiedOn);
+        builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime");
 
-        builder.OwnsOne(p => p.UnitPrice);
-        builder.OwnsOne(p => p.AverageRating);
+        builder.OwnsOne(
+            p => p.UnitPrice,
+            pb =>
+            {
+                pb.Property(p => p.Amount).HasPrecision(18, 2);
+            }
+        );
+        builder.OwnsOne(
+            p => p.AverageRating,
+            avrb =>
+            {
+                avrb.Property(avr => avr.Value).HasPrecision(18, 2);
+            }
+        );
 
         builder
             .Property(p => p.CategoryId)
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
         builder.Navigation(p => p.ProductImages).UsePropertyAccessMode(PropertyAccessMode.Field);
-        builder.Navigation(p => p.ProductReviewIds).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)
@@ -56,7 +68,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                 pib.ToTable("ProductImages");
 
                 pib.WithOwner().HasForeignKey("ProductId");
-                pib.HasKey(nameof(ProductImage.Id), "ProductId");
+                pib.HasKey("ProductId", nameof(ProductImage.Id));
 
                 pib.Property(pi => pi.Id)
                     .ValueGeneratedNever()

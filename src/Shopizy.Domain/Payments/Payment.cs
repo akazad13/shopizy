@@ -1,7 +1,9 @@
 using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Customers;
 using Shopizy.Domain.Customers.ValueObject;
+using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.ValueObjects;
 
@@ -9,7 +11,9 @@ namespace Shopizy.Domain.Payments;
 
 public sealed class Payment : Entity<PaymentId>
 {
+    public Order Order { get; set; } = null!;
     public OrderId OrderId { get; set; }
+    public Customer Customer { get; set; } = null!;
     public CustomerId CustomerId { get; set; }
     public string PaymentMethod { get; private set; }
     public string TransactionId { get; private set; }

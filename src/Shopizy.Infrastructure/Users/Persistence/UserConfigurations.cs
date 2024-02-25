@@ -29,7 +29,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.Phone).HasMaxLength(15);
 
         builder.Property(u => u.Password);
-        builder.Property(u => u.CreatedOn);
-        builder.Property(u => u.ModifiedOn);
+        builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime");
     }
 }

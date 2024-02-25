@@ -1,22 +1,25 @@
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Customers.ValueObject;
+using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
-using Shopizy.Domain.ProductReviews.ValueObjects;
+using Shopizy.Domain.ProductReviews;
+using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Customers;
 
 public sealed class Customer : AggregateRoot<CustomerId, Guid>
 {
-    private readonly List<OrderId> _orderIds = [];
-    private readonly List<ProductReviewId> _productReviewIds = [];
+    private readonly List<Order> _orders = [];
+    private readonly List<ProductReview> _productReviews = [];
     public string ProfileImageUrl { get; private set; }
     public UserId UserId { get; }
+    public User User { get; } = null!;
     public Address Address { get; set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
-    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
-    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
+    public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
+    public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
 
     public static Customer Create(string profileImageUrl, UserId userId, Address address)
     {

@@ -1,4 +1,5 @@
 using Shopizy.Domain.Common.Models;
+using Shopizy.Domain.Customers;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Users;

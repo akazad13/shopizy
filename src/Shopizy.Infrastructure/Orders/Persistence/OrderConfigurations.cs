@@ -26,13 +26,29 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             .HasConversion(id => id.Value, value => OrderId.Create(value));
 
         builder.Property(o => o.PromoCode).HasMaxLength(15);
-        builder.Property(o => o.CreatedOn);
-        builder.Property(o => o.ModifiedOn);
+        builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.OrderStatus);
         builder.Property(o => o.PaymentStatus).HasMaxLength(20);
 
-        builder.OwnsOne(o => o.DeliveryCharge);
-        builder.OwnsOne(o => o.ShippingAddress);
+        builder.OwnsOne(
+            o => o.DeliveryCharge,
+            pb =>
+            {
+                pb.Property(p => p.Amount).HasPrecision(18, 2);
+            }
+        );
+        builder.OwnsOne(
+            o => o.ShippingAddress,
+            ab =>
+            {
+                ab.Property(ad => ad.Line).HasMaxLength(100);
+                ab.Property(ad => ad.City).HasMaxLength(30);
+                ab.Property(ad => ad.State).HasMaxLength(30);
+                ab.Property(ad => ad.Country).HasMaxLength(30);
+                ab.Property(ad => ad.ZipCode).HasMaxLength(10);
+            }
+        );
         builder
             .Property(c => c.CustomerId)
             .HasConversion(id => id.Value, value => CustomerId.Create(value));
@@ -55,9 +71,15 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                 ib.Property(oi => oi.Name).HasMaxLength(100);
                 ib.Property(oi => oi.PictureUrl);
                 ib.Property(oi => oi.Quantity);
-                ib.Property(oi => oi.Discount);
+                ib.Property(oi => oi.Discount).HasPrecision(18, 2);
 
-                ib.OwnsOne(oi => oi.UnitPrice);
+                ib.OwnsOne(
+                    oi => oi.UnitPrice,
+                    pb =>
+                    {
+                        pb.Property(p => p.Amount).HasPrecision(18, 2);
+                    }
+                );
             }
         );
         builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);

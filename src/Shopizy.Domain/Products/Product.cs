@@ -1,7 +1,7 @@
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.ProductReviews.ValueObjects;
+using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -10,7 +10,7 @@ namespace Shopizy.Domain.Products;
 public sealed class Product : AggregateRoot<ProductId, Guid>
 {
     private readonly List<ProductImage> _productImages = [];
-    private readonly List<ProductReviewId> _productReviewIds = [];
+    private readonly List<ProductReview> _productReviews = [];
     public string Name { get; private set; }
     public string Description { get; private set; }
     public CategoryId CategoryId { get; private set; }
@@ -27,7 +27,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public DateTime ModifiedOn { get; private set; }
 
     public IReadOnlyList<ProductImage> ProductImages => _productImages.AsReadOnly();
-    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
+    public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
 
     public static Product Create(
         string name,

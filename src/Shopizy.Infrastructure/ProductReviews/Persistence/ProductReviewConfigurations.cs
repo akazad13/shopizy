@@ -24,10 +24,16 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
             .HasConversion(id => id.Value, value => ProductReviewId.Create(value));
 
         builder.Property(pr => pr.Comment).HasMaxLength(1000);
-        builder.Property(pr => pr.CreatedOn);
-        builder.Property(pr => pr.ModifiedOn);
+        builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime");
 
-        builder.OwnsOne(pr => pr.Rating);
+        builder.OwnsOne(
+            pr => pr.Rating,
+            rb =>
+            {
+                rb.Property(r => r.Value).HasPrecision(18, 2);
+            }
+        );
 
         builder
             .Property(pr => pr.CustomerId)
