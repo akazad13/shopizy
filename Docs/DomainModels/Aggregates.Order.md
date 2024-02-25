@@ -73,38 +73,55 @@ public enum Currency
 {
     "id": "0000000-0000-0000-0000-000000000000",
     "customerId": "0000000-0000-0000-0000-000000000000",
-    "totalAmount": 150,
-    "totalDiscount": 20,
-    "deliveryCharges": 10,
-    "finalAmount": 140,
-    "currency": "usd",
-    "orderStatus" : "",
+    "totalAmount": {
+        "amount": 150,
+        "currency": "usd"
+    },
+    "totalDiscount": {
+        "amount": 20,
+        "currency": "usd"
+    },
+    "deliveryCharges": {
+        "amount": 40,
+        "currency": "usd"
+    },
+    "finalAmount": {
+        "amount": 170,
+        "currency": "usd"
+    },
+    "orderStatus" : "Submitted",
     "promoCode": "WELCOME20",
     "createdOn": "2024-01-01T00:00:00.000Z",
     "modifiedOn": "2024-01-01T00:00:00.000Z",
     "shippingAddress": {
-        "line" : "",
-        "city": "",
-        "state" : "",
-        "country" : "",
-        "zipCode": ""
+        "line" : "17292 McFadden Ave",
+        "city": "Tustin",
+        "state" : "California",
+        "country" : "USA",
+        "zipCode": "92780"
     },
     "orderItems": [
         {
             "id": "0000000-0000-0000-0000-000000000000",
             "name": "iPhone 15 pro",
             "pictureUrl": "",
-            "unitPrice": "",
+            "unitPrice": {
+                "amount": 100,
+                "currency": "usd"
+            },
             "quantity": 4,
-            "discount": ""
+            "discount": 15.00   // %
         },
         {
             "id": "0000000-0000-0000-0000-000000000000",
             "name": "iPhone 15 pro max",
             "pictureUrl": "",
-            "unitPrice": "",
+            "unitPrice": {
+                "amount": 50,
+                "currency": "usd"
+            },
             "quantity": 2,
-            "discount": ""
+            "discount": 10.00 // %
         }
     ],
     "bill" : {
@@ -112,11 +129,11 @@ public enum Currency
         "paymentMethod": "Credit Card",
         "transactionId": "13543423",
         "billingAddress": {
-            "line" : "",
-            "city": "",
-            "state" : "",
-            "country" : "",
-            "zipCode": ""
+            "line" : "17292 McFadden Ave",
+            "city": "Tustin",
+            "state" : "California",
+            "country" : "USA",
+            "zipCode": "92780"
         },
         "billingStatus" : "",
         "createdOn": "2024-01-01T00:00:00.000Z",

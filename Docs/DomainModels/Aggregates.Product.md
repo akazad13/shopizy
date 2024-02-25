@@ -21,15 +21,20 @@ class Product : AggregateRoot<Guid>
     },
     "createdOn": "2024-01-01T00:00:00.000Z",
     "modifiedOn": "2024-01-01T00:00:00.000Z",
-    "unitPrice": 960.00,
-    "currency" : "usd",
-    "discount": 30.00,
+    "unitPrice": {
+        "amount" : 960.00,
+        "currency" : "usd"
+    },
+    "discount": 30.00, // %
     "sku": "111111111111111",
     "brand": "Apple",
     "tags": "iphone, apple",
     "barcode": "asdlnqwezxcljqwelndfdsaf0u343lef9u234",
     "stockQuantity": 100,
-    "averageRating": 4.6,
+    "averageRating": {
+        "value" : 4.6,
+        "numRatings": 10
+    },
     "specifications": [
         {
             "id": "0000000-0000-0000-0000-000000000000",
@@ -47,19 +52,15 @@ class Product : AggregateRoot<Guid>
             "value": "8GB RAM, 128GB ROM (not expandable), iOS (17.x)"
         }
     ],
-    "breadCrumbs": [
-        "Electronics",
-        "Mobile",
-        "Apple"
-    ],
+    "breadCrumbs": "Electronics|Mobile|Apple",
     "productImages" : [
         {
             "url" : "",
-            "order" : ""
+            "seq" : 1
         },
         {
             "url" : "",
-            "order" : ""
+            "seq" : 2
         }
     ]
 }

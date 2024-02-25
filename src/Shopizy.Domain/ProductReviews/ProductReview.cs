@@ -8,26 +8,26 @@ namespace Shopizy.Domain.ProductReviews;
 
 public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
 {
-    public Rating Rating { get; set; }
-    public string Comment { get; set; }
     public CustomerId CustomerId { get; set; }
     public ProductId ProductId { get; set; }
+    public Rating Rating { get; set; }
+    public string Comment { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
 
     public static ProductReview Create(
-        Rating rating,
-        string comment,
         CustomerId customerId,
-        ProductId productId
+        ProductId productId,
+        Rating rating,
+        string comment
     )
     {
         return new ProductReview(
             ProductReviewId.CreateUnique(),
-            rating,
-            comment,
             customerId,
             productId,
+            rating,
+            comment,
             DateTime.UtcNow,
             DateTime.UtcNow
         );
@@ -35,18 +35,18 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
 
     private ProductReview(
         ProductReviewId productReviewId,
-        Rating rating,
-        string comment,
         CustomerId customerId,
         ProductId productId,
+        Rating rating,
+        string comment,
         DateTime createdOn,
         DateTime modifiedOn
     ) : base(productReviewId)
     {
-        Rating = rating;
-        Comment = comment;
         CustomerId = customerId;
         ProductId = productId;
+        Rating = rating;
+        Comment = comment;
         CreatedOn = createdOn;
         ModifiedOn = modifiedOn;
     }

@@ -1,5 +1,7 @@
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -7,9 +9,11 @@ namespace Shopizy.Domain.Products;
 
 public sealed class Product : AggregateRoot<ProductId, Guid>
 {
+    private readonly List<ProductImage> _productImages = [];
+    private readonly List<ProductReviewId> _productReviewIds = [];
     public string Name { get; private set; }
     public string Description { get; private set; }
-    public string Category { get; private set; }
+    public CategoryId CategoryId { get; private set; }
     public string SKU { get; private set; }
     public int StockQuantity { get; private set; }
     public Price UnitPrice { get; private set; }
@@ -22,13 +26,13 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
 
-    private readonly List<ProductImage> _productImages = [];
-    public IReadOnlyList<ProductImage> Reservations => _productImages.AsReadOnly();
+    public IReadOnlyList<ProductImage> ProductImages => _productImages.AsReadOnly();
+    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
 
     public static Product Create(
         string name,
         string description,
-        string category,
+        CategoryId categoryId,
         string sku,
         int stockQuantity,
         Price unitPrice,
@@ -44,7 +48,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             ProductId.CreateUnique(),
             name,
             description,
-            category,
+            categoryId,
             sku,
             stockQuantity,
             unitPrice,
@@ -64,7 +68,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         ProductId productId,
         string name,
         string description,
-        string category,
+        CategoryId categoryId,
         string sku,
         int stockQuantity,
         Price unitPrice,
@@ -81,7 +85,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     {
         Name = name;
         Description = description;
-        Category = category;
+        CategoryId = categoryId;
         SKU = sku;
         StockQuantity = stockQuantity;
         UnitPrice = unitPrice;

@@ -5,19 +5,19 @@ namespace Shopizy.Domain.Products.Entities;
 
 public sealed class ProductImage : Entity<ProductImageId>
 {
-    public ProductId ProductId { get; set; }
-    public string ProductUrl { get; set; }
+    public string ImageUrl { get; set; }
+    public int Seq { get; set; }
 
-    public static ProductImage Create(ProductId productId, string productUrl)
+    public static ProductImage Create(string productUrl, int seq)
     {
-        return new ProductImage(ProductImageId.CreateUnique(), productId, productUrl);
+        return new ProductImage(ProductImageId.CreateUnique(), productUrl, seq);
     }
 
-    private ProductImage(ProductImageId productImageId, ProductId productId, string productUrl)
+    private ProductImage(ProductImageId productImageId, string imageUrl, int seq)
         : base(productImageId)
     {
-        ProductId = productId;
-        ProductUrl = productUrl;
+        ImageUrl = imageUrl;
+        Seq = seq;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

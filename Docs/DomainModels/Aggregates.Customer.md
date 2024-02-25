@@ -24,14 +24,18 @@ class Customer : AggregateRoot<Guid>
     "orders": [
         {
             "id" : "0000000-0000-0000-0000-000000000000",
-            "finalAmount" : 140,
-            "currency": "usd",
+            "finalAmount" : {
+                "amount": 150,
+                "currency": "usd"
+            },
             "orderStatus" : ""
         },
         {
             "id" : "0000000-0000-0000-0000-000000000000",
-            "finalAmount" : 120,
-            "currency": "usd",
+            "finalAmount" : {
+                "amount": 120,
+                "currency": "usd"
+            },
             "orderStatus" : ""
         },
     ]

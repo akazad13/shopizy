@@ -13,10 +13,10 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
     public string ProfileImageUrl { get; private set; }
     public UserId UserId { get; }
     public Address Address { get; set; }
-    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
-    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
+    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
+    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
 
     public static Customer Create(string profileImageUrl, UserId userId, Address address)
     {

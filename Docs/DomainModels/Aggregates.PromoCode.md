@@ -1,7 +1,7 @@
- # Domain Model - Order
+ # Domain Model - Promo Code
 
 ```csharp
-class PromoCode : Entity
+class PromoCode : AggregateRoot<Guid>
 {
     Giud Id;
     string Code;
@@ -16,7 +16,7 @@ class PromoCode : Entity
 {
     "id": "0000000-0000-0000-0000-000000000000",
     "code": "WELCOME20",
-    "description": "",
+    "description": "This is a welcome promo code for starter.",
     "discount": 20,
     "isPerchantage": true,
     "isActive": true,
