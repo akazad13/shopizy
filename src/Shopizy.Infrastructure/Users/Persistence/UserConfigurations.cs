@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Users;
-using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Users.Persistence;
 
@@ -14,9 +14,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
     private static void ConfigureUsersTable(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("Users");
-
-        builder.HasKey(u => u.Id);
+        builder.ToTable("Users").HasKey(u => u.Id);
         builder.HasIndex(u => u.Phone);
 
         builder
@@ -31,5 +29,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.Phone).HasMaxLength(15);
 
         builder.Property(u => u.Password);
+        builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime");
     }
 }

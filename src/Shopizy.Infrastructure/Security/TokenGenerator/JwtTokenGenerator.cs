@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
-using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

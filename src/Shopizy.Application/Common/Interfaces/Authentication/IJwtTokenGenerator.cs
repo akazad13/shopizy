@@ -1,4 +1,4 @@
-using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Common.Interfaces.Authentication;
 

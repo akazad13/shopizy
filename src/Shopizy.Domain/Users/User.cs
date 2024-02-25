@@ -1,5 +1,6 @@
 using Shopizy.Domain.Common.Models;
-using Shopizy.Domain.Users.ValueObject;
+using Shopizy.Domain.Customers;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Users;
 
@@ -9,8 +10,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public string LastName { get; private set; }
     public string Phone { get; private set; }
     public string Password { get; private set; }
-    public DateTime CreatedDateTime { get; private set; }
-    public DateTime UpdatedDateTime { get; private set; }
+    public DateTime CreatedOn { get; private set; }
+    public DateTime ModifiedOn { get; private set; }
 
     public static User Create(string firstName, string lastName, string phone, string password)
     {
@@ -26,21 +27,21 @@ public sealed class User : AggregateRoot<UserId, Guid>
     }
 
     private User(
-        UserId id,
+        UserId userId,
         string firstName,
         string lastName,
         string phone,
         string password,
-        DateTime createdDateTime,
-        DateTime updatedDateTime
-    ) : base(id)
+        DateTime createdOn,
+        DateTime modifiedOn
+    ) : base(userId)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Password = password;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
+        CreatedOn = createdOn;
+        ModifiedOn = modifiedOn;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

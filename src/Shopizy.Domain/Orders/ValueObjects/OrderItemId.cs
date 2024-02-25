@@ -1,22 +1,22 @@
 using Shopizy.Domain.Common.Models;
 
-namespace Shopizy.Domain.Users.ValueObjects;
+namespace Shopizy.Domain.Orders.ValueObjects;
 
-public sealed class UserId : AggregateRootId<Guid>
+public sealed class OrderItemId : AggregateRootId<Guid>
 {
     public override Guid Value { get; protected set; }
 
-    private UserId(Guid value)
+    private OrderItemId(Guid value)
     {
         Value = value;
     }
 
-    public static UserId CreateUnique()
+    public static OrderItemId CreateUnique()
     {
         return new(Guid.NewGuid());
     }
 
-    public static UserId Create(Guid value)
+    public static OrderItemId Create(Guid value)
     {
         return new(value);
     }
