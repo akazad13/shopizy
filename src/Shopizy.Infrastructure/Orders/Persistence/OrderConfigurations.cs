@@ -29,6 +29,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.Property(o => o.CreatedOn);
         builder.Property(o => o.ModifiedOn);
         builder.Property(o => o.OrderStatus);
+        builder.Property(o => o.PaymentStatus).HasMaxLength(20);
 
         builder.OwnsOne(o => o.DeliveryCharge);
         builder.OwnsOne(o => o.ShippingAddress);

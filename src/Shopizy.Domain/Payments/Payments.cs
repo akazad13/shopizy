@@ -1,31 +1,40 @@
 using Shopizy.Domain.Common.Models;
+using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Customers.ValueObject;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Payments.ValueObjects;
 
 namespace Shopizy.Domain.Orders.Entities;
 
-public sealed class Bill : Entity<BillId>
+public sealed class Payment : Entity<PaymentId>
 {
+    public OrderId OrderId { get; set; }
+    public CustomerId CustomerId { get; set; }
     public string PaymentMethod { get; private set; }
     public string TransactionId { get; private set; }
-    public string BillingStatus { get; private set; }
-    public decimal Total { get; private set; }
+    public string PaymentStatus { get; private set; }
+    public Price Total { get; private set; }
     public Address BillingAddress { get; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
 
-    public static Bill Create(
+    public static Payment Create(
+        CustomerId customerId,
+        OrderId orderId,
         string paymentMethod,
         string transactionId,
-        string billingStatus,
-        decimal total,
+        string paymentStatus,
+        Price total,
         Address billingAddress
     )
     {
-        return new Bill(
-            BillId.CreateUnique(),
+        return new Payment(
+            PaymentId.CreateUnique(),
+            customerId,
+            orderId,
             paymentMethod,
             transactionId,
-            billingStatus,
+            paymentStatus,
             total,
             billingAddress,
             DateTime.UtcNow,
@@ -33,26 +42,30 @@ public sealed class Bill : Entity<BillId>
         );
     }
 
-    private Bill(
-        BillId billId,
+    private Payment(
+        PaymentId PaymentId,
+        CustomerId customerId,
+        OrderId orderId,
         string paymentMethod,
         string transactionId,
-        string billingStatus,
-        decimal total,
+        string paymentStatus,
+        Price total,
         Address billingAddress,
         DateTime createdOn,
         DateTime modifiedOn
-    ) : base(billId)
+    ) : base(PaymentId)
     {
+        CustomerId = customerId;
+        OrderId = orderId;
         PaymentMethod = paymentMethod;
         TransactionId = transactionId;
-        BillingStatus = billingStatus;
+        PaymentStatus = paymentStatus;
         Total = total;
         BillingAddress = billingAddress;
         CreatedOn = createdOn;
         ModifiedOn = modifiedOn;
     }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Bill() { }
+    private Payment() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -8,6 +8,7 @@
   - [Product Review Aggregate](#product-review-aggregate)
   - [Order Aggregate](#order-aggregate)
   - [Promo Code Aggregate](#promo-code-aggregate)
+  - [Payment Aggregate](#payment-aggregate)
 
 ## User Aggregate
 
@@ -223,19 +224,6 @@ class OrderItem : Entity
     void AddUnits(int units);
 }
 
-class Bill : Entity
-{
-    BillId Id;
-    string PaymentMethod;
-    string TransactionId;
-    string BillingStatus;
-    decimal Total;
-    Address BillingAddress;
-    DateTime CreatedOn;
-    DateTime ModifiedOn;
-    Bill Create();
-}
-
 public enum OrderStatus
 {
     Submitted = 1,
@@ -308,25 +296,11 @@ public enum Currency
             "discount": 10.00 // %
         }
     ],
-    "bill" : {
-        "id" : "0000000-0000-0000-0000-000000000000",
-        "paymentMethod": "Credit Card",
-        "transactionId": "13543423",
-        "billingAddress": {
-            "line" : "17292 McFadden Ave",
-            "city": "Tustin",
-            "state" : "California",
-            "country" : "USA",
-            "zipCode": "92780"
-        },
-        "billingStatus" : "",
-        "createdOn": "2024-01-01T00:00:00.000Z",
-        "modifiedOn": "2024-01-01T00:00:00.000Z",
-    }
+    "paymentStatus" : "Payed"
 }
 ```
 
-# Promo Code Aggregate
+## Promo Code Aggregate
 
 ```csharp
 class PromoCode : AggregateRoot<Guid>
@@ -348,6 +322,56 @@ class PromoCode : AggregateRoot<Guid>
     "discount": 20,
     "isPerchantage": true,
     "isActive": true,
+    "createdOn": "2024-01-01T00:00:00.000Z",
+    "modifiedOn": "2024-01-01T00:00:00.000Z",
+}
+```
+
+## Payment Aggregate
+
+```csharp
+class Payment : AggregateRoot<Guid>
+{
+    Payment Create();
+    
+    PaymentId Id;
+    string PaymentMethod;
+    string TransactionId;
+    PaymentStatus PaymentStatus;
+    Price Total;
+    Address BillingAddress;
+    DateTime CreatedOn;
+    DateTime ModifiedOn;
+}
+
+public enum PaymentStatus
+{
+    Pending = 1,
+    Cancelled = 2,
+    Payed = 3
+}
+
+```
+
+```json
+{
+    "id" : "0000000-0000-0000-0000-000000000000",
+    "orderId": "0000000-0000-0000-0000-000000000000",
+    "customerId": "0000000-0000-0000-0000-000000000000",
+    "paymentMethod": "Credit Card",
+    "transactionId": "13543423",
+    "paymentStatus" : "Payed",
+    "total" : {
+        "amount": 150,
+        "currency": "usd"
+    },
+    "billingAddress": {
+        "line" : "17292 McFadden Ave",
+        "city": "Tustin",
+        "state" : "California",
+        "country" : "USA",
+        "zipCode": "92780"
+    },
     "createdOn": "2024-01-01T00:00:00.000Z",
     "modifiedOn": "2024-01-01T00:00:00.000Z",
 }

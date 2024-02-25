@@ -11,18 +11,17 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly List<OrderItem> _orderItems  = [];
     public CustomerId CustomerId { get; }
-    public Bill Bill { get; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string PromoCode {get; private set; }
     public Address ShippingAddress { get; }
+    public string PaymentStatus { get; set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public static Order Create(
         CustomerId customerId,
-        Bill bill,
         Price deliveryCharge,
         OrderStatus orderStatus,
         string promoCode,
@@ -32,7 +31,6 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         return new Order(
             OrderId.CreateUnique(),
             customerId,
-            bill,
             deliveryCharge,
             orderStatus,
             promoCode,
@@ -43,7 +41,6 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     private Order(
         OrderId orderId,
         CustomerId customerId,
-        Bill bill,
         Price deliveryCharge,
         OrderStatus orderStatus,
         string promoCode,
@@ -53,7 +50,6 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     ) : base(orderId)
     {
         CustomerId = customerId;
-        Bill = bill;
         DeliveryCharge = deliveryCharge;
         OrderStatus = orderStatus;
         PromoCode = promoCode;

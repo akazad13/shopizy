@@ -1,22 +1,22 @@
 using Shopizy.Domain.Common.Models;
 
-namespace Shopizy.Domain.Orders.ValueObjects;
+namespace Shopizy.Domain.Payments.ValueObjects;
 
-public sealed class BillId : AggregateRootId<Guid>
+public sealed class PaymentId : AggregateRootId<Guid>
 {
     public override Guid Value { get; protected set; }
 
-    private BillId(Guid value)
+    private PaymentId(Guid value)
     {
         Value = value;
     }
 
-    public static BillId CreateUnique()
+    public static PaymentId CreateUnique()
     {
         return new(Guid.NewGuid());
     }
 
-    public static BillId Create(Guid value)
+    public static PaymentId Create(Guid value)
     {
         return new(value);
     }
