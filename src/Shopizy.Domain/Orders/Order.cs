@@ -1,6 +1,5 @@
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Customers;
 using Shopizy.Domain.Customers.ValueObject;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;

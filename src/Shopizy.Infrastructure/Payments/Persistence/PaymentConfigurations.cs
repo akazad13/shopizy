@@ -25,7 +25,7 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             .HasConversion(id => id.Value, value => PaymentId.Create(value));
 
         builder.Property(p => p.PaymentMethod).HasMaxLength(20);
-        builder.Property(p => p.TransactionId).HasMaxLength(50);
+        builder.Property(p => p.TransactionId).HasMaxLength(50).IsRequired(false);
         builder.Property(p => p.PaymentStatus);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime");

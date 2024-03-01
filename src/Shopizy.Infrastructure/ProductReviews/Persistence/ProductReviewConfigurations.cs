@@ -23,7 +23,7 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProductReviewId.Create(value));
 
-        builder.Property(pr => pr.Comment).HasMaxLength(1000);
+        builder.Property(pr => pr.Comment).HasMaxLength(1000).IsRequired(false);
         builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime");
 
