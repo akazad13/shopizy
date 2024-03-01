@@ -28,11 +28,11 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description).HasMaxLength(200);
         builder.Property(p => p.SKU).HasMaxLength(50);
         builder.Property(p => p.StockQuantity);
-        builder.Property(p => p.Discount).HasPrecision(18, 2);
-        builder.Property(p => p.Brand).HasMaxLength(50);
-        builder.Property(p => p.Barcode).HasMaxLength(50);
-        builder.Property(p => p.Tags).HasMaxLength(200);
-        builder.Property(p => p.BreadCrums).HasMaxLength(100);
+        builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
+        builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
+        builder.Property(p => p.BreadCrums).HasMaxLength(100).IsRequired(false);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime");
 

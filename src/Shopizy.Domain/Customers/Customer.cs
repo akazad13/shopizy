@@ -12,7 +12,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
 {
     private readonly List<Order> _orders = [];
     private readonly List<ProductReview> _productReviews = [];
-    public string ProfileImageUrl { get; private set; }
+    public string? ProfileImageUrl { get; private set; }
     public UserId UserId { get; }
     public User User { get; } = null!;
     public Address Address { get; set; }
@@ -21,11 +21,11 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
     public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
     public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
 
-    public static Customer Create(string profileImageUrl, UserId userId, Address address)
+    public static Customer Create(string? profileImageUrl, UserId userId, Address address)
     {
         return new Customer(CustomerId.CreateUnique(), profileImageUrl, userId, address, DateTime.UtcNow, DateTime.UtcNow);
     }
-    private Customer(CustomerId customerId,  string profileImageUrl, UserId userId, Address address, DateTime createdOn, DateTime modifiedOn) : base(customerId)
+    private Customer(CustomerId customerId,  string? profileImageUrl, UserId userId, Address address, DateTime createdOn, DateTime modifiedOn) : base(customerId)
     {
         ProfileImageUrl = profileImageUrl;
         UserId = userId;

@@ -17,7 +17,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public string SKU { get; private set; }
     public int StockQuantity { get; private set; }
     public Price UnitPrice { get; private set; }
-    public decimal Discount { get; private set; }
+    public decimal? Discount { get; private set; }
     public string Brand { get; private set; }
     public string Barcode { get; private set; }
     public string Tags { get; private set; }
@@ -36,7 +36,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string sku,
         int stockQuantity,
         Price unitPrice,
-        decimal discount,
+        decimal? discount,
         string brand,
         string barcode,
         string tags,
@@ -72,7 +72,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string sku,
         int stockQuantity,
         Price unitPrice,
-        decimal discount,
+        decimal? discount,
         string brand,
         string barcode,
         string tags,

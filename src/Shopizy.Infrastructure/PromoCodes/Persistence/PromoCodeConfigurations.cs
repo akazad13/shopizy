@@ -24,12 +24,12 @@ public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode
             .HasConversion(id => id.Value, value => PromoCodeId.Create(value));
 
         builder.Property(pc => pc.Code).HasMaxLength(15);
-        builder.Property(pc => pc.Description).HasMaxLength(100);
+        builder.Property(pc => pc.Description).HasMaxLength(100).IsRequired(false);
         builder.Property(pc => pc.Discount).HasPrecision(18, 2);
         builder.Property(pc => pc.IsPerchantage).HasDefaultValue(true);
         builder.Property(pc => pc.IsActive).HasDefaultValue(true);
         builder.Property(pc => pc.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(pc => pc.ModifiedOn).HasColumnType("smalldatetime");
-        builder.Property(pc => pc.NumOfTimeUsed);
+        builder.Property(pc => pc.NumOfTimeUsed).HasDefaultValue(0);
     }
 }

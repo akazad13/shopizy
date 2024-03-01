@@ -1,5 +1,4 @@
 using Shopizy.Domain.Common.Models;
-using Shopizy.Domain.Customers;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Users;
@@ -9,11 +8,11 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Phone { get; private set; }
-    public string Password { get; private set; }
+    public string? Password { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
 
-    public static User Create(string firstName, string lastName, string phone, string password)
+    public static User Create(string firstName, string lastName, string phone, string? password)
     {
         return new(
             UserId.CreateUnique(),
@@ -31,7 +30,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
         string firstName,
         string lastName,
         string phone,
-        string password,
+        string? password,
         DateTime createdOn,
         DateTime modifiedOn
     ) : base(userId)

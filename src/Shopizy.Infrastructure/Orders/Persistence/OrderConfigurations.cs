@@ -25,7 +25,8 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => OrderId.Create(value));
 
-        builder.Property(o => o.PromoCode).HasMaxLength(15);
+        builder.Property(o => o.PromoCode).HasMaxLength(15).IsRequired(false);
+        ;
         builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.OrderStatus);
@@ -69,7 +70,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                     .HasConversion(id => id.Value, value => OrderItemId.Create(value));
 
                 ib.Property(oi => oi.Name).HasMaxLength(100);
-                ib.Property(oi => oi.PictureUrl);
+                ib.Property(oi => oi.PictureUrl).IsRequired(false);
                 ib.Property(oi => oi.Quantity);
                 ib.Property(oi => oi.Discount).HasPrecision(18, 2);
 
