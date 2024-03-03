@@ -18,7 +18,7 @@ public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiC
 
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthResponse>(authResult)),
-            errors => Problem(errors));
+            Problem);
     }
 
     [HttpPost("login")]
@@ -29,6 +29,6 @@ public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiC
 
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthResponse>(authResult)),
-            errors => Problem(errors));
+            Problem);
     }
 }

@@ -13,7 +13,7 @@ public static partial class Errors
                 code: "User.UserNotFound",
                 description: "User is not found with this phone & password."
             );
-        public static Error UserNotAdded =>
-            Error.Failure(code: "User.UserNotAdded", description: "Failed to create User.");
+        public static Error UserNotCreated =>
+            Error.Failure(code: "User.UserNotCreated", description: "Failed to create User.");
     }
 }

@@ -12,13 +12,13 @@ public class UserRepository(AppDbContext _dbContext) : IUserRepository
         return _dbContext.Users.SingleOrDefaultAsync(u => u.Phone == phone);
     }
 
-    public async Task Add(User user)
+    public async Task AddAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);
     }
 
-    public async Task<bool> Commit(CancellationToken cancellationToken)
-{
-    return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
-}
+    public  Task<int> Commit(CancellationToken cancellationToken)
+    {
+        return  _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

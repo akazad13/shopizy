@@ -27,12 +27,10 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
             command.Phone,
             hashedPassword);
 
-        await _userRepository.Add(user);
+        await _userRepository.AddAsync(user);
 
-        if(!await _userRepository.Commit(cancellationToken))
-        {
-            return Errors.User.UserNotAdded;
-        }
+        if(await _userRepository.Commit(cancellationToken) <= 0)
+            return Errors.User.UserNotCreated;
 
         var roles = new List<string>();
         var permissions = new List<string>();

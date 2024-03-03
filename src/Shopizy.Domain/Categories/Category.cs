@@ -8,17 +8,15 @@ public class Category : AggregateRoot<CategoryId, Guid>
 {
     private readonly List<Product> _products = [];
     public string Name { get; set; }
-    public CategoryId ParentId { get; set; }
-    public virtual Category? Parent { get; set; }
-    public virtual ICollection<Category>? Children { get; set; }
+    public Guid? ParentId { get; set; }
     public IReadOnlyList<Product> Products => _products.AsReadOnly();
 
-    public static Category Create(string name, CategoryId parentId)
+    public static Category Create(string name, Guid? parentId)
     {
         return new Category(CategoryId.CreateUnique(), name, parentId);
     }
 
-    private Category(CategoryId categoryId, string name, CategoryId parentId) : base(categoryId)
+    private Category(CategoryId categoryId, string name, Guid? parentId) : base(categoryId)
     {
         Name = name;
         ParentId = parentId;
