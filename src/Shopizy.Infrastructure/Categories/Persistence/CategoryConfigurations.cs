@@ -23,14 +23,9 @@ public sealed class CategoryConfigurations : IEntityTypeConfiguration<Category>
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
         builder.Property(c => c.Name).HasMaxLength(100);
-
-        builder
-            .Property(c => c.ParentId)
-            .HasConversion(id => id.Value, value => CategoryId.Create(value));
+        builder.Property(c => c.ParentId).IsRequired(false);
 
         builder.HasMany(c => c.Products).WithOne().OnDelete(DeleteBehavior.NoAction);
-        builder.HasOne(c => c.Parent).WithMany(c => c.Children).OnDelete(DeleteBehavior.NoAction);
-
         builder.Navigation(p => p.Products).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

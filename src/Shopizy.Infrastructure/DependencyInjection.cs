@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Infrastructure.Authentication;
+using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
@@ -89,6 +91,7 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         return services;
     }
 }

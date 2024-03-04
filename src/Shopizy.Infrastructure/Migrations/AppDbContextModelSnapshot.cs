@@ -32,12 +32,10 @@ namespace shopizy.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("ParentId")
+                    b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories", (string)null);
                 });
@@ -309,17 +307,6 @@ namespace shopizy.Infrastructure.Migrations
                     b.HasIndex("Code");
 
                     b.ToTable("PromoCodes", (string)null);
-                });
-
-            modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>
-                {
-                    b.HasOne("Shopizy.Domain.Categories.Category", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Customers.Customer", b =>
@@ -703,8 +690,6 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>
                 {
-                    b.Navigation("Children");
-
                     b.Navigation("Products");
                 });
 

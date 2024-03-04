@@ -7,11 +7,8 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
     public RegisterCommandValidator()
     {
-        RuleFor(registerCommand => registerCommand.FirstName)
-            .NotNull()
-            .NotEmpty()
-            .MaximumLength(50);
-        RuleFor(registerCommand => registerCommand.LastName).NotNull().NotEmpty().MaximumLength(50);
-        RuleFor(registerCommand => registerCommand.Phone).NotNull().NotEmpty().MaximumLength(15);
+        RuleFor(register => register.FirstName).NotNull().NotEmpty().MaximumLength(50);
+        RuleFor(register => register.LastName).NotNull().NotEmpty().MaximumLength(50);
+        RuleFor(register => register.Phone).NotNull().NotEmpty().MaximumLength(15);
     }
 }
