@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using shopizy.Application.Common.Interfaces.Persistance;
+using shopizy.Application.Common.Interfaces.Services;
+using shopizy.Infrastructure.Security;
+using shopizy.Infrastructure.Security.PolicyEnforcer;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
@@ -18,7 +21,7 @@ using Shopizy.Infrastructure.Users.Persistence;
 
 namespace Shopizy.Infrastructure;
 
-public static class DependencyInjection
+public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
@@ -54,7 +57,9 @@ public static class DependencyInjection
 
     public static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        services.AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
 
         return services;
     }

@@ -11,6 +11,7 @@ public static class DependencyInjectionRegister
         services.AddMediatR(msc =>
         {
             msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
+            msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));

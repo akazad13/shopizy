@@ -35,7 +35,7 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
         var roles = new List<string>();
         var permissions = new List<string>();
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, command.FirstName, command.LastName, roles, permissions);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, command.FirstName, command.LastName, command.Phone, roles, permissions);
 
         return new AuthResult(
             user.Id.Value,

@@ -6,13 +6,13 @@ using shopizy.Contracts.Category;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/category")]
+[Route("api/users/{userId:guid}/categories")]
 public class CategoryController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpPost]
-    public async Task<IActionResult> Create(CreateCategoryRequest request)
+    public async Task<IActionResult> CreateCategory(Guid userId, CreateCategoryRequest request)
     {
-        var command = _mapper.Map<CreateCategoryCommand>(request);
+        var command = _mapper.Map<CreateCategoryCommand>((userId, request));
         var categoryResult = await _mediator.Send(command);
 
         return categoryResult.Match(
