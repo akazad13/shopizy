@@ -8,6 +8,7 @@ public interface IJwtTokenGenerator
         UserId userId,
         string firstName,
         string LastName,
+        string phone,
         List<string> roles,
         List<string> Permissions
     );

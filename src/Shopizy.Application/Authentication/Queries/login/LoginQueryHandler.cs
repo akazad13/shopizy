@@ -14,13 +14,18 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
         var user = await _userRepository.GetUserByPhone(query.Phone);
         if(user is null)
             return Errors.User.UserNotFound;
-        if(!_passwordManager.Verify(query.Password, user.Password))
+        if(!_passwordManager.Verify(query.Password, user.Password!))
             return Errors.Authentication.InvalidCredentials;
 
         var roles = new List<string>();
-        var permissions = new List<string>();
+        var permissions = new List<string>(){
+            "create:Category",
+            "get:Category",
+            "modify:Category",
+            "delete:Category"
+        };
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, roles, permissions);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Phone, roles, permissions);
 
         return new AuthResult(
             user.Id.Value,

@@ -12,13 +12,14 @@ namespace Shopizy.Infrastructure.Authentication;
 public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
-    public string GenerateToken(UserId userId, string firstName, string LastName, List<string> roles, List<string> Permissions)
+    public string GenerateToken(UserId userId, string firstName, string LastName, string phone, List<string> roles, List<string> Permissions)
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.NameId, userId.Value.ToString()),
+            new("id", userId.Value.ToString()),
             new(JwtRegisteredClaimNames.Name, firstName),
-            new(JwtRegisteredClaimNames.FamilyName, LastName)
+            new(ClaimTypes.Surname, LastName),
+            new(ClaimTypes.MobilePhone, phone)
         };
 
         roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));

@@ -9,7 +9,10 @@ public class CategoryMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CreateCategoryRequest, CreateCategoryCommand>();
+        config
+            .NewConfig<(Guid UserId, CreateCategoryRequest Request), CreateCategoryCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest, src => src.Request);
         config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);
     }
 }
