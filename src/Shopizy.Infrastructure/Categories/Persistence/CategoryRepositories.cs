@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using shopizy.Application.Common.Interfaces.Persistance;
+using shopizy.Infrastructure.Categories.Specifications;
+using shopizy.Infrastructure.Common.Specifications;
 using Shopizy.Domain.Categories;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Categories.Persistence;
@@ -11,6 +14,16 @@ public class CategoryRepository(AppDbContext _dbContext) : ICategoryRepository
     {
         return _dbContext.Categories.AnyAsync(category => category.Name == name);
     }
+
+    public Task<Category?> GetCategoryByIdAsync(CategoryId id)
+    {
+        return ApplySpec(new CategoryByIdSpec(id)).FirstOrDefaultAsync();
+    }
+    public Task<List<Category>> GetCategories()
+    {
+        return _dbContext.Categories.AsNoTracking().ToListAsync();
+    }
+
     public async Task AddAsync(Category category)
     {
         await _dbContext.Categories.AddAsync(category);
@@ -19,5 +32,9 @@ public class CategoryRepository(AppDbContext _dbContext) : ICategoryRepository
     public Task<int> Commit(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
+    }
+    private IQueryable<Category> ApplySpec(Specification<Category> spec)
+    {
+        return SpecificationEvaluator.GetQuery(_dbContext.Categories, spec);
     }
 }
