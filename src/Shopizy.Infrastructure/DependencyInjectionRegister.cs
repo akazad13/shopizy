@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using shopizy.Application.Common.Interfaces.Persistance;
 using shopizy.Application.Common.Interfaces.Services;
+using shopizy.Infrastructure.Products.Persistence;
 using shopizy.Infrastructure.Security;
 using shopizy.Infrastructure.Security.PolicyEnforcer;
 using Shopizy.Application.Common.Interfaces.Authentication;
@@ -97,6 +98,7 @@ public static class DependencyInjectionRegister
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
         return services;
     }
 }

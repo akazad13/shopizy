@@ -19,7 +19,7 @@ public class CategoryRepository(AppDbContext _dbContext) : ICategoryRepository
     {
         return ApplySpec(new CategoryByIdSpec(id)).FirstOrDefaultAsync();
     }
-    public Task<List<Category>> GetCategories()
+    public Task<List<Category>> GetCategoriesAsync()
     {
         return _dbContext.Categories.AsNoTracking().ToListAsync();
     }
