@@ -22,7 +22,11 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
             "create:Category",
             "get:Category",
             "modify:Category",
-            "delete:Category"
+            "delete:Category",
+            "create:Product",
+            "get:Product",
+            "modify:Product",
+            "delete:Product",
         };
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Phone, roles, permissions);

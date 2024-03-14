@@ -1,0 +1,16 @@
+namespace shopizy.Contracts.Product;
+
+public record CreateProductRequest(
+    string Name,
+    string Description,
+    Guid CategoryId,
+    decimal UnitPrice,
+    int Currency,
+    decimal Discount,
+    string Sku,
+    string Brand,
+    string Tags,
+    string Barcode,
+    int StockQuantity,
+    List<Guid>? SpecificationIds
+);

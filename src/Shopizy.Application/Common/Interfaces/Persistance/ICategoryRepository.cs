@@ -7,7 +7,7 @@ public interface ICategoryRepository
 {
     Task<bool> GetCategoryByNameAsync(string name);
     Task<Category?> GetCategoryByIdAsync(CategoryId id);
-    Task<List<Category>> GetCategories();
+    Task<List<Category>> GetCategoriesAsync();
     Task AddAsync(Category category);
     Task<int> Commit(CancellationToken cancellationToken);
 }
