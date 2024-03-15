@@ -1,6 +1,6 @@
 using Shopizy.Domain.Common.Models;
 
-namespace Shopizy.Domain.Customers.ValueObject;
+namespace Shopizy.Domain.Customers.ValueObjects;
 
 public sealed class CustomerId : AggregateRootId<Guid>
 {

@@ -1,6 +1,6 @@
 using Shopizy.Domain.Common.Models;
 
-namespace shopizy.Domain.PromoCodes.ValueObjects;
+namespace Shopizy.Domain.PromoCodes.ValueObjects;
 
 public sealed class PromoCodeId : AggregateRootId<Guid>
 {

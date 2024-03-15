@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shopizy.Domain.Customers.ValueObject;
+using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;

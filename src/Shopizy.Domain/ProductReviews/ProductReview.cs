@@ -1,6 +1,6 @@
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Customers.ValueObject;
+using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 
