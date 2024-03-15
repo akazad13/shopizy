@@ -13,6 +13,10 @@ using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Infrastructure.Authentication;
 using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Customers.Persistence;
+using Shopizy.Infrastructure.Orders.Persistence;
+using Shopizy.Infrastructure.ProductReviews.Persistence;
+using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
 using Shopizy.Infrastructure.Security.TokenGenerator;
@@ -96,9 +100,15 @@ public static class DependencyInjectionRegister
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
         return services;
     }
 }

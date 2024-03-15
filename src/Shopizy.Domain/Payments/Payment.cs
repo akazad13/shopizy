@@ -2,7 +2,7 @@ using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Customers;
-using Shopizy.Domain.Customers.ValueObject;
+using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.ValueObjects;

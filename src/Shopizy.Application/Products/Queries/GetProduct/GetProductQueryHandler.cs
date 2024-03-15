@@ -10,6 +10,6 @@ public class GetProductQueryHandler(IProductRepository _productRepository) : IRe
 {
     public async Task<ErrorOr<Product?>> Handle(GetProductQuery request, CancellationToken cancellationToken)
     {
-        return await _productRepository.GetProductAsync(ProductId.Create(request.ProductId));
+        return await _productRepository.GetProductByIdAsync(ProductId.Create(request.ProductId));
     }
 }

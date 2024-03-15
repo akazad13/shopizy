@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using shopizy.Domain.PromoCodes;
-using shopizy.Domain.PromoCodes.ValueObjects;
+using Shopizy.Domain.PromoCodes;
+using Shopizy.Domain.PromoCodes.ValueObjects;
 
 namespace shopizy.Infrastructure.PromoCodes.Persistence;
 

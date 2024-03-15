@@ -9,7 +9,7 @@ using Shopizy.Domain.Orders;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
-using shopizy.Domain.PromoCodes;
+using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.Users;
 using Shopizy.Infrastructure.Common.Middleware;
 
