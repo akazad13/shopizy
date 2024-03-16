@@ -1,9 +1,11 @@
 using Mapster;
-using shopizy.Application.Products.Commands.CreateProduct;
-using shopizy.Contracts.Product;
+using Shopizy.Application.Products.Commands.CreateProduct;
+using Shopizy.Contracts.Product;
 using Shopizy.Domain.Products;
+using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
 
-namespace shopizy.Api.Common.Mapping;
+namespace Shopizy.Api.Common.Mapping;
 
 public class ProductMappingConfig : IRegister
 {
@@ -11,7 +13,8 @@ public class ProductMappingConfig : IRegister
     {
         config
             .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.UserId, src => UserId.Create(src.UserId))
+            .Map(dest => dest.CategoryId, src => CategoryId.Create(src.request.CategoryId))
             .Map(dest => dest, src => src.request);
 
         config

@@ -1,8 +1,8 @@
 using ErrorOr;
-using shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Security.Request;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 
-namespace shopizy.Infrastructure.Security.PolicyEnforcer;
+namespace Shopizy.Infrastructure.Security.PolicyEnforcer;
 
 public interface IPolicyEnforcer
 {

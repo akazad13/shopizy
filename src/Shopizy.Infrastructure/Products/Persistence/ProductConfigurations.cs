@@ -5,7 +5,7 @@ using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
 
-namespace shopizy.Infrastructure.Products.Persistence;
+namespace Shopizy.Infrastructure.Products.Persistence;
 
 public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
 {

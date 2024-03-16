@@ -1,7 +1,7 @@
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
 
-namespace shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistance;
 
 public interface ICategoryRepository
 {

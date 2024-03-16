@@ -1,7 +1,7 @@
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 
-namespace shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistance;
 
 public interface IProductReviewRepository
 {

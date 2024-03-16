@@ -1,4 +1,4 @@
-namespace shopizy.Contracts.Product;
+namespace Shopizy.Contracts.Product;
 
 public record ProductResponse(
     Guid ProductId,

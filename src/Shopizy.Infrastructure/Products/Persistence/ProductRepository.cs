@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;

@@ -1,18 +1,20 @@
 using ErrorOr;
-using shopizy.Application.Common.Security.Request;
-using shopizy.Application.Common.Security.Permissions;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Products;
-using shopizy.Application.Common.Security.Policies;
+using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Security.Policies;
+using Shopizy.Application.Common.Security.Permissions;
 
-namespace shopizy.Application.Products.Commands.CreateProduct;
+namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 [Authorize(Permissions = Permission.Product.Create, Policies = Policy.SelfOrAdmin)]
 public record CreateProductCommand(
-    Guid UserId,
+    UserId UserId,
     string Name,
     string Description,
-    Guid CategoryId,
+    CategoryId CategoryId,
     decimal UnitPrice,
     Currency Currency,
     decimal Discount,

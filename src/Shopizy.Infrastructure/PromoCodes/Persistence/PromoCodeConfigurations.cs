@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.PromoCodes.ValueObjects;
 
-namespace shopizy.Infrastructure.PromoCodes.Persistence;
+namespace Shopizy.Infrastructure.PromoCodes.Persistence;
 
 public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode>
 {

@@ -1,4 +1,4 @@
-namespace shopizy.Application.Common.Security.Roles;
+namespace Shopizy.Application.Common.Security.Roles;
 
 public static class Role
 {

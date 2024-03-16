@@ -1,4 +1,4 @@
-namespace shopizy.Application.Common.Security.Permissions;
+namespace Shopizy.Application.Common.Security.Permissions;
 
 public static partial class Permission
 {

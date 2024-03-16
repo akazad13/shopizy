@@ -1,7 +1,7 @@
 using ErrorOr;
-using shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Security.Request;
 
-namespace shopizy.Application.Common.Interfaces.Services;
+namespace Shopizy.Application.Common.Interfaces.Services;
 
 public interface IAuthorizationService
 {

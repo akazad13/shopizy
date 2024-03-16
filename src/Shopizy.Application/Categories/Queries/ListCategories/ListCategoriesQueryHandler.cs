@@ -1,9 +1,9 @@
 using ErrorOr;
 using MediatR;
-using shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories;
 
-namespace shopizy.Application.Categories.Queries.ListCategories;
+namespace Shopizy.Application.Categories.Queries.ListCategories;
 
 public class ListCategoriesQueryHandler(ICategoryRepository _categoryRepository) : IRequestHandler< ListCategoriesQuery, ErrorOr<List<Category>>>
 {

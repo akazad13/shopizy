@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using shopizy.Application.Common.Behaviors;
+using Shopizy.Application.Common.Behaviors;
 
 namespace Shopizy.Application;
 

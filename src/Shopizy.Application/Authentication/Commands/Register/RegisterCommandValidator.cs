@@ -1,7 +1,6 @@
 using FluentValidation;
-using Shopizy.Application.Authentication.Commands.Register;
 
-namespace shopizy.Application.Authentication.Commands.Register;
+namespace Shopizy.Application.Authentication.Commands.Register;
 
 public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {

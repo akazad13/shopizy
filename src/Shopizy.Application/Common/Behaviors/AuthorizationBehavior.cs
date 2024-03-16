@@ -1,10 +1,10 @@
 using System.Reflection;
 using ErrorOr;
 using MediatR;
-using shopizy.Application.Common.Interfaces.Services;
-using shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Common.Security.Request;
 
-namespace shopizy.Application.Common.Behaviors;
+namespace Shopizy.Application.Common.Behaviors;
 
 public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _authorizationService) : IPipelineBehavior<TRequest, TResponse> where TRequest : IAuthorizeableRequest<TResponse> where TResponse : IErrorOr
 {

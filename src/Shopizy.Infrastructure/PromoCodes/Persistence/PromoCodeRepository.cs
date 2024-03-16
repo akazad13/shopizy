@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.PromoCodes.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;

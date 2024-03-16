@@ -1,10 +1,10 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using shopizy.Application.Products.Commands.CreateProduct;
-using shopizy.Application.Products.Queries.GetProduct;
-using shopizy.Application.Products.Queries.ListProducts;
-using shopizy.Contracts.Product;
+using Shopizy.Application.Products.Commands.CreateProduct;
+using Shopizy.Application.Products.Queries.GetProduct;
+using Shopizy.Application.Products.Queries.ListProducts;
+using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Controllers;
 

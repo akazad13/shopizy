@@ -5,7 +5,7 @@ using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
 
-namespace shopizy.Infrastructure.Payments.Persistence;
+namespace Shopizy.Infrastructure.Payments.Persistence;
 
 public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
 {

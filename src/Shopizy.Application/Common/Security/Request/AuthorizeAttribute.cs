@@ -1,4 +1,4 @@
-namespace shopizy.Application.Common.Security.Request;
+namespace Shopizy.Application.Common.Security.Request;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class AuthorizeAttribute : Attribute

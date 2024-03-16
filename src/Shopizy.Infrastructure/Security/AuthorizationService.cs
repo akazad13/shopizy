@@ -1,10 +1,10 @@
 using ErrorOr;
-using shopizy.Application.Common.Interfaces.Services;
-using shopizy.Application.Common.Security.Request;
-using shopizy.Infrastructure.Security.PolicyEnforcer;
+using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Common.Security.Request;
+using Shopizy.Infrastructure.Security.PolicyEnforcer;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 
-namespace shopizy.Infrastructure.Security;
+namespace Shopizy.Infrastructure.Security;
 
 public class AuthorizationService(IPolicyEnforcer _policyEnforcer, ICurrentUserProvider _currentUserProvider) : IAuthorizationService
 {
