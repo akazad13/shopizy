@@ -1,8 +1,9 @@
 using MediatR;
+using Shopizy.Domain.Users.ValueObjects;
 
-namespace shopizy.Application.Common.Security.Request;
+namespace Shopizy.Application.Common.Security.Request;
 
 public interface IAuthorizeableRequest<out T> : IRequest<T>
 {
-    Guid UserId { get; }
+    UserId UserId { get; }
 }

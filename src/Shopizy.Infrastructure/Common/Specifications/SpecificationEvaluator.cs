@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace shopizy.Infrastructure.Common.Specifications;
+namespace Shopizy.Infrastructure.Common.Specifications;
 
 public static class SpecificationEvaluator
 {

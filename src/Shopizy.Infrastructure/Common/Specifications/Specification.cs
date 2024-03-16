@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace shopizy.Infrastructure.Common.Specifications;
+namespace Shopizy.Infrastructure.Common.Specifications;
 
 public abstract class Specification<TEntity>(Expression<Func<TEntity, bool>>? criteria) where TEntity : class
  {

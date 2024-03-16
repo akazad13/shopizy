@@ -1,10 +1,10 @@
 using Mapster;
-using shopizy.Application.Categories.Commands.CreateCategory;
-using shopizy.Application.Categories.Queries.GetCategory;
-using shopizy.Contracts.Category;
+using Shopizy.Application.Categories.Commands.CreateCategory;
+using Shopizy.Contracts.Category;
 using Shopizy.Domain.Categories;
+using Shopizy.Domain.Users.ValueObjects;
 
-namespace shopizy.Api.Common.Mapping;
+namespace Shopizy.Api.Common.Mapping;
 
 public class CategoryMappingConfig : IRegister
 {
@@ -12,7 +12,7 @@ public class CategoryMappingConfig : IRegister
     {
         config
             .NewConfig<(Guid UserId, CreateCategoryRequest Request), CreateCategoryCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.UserId, src => UserId.Create(src.UserId))
             .Map(dest => dest, src => src.Request);
 
         config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);

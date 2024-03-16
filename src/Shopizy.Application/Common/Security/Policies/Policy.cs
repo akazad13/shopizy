@@ -1,4 +1,4 @@
-namespace shopizy.Application.Common.Security.Policies;
+namespace Shopizy.Application.Common.Security.Policies;
 
 public static class Policy
 {

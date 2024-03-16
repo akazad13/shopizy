@@ -1,10 +1,10 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using shopizy.Application.Categories.Commands.CreateCategory;
-using shopizy.Application.Categories.Queries.GetCategory;
-using shopizy.Application.Categories.Queries.ListCategories;
-using shopizy.Contracts.Category;
+using Shopizy.Application.Categories.Commands.CreateCategory;
+using Shopizy.Application.Categories.Queries.GetCategory;
+using Shopizy.Application.Categories.Queries.ListCategories;
+using Shopizy.Contracts.Category;
 
 namespace Shopizy.Api.Controllers;
 

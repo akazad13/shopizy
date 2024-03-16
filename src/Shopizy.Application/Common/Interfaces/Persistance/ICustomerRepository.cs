@@ -1,7 +1,7 @@
 using Shopizy.Domain.Customers;
 using Shopizy.Domain.Customers.ValueObjects;
 
-namespace shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistance;
 
 public interface ICustomerRepository
 {

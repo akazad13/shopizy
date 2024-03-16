@@ -4,7 +4,7 @@ using Shopizy.Domain.Customers;
 using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
-namespace shopizy.Infrastructure.Customers.Persistence;
+namespace Shopizy.Infrastructure.Customers.Persistence;
 
 public sealed class CustomerConfigurations : IEntityTypeConfiguration<Customer>
 {

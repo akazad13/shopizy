@@ -1,10 +1,11 @@
 using ErrorOr;
-using shopizy.Application.Common.Security.Policies;
-using shopizy.Application.Common.Security.Request;
-using shopizy.Application.Common.Security.Roles;
+using Shopizy.Application.Common.Security.Policies;
+using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Security.Roles;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 
-namespace shopizy.Infrastructure.Security.PolicyEnforcer;
+namespace Shopizy.Infrastructure.Security.PolicyEnforcer;
 
 public class PolicyEnforcer : IPolicyEnforcer
 {
@@ -26,7 +27,9 @@ public class PolicyEnforcer : IPolicyEnforcer
         CurrentUser currentUser
     )
     {
-        return request.UserId == currentUser.Id || currentUser.Roles.Contains(Role.Admin)
+        return
+            request.UserId == UserId.Create(currentUser.Id)
+            || currentUser.Roles.Contains(Role.Admin)
             ? Result.Success
             : Error.Unauthorized(description: "Requesting user failed policy requirement.");
     }

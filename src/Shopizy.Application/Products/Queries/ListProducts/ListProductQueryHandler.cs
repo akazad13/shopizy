@@ -1,9 +1,9 @@
 using ErrorOr;
 using MediatR;
-using shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Products;
 
-namespace shopizy.Application.Products.Queries.ListProducts;
+namespace Shopizy.Application.Products.Queries.ListProducts;
 
 public class ListProductQueryHandler(IProductRepository _productRepository) : IRequestHandler<ListProductQuery, ErrorOr<List<Product>?>>
 {

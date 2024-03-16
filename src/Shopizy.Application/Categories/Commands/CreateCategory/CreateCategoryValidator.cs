@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace shopizy.Application.Categories.Commands.CreateCategory;
+namespace Shopizy.Application.Categories.Commands.CreateCategory;
 
 public class CreateCategoryValidator : AbstractValidator<CreateCategoryCommand>
 {

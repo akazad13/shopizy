@@ -1,7 +1,7 @@
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
 
-namespace shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistance;
 
 public interface IPaymentRepository
 {

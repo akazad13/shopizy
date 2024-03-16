@@ -5,7 +5,7 @@ using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
 
-namespace shopizy.Infrastructure.Orders.Persistence;
+namespace Shopizy.Infrastructure.Orders.Persistence;
 
 public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
 {

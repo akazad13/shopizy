@@ -1,10 +1,10 @@
 using ErrorOr;
 using MediatR;
-using shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
 
-namespace shopizy.Application.Categories.Queries.GetCategory;
+namespace Shopizy.Application.Categories.Queries.GetCategory;
 
 public class GetCategoryQueryHandler(ICategoryRepository _categoryRepository) : IRequestHandler<GetCategoryQuery, ErrorOr<Category?>>
 {
