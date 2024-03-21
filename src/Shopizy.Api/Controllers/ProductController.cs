@@ -23,7 +23,7 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
     [HttpGet("products/{ProductId:guid}")]
     public async Task<IActionResult> GetProduct(Guid ProductId)
     {
-         var query = new GetProductQuery(ProductId);
+         var query = _mapper.Map<GetProductQuery>(ProductId);
         var result = await _mediator.Send(query);
 
         return result.Match(

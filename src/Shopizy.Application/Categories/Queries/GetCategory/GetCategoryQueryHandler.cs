@@ -2,7 +2,6 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories;
-using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.Categories.Queries.GetCategory;
 
@@ -10,6 +9,6 @@ public class GetCategoryQueryHandler(ICategoryRepository _categoryRepository) : 
 {
     public async Task<ErrorOr<Category?>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
     {
-        return await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(request.CategoryId));
+        return await _categoryRepository.GetCategoryByIdAsync(request.CategoryId);
     }
 }

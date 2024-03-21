@@ -6,7 +6,7 @@ public static partial class Constants
 {
     public static class User
     {
-        public static readonly UserId UserId = UserId.Create(
+        public static readonly UserId Id = UserId.Create(
             new Guid("88d9af82-bef4-4042-8e55-b01b89f23e68")
         );
     }

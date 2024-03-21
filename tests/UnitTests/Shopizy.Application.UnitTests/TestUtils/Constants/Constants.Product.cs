@@ -1,9 +1,12 @@
+using Shopizy.Domain.Products.ValueObjects;
+
 namespace Shopizy.Application.UnitTests.TestUtils.Constants;
 
 public static partial class Constants
 {
     public static class Product
     {
+        public static readonly ProductId Id = ProductId.Create(Guid.NewGuid());
         public const string Name = "Product Name";
         public const string Description = "Product Description";
         public const decimal UnitPrice = 100;

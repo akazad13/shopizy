@@ -6,8 +6,9 @@ public static partial class Constants
 {
     public static class Category
     {
-        public static readonly CategoryId CategoryId = CategoryId.Create(
-            new Guid("15ad4ba5-3e8d-4278-bc68-582246d836f4")
-        );
+        public static readonly CategoryId Id = CategoryId.Create(Guid.NewGuid());
+
+        public const string Name = "Category Name";
+        public static readonly Guid ParentId = Guid.NewGuid();
     }
 }
