@@ -8,10 +8,10 @@ public static class CreateProductCommandUtils
     public static CreateProductCommand CreateCommand()
     {
         return new CreateProductCommand(
-            Constants.User.UserId,
+            Constants.User.Id,
             Constants.Product.Name,
             Constants.Product.Description,
-            Constants.Category.CategoryId,
+            Constants.Category.Id,
             Constants.Product.UnitPrice,
             Constants.Product.Currency,
             Constants.Product.Discount,

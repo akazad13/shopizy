@@ -4,6 +4,8 @@ using Shopizy.Contracts.Product;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Application.Products.Queries.GetProduct;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Api.Common.Mapping;
 
@@ -23,5 +25,9 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
             .Map(dest => dest.Sku, src => src.SKU)
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
+
+        config
+            .NewConfig<Guid, GetProductQuery>()
+            .MapWith(src => new GetProductQuery(ProductId.Create(src)));
     }
 }

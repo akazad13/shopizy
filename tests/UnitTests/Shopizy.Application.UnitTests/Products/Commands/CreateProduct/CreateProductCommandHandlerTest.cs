@@ -28,7 +28,7 @@ public class CreateProductCommandHandlerTest
     // [Theory]
     // [MemberData(nameof(ValidCreateProductCommands))]
     [Fact]
-    public async void HandleCreateProductCommand_WhenProductIsValid_ShouldCreateAndReturnProduct()
+    public async void CreateProductCommand_WhenProductIsValid_ShouldCreateAndReturnProduct()
     {
         var createProductCommand = CreateProductCommandUtils.CreateCommand();
         var product = Product.Create(
@@ -45,7 +45,7 @@ public class CreateProductCommandHandlerTest
             ""
         );
 
-        // _mockProductRepository.Setup(p => p.AddAsync(product));
+        _mockProductRepository.Setup(p => p.AddAsync(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         //Act
         var result = await _handler.Handle(createProductCommand, default);
