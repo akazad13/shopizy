@@ -7,6 +7,6 @@ public static class GetCategoryQueryUtils
 {
     public static GetCategoryQuery CreateQuery()
     {
-        return new GetCategoryQuery(Constants.Category.Id);
+        return new GetCategoryQuery(Constants.Category.Id.Value);
     }
 }

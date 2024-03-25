@@ -22,6 +22,8 @@ using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
+using Shopizy.Infrastructure.MediaUploader.CloudinaryService;
+using CloudinaryDotNet;
 
 namespace Shopizy.Infrastructure;
 
@@ -35,7 +37,7 @@ public static class DependencyInjectionRegister
         ArgumentNullException.ThrowIfNull(services);
         return services
             .AddHttpContextAccessor()
-            .AddServices()
+            .AddServices(configuration)
             .AddBackgroundServices(configuration)
             .AddAuthentication(configuration)
             .AddAuthorization()
@@ -51,11 +53,35 @@ public static class DependencyInjectionRegister
         return services;
     }
 
-    private static IServiceCollection AddServices(this IServiceCollection services)
+    private static IServiceCollection AddServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<DbMigrationsHelper>();
+
+        services.Configure<CloudinarySettings>(
+            configuration.GetSection(CloudinarySettings.Section)
+        );
+        var config = configuration.Get<CloudinarySettings>();
+        services.AddTransient<ICloudinary, Cloudinary>(sp =>
+        {
+            Account acc =
+                new(
+                    configuration.GetConnectionString("CloudinarySettings:CloudName"),
+                    configuration.GetConnectionString("CloudinarySettings:ApiKey"),
+                    configuration.GetConnectionString("CloudinarySettings:ApiSecret")
+                );
+            var cloudinary = new Cloudinary(acc);
+            cloudinary.Api.Secure = Convert.ToBoolean(
+                configuration.GetConnectionString("CloudinarySettings:Secure")
+            );
+            return cloudinary;
+        });
+        services.AddScoped<ICloudinaryMediaUploader, CloudinaryMediaUploader>();
+
         return services;
     }
 

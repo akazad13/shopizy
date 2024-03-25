@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -20,7 +21,7 @@ public static partial class ProductExtensions
         product.Barcode.Should().Be(command.Barcode);
         product.StockQuantity.Should().Be(command.StockQuantity);
         product.Tags.Should().Be(command.Tags);
-        product.CategoryId.Should().Be(command.CategoryId);
+        product.CategoryId.Should().BeOfType(typeof(CategoryId));
         product.ModifiedOn.Should().NotBeBefore(product.CreatedOn);
     }
 

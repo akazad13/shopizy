@@ -1,20 +1,19 @@
 using ErrorOr;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Products;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Application.Common.Security.Request;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Permissions;
+using Microsoft.AspNetCore.Http;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 [Authorize(Permissions = Permission.Product.Create, Policies = Policy.SelfOrAdmin)]
 public record CreateProductCommand(
-    UserId UserId,
+    Guid UserId,
     string Name,
     string Description,
-    CategoryId CategoryId,
+    Guid CategoryId,
     decimal UnitPrice,
     Currency Currency,
     decimal Discount,
@@ -23,5 +22,6 @@ public record CreateProductCommand(
     string Tags,
     string Barcode,
     int StockQuantity,
+    List<IFormFile>? Images,
     List<Guid>? SpecificationIds
 ) : IAuthorizeableRequest<ErrorOr<Product>>;

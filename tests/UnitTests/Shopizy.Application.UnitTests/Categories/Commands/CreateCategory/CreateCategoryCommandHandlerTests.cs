@@ -7,12 +7,12 @@ using Shopizy.Application.UnitTests.TestUtils.Categories.Extensions;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandlerTest
+public class CreateCategoryCommandHandlerTests
 {
     private readonly CreateCategoryCommandHandler _handler;
     private readonly Mock<ICategoryRepository> _mockCategoryRepository;
 
-    public CreateCategoryCommandHandlerTest()
+    public CreateCategoryCommandHandlerTests()
     {
         _mockCategoryRepository = new Mock<ICategoryRepository>();
         _handler = new CreateCategoryCommandHandler(_mockCategoryRepository.Object);

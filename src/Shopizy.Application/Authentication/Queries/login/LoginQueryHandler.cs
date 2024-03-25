@@ -17,7 +17,7 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
         if(!_passwordManager.Verify(query.Password, user.Password!))
             return Errors.Authentication.InvalidCredentials;
 
-        var roles = new List<string>();
+        var roles = new List<string>() {"Admin", "Moderator"};
         var permissions = new List<string>(){
             "create:Category",
             "get:Category",
