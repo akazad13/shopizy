@@ -12,12 +12,12 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
     public async Task<ErrorOr<AuthResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserByPhone(query.Phone);
-        if(user is null)
+        if (user is null)
             return Errors.User.UserNotFound;
-        if(!_passwordManager.Verify(query.Password, user.Password!))
+        if (!_passwordManager.Verify(query.Password, user.Password!))
             return Errors.Authentication.InvalidCredentials;
 
-        var roles = new List<string>() {"Admin", "Moderator"};
+        var roles = new List<string>() { "Admin", "Moderator" };
         var permissions = new List<string>(){
             "create:Category",
             "get:Category",

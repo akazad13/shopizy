@@ -65,19 +65,17 @@ public static class DependencyInjectionRegister
         services.Configure<CloudinarySettings>(
             configuration.GetSection(CloudinarySettings.Section)
         );
-        var config = configuration.Get<CloudinarySettings>();
+
         services.AddTransient<ICloudinary, Cloudinary>(sp =>
         {
             Account acc =
                 new(
-                    configuration.GetConnectionString("CloudinarySettings:CloudName"),
-                    configuration.GetConnectionString("CloudinarySettings:ApiKey"),
-                    configuration.GetConnectionString("CloudinarySettings:ApiSecret")
+                    configuration.GetValue<string>("CloudinarySettings:CloudName"),
+                    configuration.GetValue<string>("CloudinarySettings:ApiKey"),
+                    configuration.GetValue<string>("CloudinarySettings:ApiSecret")
                 );
             var cloudinary = new Cloudinary(acc);
-            cloudinary.Api.Secure = Convert.ToBoolean(
-                configuration.GetConnectionString("CloudinarySettings:Secure")
-            );
+            cloudinary.Api.Secure = configuration.GetValue<bool>("CloudinarySettings:Secure");
             return cloudinary;
         });
         services.AddScoped<ICloudinaryMediaUploader, CloudinaryMediaUploader>();

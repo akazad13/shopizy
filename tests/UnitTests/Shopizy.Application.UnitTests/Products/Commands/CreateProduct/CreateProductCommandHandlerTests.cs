@@ -38,8 +38,9 @@ public class CreateProductCommandHandlerTests
     // [Theory]
     // [MemberData(nameof(ValidCreateProductCommands))]
     [Fact]
-    public async void CreateProductCommand_WhenProductIsValid_ShouldCreateAndReturnProduct()
+    public async void CreateProduct_WhenProductIsValid_ShouldCreateAndReturnProduct()
     {
+        // Arrange
         var expectedUrl = "https://res.cloudinary.com/test/image/upload/test";
         var expectedPublicId = "test";
 
@@ -65,10 +66,10 @@ public class CreateProductCommandHandlerTests
 
         _mockProductRepository.Setup(p => p.AddAsync(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
-        //Act
+        // Act
         var result = await _handler.Handle(createProductCommand, default);
 
-        //Assert
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value.ValidateCreatedForm(createProductCommand);
 

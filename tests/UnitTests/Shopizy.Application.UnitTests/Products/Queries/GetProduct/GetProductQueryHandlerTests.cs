@@ -23,8 +23,9 @@ public class GetProductQueryHandlerTests
     }
 
     [Fact]
-    public async void GetProductQuery_WhenProductIsFound_ShouldReturnProduct()
+    public async void GetProduct_WhenProductIsFound_ShouldReturnProduct()
     {
+        // Arrange
         var getProductQuery = GetProductQueryUtils.CreateQuery();
         _mockProductRepository
             .Setup(c => c.GetProductByIdAsync(ProductId.Create(getProductQuery.ProductId)))
@@ -44,8 +45,10 @@ public class GetProductQueryHandlerTests
                 )
             );
 
+        // Act
         var result = await _handler.Handle(getProductQuery, default);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value?.ValidateCreatedForm(getProductQuery);
     }

@@ -24,6 +24,7 @@ public class CloudinaryMediaUploaderTests
     [Fact]
     public async Task UploadPhoto_WithValidFile_ShouldReturnSecureUrl()
     {
+        // Arrange
         var filebytes = Encoding.UTF8.GetBytes("dummy image");
         IFormFile file = new FormFile(
             new MemoryStream(filebytes),
@@ -41,6 +42,7 @@ public class CloudinaryMediaUploaderTests
             .ReturnsAsync(
                 new ImageUploadResult { Url = new Uri(expectedUrl), PublicId = expectedPublicId }
             );
+
         // Act
         var result = await _cloudinaryMediaUploader.UploadPhotoAsync(file);
 
@@ -54,5 +56,23 @@ public class CloudinaryMediaUploaderTests
             c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()),
             Times.Once
         );
+    }
+
+    [Fact]
+    public async Task DeletePhoto_WithValidPublicId_ShouldDeleteAndReturnBoolean()
+    {
+        // Arrange
+        var publicId = "test";
+        _cloudinary
+            .Setup(c => c.DestroyAsync(It.IsAny<DeletionParams>()))
+            .ReturnsAsync(new DeletionResult { Result = "ok" });
+
+        // Act
+        var result = await _cloudinaryMediaUploader.DeletePhotoAsync(publicId);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(true);
+        _cloudinary.Verify(c => c.DestroyAsync(It.IsAny<DeletionParams>()), Times.Once);
     }
 }

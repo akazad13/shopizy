@@ -18,7 +18,6 @@ public class JwtTokenGeneratorTests
     {
         var _jwtSettings = new JwtSettings
         {
-            // Secret = "asdksdhcaskd33khoadfao934nasldasldjasldhasodhasodasldjasldjasld",
             Secret = "a very secret value that will be used to generate the JWT token",
             Issuer = "issuer",
             Audience = "audience",

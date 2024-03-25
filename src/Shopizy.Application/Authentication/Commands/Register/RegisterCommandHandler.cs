@@ -15,7 +15,7 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
         CancellationToken cancellationToken
     )
     {
-        if((await _userRepository.GetUserByPhone(command.Phone)) is not null)
+        if ((await _userRepository.GetUserByPhone(command.Phone)) is not null)
         {
             return Errors.User.DuplicatePhone;
         }
@@ -29,7 +29,7 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
 
         await _userRepository.AddAsync(user);
 
-        if(await _userRepository.Commit(cancellationToken) <= 0)
+        if (await _userRepository.Commit(cancellationToken) <= 0)
             return Errors.User.UserNotCreated;
 
         var roles = new List<string>();

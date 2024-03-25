@@ -10,4 +10,5 @@ public interface ICloudinaryMediaUploader
         IFormFile file,
         CancellationToken cancellationToken = default
     );
+    Task<ErrorOr<bool>> DeletePhotoAsync(string publicId);
 }

@@ -19,14 +19,17 @@ public class CreateCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void CreateCategoryCommand_WhenCategoryIsValid_ShouldCrateAndReturnCategory()
+    public async void CreateCategory_WhenCategoryIsValid_ShouldCrateAndReturnCategory()
     {
+        // Arrange
         var createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
+        // Act
         var result = await _handler.Handle(createCategoryCommand, default);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value.ValidateCreatedForm(createCategoryCommand);
     }

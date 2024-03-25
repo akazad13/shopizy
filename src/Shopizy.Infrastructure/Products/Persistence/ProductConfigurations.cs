@@ -70,6 +70,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                 pib.WithOwner().HasForeignKey("ProductId");
                 pib.HasKey("ProductId", nameof(ProductImage.Id));
 
+                pib.Property(pi => pi.PublicId).HasMaxLength(100);
                 pib.Property(pi => pi.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductImageId.Create(value));
