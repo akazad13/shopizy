@@ -31,7 +31,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
             .SelectMany(entry => entry.Entity.PopDomainEvents())
             .ToList();
 
-        if(IsUserWaitingOnline())
+        if (IsUserWaitingOnline())
         {
             AddDomainEventsToOfflineProcessingQueue(domainEvents);
             return await base.SaveChangesAsync(cancellationToken);
@@ -52,7 +52,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
-        foreach(var domainEvent in domainEvents)
+        foreach (var domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent);
         }

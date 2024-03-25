@@ -6,30 +6,34 @@ using Shopizy.Application.UnitTests.Categories.Queries.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Categories.Extensions;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Categories;
+using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Categories.Queries.GetCategory;
 
-public class GetCategoryQueryHandlerTest
+public class GetCategoryQueryHandlerTests
 {
     private readonly GetCategoryQueryHandler _handler;
     private readonly Mock<ICategoryRepository> _mockCategoryRepository;
 
-    public GetCategoryQueryHandlerTest()
+    public GetCategoryQueryHandlerTests()
     {
         _mockCategoryRepository = new Mock<ICategoryRepository>();
         _handler = new GetCategoryQueryHandler(_mockCategoryRepository.Object);
     }
 
     [Fact]
-    public async void GetCategoryQuery_WhenCategoryIsFound_ShouldReturnCategory()
+    public async void GetCategory_WhenCategoryIsFound_ShouldReturnCategory()
     {
+        // Arrange
         var getCategoryQuery = GetCategoryQueryUtils.CreateQuery();
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByIdAsync(getCategoryQuery.CategoryId))
+            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(getCategoryQuery.CategoryId)))
             .ReturnsAsync(Category.Create(Constants.Category.Name, Constants.Category.ParentId));
 
+        // Act
         var result = await _handler.Handle(getCategoryQuery, default);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value?.ValidateCreatedForm(getCategoryQuery);
     }

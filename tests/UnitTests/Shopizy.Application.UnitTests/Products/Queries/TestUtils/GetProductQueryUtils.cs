@@ -7,6 +7,6 @@ public static class GetProductQueryUtils
 {
     public static GetProductQuery CreateQuery()
     {
-        return new GetProductQuery(Constants.Product.Id);
+        return new GetProductQuery(Constants.Product.Id.Value);
     }
 }

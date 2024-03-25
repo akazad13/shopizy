@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Shopizy.Contracts.Product;
 
 public record CreateProductRequest(
@@ -12,5 +14,6 @@ public record CreateProductRequest(
     string Tags,
     string Barcode,
     int StockQuantity,
+    List<IFormFile>? Images,
     List<Guid>? SpecificationIds
 );

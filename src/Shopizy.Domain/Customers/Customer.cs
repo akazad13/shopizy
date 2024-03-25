@@ -25,7 +25,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
     {
         return new Customer(CustomerId.CreateUnique(), profileImageUrl, userId, address, DateTime.UtcNow, DateTime.UtcNow);
     }
-    private Customer(CustomerId customerId,  string? profileImageUrl, UserId userId, Address address, DateTime createdOn, DateTime modifiedOn) : base(customerId)
+    private Customer(CustomerId customerId, string? profileImageUrl, UserId userId, Address address, DateTime createdOn, DateTime modifiedOn) : base(customerId)
     {
         ProfileImageUrl = profileImageUrl;
         UserId = userId;
@@ -35,7 +35,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Customer() {}
+    private Customer() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 }

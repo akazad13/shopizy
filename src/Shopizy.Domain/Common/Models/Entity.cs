@@ -22,7 +22,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
 
     public bool Equals(Entity<TId>? other)
     {
-        return Equals((object?) other);
+        return Equals((object?)other);
     }
 
     public static bool operator ==(Entity<TId> left, Entity<TId> right)
@@ -40,11 +40,11 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
         return Id.GetHashCode();
     }
 
-     public void AddDomainEvent(IDomainEvent domainEvent)
+    public void AddDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }
-    
+
     public List<IDomainEvent> PopDomainEvents()
     {
         var copy = _domainEvents.ToList();

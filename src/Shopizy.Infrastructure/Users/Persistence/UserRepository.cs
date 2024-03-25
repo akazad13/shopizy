@@ -17,8 +17,8 @@ public class UserRepository(AppDbContext _dbContext) : IUserRepository
         await _dbContext.Users.AddAsync(user);
     }
 
-    public  Task<int> Commit(CancellationToken cancellationToken)
+    public Task<int> Commit(CancellationToken cancellationToken)
     {
-        return  _dbContext.SaveChangesAsync(cancellationToken);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

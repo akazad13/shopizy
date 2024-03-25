@@ -12,13 +12,13 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
     public async Task InvokeAsync(HttpContext context, IPublisher publisher, AppDbContext dbContext)
     {
         var transaction = await dbContext.Database.BeginTransactionAsync();
-        context.Response.OnCompleted(async () => 
+        context.Response.OnCompleted(async () =>
         {
-            try 
+            try
             {
-                if(context.Items.TryGetValue(DomainEventsKey, out var value) && value is Queue<IDomainEvent> domainEvent)
+                if (context.Items.TryGetValue(DomainEventsKey, out var value) && value is Queue<IDomainEvent> domainEvent)
                 {
-                    while(domainEvent.TryDequeue(out var nextEvent))
+                    while (domainEvent.TryDequeue(out var nextEvent))
                     {
                         await publisher.Publish(nextEvent);
                     }
@@ -26,7 +26,7 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
 
                 await transaction.CommitAsync();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 // Ignore for now
             }
@@ -37,5 +37,5 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
         });
 
         await _next(context);
-    } 
+    }
 }

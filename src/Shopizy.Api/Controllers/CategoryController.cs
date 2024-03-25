@@ -23,14 +23,14 @@ public class CategoryController(ISender _mediator, IMapper _mapper) : ApiControl
     [HttpGet("categories/{categoryId:guid}")]
     public async Task<IActionResult> GetCategory(Guid categoryId)
     {
-         var query = _mapper.Map<GetCategoryQuery>(categoryId);
+        var query = _mapper.Map<GetCategoryQuery>(categoryId);
         var result = await _mediator.Send(query);
 
         return result.Match(
             category => Ok(_mapper.Map<CategoryResponse>(category)),
             Problem);
     }
-    
+
     [HttpPost("users/{userId:guid}/categories")]
     public async Task<IActionResult> CreateCategory(Guid userId, CreateCategoryRequest request)
     {
@@ -40,5 +40,5 @@ public class CategoryController(ISender _mediator, IMapper _mapper) : ApiControl
         return result.Match(
             category => Ok(_mapper.Map<CategoryResponse>(category)),
             Problem);
-    }   
+    }
 }

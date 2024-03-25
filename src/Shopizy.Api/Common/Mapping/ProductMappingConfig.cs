@@ -2,10 +2,7 @@ using Mapster;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Contracts.Product;
 using Shopizy.Domain.Products;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Application.Products.Queries.GetProduct;
-using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Api.Common.Mapping;
 
@@ -15,8 +12,7 @@ public class ProductMappingConfig : IRegister
     {
         config
             .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
-            .Map(dest => dest.UserId, src => UserId.Create(src.UserId))
-            .Map(dest => dest.CategoryId, src => CategoryId.Create(src.request.CategoryId))
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
         config
@@ -26,8 +22,6 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.Sku, src => src.SKU)
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
 
-        config
-            .NewConfig<Guid, GetProductQuery>()
-            .MapWith(src => new GetProductQuery(ProductId.Create(src)));
+        config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
     }
 }

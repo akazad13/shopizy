@@ -7,26 +7,29 @@ using Shopizy.Application.UnitTests.TestUtils.Categories.Extensions;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandlerTest
+public class CreateCategoryCommandHandlerTests
 {
     private readonly CreateCategoryCommandHandler _handler;
     private readonly Mock<ICategoryRepository> _mockCategoryRepository;
 
-    public CreateCategoryCommandHandlerTest()
+    public CreateCategoryCommandHandlerTests()
     {
         _mockCategoryRepository = new Mock<ICategoryRepository>();
         _handler = new CreateCategoryCommandHandler(_mockCategoryRepository.Object);
     }
 
     [Fact]
-    public async void CreateCategoryCommand_WhenCategoryIsValid_ShouldCrateAndReturnCategory()
+    public async void CreateCategory_WhenCategoryIsValid_ShouldCrateAndReturnCategory()
     {
+        // Arrange
         var createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
+        // Act
         var result = await _handler.Handle(createCategoryCommand, default);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value.ValidateCreatedForm(createCategoryCommand);
     }

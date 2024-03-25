@@ -7,17 +7,19 @@ public sealed class ProductImage : Entity<ProductImageId>
 {
     public string ImageUrl { get; set; }
     public int Seq { get; set; }
+    public string PublicId { get; set; }
 
-    public static ProductImage Create(string productUrl, int seq)
+    public static ProductImage Create(string productUrl, int seq, string publicId)
     {
-        return new ProductImage(ProductImageId.CreateUnique(), productUrl, seq);
+        return new ProductImage(ProductImageId.CreateUnique(), productUrl, seq, publicId);
     }
 
-    private ProductImage(ProductImageId productImageId, string imageUrl, int seq)
+    private ProductImage(ProductImageId productImageId, string imageUrl, int seq, string publicId)
         : base(productImageId)
     {
         ImageUrl = imageUrl;
         Seq = seq;
+        PublicId = publicId;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
