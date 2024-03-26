@@ -1,4 +1,4 @@
-namespace Shopizy.Infrastructure.MediaUploader.CloudinaryService;
+namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 
 public class CloudinarySettings
 {

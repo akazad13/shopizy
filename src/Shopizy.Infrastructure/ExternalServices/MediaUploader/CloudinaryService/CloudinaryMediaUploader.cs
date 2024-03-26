@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Common;
 
-namespace Shopizy.Infrastructure.MediaUploader.CloudinaryService;
+namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 
 public class CloudinaryMediaUploader(
     ICloudinary cloudinary
-    ) : ICloudinaryMediaUploader
+    ) : IMediaUploader
 {
     private readonly ICloudinary _cloudinary = cloudinary;
 
@@ -41,7 +41,7 @@ public class CloudinaryMediaUploader(
         }
     }
 
-    public async Task<ErrorOr<bool>> DeletePhotoAsync(string publicId)
+    public async Task<ErrorOr<Success>> DeletePhotoAsync(string publicId)
     {
         try
         {
@@ -50,7 +50,7 @@ public class CloudinaryMediaUploader(
 
             return result.Result switch
             {
-                "ok" => true,
+                "ok" => Result.Success,
                 _ => ErrorOr.Error.Failure(description: result.Error.Message),
             };
         }

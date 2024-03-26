@@ -10,15 +10,15 @@ using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommandHandler(IProductRepository _productRepository, ICloudinaryMediaUploader _mediaUploader)
+public class CreateProductCommandHandler(IProductRepository _productRepository, IMediaUploader _mediaUploader)
         : IRequestHandler<CreateProductCommand, ErrorOr<Product>>
 {
-    public async Task<ErrorOr<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Product>> Handle(CreateProductCommand cmd, CancellationToken cancellationToken)
     {
         var productImages = new List<ProductImage>();
-        if (request.Images != null)
+        if (cmd.Images != null)
         {
-            foreach (var image in request.Images)
+            foreach (var image in cmd.Images)
             {
                 var res = await _mediaUploader.UploadPhotoAsync(image, cancellationToken);
                 if (!res.IsError)
@@ -29,15 +29,15 @@ public class CreateProductCommandHandler(IProductRepository _productRepository, 
         }
 
         var product = Product.Create(
-            request.Name,
-            request.Description,
-            CategoryId.Create(request.CategoryId),
-             request.Sku, request.StockQuantity,
-             Price.CreateNew(request.UnitPrice, request.Currency),
-             request.Discount,
-              request.Brand,
-              request.Barcode,
-              request.Tags, "",
+            cmd.Name,
+            cmd.Description,
+            CategoryId.Create(cmd.CategoryId),
+             cmd.Sku, cmd.StockQuantity,
+             Price.CreateNew(cmd.UnitPrice, cmd.Currency),
+             cmd.Discount,
+              cmd.Brand,
+              cmd.Barcode,
+              cmd.Tags, "",
               productImages
             );
         await _productRepository.AddAsync(product);

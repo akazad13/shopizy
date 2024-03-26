@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +23,7 @@ using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
-using Shopizy.Infrastructure.MediaUploader.CloudinaryService;
-using CloudinaryDotNet;
+using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 
 namespace Shopizy.Infrastructure;
 
@@ -78,7 +78,7 @@ public static class DependencyInjectionRegister
             cloudinary.Api.Secure = configuration.GetValue<bool>("CloudinarySettings:Secure");
             return cloudinary;
         });
-        services.AddScoped<ICloudinaryMediaUploader, CloudinaryMediaUploader>();
+        services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
 
         return services;
     }

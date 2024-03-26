@@ -7,7 +7,7 @@ namespace Shopizy.Application.Categories.Queries.ListCategories;
 
 public class ListCategoriesQueryHandler(ICategoryRepository _categoryRepository) : IRequestHandler<ListCategoriesQuery, ErrorOr<List<Category>>>
 {
-    public async Task<ErrorOr<List<Category>>> Handle(ListCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<Category>>> Handle(ListCategoriesQuery query, CancellationToken cancellationToken)
     {
         return await _categoryRepository.GetCategoriesAsync();
     }

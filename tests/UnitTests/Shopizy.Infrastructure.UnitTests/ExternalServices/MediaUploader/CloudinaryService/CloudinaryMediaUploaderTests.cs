@@ -1,14 +1,15 @@
 using System.Text;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using ErrorOr;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Products.Common;
-using Shopizy.Infrastructure.MediaUploader.CloudinaryService;
+using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Xunit;
 
-namespace Shopizy.Infrastructure.UnitTests.MediaUploader.CloudinaryService;
+namespace Shopizy.Infrastructure.UnitTests.ExternalServices.MediaUploader.CloudinaryService;
 
 public class CloudinaryMediaUploaderTests
 {
@@ -72,7 +73,7 @@ public class CloudinaryMediaUploaderTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(true);
+        result.Value.Should().BeOfType(typeof(Success));
         _cloudinary.Verify(c => c.DestroyAsync(It.IsAny<DeletionParams>()), Times.Once);
     }
 }

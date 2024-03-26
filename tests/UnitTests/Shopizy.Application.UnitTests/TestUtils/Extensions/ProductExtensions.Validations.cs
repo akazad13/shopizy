@@ -5,7 +5,7 @@ using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
-namespace Shopizy.Application.UnitTests.TestUtils.Products.Extensions;
+namespace Shopizy.Application.UnitTests.TestUtils.Extensions;
 
 public static partial class ProductExtensions
 {

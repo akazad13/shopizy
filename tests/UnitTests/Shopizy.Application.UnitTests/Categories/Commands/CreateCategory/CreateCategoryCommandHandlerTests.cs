@@ -3,7 +3,7 @@ using Moq;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Categories.Extensions;
+using Shopizy.Application.UnitTests.TestUtils.Extensions;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.CreateCategory;
 
