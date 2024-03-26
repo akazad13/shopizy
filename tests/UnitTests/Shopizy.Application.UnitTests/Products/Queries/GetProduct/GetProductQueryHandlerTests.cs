@@ -4,7 +4,7 @@ using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.UnitTests.Products.Queries.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
-using Shopizy.Application.UnitTests.TestUtils.Products.Extensions;
+using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;

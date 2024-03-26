@@ -9,5 +9,9 @@ public interface ICategoryRepository
     Task<Category?> GetCategoryByIdAsync(CategoryId id);
     Task<List<Category>> GetCategoriesAsync();
     Task AddAsync(Category category);
+    void Update(Category category);
+
+    void Remove(Category category);
+
     Task<int> Commit(CancellationToken cancellationToken);
 }

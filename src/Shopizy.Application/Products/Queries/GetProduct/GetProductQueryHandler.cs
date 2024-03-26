@@ -8,8 +8,8 @@ namespace Shopizy.Application.Products.Queries.GetProduct;
 
 public class GetProductQueryHandler(IProductRepository _productRepository) : IRequestHandler<GetProductQuery, ErrorOr<Product?>>
 {
-    public async Task<ErrorOr<Product?>> Handle(GetProductQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Product?>> Handle(GetProductQuery query, CancellationToken cancellationToken)
     {
-        return await _productRepository.GetProductByIdAsync(ProductId.Create(request.ProductId));
+        return await _productRepository.GetProductByIdAsync(ProductId.Create(query.ProductId));
     }
 }

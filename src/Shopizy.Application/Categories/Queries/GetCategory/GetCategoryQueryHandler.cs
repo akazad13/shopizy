@@ -8,8 +8,8 @@ namespace Shopizy.Application.Categories.Queries.GetCategory;
 
 public class GetCategoryQueryHandler(ICategoryRepository _categoryRepository) : IRequestHandler<GetCategoryQuery, ErrorOr<Category?>>
 {
-    public async Task<ErrorOr<Category?>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Category?>> Handle(GetCategoryQuery query, CancellationToken cancellationToken)
     {
-        return await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(request.CategoryId));
+        return await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(query.CategoryId));
     }
 }

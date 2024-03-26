@@ -6,7 +6,7 @@ using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Common;
 using Shopizy.Application.UnitTests.Products.Commands.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Products.Extensions;
+using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products;
@@ -22,16 +22,16 @@ public class CreateProductCommandHandlerTests
 
     private readonly CreateProductCommandHandler _handler;
     private readonly Mock<IProductRepository> _mockProductRepository;
-    private readonly Mock<ICloudinaryMediaUploader> _mockCloudinaryMediaUploader;
+    private readonly Mock<IMediaUploader> _mockMediaUploader;
 
     // T1_T2_T3
     public CreateProductCommandHandlerTests()
     {
         _mockProductRepository = new Mock<IProductRepository>();
-        _mockCloudinaryMediaUploader = new Mock<ICloudinaryMediaUploader>();
+        _mockMediaUploader = new Mock<IMediaUploader>();
         _handler = new CreateProductCommandHandler(
             _mockProductRepository.Object,
-            _mockCloudinaryMediaUploader.Object
+            _mockMediaUploader.Object
         );
     }
 
@@ -60,7 +60,7 @@ public class CreateProductCommandHandlerTests
             [ProductImage.Create(expectedUrl, 0, expectedPublicId), ProductImage.Create(expectedUrl, 0, expectedPublicId)]
         );
 
-        _mockCloudinaryMediaUploader
+        _mockMediaUploader
             .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), default))
             .ReturnsAsync(new PhotoUploadResult(expectedUrl, expectedPublicId));
 

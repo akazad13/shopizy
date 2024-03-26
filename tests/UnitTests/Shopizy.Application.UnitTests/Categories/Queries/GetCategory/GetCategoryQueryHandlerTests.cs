@@ -3,8 +3,8 @@ using Moq;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.UnitTests.Categories.Queries.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Categories.Extensions;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
 

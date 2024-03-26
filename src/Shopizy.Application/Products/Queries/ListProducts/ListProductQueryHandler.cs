@@ -7,7 +7,7 @@ namespace Shopizy.Application.Products.Queries.ListProducts;
 
 public class ListProductQueryHandler(IProductRepository _productRepository) : IRequestHandler<ListProductQuery, ErrorOr<List<Product>?>>
 {
-    public async Task<ErrorOr<List<Product>?>> Handle(ListProductQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<Product>?>> Handle(ListProductQuery query, CancellationToken cancellationToken)
     {
         return await _productRepository.GetProductsAsync();
     }

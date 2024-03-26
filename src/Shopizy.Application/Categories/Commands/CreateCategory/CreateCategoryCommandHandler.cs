@@ -10,14 +10,14 @@ public class CreateCategoryCommandHandler(ICategoryRepository _categoryRepositor
         : IRequestHandler<CreateCategoryCommand, ErrorOr<Category>>
 {
     public async Task<ErrorOr<Category>> Handle(
-        CreateCategoryCommand request,
+        CreateCategoryCommand cmd,
         CancellationToken cancellationToken
     )
     {
-        if (await _categoryRepository.GetCategoryByNameAsync(request.Name))
+        if (await _categoryRepository.GetCategoryByNameAsync(cmd.Name))
             return Errors.Category.DuplicateName;
 
-        var category = Category.Create(request.Name, request.ParentId);
+        var category = Category.Create(cmd.Name, cmd.ParentId);
         await _categoryRepository.AddAsync(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
