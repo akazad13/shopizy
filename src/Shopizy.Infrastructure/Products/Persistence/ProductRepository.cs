@@ -25,6 +25,11 @@ public class ProductRepository(AppDbContext _dbContext) : IProductRepository
         _dbContext.Update(product);
     }
 
+    public void Remove(Product product)
+    {
+        _dbContext.Remove(product);
+    }
+
     public Task<int> Commit(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);

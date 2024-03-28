@@ -21,20 +21,22 @@ public class DeleteCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void DeleteCategory_WhenCategoryIsValid_ShouldDeleteAndReturnSuccess()
+    public async void DeleteCategory_WhenCategoryIsFound_ShouldDeleteAndReturnSuccess()
     {
         // Arrange
-        var deleteCategoryCommand = DeleteCategoryCommandUtils.CreateCommand();
+        var deleteCategoryCmd = DeleteCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(deleteCategoryCommand.CategoryId)))
+            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(deleteCategoryCmd.CategoryId)))
             .ReturnsAsync(Category.Create(Constants.Category.Name, Constants.Category.ParentId));
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(deleteCategoryCommand, default);
+        var result = await _handler.Handle(deleteCategoryCmd, default);
 
         // Assert
         result.IsError.Should().BeFalse();
+
+        _mockCategoryRepository.Verify(m => m.Commit(default), Times.Once);
     }
 }

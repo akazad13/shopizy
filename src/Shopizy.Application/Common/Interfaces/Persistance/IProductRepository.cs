@@ -9,5 +9,6 @@ public interface IProductRepository
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task AddAsync(Product product);
     void Update(Product product);
+    void Remove(Product product);
     Task<int> Commit(CancellationToken cancellationToken);
 }

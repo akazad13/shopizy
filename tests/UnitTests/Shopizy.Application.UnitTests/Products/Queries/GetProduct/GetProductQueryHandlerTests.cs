@@ -29,21 +29,7 @@ public class GetProductQueryHandlerTests
         var getProductQuery = GetProductQueryUtils.CreateQuery();
         _mockProductRepository
             .Setup(c => c.GetProductByIdAsync(ProductId.Create(getProductQuery.ProductId)))
-            .ReturnsAsync(
-                Product.Create(
-                    Constants.Product.Name,
-                    Constants.Product.Description,
-                    Constants.Category.Id,
-                    Constants.Product.Sku,
-                    Constants.Product.StockQuantity,
-                    Price.CreateNew(Constants.Product.UnitPrice, Constants.Product.Currency),
-                    Constants.Product.Discount,
-                    Constants.Product.Brand,
-                    Constants.Product.Barcode,
-                    Constants.Product.Tags,
-                    ""
-                )
-            );
+            .ReturnsAsync(Constants.Product.NewProduct);
 
         // Act
         var result = await _handler.Handle(getProductQuery, default);

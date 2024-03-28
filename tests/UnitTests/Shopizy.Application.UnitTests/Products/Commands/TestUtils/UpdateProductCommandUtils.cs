@@ -1,14 +1,15 @@
-using Shopizy.Application.Products.Commands.CreateProduct;
+using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.TestUtils;
 
-public static class CreateProductCommandUtils
+public static class UpdateProductCommandUtils
 {
-    public static CreateProductCommand CreateCommand()
+    public static UpdateProductCommand CreateCommand()
     {
-        return new CreateProductCommand(
+        return new UpdateProductCommand(
             Constants.User.Id.Value,
+            Constants.Product.Id.Value,
             Constants.Product.Name,
             Constants.Product.Description,
             Constants.Category.Id.Value,
