@@ -34,14 +34,12 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string description,
         CategoryId categoryId,
         string sku,
-        int stockQuantity,
         Price unitPrice,
         decimal? discount,
         string brand,
         string barcode,
         string tags,
-        string breadCrums,
-        List<ProductImage>? productImages = null
+        string breadCrums
     )
     {
         return new Product(
@@ -50,7 +48,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             description,
             categoryId,
             sku,
-            stockQuantity,
+            0,
             unitPrice,
             discount,
             brand,
@@ -59,11 +57,47 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             AverageRating.CreateNew(0),
             breadCrums,
             DateTime.UtcNow,
-            DateTime.UtcNow,
-            productImages ?? []
+            DateTime.UtcNow
         );
     }
 
+    public void Update(
+        string name,
+        string description,
+        CategoryId categoryId,
+        string sku,
+        Price unitPrice,
+        decimal? discount,
+        string brand,
+        string barcode,
+        string tags
+
+    )
+    {
+       
+        Name = name;
+        Description = description;
+        CategoryId = categoryId;
+        SKU = sku;
+        UnitPrice = unitPrice;
+        Discount = discount;
+        Brand = brand;
+        Barcode = barcode;
+        Tags = tags;
+    }
+
+    public void AddProductImages(List<ProductImage> productImages)
+    {
+        _productImages.AddRange(productImages);
+    }
+    public void AddProductImage(ProductImage productImage)
+    {
+        _productImages.Add(productImage);
+    }
+    public void RemoveProductImage(ProductImage productImage)
+    {
+        _productImages.Remove(productImage);
+    }
     private Product(
         ProductId productId,
         string name,
@@ -79,8 +113,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         AverageRating averageRating,
         string breadCrums,
         DateTime createdOn,
-        DateTime modifiedOn,
-        List<ProductImage> productImages
+        DateTime modifiedOn
     ) : base(productId)
     {
         Name = name;
@@ -97,7 +130,6 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         BreadCrums = breadCrums;
         CreatedOn = createdOn;
         ModifiedOn = modifiedOn;
-        _productImages = productImages;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

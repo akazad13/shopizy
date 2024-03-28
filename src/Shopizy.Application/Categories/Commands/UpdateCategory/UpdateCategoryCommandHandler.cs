@@ -19,8 +19,7 @@ public class UpdateCategoryCommandHandler(ICategoryRepository _categoryRepositor
         if (category is null)
             return Errors.Category.CategoryNotFound;
 
-        category.Name = cmd.Name;
-        category.ParentId = cmd.ParentId;
+        category.Update(cmd.Name, cmd.ParentId);
 
         _categoryRepository.Update(category);
 

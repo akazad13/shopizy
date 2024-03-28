@@ -12,5 +12,8 @@ public record ProductResponse(
     string Tags,
     string Barcode,
     int StockQuantity,
-    List<Guid>? SpecificationIds
+    List<Guid>? SpecificationIds,
+    List<ProductImageResponse> ProductImages
 );
+
+public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq, string PublicId);

@@ -1,6 +1,6 @@
 namespace Shopizy.Contracts.Product;
 
-public record CreateProductRequest(
+public record UpdateProductRequest(
     string Name,
     string Description,
     Guid CategoryId,

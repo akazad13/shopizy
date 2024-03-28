@@ -1,15 +1,16 @@
 using ErrorOr;
-using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Products;
 using Shopizy.Application.Common.Security.Request;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Permissions;
+using Shopizy.Domain.Common.Enums;
 
-namespace Shopizy.Application.Products.Commands.CreateProduct;
+namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
-[Authorize(Permissions = Permission.Product.Create, Policies = Policy.SelfOrAdmin)]
-public record CreateProductCommand(
+[Authorize(Permissions = Permission.Product.Modify, Policies = Policy.SelfOrAdmin)]
+public record UpdateProductCommand(
     Guid UserId,
+    Guid ProductId,
     string Name,
     string Description,
     Guid CategoryId,
