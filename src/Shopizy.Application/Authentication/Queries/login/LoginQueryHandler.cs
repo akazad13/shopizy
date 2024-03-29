@@ -3,7 +3,7 @@ using MediatR;
 using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Authentication.Queries.login;
 
@@ -13,9 +13,9 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
     {
         var user = await _userRepository.GetUserByPhone(query.Phone);
         if (user is null)
-            return Errors.User.UserNotFound;
+            return CustomErrors.User.UserNotFound;
         if (!_passwordManager.Verify(query.Password, user.Password!))
-            return Errors.Authentication.InvalidCredentials;
+            return CustomErrors.Authentication.InvalidCredentials;
 
         var roles = new List<string>() { "Admin", "Moderator" };
         var permissions = new List<string>(){

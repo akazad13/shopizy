@@ -3,7 +3,7 @@ using MediatR;
 using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users;
 
 namespace Shopizy.Application.Authentication.Commands.Register;
@@ -17,7 +17,7 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
     {
         if ((await _userRepository.GetUserByPhone(command.Phone)) is not null)
         {
-            return Errors.User.DuplicatePhone;
+            return CustomErrors.User.DuplicatePhone;
         }
 
         var hashedPassword = _passwordManager.CreateHashString(command.Password);
@@ -30,7 +30,7 @@ public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGe
         await _userRepository.AddAsync(user);
 
         if (await _userRepository.Commit(cancellationToken) <= 0)
-            return Errors.User.UserNotCreated;
+            return CustomErrors.User.UserNotCreated;
 
         var roles = new List<string>();
         var permissions = new List<string>();

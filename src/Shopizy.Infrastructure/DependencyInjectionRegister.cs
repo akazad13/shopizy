@@ -24,6 +24,8 @@ using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
+using Shopizy.Domain.Carts;
+using Shopizy.Infrastructure.Carts.Persistence;
 
 namespace Shopizy.Infrastructure;
 
@@ -125,6 +127,7 @@ public static class DependencyInjectionRegister
     {
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IProductReviewRepository, ProductReviewRepository>();

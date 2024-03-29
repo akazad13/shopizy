@@ -1,9 +1,12 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Products.Commands.AddProductImage;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Commands.DeleteProduct;
+using Shopizy.Application.Products.Commands.DeleteProductImage;
+using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.ListProducts;
 using Shopizy.Contracts.Product;
@@ -47,7 +50,7 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
     [HttpPatch("users/{userId:guid}/products/{productId:guid}")]
     public async Task<IActionResult> UpdateProduct(Guid userId, Guid productId, UpdateProductRequest request)
     {
-        var command = _mapper.Map<CreateProductCommand>((userId, productId, request));
+        var command = _mapper.Map<UpdateProductCommand>((userId, productId, request));
         var result = await _mediator.Send(command);
 
         return result.Match(
@@ -62,7 +65,7 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
         var result = await _mediator.Send(command);
 
         return result.Match(
-            product => Ok(_mapper.Map<ProductResponse>(product)),
+            product => Ok(_mapper.Map<Success>(product)),
             Problem);
     }
 
@@ -73,17 +76,17 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
         var result = await _mediator.Send(command);
 
         return result.Match(
-            product => Ok(_mapper.Map<ProductResponse>(product)),
+            product => Ok(_mapper.Map<ProductImageResponse>(product)),
             Problem);
     }
     [HttpDelete("users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}")]
     public async Task<IActionResult> DeleteProductImage(Guid userId, Guid productId, Guid imageId)
     {
-        var command = _mapper.Map<DeleteProductCommand>((userId, productId, imageId));
+        var command = _mapper.Map<DeleteProductImageCommand>((userId, productId, imageId));
         var result = await _mediator.Send(command);
 
         return result.Match(
-            product => Ok(_mapper.Map<ProductResponse>(product)),
+            product => Ok(_mapper.Map<Success>(product)),
             Problem);
     }
 }

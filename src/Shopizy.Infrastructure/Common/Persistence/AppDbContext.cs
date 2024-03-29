@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.Models;
+using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Customers;
 using Shopizy.Domain.Orders;
@@ -18,6 +19,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 {
     public DbSet<Category> Categories { get; set; }
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<Cart> Carts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Product> Products { get; set; }

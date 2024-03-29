@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.CreateCategory;
 
@@ -15,13 +15,13 @@ public class CreateCategoryCommandHandler(ICategoryRepository _categoryRepositor
     )
     {
         if (await _categoryRepository.GetCategoryByNameAsync(cmd.Name))
-            return Errors.Category.DuplicateName;
+            return CustomErrors.Category.DuplicateName;
 
         var category = Category.Create(cmd.Name, cmd.ParentId);
         await _categoryRepository.AddAsync(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
-            return Errors.Category.CategoryNotCreated;
+            return CustomErrors.Category.CategoryNotCreated;
 
         return category;
     }

@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -14,12 +14,12 @@ public class AddProductImageCommandHandler(IProductRepository _productRepository
     public async Task<ErrorOr<ProductImage>> Handle(AddProductImageCommand cmd, CancellationToken cancellationToken)
     {
         if(cmd.File is null)
-            return Errors.Product.ProductImageNotUploaded;
+            return CustomErrors.Product.ProductImageNotUploaded;
         
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if(product is null)
-            return Errors.Product.ProductNotFound;
+            return CustomErrors.Product.ProductNotFound;
        
         ProductImage productImage;
 
@@ -32,7 +32,7 @@ public class AddProductImageCommandHandler(IProductRepository _productRepository
             _productRepository.Update(product);
 
             if (await _productRepository.Commit(cancellationToken) <= 0)
-                return Errors.Product.ProductImageNotAdded;
+                return CustomErrors.Product.ProductImageNotAdded;
             return productImage;
         }
         return res.Errors;

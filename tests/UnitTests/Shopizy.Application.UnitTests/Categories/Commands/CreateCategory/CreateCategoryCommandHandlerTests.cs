@@ -4,7 +4,7 @@ using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.CreateCategory;
 
@@ -55,7 +55,7 @@ public class CreateCategoryCommandHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
-        result.Errors.First().Should().Be(Errors.Category.DuplicateName);
+        result.Errors.First().Should().Be(CustomErrors.Category.DuplicateName);
     }
 
     [Fact]
@@ -75,6 +75,6 @@ public class CreateCategoryCommandHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
-        result.Errors.First().Should().Be(Errors.Category.CategoryNotCreated);
+        result.Errors.First().Should().Be(CustomErrors.Category.CategoryNotCreated);
     }
 }

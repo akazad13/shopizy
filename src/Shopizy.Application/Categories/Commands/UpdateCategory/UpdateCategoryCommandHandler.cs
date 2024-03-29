@@ -3,7 +3,7 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.UpdateCategory;
 
@@ -17,14 +17,14 @@ public class UpdateCategoryCommandHandler(ICategoryRepository _categoryRepositor
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
-            return Errors.Category.CategoryNotFound;
+            return CustomErrors.Category.CategoryNotFound;
 
         category.Update(cmd.Name, cmd.ParentId);
 
         _categoryRepository.Update(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
-            return Errors.Category.CategoryNotUpdated;
+            return CustomErrors.Category.CategoryNotUpdated;
 
         return category;
     }

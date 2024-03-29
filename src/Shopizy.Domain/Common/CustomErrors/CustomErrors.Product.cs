@@ -1,8 +1,8 @@
 using ErrorOr;
 
-namespace Shopizy.Domain.Common.Errors;
+namespace Shopizy.Domain.Common.CustomErrors;
 
-public static partial class Errors
+public static partial class CustomErrors
 {
     public static class Product
     {
