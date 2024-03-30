@@ -11,15 +11,20 @@ public sealed class LineItem : Entity<LineItemId>
     public ProductId ProductId { get; private set; }
     public int Quantity { get; private set; }
 
-    public static LineItem Create(ProductId productId, int quantity)
+    public static LineItem Create(ProductId productId)
     {
-        return new LineItem(LineItemId.CreateUnique(), productId, quantity);
+        return new LineItem(LineItemId.CreateUnique(), productId);
     }
 
-    private LineItem(LineItemId lineItemId, ProductId productId, int quantity) : base(lineItemId)
+    public void UpdateQuantity(int quantity)
+    {
+        Quantity = quantity;
+    }
+
+    private LineItem(LineItemId lineItemId, ProductId productId) : base(lineItemId)
     {
         ProductId = productId;
-        Quantity = quantity;
+        Quantity = 1;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

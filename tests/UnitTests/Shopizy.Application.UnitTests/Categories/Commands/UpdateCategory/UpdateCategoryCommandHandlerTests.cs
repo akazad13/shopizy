@@ -2,7 +2,7 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
-using Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
+using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
@@ -24,20 +24,18 @@ public class UpdateCategoryCommandHandlerTests
     public async void UpdateCategory_WhenCategoryIsFound_ShouldUpdateAndReturnCategory()
     {
         // Arrange
-        var updateCategoryCommand = UpdateCategoryCommandUtils.CreateCommand();
+        var command = UpdateCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(updateCategoryCommand.CategoryId)))
-            .ReturnsAsync(
-                Category.Create(updateCategoryCommand.Name, updateCategoryCommand.ParentId)
-            );
+            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(command.CategoryId)))
+            .ReturnsAsync(Category.Create(command.Name, command.ParentId));
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(updateCategoryCommand, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.ValidateCreatedForm(updateCategoryCommand);
+        result.Value.ValidateResult(command);
     }
 }

@@ -10,7 +10,7 @@ namespace Shopizy.Application.UnitTests.TestUtils.Extensions;
 
 public static partial class ProductExtensions
 {
-    public static void ValidateCreatedForm(this Product product, CreateProductCommand command)
+    public static void ValidateResult(this Product product, CreateProductCommand command)
     {
         product.Name.Should().Be(command.Name);
         product.Description.Should().Be(command.Description);
@@ -26,13 +26,13 @@ public static partial class ProductExtensions
         product.ModifiedOn.Should().NotBeBefore(product.CreatedOn);
     }
 
-    public static void ValidateCreatedForm(this Product product, GetProductQuery query)
+    public static void ValidateResult(this Product product, GetProductQuery query)
     {
         product.Id.Should().BeOfType(typeof(ProductId));
         product.Name.Should().BeOfType(typeof(string));
     }
 
-    public static void ValidateCreatedForm(this Product product, UpdateProductCommand command)
+    public static void ValidateResult(this Product product, UpdateProductCommand command)
     {
         product.Name.Should().Be(command.Name);
         product.Description.Should().Be(command.Description);

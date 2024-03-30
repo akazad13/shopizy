@@ -1,7 +1,7 @@
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 
-namespace Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
+namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 
 public static class DeleteCategoryCommandUtils
 {

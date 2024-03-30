@@ -2,6 +2,7 @@ using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Customers.ValueObjects;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Domain.Carts;
 
@@ -32,6 +33,11 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     public void RemoveLineItem(LineItem lineItem)
     {
         _lineItems.Remove(lineItem);
+    }
+
+    public void UpdateLineItem(ProductId productId, int quantity)
+    {
+        _lineItems.Find(li => li.ProductId == productId)?.UpdateQuantity(quantity);
     }
 
     private Cart(

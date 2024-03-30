@@ -24,7 +24,6 @@ using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
-using Shopizy.Domain.Carts;
 using Shopizy.Infrastructure.Carts.Persistence;
 
 namespace Shopizy.Infrastructure;

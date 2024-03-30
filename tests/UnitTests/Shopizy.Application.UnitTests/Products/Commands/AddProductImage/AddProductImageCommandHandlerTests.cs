@@ -3,7 +3,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.AddProductImage;
-using Shopizy.Application.UnitTests.Products.Commands.TestUtils;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.Products.Common;
 using Microsoft.AspNetCore.Http;
@@ -32,13 +32,14 @@ public class AddProductImageCommandHandlerTests
     public async void AddProductImage_WhenProductIsFoundAndImageIsUploaded_ShouldAddAndReturnProductImage()
     {
         // Arrange
-        var product = Constants.Product.NewProduct;
-        var productImage = Constants.ProductImage.NewProductImage;
+        var product = ProductFactory.CreateProduct();
+        var productImage = ProductFactory.CreateProductImage();
         product.AddProductImage(productImage);
-        var createProductCmd = AddProductImageCommandUtils.CreateCommand(product.Id.Value);
+
+        var command = AddProductImageCommandUtils.CreateCommand(product.Id.Value);
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(createProductCmd.ProductId)))
+            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockMediaUploader
@@ -53,7 +54,7 @@ public class AddProductImageCommandHandlerTests
         _mockProductRepository.Setup(p => p.Update(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(createProductCmd, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();

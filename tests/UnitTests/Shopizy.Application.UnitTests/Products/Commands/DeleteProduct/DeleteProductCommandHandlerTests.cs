@@ -3,8 +3,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.DeleteProduct;
-using Shopizy.Application.UnitTests.Products.Commands.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.DeleteProduct;
@@ -30,17 +29,17 @@ public class DeleteProductCommandHandlerTests
     {
         // Arrange
 
-        var deleteProductCmd = DeleteProductCommandUtils.CreateCommand();
-        var product = Constants.Product.NewProduct;
+        var command = DeleteProductCommandUtils.CreateCommand();
+        var product = ProductFactory.CreateProduct();
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(deleteProductCmd.ProductId)))
+            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockProductRepository.Setup(p => p.Remove(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(deleteProductCmd, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();

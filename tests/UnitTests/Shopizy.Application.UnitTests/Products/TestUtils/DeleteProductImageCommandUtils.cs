@@ -1,7 +1,7 @@
 using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 
-namespace Shopizy.Application.UnitTests.Products.Commands.TestUtils;
+namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class DeleteProductImageCommandUtils
 {

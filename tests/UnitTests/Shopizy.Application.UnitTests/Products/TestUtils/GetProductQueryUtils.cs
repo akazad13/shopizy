@@ -1,7 +1,7 @@
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 
-namespace Shopizy.Application.UnitTests.Products.Queries.TestUtils;
+namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class GetProductQueryUtils
 {

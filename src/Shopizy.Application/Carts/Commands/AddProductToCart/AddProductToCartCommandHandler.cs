@@ -24,7 +24,7 @@ public class AddProductToCartCommandHandler(ICartRepository _cartRepository, IPr
         if(product is false)
             return CustomErrors.Product.ProductNotFound;
         
-        cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId), cmd.Quantity));
+        cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
 
         _cartRepository.Update(cart);
         

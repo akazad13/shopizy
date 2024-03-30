@@ -2,7 +2,7 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
-using Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
+using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Common.CustomErrors;
 
@@ -35,22 +35,22 @@ public class CreateCategoryCommandHandlerTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.ValidateCreatedForm(createCategoryCommand);
+        result.Value.ValidateResult(createCategoryCommand);
     }
 
     [Fact]
     public async void CreateCategory_WhenCategoryNameIsExist_ShouldReturnDuplicateCategoryError()
     {
         // Arrange
-        var createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
+        var command = CreateCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByNameAsync(createCategoryCommand.Name))
+            .Setup(c => c.GetCategoryByNameAsync(command.Name))
             .ReturnsAsync(true);
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(createCategoryCommand, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -62,15 +62,15 @@ public class CreateCategoryCommandHandlerTests
     public async void CreateCategory_WhenCategorySaveFailed_ShouldReturnCategoryNotCreatedError()
     {
         // Arrange
-        var createCategoryCmd = CreateCategoryCommandUtils.CreateCommand();
+        var command = CreateCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByNameAsync(createCategoryCmd.Name))
+            .Setup(c => c.GetCategoryByNameAsync(command.Name))
             .ReturnsAsync(false);
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(0);
 
         // Act
-        var result = await _handler.Handle(createCategoryCmd, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeTrue();
