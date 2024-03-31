@@ -6,6 +6,6 @@ using Shopizy.Domain.Carts;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
-[Authorize(Permissions = Permission.Product.Create, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permission.Cart.Modify, Policies = Policy.SelfOrAdmin)]
 public record AddProductToCartCommand(Guid UserId, Guid CartId, Guid ProductId)
     : IAuthorizeableRequest<ErrorOr<Cart>>;

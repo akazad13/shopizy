@@ -1,0 +1,12 @@
+namespace Shopizy.Application.Common.Security.Permissions;
+
+public static partial class Permission
+{
+    public static class Cart
+    {
+        public const string Create = "create:cart";
+        public const string Get = "get:cart";
+        public const string Modify = "modify:cart";
+        public const string Delete = "delete:cart";
+    }
+}

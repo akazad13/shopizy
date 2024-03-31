@@ -7,6 +7,6 @@ public static class GetCartQueryUtils
 {
     public static GetCartQuery CreateQuery()
     {
-        return new GetCartQuery(Constants.Customer.Id.Value);
+        return new GetCartQuery(Constants.User.Id.Value, Constants.Customer.Id.Value);
     }
 }

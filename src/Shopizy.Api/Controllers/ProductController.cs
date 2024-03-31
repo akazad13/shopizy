@@ -25,7 +25,7 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
             Product => Ok(_mapper.Map<List<ProductResponse>?>(Product)),
             Problem);
     }
-    [HttpGet("products/{ProductId:guid}")]
+    [HttpGet("products/{productId:guid}")]
     public async Task<IActionResult> GetProduct(Guid ProductId)
     {
         var query = _mapper.Map<GetProductQuery>(ProductId);
@@ -86,7 +86,7 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
         var result = await _mediator.Send(command);
 
         return result.Match(
-            product => Ok(_mapper.Map<Success>(product)),
+            success => Ok(success),
             Problem);
     }
 }

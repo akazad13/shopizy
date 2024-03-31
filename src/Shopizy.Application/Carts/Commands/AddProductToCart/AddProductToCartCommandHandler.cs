@@ -3,9 +3,9 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Carts;
-using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Carts.Entities;
+using Shopizy.Domain.Carts.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
