@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
@@ -16,12 +16,12 @@ public class DeleteCategoryCommandHandler(ICategoryRepository _categoryRepositor
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
-            return Errors.Category.CategoryNotFound;
+            return CustomErrors.Category.CategoryNotFound;
 
         _categoryRepository.Remove(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
-            return Errors.Category.CategoryNotDeleted;
+            return CustomErrors.Category.CategoryNotDeleted;
 
         return Result.Success;
     }

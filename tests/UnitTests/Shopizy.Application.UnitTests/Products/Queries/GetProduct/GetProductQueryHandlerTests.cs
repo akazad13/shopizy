@@ -2,11 +2,8 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Products.Queries.GetProduct;
-using Shopizy.Application.UnitTests.Products.Queries.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProduct;
@@ -26,17 +23,18 @@ public class GetProductQueryHandlerTests
     public async void GetProduct_WhenProductIsFound_ShouldReturnProduct()
     {
         // Arrange
-        var getProductQuery = GetProductQueryUtils.CreateQuery();
+        var product = ProductFactory.CreateProduct();
+        var query = GetProductQueryUtils.CreateQuery();
         _mockProductRepository
-            .Setup(c => c.GetProductByIdAsync(ProductId.Create(getProductQuery.ProductId)))
-            .ReturnsAsync(Constants.Product.NewProduct);
+            .Setup(c => c.GetProductByIdAsync(ProductId.Create(query.ProductId)))
+            .ReturnsAsync(product);
 
         // Act
-        var result = await _handler.Handle(getProductQuery, default);
+        var result = await _handler.Handle(query, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value?.ValidateCreatedForm(getProductQuery);
+        result.Value?.ValidateResult(query);
     }
 
     // [Fact]

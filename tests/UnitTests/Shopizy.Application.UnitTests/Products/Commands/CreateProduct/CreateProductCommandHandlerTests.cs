@@ -2,9 +2,8 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Products.Commands.CreateProduct;
-using Shopizy.Application.UnitTests.Products.Commands.TestUtils;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.CreateProduct;
 
@@ -28,17 +27,17 @@ public class CreateProductCommandHandlerTests
     {
         // Arrange
 
-        var createProductCommand = CreateProductCommandUtils.CreateCommand();
-        var product = Constants.Product.NewProduct;
+        var command = CreateProductCommandUtils.CreateCommand();
+        var product = ProductFactory.CreateProduct();
 
         _mockProductRepository.Setup(p => p.AddAsync(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(createProductCommand, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.ValidateCreatedForm(createProductCommand);
+        result.Value.ValidateResult(command);
 
         _mockProductRepository.Verify(m => m.AddAsync(result.Value), Times.Once);
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);

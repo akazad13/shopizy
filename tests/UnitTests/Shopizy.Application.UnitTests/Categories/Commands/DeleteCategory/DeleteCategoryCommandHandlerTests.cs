@@ -2,7 +2,7 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Common.Interfaces.Persistance;
-using Shopizy.Application.UnitTests.Categories.Commands.TestUtils;
+using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
@@ -24,15 +24,15 @@ public class DeleteCategoryCommandHandlerTests
     public async void DeleteCategory_WhenCategoryIsFound_ShouldDeleteAndReturnSuccess()
     {
         // Arrange
-        var deleteCategoryCmd = DeleteCategoryCommandUtils.CreateCommand();
+        var command = DeleteCategoryCommandUtils.CreateCommand();
 
         _mockCategoryRepository
-            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(deleteCategoryCmd.CategoryId)))
+            .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(command.CategoryId)))
             .ReturnsAsync(Category.Create(Constants.Category.Name, Constants.Category.ParentId));
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(deleteCategoryCmd, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();

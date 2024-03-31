@@ -7,6 +7,7 @@ public interface IProductRepository
 {
     Task<List<Product>> GetProductsAsync();
     Task<Product?> GetProductByIdAsync(ProductId id);
+    Task<bool> IsProductExistAsync(ProductId id);
     Task AddAsync(Product product);
     void Update(Product product);
     void Remove(Product product);

@@ -2,10 +2,8 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.UnitTests.Products.Commands.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Domain.Products.Entities;
 using Shopizy.Application.Products.Commands.DeleteProduct;
 using ErrorOr;
 
@@ -31,16 +29,17 @@ public class DeleteProductImageCommandHandlerTests
     public async void DeleteProductImage_WhenProductIsFoundAndImageIsFound_ShouldDeleteAndReturnSuccess()
     {
         // Arrange
-        var product = Constants.Product.NewProduct;
-        var productImage = Constants.ProductImage.NewProductImage;
+        var product = ProductFactory.CreateProduct();
+        var productImage = ProductFactory.CreateProductImage();
         product.AddProductImage(productImage);
-        var deleteProductCmd = DeleteProductImageCommandUtils.CreateCommand(
+
+        var command = DeleteProductImageCommandUtils.CreateCommand(
             product.Id.Value,
             productImage.Id.Value
         );
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(deleteProductCmd.ProductId)))
+            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockMediaUploader
@@ -50,7 +49,7 @@ public class DeleteProductImageCommandHandlerTests
         _mockProductRepository.Setup(p => p.Update(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(deleteProductCmd, default);
+        var result = await _handler.Handle(command, default);
 
         // Assert
         result.IsError.Should().BeFalse();

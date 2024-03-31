@@ -1,7 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Application.Products.Commands.DeleteProductImage;
@@ -16,12 +16,12 @@ public class DeleteProductImageCommandHandler(IProductRepository _productReposit
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if(product is null)
-            return Errors.Product.ProductNotFound;
+            return CustomErrors.Product.ProductNotFound;
 
         var prodImage = product.ProductImages.FirstOrDefault(pi => pi.Id ==  ProductImageId.Create(cmd.ImageId));
 
         if(prodImage is null)
-            return Errors.Product.ProductImageNotFound;
+            return CustomErrors.Product.ProductImageNotFound;
 
         var res = await _mediaUploader.DeletePhotoAsync(prodImage.PublicId);
 
@@ -32,7 +32,7 @@ public class DeleteProductImageCommandHandler(IProductRepository _productReposit
             _productRepository.Update(product);
 
             if (await _productRepository.Commit(cancellationToken) <= 0)
-                return Errors.Product.ProductImageNotAdded;
+                return CustomErrors.Product.ProductImageNotAdded;
              return Result.Success;
         }
         return res.Errors;

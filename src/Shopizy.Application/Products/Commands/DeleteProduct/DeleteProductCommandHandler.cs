@@ -1,7 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -15,14 +15,14 @@ public class DeleteProductCommandHandler(IProductRepository _productRepository, 
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if(product is null)
-            return Errors.Product.ProductNotFound;
+            return CustomErrors.Product.ProductNotFound;
 
         // Delete product image from media
 
         _productRepository.Remove(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
-            return Errors.Product.ProductNotDeleted;
+            return CustomErrors.Product.ProductNotDeleted;
 
         return Result.Success;
 

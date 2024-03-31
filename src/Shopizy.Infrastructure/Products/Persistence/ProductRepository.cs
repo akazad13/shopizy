@@ -16,6 +16,10 @@ public class ProductRepository(AppDbContext _dbContext) : IProductRepository
     {
         return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
+    public Task<bool> IsProductExistAsync(ProductId id)
+    {
+        return _dbContext.Products.AnyAsync(p => p.Id == id);
+    }
     public async Task AddAsync(Product product)
     {
         await _dbContext.Products.AddAsync(product);

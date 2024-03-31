@@ -22,6 +22,27 @@ namespace shopizy.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Shopizy.Domain.Carts.Cart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("smalldatetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Carts", (string)null);
+                });
+
             modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -307,6 +328,45 @@ namespace shopizy.Infrastructure.Migrations
                     b.HasIndex("Phone");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Shopizy.Domain.Carts.Cart", b =>
+                {
+                    b.OwnsMany("Shopizy.Domain.Carts.Entities.LineItem", "LineItems", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("CartId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Quantity")
+                                .HasColumnType("int");
+
+                            b1.HasKey("Id", "CartId");
+
+                            b1.HasIndex("CartId");
+
+                            b1.HasIndex("ProductId");
+
+                            b1.ToTable("LineItems", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CartId");
+
+                            b1.HasOne("Shopizy.Domain.Products.Product", "Product")
+                                .WithMany()
+                                .HasForeignKey("ProductId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.Navigation("Product");
+                        });
+
+                    b.Navigation("LineItems");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Customers.Customer", b =>

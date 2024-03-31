@@ -21,19 +21,6 @@ public static partial class Constants
         public const string Barcode = "Product Barcode";
         public const int StockQuantity = 50;
         public static readonly Price Price = Price.CreateNew(100, 0);
-
-        public static readonly Domain.Products.Product NewProduct = Domain.Products.Product.Create(
-            Name,
-            Description,
-            Category.Id,
-            Sku,
-            Price,
-            Discount,
-            Brand,
-            Tags,
-            Barcode,
-            ""
-        );
     }
 
     public static class ProductImage
@@ -44,7 +31,5 @@ public static partial class Constants
         public const string ImageUrl = "https://res.cloudinary.com/test/image/upload/test";
         public const int Seq = 1;
         public const string PublicId = "publicId";
-        public static readonly Domain.Products.Entities.ProductImage NewProductImage =
-            Domain.Products.Entities.ProductImage.Create(ImageUrl, Seq, PublicId);
     }
 }

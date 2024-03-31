@@ -26,7 +26,6 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             .HasConversion(id => id.Value, value => OrderId.Create(value));
 
         builder.Property(o => o.PromoCode).HasMaxLength(15).IsRequired(false);
-        ;
         builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.OrderStatus);

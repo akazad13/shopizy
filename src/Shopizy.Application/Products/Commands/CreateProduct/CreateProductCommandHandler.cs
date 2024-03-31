@@ -3,7 +3,7 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products;
-using Shopizy.Domain.Common.Errors;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
@@ -28,7 +28,7 @@ public class CreateProductCommandHandler(IProductRepository _productRepository)
         await _productRepository.AddAsync(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
-            return Errors.Product.ProductNotCreated;
+            return CustomErrors.Product.ProductNotCreated;
 
         return product;
 
