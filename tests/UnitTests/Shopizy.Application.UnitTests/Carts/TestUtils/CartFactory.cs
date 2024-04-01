@@ -8,7 +8,7 @@ public class CartFactory
 {
     public static Cart Create()
     {
-        return Cart.Create(Constants.Customer.Id);
+        return Cart.Create(Constants.User.Id);
     }
 
     public static LineItem CreateLineItem()

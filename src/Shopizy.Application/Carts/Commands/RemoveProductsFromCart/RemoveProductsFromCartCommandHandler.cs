@@ -16,13 +16,14 @@ public class RemoveProductFromCartCommandHandler(ICartRepository _cartRepository
         if(cart is null)
             return CustomErrors.Cart.CartNotFound;
         
-        var lineItems = cart.LineItems.Where(li => cmd.ProductIds.Any(p => p.Equals(li.ProductId))).Select(li => li);
-
-        foreach (var lineItem in lineItems)
+        foreach(var productid in cmd.ProductIds)
         {
-            cart.RemoveLineItem(lineItem);
+             var lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == productid);
+             if(lineItem is not null)
+             {
+                cart.RemoveLineItem(lineItem);
+             }
         }
-
         _cartRepository.Update(cart);
         
         if (await _cartRepository.Commit(cancellationToken) <= 0)

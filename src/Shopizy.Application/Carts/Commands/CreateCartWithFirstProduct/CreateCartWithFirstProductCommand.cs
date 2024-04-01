@@ -7,5 +7,5 @@ using Shopizy.Domain.Carts;
 namespace Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 
 [Authorize(Permissions = Permission.Cart.Create, Policies = Policy.SelfOrAdmin)]
-public record CreateCartWithFirstProductCommand(Guid UserId, Guid CustomerId, Guid ProductId)
+public record CreateCartWithFirstProductCommand(Guid UserId, Guid ProductId)
     : IAuthorizeableRequest<ErrorOr<Cart>>;

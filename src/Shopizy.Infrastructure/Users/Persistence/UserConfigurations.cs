@@ -31,5 +31,8 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.Password).IsRequired(false);
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime");
+
+        builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -42,8 +42,5 @@ public sealed class CustomerConfigurations : IEntityTypeConfiguration<Customer>
         builder
             .Property(c => c.UserId)
             .HasConversion(id => id.Value, value => UserId.Create(value));
-
-        builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
-        builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

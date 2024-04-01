@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Carts.Persistence;
 
@@ -21,7 +21,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
         builder.ToTable("Carts");
         builder.HasKey(c => c.Id);
 
-        builder.HasIndex(c => c.CustomerId);
+        builder.HasIndex(c => c.UserId);
 
         builder
             .Property(c => c.Id)
@@ -32,8 +32,8 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
         builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
 
         builder
-            .Property(c => c.CustomerId)
-            .HasConversion(id => id.Value, value => CustomerId.Create(value));
+            .Property(c => c.UserId)
+            .HasConversion(id => id.Value, value => UserId.Create(value));
     }
 
     private static void ConfigureCartProductIdsTable(EntityTypeBuilder<Cart> builder)
@@ -45,6 +45,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
                 ltmb.ToTable("LineItems");
                 ltmb.WithOwner().HasForeignKey("CartId");
                 ltmb.HasKey(nameof(LineItem.Id), "CartId");
+                ltmb.HasIndex("CartId", "ProductId").IsUnique();
 
                 ltmb.Property(li => li.Id)
                     .ValueGeneratedNever()

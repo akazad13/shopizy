@@ -1,16 +1,16 @@
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Orders;
 
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly List<OrderItem> _orderItems = [];
-    public CustomerId CustomerId { get; }
+    public UserId UserId { get; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string PromoCode { get; private set; }
@@ -21,7 +21,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public static Order Create(
-        CustomerId customerId,
+        UserId userId,
         Price deliveryCharge,
         OrderStatus orderStatus,
         string promoCode,
@@ -31,7 +31,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     {
         return new Order(
             OrderId.CreateUnique(),
-            customerId,
+            userId,
             deliveryCharge,
             orderStatus,
             promoCode,
@@ -42,7 +42,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     }
     private Order(
         OrderId orderId,
-        CustomerId customerId,
+        UserId userId,
         Price deliveryCharge,
         OrderStatus orderStatus,
         string promoCode,
@@ -52,7 +52,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         DateTime modifiedOn
     ) : base(orderId)
     {
-        CustomerId = customerId;
+        UserId = userId;
         DeliveryCharge = deliveryCharge;
         OrderStatus = orderStatus;
         PromoCode = promoCode;

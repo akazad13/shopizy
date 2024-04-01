@@ -49,30 +49,25 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config
-            .NewConfig<(Guid UserId, Guid CustomerId), GetCartQuery>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.CustomerId, src => src.CustomerId);
-
+        config.NewConfig<Guid, GetCartQuery>().MapWith(src => new GetCartQuery(src));
         config
             .NewConfig<Cart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)
-            .Map(dest => dest.CustomerId, src => src.CustomerId.Value)
+            .Map(dest => dest.UserId, src => src.UserId.Value)
             .Map(dest => dest.LineItems, src => src.LineItems);
 
         config
             .NewConfig<LineItem, LineItemResponse>()
             .Map(dest => dest.LineItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)
-            .Map(dest => dest.Name, src => src.Product.Name)
-            .Map(dest => dest.Description, src => src.Product.Description)
-            .Map(dest => dest.Price, src => src.Product.UnitPrice.Amount.ToString())
-            .Map(dest => dest.Discount, src => src.Product.Name)
-            .Map(dest => dest.Brand, src => src.Product.Name)
-            .Map(dest => dest.StockQuantity, src => src.Product.StockQuantity)
+            .Map(dest => dest.Quantity, src => src.Quantity)
+            .Map(dest => dest.Product, src => src.Product)
             .Map(
-                dest => dest.ProductImages,
-                src => src.Product.ProductImages.Select(pi => pi.ImageUrl)
+                dest => dest.Product.ProductImages,
+                src =>
+                    src.Product.ProductImages == null
+                        ? null
+                        : src.Product.ProductImages.Select(pi => pi.ImageUrl)
             );
     }
 }

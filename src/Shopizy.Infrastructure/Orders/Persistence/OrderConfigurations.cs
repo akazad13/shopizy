@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Orders.Persistence;
 
@@ -50,8 +50,8 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             }
         );
         builder
-            .Property(c => c.CustomerId)
-            .HasConversion(id => id.Value, value => CustomerId.Create(value));
+            .Property(c => c.UserId)
+            .HasConversion(id => id.Value, value => UserId.Create(value));
     }
 
     private static void ConfigureOrderItemsTable(EntityTypeBuilder<Order> builder)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopizy.Infrastructure.Common.Persistence;
 
@@ -11,9 +12,11 @@ using Shopizy.Infrastructure.Common.Persistence;
 namespace shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240401075111_UpdateCartTables")]
+    partial class UpdateCartTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,12 +349,11 @@ namespace shopizy.Infrastructure.Migrations
                             b1.Property<int>("Quantity")
                                 .HasColumnType("int");
 
-                            b1.HasKey("Id", "CartId");
+                            b1.HasKey("Id", "CartId", "ProductId");
+
+                            b1.HasIndex("CartId");
 
                             b1.HasIndex("ProductId");
-
-                            b1.HasIndex("CartId", "ProductId")
-                                .IsUnique();
 
                             b1.ToTable("LineItems", (string)null);
 
