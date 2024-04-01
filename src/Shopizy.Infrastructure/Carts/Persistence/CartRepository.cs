@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.ValueObjects;
-using Shopizy.Domain.Customers.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Carts.Persistence;
@@ -17,9 +17,9 @@ public class CartRepository(AppDbContext _dbContext) : ICartRepository
     {
         return _dbContext.Carts.FirstOrDefaultAsync(c => c.Id == id);
     }
-    public Task<Cart?> GetCartByCustomerIdAsync(CustomerId id)
+    public Task<Cart?> GetCartByUserIdAsync(UserId id)
     {
-        return _dbContext.Carts.FirstOrDefaultAsync(c => c.CustomerId == id);
+        return _dbContext.Carts.Include(c => c.LineItems).ThenInclude(li => li.Product).FirstOrDefaultAsync(c => c.UserId == id);
     }
     public async Task AddAsync(Cart cart)
     {

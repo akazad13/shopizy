@@ -1,11 +1,11 @@
 using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Customers;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.ValueObjects;
+using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Payments;
 
@@ -13,8 +13,8 @@ public sealed class Payment : Entity<PaymentId>
 {
     public Order Order { get; set; } = null!;
     public OrderId OrderId { get; set; }
-    public Customer Customer { get; set; } = null!;
-    public CustomerId CustomerId { get; set; }
+    public User User { get; set; } = null!;
+    public UserId UserId { get; set; }
     public string PaymentMethod { get; private set; }
     public string TransactionId { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
@@ -24,7 +24,7 @@ public sealed class Payment : Entity<PaymentId>
     public DateTime ModifiedOn { get; private set; }
 
     public static Payment Create(
-        CustomerId customerId,
+        UserId userId,
         OrderId orderId,
         string paymentMethod,
         string transactionId,
@@ -35,7 +35,7 @@ public sealed class Payment : Entity<PaymentId>
     {
         return new Payment(
             PaymentId.CreateUnique(),
-            customerId,
+            userId,
             orderId,
             paymentMethod,
             transactionId,
@@ -49,7 +49,7 @@ public sealed class Payment : Entity<PaymentId>
 
     private Payment(
         PaymentId PaymentId,
-        CustomerId customerId,
+        UserId userId,
         OrderId orderId,
         string paymentMethod,
         string transactionId,
@@ -60,7 +60,7 @@ public sealed class Payment : Entity<PaymentId>
         DateTime modifiedOn
     ) : base(PaymentId)
     {
-        CustomerId = customerId;
+        UserId = userId;
         OrderId = orderId;
         PaymentMethod = paymentMethod;
         TransactionId = transactionId;

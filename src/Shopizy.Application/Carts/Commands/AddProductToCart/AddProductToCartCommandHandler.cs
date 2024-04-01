@@ -6,6 +6,7 @@ using Shopizy.Domain.Carts;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
@@ -18,6 +19,9 @@ public class AddProductToCartCommandHandler(ICartRepository _cartRepository, IPr
 
         if(cart is null)
             return CustomErrors.Cart.CartNotFound;
+        
+        if(cart.LineItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
+            return CustomErrors.Cart.ProductAlreadyExistInCart;
 
         var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
@@ -30,7 +34,6 @@ public class AddProductToCartCommandHandler(ICartRepository _cartRepository, IPr
         
         if (await _cartRepository.Commit(cancellationToken) <= 0)
             return CustomErrors.Cart.CartPrductNotAdded;
-        return cart;
-
+        return (await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId)))!;
     }
 }

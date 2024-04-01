@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Payments.Persistence;
 
@@ -49,13 +49,13 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             }
         );
         builder
-            .Property(p => p.CustomerId)
-            .HasConversion(id => id.Value, value => CustomerId.Create(value));
+            .Property(p => p.UserId)
+            .HasConversion(id => id.Value, value => UserId.Create(value));
         builder
             .Property(p => p.OrderId)
             .HasConversion(id => id.Value, value => OrderId.Create(value));
 
-        builder.HasOne(c => c.Customer).WithOne().OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(c => c.User).WithOne().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(c => c.Order).WithOne().OnDelete(DeleteBehavior.NoAction);
     }
 }

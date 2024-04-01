@@ -1,9 +1,11 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
+using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Contracts.Cart;
@@ -14,9 +16,9 @@ namespace Shopizy.Api.Controllers;
 public class CartController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpGet]
-    public async Task<IActionResult> GetCart(Guid userId, [FromQuery] Guid customerId)
+    public async Task<IActionResult> GetCart(Guid userId)
     {
-        var query = _mapper.Map<GetCartQuery>((userId, customerId));
+        var query = _mapper.Map<GetCartQuery>(userId);
         var result = await _mediator.Send(query);
 
         return result.Match(
@@ -49,11 +51,11 @@ public class CartController(ISender _mediator, IMapper _mapper) : ApiController
     [HttpPatch("{cartId:guid}/update-quantity")]
     public async Task<IActionResult> UpdateProductQuantity(Guid userId, Guid cartId, UpdateProductQuantityRequest request)
     {
-        var command = _mapper.Map<UpdateProductCommand>((userId, cartId, request));
+        var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, request));
         var result = await _mediator.Send(command);
 
         return result.Match(
-            product => Ok(_mapper.Map<CartResponse>(product)),
+            success => Ok(success),
             Problem);
     }
 

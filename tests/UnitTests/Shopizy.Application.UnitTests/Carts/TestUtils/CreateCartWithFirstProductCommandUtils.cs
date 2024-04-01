@@ -9,7 +9,6 @@ public static class CreateCartWithFirstProductCommandUtils
     {
         return new CreateCartWithFirstProductCommand(
             Constants.User.Id.Value,
-            Constants.Customer.Id.Value,
             Constants.Product.Id.Value
         );
     }

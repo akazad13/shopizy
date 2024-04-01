@@ -4,7 +4,7 @@ using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Domain.Customers.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Queries.GetCart;
 
@@ -29,7 +29,7 @@ public class GetCartQueryHandlerTests
         var query = GetCartQueryUtils.CreateQuery();
 
         _mockCartRepository
-            .Setup(c => c.GetCartByCustomerIdAsync(CustomerId.Create(query.CustomerId)))
+            .Setup(c => c.GetCartByUserIdAsync(UserId.Create(query.UserId)))
             .ReturnsAsync(cart);
 
         // Act

@@ -26,5 +26,10 @@ public static partial class CustomErrors
                 code: "Cart.CartPrductNotRemoved",
                 description: "Failed to remove product from Cart."
             );
+        public static Error ProductAlreadyExistInCart =>
+            Error.Failure(
+                code: "Cart.ProductAlreadyExistInCart",
+                description: "Product is already exist in Cart."
+            );
     }
 }

@@ -8,4 +8,4 @@ using Shopizy.Domain.Carts;
 namespace Shopizy.Application.Carts.Queries.GetCart;
 
 [Authorize(Permissions = Permission.Cart.Get, Policies = Policy.SelfOrAdmin)]
-public record GetCartQuery(Guid UserId, Guid CustomerId) : IRequest<ErrorOr<Cart?>>;
+public record GetCartQuery(Guid UserId) : IRequest<ErrorOr<Cart?>>;

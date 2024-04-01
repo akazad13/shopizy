@@ -6,7 +6,7 @@ using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
-using Shopizy.Domain.Customers.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.CreateCartWithFirstProduct;
 
@@ -73,9 +73,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockCartRepository.Verify(
             x =>
                 x.AddAsync(
-                    It.Is<Cart>(
-                        c => c.CustomerId.Value == command.CustomerId && c.LineItems.Count == 1
-                    )
+                    It.Is<Cart>(c => c.UserId.Value == command.UserId && c.LineItems.Count == 1)
                 ),
             Times.Once
         );
@@ -83,7 +81,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
 
         result.IsError.Should().BeFalse();
         result.Value.Should().BeOfType(typeof(Cart));
-        result.Value.CustomerId.Should().Be(CustomerId.Create(command.CustomerId));
+        result.Value.UserId.Should().Be(UserId.Create(command.UserId));
         result.Value.LineItems.Should().HaveCount(1);
         result.Value.LineItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
     }

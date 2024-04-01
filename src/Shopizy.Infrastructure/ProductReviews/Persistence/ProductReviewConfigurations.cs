@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.ProductReviews.Persistence;
 
@@ -36,8 +36,8 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
         );
 
         builder
-            .Property(pr => pr.CustomerId)
-            .HasConversion(id => id.Value, value => CustomerId.Create(value));
+            .Property(pr => pr.UserId)
+            .HasConversion(id => id.Value, value => UserId.Create(value));
         builder
             .Property(pr => pr.ProductId)
             .HasConversion(id => id.Value, value => ProductId.Create(value));

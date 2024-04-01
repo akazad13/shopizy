@@ -1,26 +1,26 @@
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.Models;
-using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Carts;
 
 public sealed class Cart : AggregateRoot<CartId, Guid>
 {
     private readonly List<LineItem> _lineItems = [];
-    public CustomerId CustomerId { get; }
+    public UserId UserId { get; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
     public IReadOnlyList<LineItem> LineItems => _lineItems.AsReadOnly();
 
     public static Cart Create(
-        CustomerId customerId
+        UserId userId
     )
     {
         return new Cart(
             CartId.CreateUnique(),
-            customerId,
+            userId,
             DateTime.UtcNow,
             DateTime.UtcNow);
     }
@@ -42,12 +42,12 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
 
     private Cart(
         CartId cartId,
-        CustomerId customerId,
+        UserId userId,
         DateTime createdOn,
         DateTime modifiedOn
     ) : base(cartId)
     {
-        CustomerId = customerId;
+        UserId = userId;
         CreatedOn = createdOn;
         ModifiedOn = modifiedOn;
     }
