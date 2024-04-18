@@ -9,9 +9,11 @@ using Shopizy.Domain.Common.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
-public class UpdateProductCommandHandler(IProductRepository _productRepository)
+public class UpdateProductCommandHandler(IProductRepository productRepository)
         : IRequestHandler<UpdateProductCommand, ErrorOr<Product>>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+
     public async Task<ErrorOr<Product>> Handle(UpdateProductCommand cmd, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));

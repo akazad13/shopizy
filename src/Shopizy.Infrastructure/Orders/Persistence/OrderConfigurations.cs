@@ -29,7 +29,6 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.OrderStatus);
-        builder.Property(o => o.PaymentStatus).HasMaxLength(20);
 
         builder.OwnsOne(
             o => o.DeliveryCharge,

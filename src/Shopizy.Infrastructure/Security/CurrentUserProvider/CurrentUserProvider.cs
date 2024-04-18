@@ -5,8 +5,10 @@ using Throw;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 
-public class CurrentUserProvider(IHttpContextAccessor _httpContextAccessor) : ICurrentUserProvider
+public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    
     public CurrentUser? GetCurrentUser()
     {
         _httpContextAccessor.HttpContext.ThrowIfNull();

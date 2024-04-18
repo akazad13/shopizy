@@ -6,9 +6,11 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandler(ICategoryRepository _categoryRepository)
+public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
         : IRequestHandler<CreateCategoryCommand, ErrorOr<Category>>
 {
+    private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    
     public async Task<ErrorOr<Category>> Handle(
         CreateCategoryCommand cmd,
         CancellationToken cancellationToken

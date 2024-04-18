@@ -18,7 +18,6 @@ namespace Shopizy.Infrastructure.Common.Persistence;
 public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
 {
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Customer> Customers { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Payment> Payments { get; set; }

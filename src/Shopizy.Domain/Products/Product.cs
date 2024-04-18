@@ -55,9 +55,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             barcode,
             tags,
             AverageRating.CreateNew(0),
-            breadCrums,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            breadCrums
         );
     }
 
@@ -111,9 +109,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string barcode,
         string tags,
         AverageRating averageRating,
-        string breadCrums,
-        DateTime createdOn,
-        DateTime modifiedOn
+        string breadCrums
     ) : base(productId)
     {
         Name = name;
@@ -128,8 +124,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Tags = tags;
         AverageRating = averageRating;
         BreadCrums = breadCrums;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

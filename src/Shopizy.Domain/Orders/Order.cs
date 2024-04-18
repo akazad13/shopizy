@@ -1,3 +1,4 @@
+using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
@@ -10,56 +11,49 @@ namespace Shopizy.Domain.Orders;
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly List<OrderItem> _orderItems = [];
-    public UserId UserId { get; }
+    public UserId UserId { get; private set;}
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string PromoCode { get; private set; }
-    public Address ShippingAddress { get; }
-    public string PaymentStatus { get; set; }
+    public Address ShippingAddress { get; private set;}
+    public PaymentStatus PaymentStatus { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime ModifiedOn { get; private set; }
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public static Order Create(
         UserId userId,
-        Price deliveryCharge,
-        OrderStatus orderStatus,
         string promoCode,
+        Price deliveryCharge,
         Address shippingAddress,
-        string paymentStatus
+        List<OrderItem> orderItems
     )
     {
         return new Order(
             OrderId.CreateUnique(),
             userId,
-            deliveryCharge,
-            orderStatus,
             promoCode,
+            deliveryCharge,
             shippingAddress,
-            paymentStatus,
-            DateTime.UtcNow,
-            DateTime.UtcNow);
+            orderItems);
     }
     private Order(
         OrderId orderId,
         UserId userId,
-        Price deliveryCharge,
-        OrderStatus orderStatus,
         string promoCode,
+        Price deliveryCharge,
         Address shippingAddress,
-        string paymentStatus,
-        DateTime createdOn,
-        DateTime modifiedOn
+        List<OrderItem> orderItems
     ) : base(orderId)
     {
         UserId = userId;
-        DeliveryCharge = deliveryCharge;
-        OrderStatus = orderStatus;
+        OrderStatus = OrderStatus.Submitted;
         PromoCode = promoCode;
+        DeliveryCharge = deliveryCharge;
         ShippingAddress = shippingAddress;
-        PaymentStatus = paymentStatus;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        _orderItems = orderItems;
+        PaymentStatus = PaymentStatus.Pending;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

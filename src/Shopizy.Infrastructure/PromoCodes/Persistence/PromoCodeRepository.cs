@@ -6,8 +6,10 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.PromoCodes.Persistence;
 
-public class PromoCodeRepository(AppDbContext _dbContext) : IPromoCodeRepository
+public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
+
     public Task<List<PromoCode>> GetPromoCodesAsync()
     {
         return _dbContext.PromoCodes.AsNoTracking().ToListAsync();

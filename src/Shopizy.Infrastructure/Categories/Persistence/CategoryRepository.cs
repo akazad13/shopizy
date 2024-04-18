@@ -8,8 +8,9 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Categories.Persistence;
 
-public class CategoryRepository(AppDbContext _dbContext) : ICategoryRepository
+public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
     public Task<bool> GetCategoryByNameAsync(string name)
     {
         return _dbContext.Categories.AnyAsync(category => category.Name == name);
