@@ -20,7 +20,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     {
         return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
-    public Task<List<Product>> GetProductsByIdsAsync(IEnumerable<ProductId> ids)
+    public Task<List<Product>> GetProductsByIdsAsync(List<ProductId> ids)
     {
         return ApplySpec(new ProductsByIdsSpec(ids)).ToListAsync();
     }

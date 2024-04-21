@@ -4,6 +4,10 @@ using Shopizy.Domain.Products;
 
 namespace Shopizy.Infrastructure.Products.Specifications;
 
-internal class ProductsByIdsSpec(IEnumerable<ProductId> ids) : Specification<Product>(product => ids.Contains(product.Id))
+internal class ProductsByIdsSpec : Specification<Product>
 {
+    public ProductsByIdsSpec(List<ProductId> ids) : base(product => ids.Contains(product.Id))
+    {
+        AddInclude(p => p.ProductImages);
+    }
 }

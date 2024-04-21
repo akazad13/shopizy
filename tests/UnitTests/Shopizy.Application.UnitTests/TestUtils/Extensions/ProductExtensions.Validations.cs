@@ -23,7 +23,7 @@ public static partial class ProductExtensions
         product.StockQuantity.Should().Be(0);
         product.Tags.Should().Be(command.Tags);
         product.CategoryId.Should().BeOfType(typeof(CategoryId));
-        product.ModifiedOn.Should().NotBeBefore(product.CreatedOn);
+        product.ModifiedOn.Should().Be(null);
     }
 
     public static void ValidateResult(this Product product, GetProductQuery query)
@@ -44,6 +44,6 @@ public static partial class ProductExtensions
         product.Barcode.Should().Be(command.Barcode);
         product.Tags.Should().Be(command.Tags);
         product.CategoryId.Should().BeOfType(typeof(CategoryId));
-        product.ModifiedOn.Should().NotBeBefore(product.CreatedOn);
+        product.ModifiedOn.Should().BeAfter(product.CreatedOn);
     }
 }

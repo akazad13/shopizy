@@ -21,7 +21,7 @@ public sealed class Payment : Entity<PaymentId>
     public Price Total { get; private set; }
     public Address BillingAddress { get; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     public static Payment Create(
         UserId userId,

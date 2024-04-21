@@ -36,7 +36,11 @@ public class LoginQueryHandler(IUserRepository userRepository, IJwtTokenGenerato
             Permission.Cart.Create,
             Permission.Cart.Get,
             Permission.Cart.Modify,
-            Permission.Cart.Delete
+            Permission.Cart.Delete,
+            Permission.Order.Create,
+            Permission.Order.Get,
+            Permission.Order.Modify,
+            Permission.Order.Delete
         };
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Phone, roles, permissions);

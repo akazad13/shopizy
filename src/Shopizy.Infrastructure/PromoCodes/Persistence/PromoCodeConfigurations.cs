@@ -29,7 +29,7 @@ public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode
         builder.Property(pc => pc.IsPerchantage).HasDefaultValue(true);
         builder.Property(pc => pc.IsActive).HasDefaultValue(true);
         builder.Property(pc => pc.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(pc => pc.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(pc => pc.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
         builder.Property(pc => pc.NumOfTimeUsed).HasDefaultValue(0);
     }
 }

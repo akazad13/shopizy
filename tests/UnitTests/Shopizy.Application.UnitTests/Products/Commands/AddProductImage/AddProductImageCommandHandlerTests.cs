@@ -29,7 +29,7 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async void AddProductImage_WhenProductIsFoundAndImageIsUploaded_ShouldAddAndReturnProductImage()
+    public async Task AddProductImage_WhenProductIsFoundAndImageIsUploaded_ShouldAddAndReturnProductImage()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();

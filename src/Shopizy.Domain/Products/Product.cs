@@ -24,7 +24,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public AverageRating AverageRating { get; private set; }
     public string BreadCrums { get; private set; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     public IReadOnlyList<ProductImage> ProductImages => _productImages.AsReadOnly();
     public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
@@ -82,6 +82,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Brand = brand;
         Barcode = barcode;
         Tags = tags;
+        ModifiedOn = DateTime.UtcNow;
     }
 
     public void AddProductImages(List<ProductImage> productImages)

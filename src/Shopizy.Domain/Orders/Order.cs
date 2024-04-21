@@ -18,7 +18,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public Address ShippingAddress { get; private set;}
     public PaymentStatus PaymentStatus { get; private set; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public static Order Create(

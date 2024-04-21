@@ -13,7 +13,7 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
     public Rating Rating { get; set; }
     public string Comment { get; set; }
     public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
 
     public static ProductReview Create(
         UserId userId,

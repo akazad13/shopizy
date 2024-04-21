@@ -49,7 +49,8 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config.NewConfig<Guid, GetCartQuery>().MapWith(src => new GetCartQuery(src));
+        config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
+
         config
             .NewConfig<Cart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)

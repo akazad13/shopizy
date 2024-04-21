@@ -11,7 +11,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     private readonly List<LineItem> _lineItems = [];
     public UserId UserId { get; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
     public IReadOnlyList<LineItem> LineItems => _lineItems.AsReadOnly();
 
     public static Cart Create(

@@ -30,7 +30,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Password).IsRequired(false);
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
         builder.Property(c => c.ProfileImageUrl).IsRequired(false);
         builder.OwnsOne(

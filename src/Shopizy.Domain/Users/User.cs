@@ -17,7 +17,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public string? Password { get; private set; }
     public Address Address { get; set; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
     public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();

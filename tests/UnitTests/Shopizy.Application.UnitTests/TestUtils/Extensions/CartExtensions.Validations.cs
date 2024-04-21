@@ -10,6 +10,5 @@ public static partial class CartExtensions
     {
         cart.UserId.Value.Should().Be(query.UserId);
         cart.LineItems.Should().HaveCount(1);
-        cart.ModifiedOn.Should().NotBeBefore(cart.CreatedOn);
     }
 }

@@ -12,7 +12,7 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
     public bool IsActive { get; set; }
     public int NumOfTimeUsed { get; set; }
     public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
 
     public static PromoCode Create(
         string code,

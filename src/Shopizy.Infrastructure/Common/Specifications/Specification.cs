@@ -2,9 +2,14 @@ using System.Linq.Expressions;
 
 namespace Shopizy.Infrastructure.Common.Specifications;
 
-public abstract class Specification<TEntity>(Expression<Func<TEntity, bool>>? criteria) where TEntity : class
+public abstract class Specification<TEntity> where TEntity : class
 {
-    public Expression<Func<TEntity, bool>>? Criteria { get; } = criteria;
+    protected Specification(){}
+    protected Specification(Expression<Func<TEntity, bool>>? criteria)
+    {
+        Criteria = criteria;
+    }
+    public Expression<Func<TEntity, bool>>? Criteria { get; }
     public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; } = [];
     public Expression<Func<TEntity, object>>? OrderByExpression { get; private set; }
     public Expression<Func<TEntity, object>>? OrderByDecendingExpression { get; private set; }
