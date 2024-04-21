@@ -6,9 +6,11 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
-public class DeleteCategoryCommandHandler(ICategoryRepository _categoryRepository)
+public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
         : IRequestHandler<DeleteCategoryCommand, ErrorOr<Success>>
 {
+    private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    
     public async Task<ErrorOr<Success>> Handle(
         DeleteCategoryCommand cmd,
         CancellationToken cancellationToken

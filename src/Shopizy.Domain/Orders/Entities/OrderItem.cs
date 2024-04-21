@@ -17,7 +17,7 @@ public sealed class OrderItem : Entity<OrderItemId>
         string pictureUrl,
         Price unitPrice,
         int quantity,
-        decimal discount
+        decimal? discount
     )
     {
         return new OrderItem(
@@ -36,14 +36,14 @@ public sealed class OrderItem : Entity<OrderItemId>
         string pictureUrl,
         Price unitPrice,
         int quantity,
-        decimal discount
+        decimal? discount
     ) : base(orderItemId)
     {
         Name = name;
         PictureUrl = pictureUrl;
         UnitPrice = unitPrice;
         Quantity = quantity;
-        Discount = discount;
+        Discount = discount ?? 0;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

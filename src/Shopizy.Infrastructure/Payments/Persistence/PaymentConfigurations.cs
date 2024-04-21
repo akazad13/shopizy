@@ -28,7 +28,7 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.TransactionId).HasMaxLength(50).IsRequired(false);
         builder.Property(p => p.PaymentStatus);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
         builder.OwnsOne(
             p => p.Total,

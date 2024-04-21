@@ -10,9 +10,12 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
-public class AddProductToCartCommandHandler(ICartRepository _cartRepository, IProductRepository _productRepository)
+public class AddProductToCartCommandHandler(ICartRepository cartRepository, IProductRepository productRepository)
         : IRequestHandler<AddProductToCartCommand, ErrorOr<Cart>>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    
     public async Task<ErrorOr<Cart>> Handle(AddProductToCartCommand cmd, CancellationToken cancellationToken)
     {
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
@@ -25,7 +28,7 @@ public class AddProductToCartCommandHandler(ICartRepository _cartRepository, IPr
 
         var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
-        if(product is false)
+        if(!product)
             return CustomErrors.Product.ProductNotFound;
         
         cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));

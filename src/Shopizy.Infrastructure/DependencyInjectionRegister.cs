@@ -69,12 +69,11 @@ public static class DependencyInjectionRegister
 
         services.AddTransient<ICloudinary, Cloudinary>(sp =>
         {
-            Account acc =
-                new(
-                    configuration.GetValue<string>("CloudinarySettings:CloudName"),
-                    configuration.GetValue<string>("CloudinarySettings:ApiKey"),
-                    configuration.GetValue<string>("CloudinarySettings:ApiSecret")
-                );
+            var acc = new Account(
+                configuration.GetValue<string>("CloudinarySettings:CloudName"),
+                configuration.GetValue<string>("CloudinarySettings:ApiKey"),
+                configuration.GetValue<string>("CloudinarySettings:ApiSecret")
+            );
             var cloudinary = new Cloudinary(acc);
             cloudinary.Api.Secure = configuration.GetValue<bool>("CloudinarySettings:Secure");
             return cloudinary;
@@ -125,7 +124,6 @@ public static class DependencyInjectionRegister
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();

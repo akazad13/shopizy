@@ -8,9 +8,12 @@ using Shopizy.Application.Products.Commands.DeleteProductImage;
 
 namespace Shopizy.Application.Products.Commands.DeleteProduct;
 
-public class DeleteProductImageCommandHandler(IProductRepository _productRepository, IMediaUploader _mediaUploader)
+public class DeleteProductImageCommandHandler(IProductRepository productRepository, IMediaUploader mediaUploader)
         : IRequestHandler<DeleteProductImageCommand, ErrorOr<Success>>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IMediaUploader _mediaUploader = mediaUploader;
+
     public async Task<ErrorOr<Success>> Handle(DeleteProductImageCommand cmd, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));

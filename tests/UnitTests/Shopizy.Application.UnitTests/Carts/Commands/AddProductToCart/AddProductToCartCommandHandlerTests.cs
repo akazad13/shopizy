@@ -74,6 +74,8 @@ public class AddProductToCartCommandHandlerTests
         _mockCartRepository.Setup(cr => cr.Update(cart));
         _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+        _mockCartRepository.Setup(cr => cr.GetCartByUserIdAsync(cart.UserId)).ReturnsAsync(cart);
+
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
@@ -95,5 +97,6 @@ public class AddProductToCartCommandHandlerTests
         );
         _mockCartRepository.Verify(cr => cr.Update(cart), Times.Once);
         _mockCartRepository.Verify(uow => uow.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(cr => cr.GetCartByUserIdAsync(cart.UserId), Times.Once);
     }
 }

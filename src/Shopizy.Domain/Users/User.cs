@@ -1,5 +1,6 @@
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Orders;
+using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Users.ValueObjects;
 
@@ -11,10 +12,12 @@ public sealed class User : AggregateRoot<UserId, Guid>
     private readonly List<ProductReview> _productReviews = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+    public string? ProfileImageUrl { get; private set; }
     public string Phone { get; private set; }
     public string? Password { get; private set; }
+    public Address Address { get; set; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
     public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
@@ -26,9 +29,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
             firstName,
             lastName,
             phone,
-            password,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            password
         );
     }
 
@@ -37,17 +38,14 @@ public sealed class User : AggregateRoot<UserId, Guid>
         string firstName,
         string lastName,
         string phone,
-        string? password,
-        DateTime createdOn,
-        DateTime modifiedOn
+        string? password
     ) : base(userId)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Password = password;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -23,7 +23,7 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async void CreateProduct_WhenProductIsValid_ShouldCreateAndReturnProduct()
+    public async Task CreateProduct_WhenProductIsValid_ShouldCreateAndReturnProduct()
     {
         // Arrange
 

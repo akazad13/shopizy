@@ -4,7 +4,7 @@ using Shopizy.Domain.Carts.Entities;
 
 namespace Shopizy.Application.UnitTests.Carts.TestUtils;
 
-public class CartFactory
+public static class CartFactory
 {
     public static Cart Create()
     {

@@ -30,7 +30,20 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Password).IsRequired(false);
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+
+        builder.Property(c => c.ProfileImageUrl).IsRequired(false);
+        builder.OwnsOne(
+            c => c.Address,
+            ab =>
+            {
+                ab.Property(ad => ad.Line).HasMaxLength(100).IsRequired(false);
+                ab.Property(ad => ad.City).HasMaxLength(30).IsRequired(false);
+                ab.Property(ad => ad.State).HasMaxLength(30).IsRequired(false);
+                ab.Property(ad => ad.Country).HasMaxLength(30).IsRequired(false);
+                ab.Property(ad => ad.ZipCode).HasMaxLength(10).IsRequired(false);
+            }
+        );
 
         builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);

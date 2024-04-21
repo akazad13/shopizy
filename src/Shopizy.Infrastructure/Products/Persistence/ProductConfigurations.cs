@@ -34,7 +34,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
         builder.Property(p => p.BreadCrums).HasMaxLength(100).IsRequired(false);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
         builder.OwnsOne(
             p => p.UnitPrice,

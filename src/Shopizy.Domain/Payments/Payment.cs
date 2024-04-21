@@ -21,7 +21,7 @@ public sealed class Payment : Entity<PaymentId>
     public Price Total { get; private set; }
     public Address BillingAddress { get; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     public static Payment Create(
         UserId userId,
@@ -41,9 +41,7 @@ public sealed class Payment : Entity<PaymentId>
             transactionId,
             paymentStatus,
             total,
-            billingAddress,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            billingAddress
         );
     }
 
@@ -55,9 +53,7 @@ public sealed class Payment : Entity<PaymentId>
         string transactionId,
         PaymentStatus paymentStatus,
         Price total,
-        Address billingAddress,
-        DateTime createdOn,
-        DateTime modifiedOn
+        Address billingAddress
     ) : base(PaymentId)
     {
         UserId = userId;
@@ -67,8 +63,7 @@ public sealed class Payment : Entity<PaymentId>
         PaymentStatus = paymentStatus;
         Total = total;
         BillingAddress = billingAddress;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        CreatedOn = DateTime.UtcNow;
     }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Payment() { }

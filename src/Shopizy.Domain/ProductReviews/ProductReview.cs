@@ -13,7 +13,7 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
     public Rating Rating { get; set; }
     public string Comment { get; set; }
     public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
 
     public static ProductReview Create(
         UserId userId,
@@ -27,9 +27,7 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
             userId,
             productId,
             rating,
-            comment,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            comment
         );
     }
 
@@ -38,17 +36,14 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
         UserId userId,
         ProductId productId,
         Rating rating,
-        string comment,
-        DateTime createdOn,
-        DateTime modifiedOn
+        string comment
     ) : base(productReviewId)
     {
         UserId = userId;
         ProductId = productId;
         Rating = rating;
         Comment = comment;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -12,7 +12,7 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
     public bool IsActive { get; set; }
     public int NumOfTimeUsed { get; set; }
     public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
 
     public static PromoCode Create(
         string code,
@@ -28,10 +28,7 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
             description,
             discount,
             isPerchantage,
-            isActive,
-            0,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            isActive
         );
     }
 
@@ -41,10 +38,7 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
         string description,
         decimal discount,
         bool isPerchantage,
-        bool isActive,
-        int numOfTimeUsed,
-        DateTime createdOn,
-        DateTime modifiedOn
+        bool isActive
     ) : base(promoCodeId)
     {
         Code = code;
@@ -52,9 +46,8 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
         Discount = discount;
         IsPerchantage = isPerchantage;
         IsActive = isActive;
-        NumOfTimeUsed = numOfTimeUsed;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        NumOfTimeUsed = 0;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

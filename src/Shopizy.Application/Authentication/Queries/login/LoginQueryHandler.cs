@@ -9,8 +9,12 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Authentication.Queries.login;
 
-public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerator _jwtTokenGenerator, IPasswordManager _passwordManager) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
+public class LoginQueryHandler(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator, IPasswordManager passwordManager) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
 {
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
+    private readonly IPasswordManager _passwordManager = passwordManager;
+
     public async Task<ErrorOr<AuthResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserByPhone(query.Phone);
@@ -32,7 +36,11 @@ public class LoginQueryHandler(IUserRepository _userRepository, IJwtTokenGenerat
             Permission.Cart.Create,
             Permission.Cart.Get,
             Permission.Cart.Modify,
-            Permission.Cart.Delete
+            Permission.Cart.Delete,
+            Permission.Order.Create,
+            Permission.Order.Get,
+            Permission.Order.Modify,
+            Permission.Order.Delete
         };
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Phone, roles, permissions);

@@ -8,9 +8,12 @@ using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.AddProductImage;
 
-public class AddProductImageCommandHandler(IProductRepository _productRepository, IMediaUploader _mediaUploader)
+public class AddProductImageCommandHandler(IProductRepository productRepository, IMediaUploader mediaUploader)
         : IRequestHandler<AddProductImageCommand, ErrorOr<ProductImage>>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IMediaUploader _mediaUploader = mediaUploader;
+    
     public async Task<ErrorOr<ProductImage>> Handle(AddProductImageCommand cmd, CancellationToken cancellationToken)
     {
         if(cmd.File is null)

@@ -1,4 +1,3 @@
-using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
-using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Contracts.Cart;
 
 namespace Shopizy.Api.Controllers;

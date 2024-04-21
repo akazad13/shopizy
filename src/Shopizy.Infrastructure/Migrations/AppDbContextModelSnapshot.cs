@@ -30,7 +30,7 @@ namespace shopizy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<Guid>("UserId")
@@ -61,31 +61,6 @@ namespace shopizy.Infrastructure.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("Shopizy.Domain.Customers.Customer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("smalldatetime");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("smalldatetime");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Customers", (string)null);
-                });
-
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -94,16 +69,14 @@ namespace shopizy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("PromoCode")
                         .HasMaxLength(15)
@@ -127,7 +100,7 @@ namespace shopizy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<Guid>("OrderId")
@@ -171,7 +144,7 @@ namespace shopizy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<Guid>("ProductId")
@@ -221,7 +194,7 @@ namespace shopizy.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<string>("Name")
@@ -279,7 +252,7 @@ namespace shopizy.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<int>("NumOfTimeUsed")
@@ -312,7 +285,7 @@ namespace shopizy.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
                     b.Property<string>("Password")
@@ -322,6 +295,9 @@ namespace shopizy.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -368,53 +344,6 @@ namespace shopizy.Infrastructure.Migrations
                         });
 
                     b.Navigation("LineItems");
-                });
-
-            modelBuilder.Entity("Shopizy.Domain.Customers.Customer", b =>
-                {
-                    b.HasOne("Shopizy.Domain.Users.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Shopizy.Domain.Customers.Customer", "UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("CustomerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("City")
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("Country")
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("Line")
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("State")
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("ZipCode")
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("Customers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
@@ -751,6 +680,45 @@ namespace shopizy.Infrastructure.Migrations
                     b.Navigation("ProductImages");
 
                     b.Navigation("UnitPrice")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
+                {
+                    b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Country")
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Line")
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("State")
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("ZipCode")
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("Address")
                         .IsRequired();
                 });
 

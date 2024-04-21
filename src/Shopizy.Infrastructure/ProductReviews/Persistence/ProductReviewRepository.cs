@@ -6,8 +6,10 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.ProductReviews.Persistence;
 
-public class ProductReviewRepository(AppDbContext _dbContext) : IProductReviewRepository
+public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
+    
     public Task<List<ProductReview>> GetProductReviewsAsync()
     {
         return _dbContext.ProductReviews.AsNoTracking().ToListAsync();

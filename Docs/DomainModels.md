@@ -24,8 +24,16 @@ class User : AggregateRoot<Guid>
     "id": "0000000-0000-0000-0000-000000000000",
     "firstName": "John",
     "lastName": "Doe",
+    "profileImageUrl" : "",
     "phone": "+3584573969860",
     "password": "xxxxxxxxxxxx",
+    "address": {
+        "street" : "",
+        "city": "",
+        "state" : "",
+        "country" : "",
+        "zipCode": ""
+    },
     "CreatedOn": "2024-01-01T00:00:00.000Z",
     "ModifiedOn": "2024-01-01T00:00:00.000Z"
 }
@@ -42,18 +50,6 @@ class Customer : AggregateRoot<Guid>
 
 ```json
 {
-    "id": "0000000-0000-0000-0000-000000000000",
-    "userId": "0000000-0000-0000-0000-000000000000",
-    "profileImageUrl" : "",
-    "createdOn": "2024-01-01T00:00:00.000Z",
-    "modifiedOn": "2024-01-01T00:00:00.000Z",
-    "address": {
-        "street" : "",
-        "city": "",
-        "state" : "",
-        "country" : "",
-        "zipCode": ""
-    },
     "orders": [
         {
             "id" : "0000000-0000-0000-0000-000000000000",

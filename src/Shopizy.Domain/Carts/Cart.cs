@@ -11,7 +11,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     private readonly List<LineItem> _lineItems = [];
     public UserId UserId { get; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
     public IReadOnlyList<LineItem> LineItems => _lineItems.AsReadOnly();
 
     public static Cart Create(
@@ -20,9 +20,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     {
         return new Cart(
             CartId.CreateUnique(),
-            userId,
-            DateTime.UtcNow,
-            DateTime.UtcNow);
+            userId);
     }
 
     public void AddLineItem(LineItem lineItem)
@@ -42,14 +40,11 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
 
     private Cart(
         CartId cartId,
-        UserId userId,
-        DateTime createdOn,
-        DateTime modifiedOn
+        UserId userId
     ) : base(cartId)
     {
         UserId = userId;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
+        CreatedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

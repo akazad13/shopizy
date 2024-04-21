@@ -8,8 +8,12 @@ using Shopizy.Domain.Users;
 
 namespace Shopizy.Application.Authentication.Commands.Register;
 
-public class RegisterCommandHandler(IUserRepository _userRepository, IJwtTokenGenerator _jwtTokenGenerator, IPasswordManager _passwordManager) : IRequestHandler<RegisterCommand, ErrorOr<AuthResult>>
+public class RegisterCommandHandler(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator, IPasswordManager passwordManager) : IRequestHandler<RegisterCommand, ErrorOr<AuthResult>>
 {
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
+    private readonly IPasswordManager _passwordManager = passwordManager;
+
     public async Task<ErrorOr<AuthResult>> Handle(
         RegisterCommand command,
         CancellationToken cancellationToken

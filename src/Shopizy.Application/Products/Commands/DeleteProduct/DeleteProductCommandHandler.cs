@@ -7,9 +7,12 @@ using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.DeleteProduct;
 
-public class DeleteProductCommandHandler(IProductRepository _productRepository, IMediaUploader _mediaUploader)
+public class DeleteProductCommandHandler(IProductRepository productRepository, IMediaUploader mediaUploader)
         : IRequestHandler<DeleteProductCommand, ErrorOr<Success>>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IMediaUploader _mediaUploader = mediaUploader;
+
     public async Task<ErrorOr<Success>> Handle(DeleteProductCommand cmd, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));

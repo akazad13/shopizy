@@ -7,8 +7,10 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Carts.Persistence;
 
-public class CartRepository(AppDbContext _dbContext) : ICartRepository
+public class CartRepository(AppDbContext dbContext) : ICartRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
+
     public Task<List<Cart>> GetCartsAsync()
     {
         return _dbContext.Carts.AsNoTracking().ToListAsync();

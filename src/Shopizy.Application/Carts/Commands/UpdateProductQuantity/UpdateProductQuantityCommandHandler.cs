@@ -7,9 +7,10 @@ using Shopizy.Domain.Carts.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
-public class UpdateProductQuantityCommandHandler(ICartRepository _cartRepository)
+public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
         : IRequestHandler<UpdateProductQuantityCommand, ErrorOr<Success>>
 {
+    private readonly ICartRepository _cartRepository = cartRepository;
     public async Task<ErrorOr<Success>> Handle(UpdateProductQuantityCommand cmd, CancellationToken cancellationToken)
     {
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));

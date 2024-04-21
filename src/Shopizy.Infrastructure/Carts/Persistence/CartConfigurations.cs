@@ -29,7 +29,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
             .HasConversion(id => id.Value, value => CartId.Create(value));
 
         builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
         builder
             .Property(c => c.UserId)

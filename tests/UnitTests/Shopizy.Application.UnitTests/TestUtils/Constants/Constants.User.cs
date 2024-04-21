@@ -10,4 +10,14 @@ public static partial class Constants
             new Guid("88d9af82-bef4-4042-8e55-b01b89f23e68")
         );
     }
+
+    public static class Address
+    {
+        public const string Line = "Line";
+        public const string City = "City";
+        public const string State = "State";
+        public const string Country = "Country";
+
+        public const string ZipCode = "ZipCode";
+    }
 }

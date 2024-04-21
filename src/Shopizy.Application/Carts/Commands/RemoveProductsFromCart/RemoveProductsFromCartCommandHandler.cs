@@ -6,9 +6,10 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
 
-public class RemoveProductFromCartCommandHandler(ICartRepository _cartRepository)
+public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
         : IRequestHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
 {
+    private readonly ICartRepository _cartRepository = cartRepository;
     public async Task<ErrorOr<Success>> Handle(RemoveProductFromCartCommand cmd, CancellationToken cancellationToken)
     {
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));

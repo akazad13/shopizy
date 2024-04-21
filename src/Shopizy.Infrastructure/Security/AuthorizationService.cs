@@ -6,8 +6,11 @@ using Shopizy.Infrastructure.Security.CurrentUserProvider;
 
 namespace Shopizy.Infrastructure.Security;
 
-public class AuthorizationService(IPolicyEnforcer _policyEnforcer, ICurrentUserProvider _currentUserProvider) : IAuthorizationService
+public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserProvider currentUserProvider) : IAuthorizationService
 {
+    private readonly IPolicyEnforcer _policyEnforcer = policyEnforcer;
+    private readonly ICurrentUserProvider _currentUserProvider = currentUserProvider;
+
     public ErrorOr<Success> AuthorizeCurrentUser<T>(IAuthorizeableRequest<T> request, List<string> requiredRoles, List<string> requiredPermissions, List<string> requiredPolicies)
     {
         var currentUser = _currentUserProvider.GetCurrentUser();

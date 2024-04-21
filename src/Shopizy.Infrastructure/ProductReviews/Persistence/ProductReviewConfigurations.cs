@@ -25,7 +25,7 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
 
         builder.Property(pr => pr.Comment).HasMaxLength(1000).IsRequired(false);
         builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime");
+        builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
         builder.OwnsOne(
             pr => pr.Rating,

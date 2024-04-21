@@ -4,7 +4,7 @@ using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
-public class ProductFactory
+public static class ProductFactory
 {
     public static Product CreateProduct()
     {

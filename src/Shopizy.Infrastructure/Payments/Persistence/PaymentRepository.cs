@@ -6,8 +6,9 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Customers.Persistence;
 
-public class PaymentRepository(AppDbContext _dbContext) : IPaymentRepository
+public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
     public Task<List<Payment>> GetPaymentsAsync()
     {
         return _dbContext.Payments.AsNoTracking().ToListAsync();
