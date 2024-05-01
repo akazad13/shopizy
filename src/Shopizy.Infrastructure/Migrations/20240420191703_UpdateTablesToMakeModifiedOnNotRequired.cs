@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +16,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -25,7 +25,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -33,7 +34,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -41,7 +43,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -49,7 +52,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "PaymentStatus",
@@ -58,7 +62,8 @@ namespace shopizy.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(20)",
-                oldMaxLength: 20);
+                oldMaxLength: 20
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -66,7 +71,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -74,7 +80,8 @@ namespace shopizy.Infrastructure.Migrations
                 type: "smalldatetime",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "smalldatetime");
+                oldType: "smalldatetime"
+            );
         }
 
         /// <inheritdoc />
@@ -88,7 +95,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -98,7 +106,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -108,7 +117,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -118,7 +128,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -128,7 +139,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "PaymentStatus",
@@ -137,7 +149,8 @@ namespace shopizy.Infrastructure.Migrations
                 maxLength: 20,
                 nullable: false,
                 oldClrType: typeof(int),
-                oldType: "int");
+                oldType: "int"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -147,7 +160,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ModifiedOn",
@@ -157,7 +171,8 @@ namespace shopizy.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "smalldatetime",
-                oldNullable: true);
+                oldNullable: true
+            );
         }
     }
 }

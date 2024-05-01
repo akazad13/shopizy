@@ -21,7 +21,7 @@ public class DeleteCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void DeleteCategory_WhenCategoryIsFound_ShouldDeleteAndReturnSuccess()
+    public async Task DeleteCategory_WhenCategoryIsFound_ShouldDeleteAndReturnSuccess()
     {
         // Arrange
         var command = DeleteCategoryCommandUtils.CreateCommand();

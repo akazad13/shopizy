@@ -1,6 +1,7 @@
 using Mapster;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
+using Shopizy.Application.Orders.Queries.ListOrders;
 using Shopizy.Contracts.Order;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;

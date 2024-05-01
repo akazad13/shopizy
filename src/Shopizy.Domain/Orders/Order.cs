@@ -14,6 +14,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public UserId UserId { get; private set;}
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
+    public string? CancellationReason { get; private set; }
     public string PromoCode { get; private set; }
     public Address ShippingAddress { get; private set;}
     public PaymentStatus PaymentStatus { get; private set; }
@@ -59,4 +60,11 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Order() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    public void CancelOrder(string reason)
+    {
+        CancellationReason = reason;
+        OrderStatus = OrderStatus.Cancelled;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }
