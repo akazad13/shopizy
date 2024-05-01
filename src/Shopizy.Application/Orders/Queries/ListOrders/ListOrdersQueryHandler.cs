@@ -3,7 +3,7 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistance;
 using Shopizy.Domain.Orders;
 
-namespace Shopizy.Application.Orders.Queries.GetOrder;
+namespace Shopizy.Application.Orders.Queries.ListOrders;
 
 public class ListOrdersQueryHandler(IOrderRepository orderRepository) : IRequestHandler<ListOrdersQuery, ErrorOr<List<Order>>>
 {

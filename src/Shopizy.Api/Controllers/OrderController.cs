@@ -2,8 +2,10 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
+using Shopizy.Application.Orders.Queries.ListOrders;
 using Shopizy.Contracts.Order;
 
 namespace Shopizy.Api.Controllers;
@@ -43,14 +45,14 @@ public class OrderController(ISender _mediator, IMapper _mapper) : ApiController
             Problem);
     }
 
-    // [HttpDelete("{orderId:guid}")]
-    // public async Task<IActionResult> CancelOrder(Guid userId, Guid orderId, RemoveProductFromCartRequest request)
-    // {
-    //     var command = _mapper.Map<RemoveProductFromCartCommand>((userId, orderId, request));
-    //     var result = await _mediator.Send(command);
+    [HttpDelete("{orderId:guid}")]
+    public async Task<IActionResult> CancelOrder(Guid userId, Guid orderId, CancelOrderRequest request)
+    {
+        var command = _mapper.Map<CancelOrderCommand>((userId, orderId, request));
+        var result = await _mediator.Send(command);
 
-    //     return result.Match(
-    //         success => Ok(success),
-    //         Problem);
-    // }
+        return result.Match(
+            success => Ok(success),
+            Problem);
+    }
 }

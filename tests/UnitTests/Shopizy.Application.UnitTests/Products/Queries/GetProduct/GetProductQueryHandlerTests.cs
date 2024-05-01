@@ -20,7 +20,7 @@ public class GetProductQueryHandlerTests
     }
 
     [Fact]
-    public async void GetProduct_WhenProductIsFound_ShouldReturnProduct()
+    public async Task GetProduct_WhenProductIsFound_ShouldReturnProduct()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();

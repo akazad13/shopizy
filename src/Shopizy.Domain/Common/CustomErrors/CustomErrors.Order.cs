@@ -13,6 +13,9 @@ public static partial class CustomErrors
         public static Error OrderNotDeleted =>
             Error.Failure(code: "Order.OrderNotDeleted", description: "Failed to delete Order.");
 
+        public static Error OrderNotCancelled =>
+            Error.Failure(code: "Order.OrderNotCancelled", description: "Failed to cancel Order.");
+
         public static Error OrderNotUpdated =>
             Error.Failure(code: "Order.OrderNotUpdated", description: "Failed to update Order.");
     }

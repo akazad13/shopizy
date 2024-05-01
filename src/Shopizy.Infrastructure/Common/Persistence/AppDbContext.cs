@@ -5,7 +5,6 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
-using Shopizy.Domain.Customers;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.ProductReviews;

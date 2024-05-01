@@ -22,7 +22,7 @@ public class GetCategoryQueryHandlerTests
     }
 
     [Fact]
-    public async void GetCategory_WhenCategoryIsFound_ShouldReturnCategory()
+    public async Task GetCategory_WhenCategoryIsFound_ShouldReturnCategory()
     {
         // Arrange
         var query = GetCategoryQueryUtils.CreateQuery();

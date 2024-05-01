@@ -61,6 +61,5 @@ public class CreateOrderCommandHandlerTests
 
         result.IsError.Should().BeFalse();
         result.Value.Should().BeOfType(typeof(Success));
-        ;
     }
 }
