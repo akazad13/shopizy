@@ -1,4 +1,3 @@
-using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +40,7 @@ public class OrderController(ISender _mediator, IMapper _mapper) : ApiController
         var result = await _mediator.Send(command);
 
         return result.Match(
-            success => Ok(_mapper.Map<Success>(success)),
+            orderId => Ok(_mapper.Map<Guid>(orderId)),
             Problem);
     }
 

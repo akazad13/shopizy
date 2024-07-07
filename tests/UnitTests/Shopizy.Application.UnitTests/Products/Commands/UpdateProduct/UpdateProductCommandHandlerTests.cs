@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;

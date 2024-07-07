@@ -1,7 +1,7 @@
 using ErrorOr;
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;

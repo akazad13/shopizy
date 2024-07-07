@@ -1,7 +1,7 @@
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
 
-namespace Shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IOrderRepository
 {

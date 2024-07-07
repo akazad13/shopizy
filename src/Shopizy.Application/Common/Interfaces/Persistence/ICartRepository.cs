@@ -2,7 +2,7 @@ using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
-namespace Shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface ICartRepository
 {

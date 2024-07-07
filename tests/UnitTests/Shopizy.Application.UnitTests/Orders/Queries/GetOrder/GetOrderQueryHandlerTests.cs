@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Orders.Queries.GetOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Orders.ValueObjects;

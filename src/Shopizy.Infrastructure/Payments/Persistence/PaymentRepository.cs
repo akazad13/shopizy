@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;

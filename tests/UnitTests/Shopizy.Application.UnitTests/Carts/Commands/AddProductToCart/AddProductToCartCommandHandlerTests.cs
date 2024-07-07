@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.ValueObjects;

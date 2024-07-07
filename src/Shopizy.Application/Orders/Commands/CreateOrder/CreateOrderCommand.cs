@@ -3,6 +3,7 @@ using Shopizy.Application.Common.Security.Request;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Orders.ValueObjects;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
@@ -14,7 +15,7 @@ public record CreateOrderCommand(
     Currency DeliveryChargeCurrency,
     List<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
-) : IAuthorizeableRequest<ErrorOr<Success>>;
+) : IAuthorizeableRequest<ErrorOr<OrderId>>;
 
 public record OrderItemCommand(Guid ProductId, int Quantity);
 
