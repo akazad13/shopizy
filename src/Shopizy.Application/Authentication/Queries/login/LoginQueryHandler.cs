@@ -19,7 +19,7 @@ public class LoginQueryHandler(IUserRepository userRepository, IJwtTokenGenerato
     {
         var user = await _userRepository.GetUserByPhone(query.Phone);
         if (user is null)
-            return CustomErrors.User.UserNotFound;
+            return CustomErrors.User.UserNotFoundWhileLogin;
         if (!_passwordManager.Verify(query.Password, user.Password!))
             return CustomErrors.Authentication.InvalidCredentials;
 
@@ -40,7 +40,11 @@ public class LoginQueryHandler(IUserRepository userRepository, IJwtTokenGenerato
             Permission.Order.Create,
             Permission.Order.Get,
             Permission.Order.Modify,
-            Permission.Order.Delete
+            Permission.Order.Delete,
+            Permission.User.Modify,
+            Permission.User.Get,
+            Permission.User.Create,
+            Permission.User.Delete
         };
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Phone, roles, permissions);

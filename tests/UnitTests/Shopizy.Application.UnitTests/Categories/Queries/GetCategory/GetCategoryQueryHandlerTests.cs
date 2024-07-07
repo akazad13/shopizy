@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Queries.GetCategory;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;

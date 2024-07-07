@@ -1,7 +1,7 @@
 using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.PromoCodes.ValueObjects;
 
-namespace Shopizy.Application.Common.Interfaces.Persistance;
+namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IPromoCodeRepository
 {

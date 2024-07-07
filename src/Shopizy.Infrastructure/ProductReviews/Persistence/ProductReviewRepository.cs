@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Shopizy.Application.Common.Interfaces.Persistance;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;

@@ -11,6 +11,11 @@ public static partial class Constants
             new Guid("88d9af82-bef4-4042-8e55-b01b89f23e68")
         );
 
+        public const string FirstName = "John";
+        public const string LastName = "Doe";
+        public const string ProfileImageUrl = "";
+        public const string Phone = "1234567890";
+        public const string Password = "password";
         public static readonly Address Address = Address.CreateNew(
             "Line",
             "City",

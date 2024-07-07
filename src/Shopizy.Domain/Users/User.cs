@@ -12,10 +12,10 @@ public sealed class User : AggregateRoot<UserId, Guid>
     private readonly List<ProductReview> _productReviews = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public string? ProfileImageUrl { get; private set; }
+    public string? ProfileImageUrl { get; }
     public string Phone { get; private set; }
     public string? Password { get; private set; }
-    public Address Address { get; set; }
+    public Address? Address { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
 
@@ -46,6 +46,12 @@ public sealed class User : AggregateRoot<UserId, Guid>
         Phone = phone;
         Password = password;
         CreatedOn = DateTime.UtcNow;
+    }
+
+    public void UpdateAddress(Address address)
+    {
+        Address = address;
+        ModifiedOn = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
