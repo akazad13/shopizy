@@ -2,10 +2,8 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shopizy.Application.Orders.Queries.ListOrders;
 using Shopizy.Application.Users.Commands.UpdateAddress;
 using Shopizy.Application.Users.Queries.GetUser;
-using Shopizy.Contracts.Order;
 using Shopizy.Contracts.User;
 
 namespace Shopizy.Api.Controllers;
