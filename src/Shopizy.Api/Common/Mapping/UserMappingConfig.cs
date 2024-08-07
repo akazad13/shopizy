@@ -1,5 +1,6 @@
 using Mapster;
 using Shopizy.Application.Users.Commands.UpdateAddress;
+using Shopizy.Application.Users.Commands.UpdatePassword;
 using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Contracts.User;
 using Shopizy.Domain.Users;
@@ -12,6 +13,11 @@ public class UserMappingConfig : IRegister
     {
         config
             .NewConfig<(Guid UserId, UpdateAddressRequest request), UpdateAddressCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest, src => src.request);
+
+        config
+            .NewConfig<(Guid UserId, UpdatePasswordRequest request), UpdatePasswordCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 

@@ -54,6 +54,12 @@ public sealed class User : AggregateRoot<UserId, Guid>
         ModifiedOn = DateTime.UtcNow;
     }
 
+    public void UpdatePassword(string password)
+    {
+        Password = password;
+        ModifiedOn = DateTime.UtcNow;
+    }
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private User() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -19,5 +19,15 @@ public static partial class CustomErrors
             Error.Failure(code: "User.UserNotCreated", description: "Failed to create User.");
         public static Error UserNotUpdated =>
             Error.NotFound(code: "User.UserNotUpdated", description: "Failed to update.");
+        public static Error PasswordNotCorrect =>
+            Error.NotFound(
+                code: "User.PasswordNotCorrect",
+                description: "Password is not correct."
+            );
+        public static Error PasswordNotUpdated =>
+            Error.NotFound(
+                code: "User.PasswordNotUpdated",
+                description: "Failed to update password."
+            );
     }
 }
