@@ -3,6 +3,7 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Users.Commands.UpdateAddress;
+using Shopizy.Application.Users.Commands.UpdatePassword;
 using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Contracts.User;
 
@@ -26,6 +27,17 @@ public class UserController(ISender _mediator, IMapper _mapper) : ApiController
     public async Task<IActionResult> UpdateUserAddress(Guid userId, UpdateAddressRequest request)
     {
         var command = _mapper.Map<UpdateAddressCommand>((userId, request));
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            orderId => Ok(_mapper.Map<Success>(orderId)),
+            Problem);
+    }
+
+    [HttpPatch("password")]
+    public async Task<IActionResult> UpdatePassword(Guid userId, UpdatePasswordRequest request)
+    {
+        var command = _mapper.Map<UpdatePasswordCommand>((userId, request));
         var result = await _mediator.Send(command);
 
         return result.Match(
