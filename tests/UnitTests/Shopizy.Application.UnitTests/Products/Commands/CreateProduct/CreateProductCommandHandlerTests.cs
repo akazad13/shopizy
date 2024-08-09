@@ -23,7 +23,7 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task CreateProduct_WhenProductIsValid_ShouldCreateAndReturnProduct()
+    public async Task CreateProduct_WhenProductIsValid_CreateAndReturnProduct()
     {
         // Arrange
 
@@ -45,7 +45,7 @@ public class CreateProductCommandHandlerTests
 
     // [Theory]
     // [MemberData(nameof(ValidCreateProductCommands))]
-    // public async void CreateProductCommand_WhenProductIsValid_ShouldCreateAndReturnProduct1(
+    // public async Task CreateProductCommand_WhenProductIsValid_CreateAndReturnProduct1(
     //     CreateProductCommand createProductCommand
     // )
     // {

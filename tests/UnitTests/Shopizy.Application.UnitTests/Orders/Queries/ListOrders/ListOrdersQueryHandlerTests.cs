@@ -18,7 +18,7 @@ public class ListOrdersQueryHandlerTests
     }
 
     [Fact]
-    public async Task ListOrders_WhenEverythingOkay_ShouldReturnOrderList()
+    public async Task ListOrders_WhenEverythingOkay_ReturnOrderList()
     {
         // Arrange
         var Order = OrderFactory.CreateOrder();

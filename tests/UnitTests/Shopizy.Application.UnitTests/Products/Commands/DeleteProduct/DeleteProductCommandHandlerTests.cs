@@ -25,7 +25,7 @@ public class DeleteProductCommandHandlerTests
     }
 
     [Fact]
-    public async void DeleteProduct_WhenProductIsFound_ShouldDeleteAndReturnSuccess()
+    public async Task DeleteProduct_WhenProductIsFound_DeleteAndReturnSuccess()
     {
         // Arrange
 

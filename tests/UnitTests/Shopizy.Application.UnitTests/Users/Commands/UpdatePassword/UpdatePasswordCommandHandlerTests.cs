@@ -26,7 +26,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task UpdatePassword_WhenUserIsNotFound_ShouldReturnError()
+    public async Task UpdatePassword_WhenUserIsNotFound_ReturnError()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -52,7 +52,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task UpdatePassword_WhenPasswordIsNotMatched_ShouldReturnError()
+    public async Task UpdatePassword_WhenPasswordIsNotMatched_ReturnError()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -82,7 +82,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task UpdatePassword_WhenUserIsFound_ShouldUpdateAndReturnSuccess()
+    public async Task UpdatePassword_WhenUserIsFound_UpdateAndReturnSuccess()
     {
         // Arrange
         var user = UserFactory.CreateUser();

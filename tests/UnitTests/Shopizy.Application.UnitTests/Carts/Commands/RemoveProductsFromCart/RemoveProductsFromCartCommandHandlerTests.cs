@@ -21,13 +21,12 @@ public class RemoveProductsFromCartCommandHandlerTests
     }
 
     [Fact]
-    public async void RemoveProductsFromCart_WhenCartIsNoFound_ReturnsCartNotFound()
+    public async Task RemoveProductsFromCart_WhenCartIsNoFound_ReturnsCartNotFound()
     {
         // Arrange
 
         var command = RemoveProductsFromCartCommandUtils.CreateCommand();
         var cart = CartFactory.Create();
-        ;
 
         _mockCartRepository
             .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId)))
@@ -49,7 +48,7 @@ public class RemoveProductsFromCartCommandHandlerTests
     }
 
     [Fact]
-    public async void RemoveProductsFromCart_WhenCartIsFound_ShouldRemoveProductsAndReturnSuccess()
+    public async Task RemoveProductsFromCart_WhenCartIsFound_RemoveProductsAndReturnSuccess()
     {
         // Arrange
 

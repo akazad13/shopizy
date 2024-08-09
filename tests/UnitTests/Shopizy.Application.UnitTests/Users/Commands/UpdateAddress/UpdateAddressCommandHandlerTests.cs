@@ -19,7 +19,7 @@ public class UpdateAddressCommandHandlerTests
     }
 
     [Fact]
-    public async Task UpdateAddress_WhenUserIsFound_ShouldUpdateReturnSuccess()
+    public async Task UpdateAddress_WhenUserIsFound_UpdateReturnSuccess()
     {
         // Arrange
         var user = UserFactory.CreateUser();

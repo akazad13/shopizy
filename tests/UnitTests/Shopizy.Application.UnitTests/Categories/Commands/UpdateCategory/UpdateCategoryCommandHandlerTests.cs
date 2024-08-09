@@ -21,7 +21,7 @@ public class UpdateCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void UpdateCategory_WhenCategoryIsFound_ShouldUpdateAndReturnCategory()
+    public async Task UpdateCategory_WhenCategoryIsFound_UpdateAndReturnCategory()
     {
         // Arrange
         var command = UpdateCategoryCommandUtils.CreateCommand();

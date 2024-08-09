@@ -20,7 +20,7 @@ public class GetCartQueryHandlerTests
     }
 
     [Fact]
-    public async Task GetCart_WhenCartIsFound_ShouldReturnCart()
+    public async Task GetCart_WhenCartIsFound_ReturnCart()
     {
         // Arrange
         var cart = CartFactory.Create();

@@ -57,7 +57,7 @@ public class AddProductToCartCommandHandlerTests
     }
 
     [Fact]
-    public async Task AddProductToCart_GivenExistingCartAndValidProductId_ShouldAddProductAndReturnCartWithCorrectLineItem()
+    public async Task AddProductToCart_GivenExistingCartAndValidProductId_AddProductAndReturnCart()
     {
         // Arrange
         var cart = CartFactory.Create();
