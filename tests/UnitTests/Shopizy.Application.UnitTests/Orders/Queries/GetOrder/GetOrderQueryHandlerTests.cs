@@ -19,7 +19,7 @@ public class GetOrderQueryHandlerTests
     }
 
     [Fact]
-    public async Task GetOrder_WhenOrderIsFound_ShouldReturnOrder()
+    public async Task GetOrder_WhenOrderIsFound_ReturnOrder()
     {
         // Arrange
         var order = OrderFactory.CreateOrder();

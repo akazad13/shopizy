@@ -20,7 +20,7 @@ public class GetProductQueryHandlerTests
     }
 
     [Fact]
-    public async Task GetProduct_WhenProductIsFound_ShouldReturnProduct()
+    public async Task GetProduct_WhenProductIsFound_ReturnProduct()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();
@@ -38,7 +38,7 @@ public class GetProductQueryHandlerTests
     }
 
     // [Fact]
-    // public async Task Handle_GivenValidRequest_ShouldReturnProducts()
+    // public async Task Handle_GivenValidRequestReturnProducts()
     // {
     //     // Arrange
     //     var products = new List<Product>()

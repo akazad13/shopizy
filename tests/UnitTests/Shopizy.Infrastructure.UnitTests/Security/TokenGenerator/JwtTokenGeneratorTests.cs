@@ -28,7 +28,7 @@ public class JwtTokenGeneratorTests
     }
 
     [Fact]
-    public void GenerateToken_WhenCalled_ShouldCreateTokenWithCorrectClaims()
+    public void GenerateToken_WhenCalled_CreateTokenWithCorrectClaims()
     {
         // Arrange
         var userId = UserId.CreateUnique();

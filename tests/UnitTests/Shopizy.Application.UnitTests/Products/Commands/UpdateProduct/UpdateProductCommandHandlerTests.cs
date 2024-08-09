@@ -20,7 +20,7 @@ public class UpdateProductCommandHandlerTests
     }
 
     [Fact]
-    public async void UpdateProduct_WhenProductIsFound_ShouldCreateAndReturnProduct()
+    public async Task UpdateProduct_WhenProductIsFound_CreateAndReturnProduct()
     {
         // Arrange
         var command = UpdateProductCommandUtils.CreateCommand();

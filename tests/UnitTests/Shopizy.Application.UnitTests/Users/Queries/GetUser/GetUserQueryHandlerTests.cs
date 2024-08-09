@@ -19,7 +19,7 @@ public class GetUserQueryHandlerTests
     }
 
     [Fact]
-    public async Task GetUSer_WhenUserIsFound_ShouldReturnUser()
+    public async Task GetUSer_WhenUserIsFound_ReturnUser()
     {
         // Arrange
         var user = UserFactory.CreateUser();

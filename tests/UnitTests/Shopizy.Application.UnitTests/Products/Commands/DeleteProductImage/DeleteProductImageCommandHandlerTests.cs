@@ -26,7 +26,7 @@ public class DeleteProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async void DeleteProductImage_WhenProductIsFoundAndImageIsFound_ShouldDeleteAndReturnSuccess()
+    public async Task DeleteProductImage_WhenProductIsFoundAndImageIsFound_DeleteAndReturnSuccess()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();

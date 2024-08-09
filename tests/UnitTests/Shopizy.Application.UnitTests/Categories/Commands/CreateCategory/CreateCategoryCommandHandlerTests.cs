@@ -20,7 +20,7 @@ public class CreateCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void CreateCategory_WhenCategoryIsValid_ShouldCrateAndReturnCategory()
+    public async Task CreateCategory_WhenCategoryIsValid_CrateAndReturnCategory()
     {
         // Arrange
         var createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
@@ -39,7 +39,7 @@ public class CreateCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void CreateCategory_WhenCategoryNameIsExist_ShouldReturnDuplicateCategoryError()
+    public async Task CreateCategory_WhenCategoryNameIsExist_ReturnDuplicateCategoryError()
     {
         // Arrange
         var command = CreateCategoryCommandUtils.CreateCommand();
@@ -59,7 +59,7 @@ public class CreateCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async void CreateCategory_WhenCategorySaveFailed_ShouldReturnCategoryNotCreatedError()
+    public async Task CreateCategory_WhenCategorySaveFailed_ReturnCategoryNotCreatedError()
     {
         // Arrange
         var command = CreateCategoryCommandUtils.CreateCommand();

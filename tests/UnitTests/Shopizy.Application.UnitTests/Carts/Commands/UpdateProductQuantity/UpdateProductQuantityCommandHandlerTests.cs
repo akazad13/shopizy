@@ -21,7 +21,7 @@ public class UpdateProductQuantityCommandHandlerTests
     }
 
     [Fact]
-    public async void UpdateProductQuantity_WhenCartIsNoFound_ReturnsCartNotFound()
+    public async Task UpdateProductQuantity_WhenCartIsNoFound_ReturnsCartNotFound()
     {
         // Arrange
 
@@ -48,7 +48,7 @@ public class UpdateProductQuantityCommandHandlerTests
     }
 
     [Fact]
-    public async void UpdateProductQuantity_WhenCartIsFound_ShouldUpdateProductQuantityAndReturnSuccess()
+    public async Task UpdateProductQuantity_WhenCartIsFound_UpdateProductQuantityAndReturnSuccess()
     {
         // Arrange
 
