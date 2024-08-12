@@ -11,6 +11,7 @@ using Shopizy.Contracts.Category;
 
 namespace Shopizy.Api.Controllers;
 
+[Route("api/v1.0")]
 public class CategoryController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpGet("categories")]

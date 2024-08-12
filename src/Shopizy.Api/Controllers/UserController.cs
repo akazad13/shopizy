@@ -9,7 +9,7 @@ using Shopizy.Contracts.User;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/users/{userId:guid}")]
+[Route("api/v1.0/users/{userId:guid}")]
 public class UserController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpGet]

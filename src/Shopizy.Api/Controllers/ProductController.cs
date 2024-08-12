@@ -13,6 +13,7 @@ using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Controllers;
 
+[Route("api/v1.0")]
 public class ProductController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpGet("products")]

@@ -10,7 +10,7 @@ using Shopizy.Contracts.Cart;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/users/{userId:guid}/carts")]
+[Route("api/v1.0/users/{userId:guid}/carts")]
 public class CartController(ISender _mediator, IMapper _mapper) : ApiController
 {
     [HttpGet]
