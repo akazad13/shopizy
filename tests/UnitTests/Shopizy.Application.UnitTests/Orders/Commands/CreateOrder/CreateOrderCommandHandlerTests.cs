@@ -5,7 +5,6 @@ using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Orders;
-using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Orders.Commands.CreateOrder;
@@ -60,6 +59,6 @@ public class CreateOrderCommandHandlerTests
         _mockOrderRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
 
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(OrderId));
+        result.Value.Should().BeOfType(typeof(Order));
     }
 }

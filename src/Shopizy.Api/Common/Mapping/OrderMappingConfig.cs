@@ -1,4 +1,5 @@
 using Mapster;
+using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
 using Shopizy.Application.Orders.Queries.ListOrders;
@@ -37,6 +38,17 @@ public class OrderMappingConfig : IRegister
 
         config.NewConfig<Guid, ListOrdersQuery>().MapWith(userId => new ListOrdersQuery(userId));
 
-        config.NewConfig<OrderItem, OrderItemResponse>();
+        config
+            .NewConfig<OrderItem, OrderItemResponse>()
+            .Map(dest => dest.OrderItemId, src => src.Id.Value);
+
+        config
+            .NewConfig<
+                (Guid UserId, Guid OrderId, CancelOrderRequest request),
+                CancelOrderCommand
+            >()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.OrderId, src => src.OrderId)
+            .Map(dest => dest.Reason, src => src.request.Reason);
     }
 }

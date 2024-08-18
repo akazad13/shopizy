@@ -49,4 +49,14 @@ public sealed class OrderItem : Entity<OrderItemId>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private OrderItem() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    public Price TotalPrice()
+    {
+        return Price.CreateNew(UnitPrice.Amount * Quantity, UnitPrice.Currency);
+    }
+
+    public Price TotalDiscount()
+    {
+        return Price.CreateNew((Discount / 100) * Quantity, UnitPrice.Currency);
+    }
 }

@@ -1,4 +1,4 @@
-using shopizy.Domain.Payments.Enums;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
@@ -66,5 +66,15 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
         ModifiedOn = DateTime.UtcNow;
+    }
+
+    public Price GetTotal()
+    {
+        var totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
+        var totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
+
+        var chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
+
+        return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }
 }

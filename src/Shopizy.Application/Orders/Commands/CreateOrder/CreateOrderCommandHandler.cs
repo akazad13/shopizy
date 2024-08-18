@@ -11,12 +11,12 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
-public class CreateOrderCommandHandler(IProductRepository productRepository, IOrderRepository orderRepository) : IRequestHandler<CreateOrderCommand, ErrorOr<OrderId>>
+public class CreateOrderCommandHandler(IProductRepository productRepository, IOrderRepository orderRepository) : IRequestHandler<CreateOrderCommand, ErrorOr<Order>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public async Task<ErrorOr<OrderId>> Handle(
+    public async Task<ErrorOr<Order>> Handle(
         CreateOrderCommand request,
         CancellationToken cancellationToken
     )
@@ -57,6 +57,6 @@ public class CreateOrderCommandHandler(IProductRepository productRepository, IOr
         if (await _orderRepository.Commit(cancellationToken) <= 0)
             return CustomErrors.Order.OrderNotCreated;
 
-        return order.Id;
+        return order;
     }
 }

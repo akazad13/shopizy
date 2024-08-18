@@ -24,6 +24,9 @@ using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Shopizy.Infrastructure.Carts.Persistence;
+using Stripe;
+using Stripe.Checkout;
+using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 namespace Shopizy.Infrastructure;
 
@@ -68,7 +71,7 @@ public static class DependencyInjectionRegister
 
         services.AddTransient<ICloudinary, Cloudinary>(sp =>
         {
-            var acc = new Account(
+            var acc = new CloudinaryDotNet.Account(
                 configuration.GetValue<string>("CloudinarySettings:CloudName"),
                 configuration.GetValue<string>("CloudinarySettings:ApiKey"),
                 configuration.GetValue<string>("CloudinarySettings:ApiSecret")
@@ -78,6 +81,14 @@ public static class DependencyInjectionRegister
             return cloudinary;
         });
         services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
+
+        services.AddScoped<IPaymentService, StripeService>();
+        services.AddScoped<TokenService>();
+        services.AddScoped<CustomerService>();
+        services.AddScoped<ChargeService>();
+        services.AddScoped<SessionService>();
+
+        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
         return services;
     }

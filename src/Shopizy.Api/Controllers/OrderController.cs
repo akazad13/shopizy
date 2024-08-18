@@ -40,7 +40,7 @@ public class OrderController(ISender _mediator, IMapper _mapper) : ApiController
         var result = await _mediator.Send(command);
 
         return result.Match(
-            orderId => Ok(_mapper.Map<Guid>(orderId)),
+            order => Ok(_mapper.Map<OrderResponse>(order)),
             Problem);
     }
 

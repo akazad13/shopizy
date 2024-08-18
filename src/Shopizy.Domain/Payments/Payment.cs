@@ -1,4 +1,4 @@
-using shopizy.Domain.Payments.Enums;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
