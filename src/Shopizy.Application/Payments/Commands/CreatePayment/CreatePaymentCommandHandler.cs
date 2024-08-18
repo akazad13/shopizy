@@ -10,8 +10,12 @@ using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Payments.Commands.CreatePayment;
-public class CreateOrderCommandHandler(IPaymentRepository paymentRepository, IOrderRepository orderRepository, IPaymentService paymentService) 
-    : IRequestHandler<CreatePaymentCommand, ErrorOr<CheckoutSession>>
+
+public class CreateOrderCommandHandler(
+    IPaymentRepository paymentRepository,
+    IOrderRepository orderRepository,
+    IPaymentService paymentService
+) : IRequestHandler<CreatePaymentCommand, ErrorOr<CheckoutSession>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
@@ -24,24 +28,38 @@ public class CreateOrderCommandHandler(IPaymentRepository paymentRepository, IOr
     {
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
-        if(order is null)
+        if (order is null)
             return CustomErrors.Order.OrderNotFound;
 
         var total = order.GetTotal();
 
-        var payment = Payment.Create(UserId.Create(request.UserId), OrderId.Create(request.OrderId), "", "", PaymentStatus.Pending, total, order.ShippingAddress);
+        var payment = Payment.Create(
+            UserId.Create(request.UserId),
+            OrderId.Create(request.OrderId),
+            "",
+            "",
+            PaymentStatus.Pending,
+            total,
+            order.ShippingAddress
+        );
 
-        // await _paymentRepository.AddAsync(payment);
+        await _paymentRepository.AddAsync(payment);
 
-        // if(await _paymentRepository.Commit(cancellationToken) <=0) 
-        // {
-        //     return CustomErrors.Payment.PaymentNotCreated;
-        // }
+        if (await _paymentRepository.Commit(cancellationToken) <= 0)
+        {
+            return CustomErrors.Payment.PaymentNotCreated;
+        }
 
         var successUrl = "http://localhost:5054/success";
         var cancelUrl = "http://localhost:5054/cancel";
 
-        var checkoutSession = await _paymentService.CreateCheckoutSession("", total.Amount, successUrl, cancelUrl, cancellationToken);
+        var checkoutSession = await _paymentService.CreateCheckoutSession(
+            "",
+            total.Amount,
+            successUrl,
+            cancelUrl,
+            cancellationToken
+        );
 
         return checkoutSession;
     }

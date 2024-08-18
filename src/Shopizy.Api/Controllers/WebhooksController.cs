@@ -33,7 +33,7 @@ public class Webhooks(ISender _mediator, IMapper _mapper) : ApiController
 
         if (stripeEvent.Type == Events.PaymentIntentSucceeded)
         {
-           // Some code here
+            // Some code here
         }
         else if (stripeEvent.Type == Events.CustomerCreated)
         {

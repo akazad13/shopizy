@@ -7,13 +7,14 @@ using Shopizy.Application.Products.Common;
 
 namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 
-public class CloudinaryMediaUploader(
-    ICloudinary cloudinary
-    ) : IMediaUploader
+public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 {
     private readonly ICloudinary _cloudinary = cloudinary;
 
-    public async Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(IFormFile file, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
+        IFormFile file,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -23,13 +24,16 @@ public class CloudinaryMediaUploader(
                 var uploadParams = new ImageUploadParams()
                 {
                     File = new FileDescription(file.Name, stream),
-                    Transformation = new Transformation().Width(500).Height(500).Crop("fill")
+                    Transformation = new Transformation().Width(500).Height(500).Crop("fill"),
                 };
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
 
                 return uploadResult.Error switch
                 {
-                    null => new PhotoUploadResult(uploadResult.Url.ToString(), uploadResult.PublicId),
+                    null => new PhotoUploadResult(
+                        uploadResult.Url.ToString(),
+                        uploadResult.PublicId
+                    ),
                     _ => ErrorOr.Error.Failure(description: uploadResult.Error.Message),
                 };
             }

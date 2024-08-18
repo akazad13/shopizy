@@ -15,8 +15,6 @@ public class PaymentController(ISender _mediator, IMapper _mapper) : ApiControll
         var command = _mapper.Map<CreatePaymentCommand>((userId, request));
         var result = await _mediator.Send(command);
 
-        return result.Match(
-            Payment => Ok(_mapper.Map<PaymentResponse>(Payment)),
-            Problem);
+        return result.Match(Payment => Ok(_mapper.Map<PaymentResponse>(Payment)), Problem);
     }
 }

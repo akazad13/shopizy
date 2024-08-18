@@ -16,9 +16,7 @@ public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiC
         var command = _mapper.Map<RegisterCommand>(request);
         var authResult = await _mediator.Send(command);
 
-        return authResult.Match(
-            authResult => Ok(_mapper.Map<AuthResponse>(authResult)),
-            Problem);
+        return authResult.Match(authResult => Ok(_mapper.Map<AuthResponse>(authResult)), Problem);
     }
 
     [HttpPost("login")]
@@ -27,8 +25,6 @@ public class AuthenticationController(ISender _mediator, IMapper _mapper) : ApiC
         var query = _mapper.Map<LoginQuery>(request);
         var authResult = await _mediator.Send(query);
 
-        return authResult.Match(
-            authResult => Ok(_mapper.Map<AuthResponse>(authResult)),
-            Problem);
+        return authResult.Match(authResult => Ok(_mapper.Map<AuthResponse>(authResult)), Problem);
     }
 }

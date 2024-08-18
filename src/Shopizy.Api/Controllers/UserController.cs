@@ -18,9 +18,7 @@ public class UserController(ISender _mediator, IMapper _mapper) : ApiController
         var query = _mapper.Map<GetUserQuery>(UserId);
         var result = await _mediator.Send(query);
 
-        return result.Match(
-            user => Ok(_mapper.Map<UserDetails>(user)),
-            Problem);
+        return result.Match(user => Ok(_mapper.Map<UserDetails>(user)), Problem);
     }
 
     [HttpPatch("address")]
@@ -29,9 +27,7 @@ public class UserController(ISender _mediator, IMapper _mapper) : ApiController
         var command = _mapper.Map<UpdateAddressCommand>((userId, request));
         var result = await _mediator.Send(command);
 
-        return result.Match(
-            orderId => Ok(_mapper.Map<Success>(orderId)),
-            Problem);
+        return result.Match(orderId => Ok(_mapper.Map<Success>(orderId)), Problem);
     }
 
     [HttpPatch("password")]
@@ -40,8 +36,6 @@ public class UserController(ISender _mediator, IMapper _mapper) : ApiController
         var command = _mapper.Map<UpdatePasswordCommand>((userId, request));
         var result = await _mediator.Send(command);
 
-        return result.Match(
-            orderId => Ok(_mapper.Map<Success>(orderId)),
-            Problem);
+        return result.Match(orderId => Ok(_mapper.Map<Success>(orderId)), Problem);
     }
 }
