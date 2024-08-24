@@ -37,7 +37,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             c => c.Address,
             ab =>
             {
-                ab.Property(ad => ad.Line).HasMaxLength(100).IsRequired(false);
+                ab.Property(ad => ad.Street).HasMaxLength(100).IsRequired(false);
                 ab.Property(ad => ad.City).HasMaxLength(30).IsRequired(false);
                 ab.Property(ad => ad.State).HasMaxLength(30).IsRequired(false);
                 ab.Property(ad => ad.Country).HasMaxLength(30).IsRequired(false);

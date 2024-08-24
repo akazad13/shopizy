@@ -7,7 +7,8 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Commands.UpdateAddress;
 
-public class UpdateAddressCommandHandler(IUserRepository userRepository) : IRequestHandler<UpdateAddressCommand, ErrorOr<Success>>
+public class UpdateAddressCommandHandler(IUserRepository userRepository)
+    : IRequestHandler<UpdateAddressCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
 
@@ -16,20 +17,22 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository) : IRequ
         CancellationToken cancellationToken
     )
     {
-         var user = await _userRepository.GetUserById( UserId.Create(request.UserId ));
-        if(user is null)
+        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        if (user is null)
             return CustomErrors.User.UserNotFound;
 
-        user.UpdateAddress( Address.CreateNew(
-                line: request.Line,
+        user.UpdateAddress(
+            Address.CreateNew(
+                street: request.Street,
                 city: request.City,
                 state: request.State,
                 country: request.Country,
                 zipCode: request.ZipCode
-            ));
+            )
+        );
 
         _userRepository.Update(user);
-        
+
         if (await _userRepository.Commit(cancellationToken) <= 0)
             return CustomErrors.User.UserNotUpdated;
 

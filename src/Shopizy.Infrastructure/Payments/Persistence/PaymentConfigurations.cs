@@ -41,7 +41,7 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             p => p.BillingAddress,
             ab =>
             {
-                ab.Property(ad => ad.Line).HasMaxLength(100);
+                ab.Property(ad => ad.Street).HasMaxLength(100);
                 ab.Property(ad => ad.City).HasMaxLength(30);
                 ab.Property(ad => ad.State).HasMaxLength(30);
                 ab.Property(ad => ad.Country).HasMaxLength(30);

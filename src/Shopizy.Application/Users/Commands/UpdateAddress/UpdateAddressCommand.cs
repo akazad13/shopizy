@@ -8,7 +8,7 @@ namespace Shopizy.Application.Users.Commands.UpdateAddress;
 [Authorize(Permissions = Permission.User.Modify, Policies = Policy.SelfOrAdmin)]
 public record UpdateAddressCommand(
     Guid UserId,
-    string Line,
+    string Street,
     string City,
     string State,
     string Country,

@@ -9,7 +9,7 @@ public static class UpdateAddressCommandUtils
     {
         return new UpdateAddressCommand(
             Constants.User.Id.Value,
-            Constants.User.Address.Line,
+            Constants.User.Address.Street,
             Constants.User.Address.City,
             Constants.User.Address.State,
             Constants.User.Address.Country,

@@ -10,7 +10,20 @@ public static class CreateOrderCommandUtils
     {
         var orderItem1 = new OrderItemCommand(productId.Value, 1);
         // var orderItem2 = new OrderItemCommand(Constants.Product.Id.Value, 4);
-        var addressCommand = new AddressCommand(Constants.User.Address.Line, Constants.User.Address.City, Constants.User.Address.State, Constants.User.Address.Country, Constants.User.Address.ZipCode);
-        return new CreateOrderCommand(Constants.User.Id.Value, Constants.Order.PromoCode, Constants.Order.DeliveryCharge.Amount, Constants.Order.DeliveryCharge.Currency, [orderItem1], addressCommand);
+        var addressCommand = new AddressCommand(
+            Constants.User.Address.Street,
+            Constants.User.Address.City,
+            Constants.User.Address.State,
+            Constants.User.Address.Country,
+            Constants.User.Address.ZipCode
+        );
+        return new CreateOrderCommand(
+            Constants.User.Id.Value,
+            Constants.Order.PromoCode,
+            Constants.Order.DeliveryCharge.Amount,
+            Constants.Order.DeliveryCharge.Currency,
+            [orderItem1],
+            addressCommand
+        );
     }
 }

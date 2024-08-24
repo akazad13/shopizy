@@ -11,4 +11,4 @@ public record Price(decimal Amount, int Currency);
 
 public record OrderItemRequest(Guid ProductId, int Quantity);
 
-public record Address(string Line, string City, string State, string Country, string ZipCode);
+public record Address(string Street, string City, string State, string Country, string ZipCode);

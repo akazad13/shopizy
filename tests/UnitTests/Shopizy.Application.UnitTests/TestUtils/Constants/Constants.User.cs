@@ -18,7 +18,7 @@ public static partial class Constants
         public const string Password = "password";
         public const string NewPassword = "password";
         public static readonly Address Address = Address.CreateNew(
-            "Line",
+            "Street",
             "City",
             "State",
             "Country",
