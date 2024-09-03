@@ -24,7 +24,7 @@ public class LoginQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var user = await _userRepository.GetUserByPhone(query.Phone);
+        Domain.Users.User? user = await _userRepository.GetUserByPhone(query.Phone);
         if (user is null)
         {
             return CustomErrors.User.UserNotFoundWhileLogin;
@@ -60,7 +60,7 @@ public class LoginQueryHandler(
             Permissions.User.Delete,
         };
 
-        var token = _jwtTokenGenerator.GenerateToken(
+        string token = _jwtTokenGenerator.GenerateToken(
             user.Id,
             user.FirstName,
             user.LastName,

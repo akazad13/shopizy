@@ -6,16 +6,16 @@ using Stripe;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/webhooks")]
-public class Webhooks(ISender _mediator, IMapper _mapper) : ApiController
+public class Webhooks : ApiController
 {
     [HttpPost("stripe-webhook")]
-    public async Task<IActionResult> StripeWebhook()
+    public async Task<IActionResult> StripeWebhookAsync()
     {
-        var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+        string json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
         Event stripeEvent;
         try
         {
-            var webhookSecret = "StripeWebhookSecret";
+            string webhookSecret = "StripeWebhookSecret";
             stripeEvent = EventUtility.ConstructEvent(
                 json,
                 Request.Headers["Stripe-Signature"].ToString(),
@@ -37,7 +37,7 @@ public class Webhooks(ISender _mediator, IMapper _mapper) : ApiController
         }
         else if (stripeEvent.Type == Events.CustomerCreated)
         {
-            if (stripeEvent.Data.Object is Customer customer)
+            if (stripeEvent.Data.Object is Customer)
             {
                 // var result = await _accountService.UpdateStripeCustomerId(
                 //     customer.Email,

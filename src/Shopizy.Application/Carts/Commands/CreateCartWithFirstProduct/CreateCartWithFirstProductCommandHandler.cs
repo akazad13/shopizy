@@ -16,7 +16,7 @@ public class CreateCartWithFirstProductCommandHandler(IProductRepository product
     private readonly ICartRepository _cartRepository = cartRepository;
     public async Task<ErrorOr<Cart>> Handle(CreateCartWithFirstProductCommand cmd, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
+        bool product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
         if (!product)
         {

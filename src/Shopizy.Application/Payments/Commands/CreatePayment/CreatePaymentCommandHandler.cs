@@ -26,14 +26,14 @@ public class CreateOrderCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+        Domain.Orders.Order? order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
         if (order is null)
         {
             return CustomErrors.Order.OrderNotFound;
         }
 
-        var total = order.GetTotal();
+        Domain.Common.ValueObjects.Price total = order.GetTotal();
 
         var payment = Payment.Create(
             UserId.Create(request.UserId),
@@ -52,10 +52,10 @@ public class CreateOrderCommandHandler(
             return CustomErrors.Payment.PaymentNotCreated;
         }
 
-        var successUrl = "http://localhost:5054/success";
-        var cancelUrl = "http://localhost:5054/cancel";
+        string successUrl = "http://localhost:5054/success";
+        string cancelUrl = "http://localhost:5054/cancel";
 
-        var checkoutSession = await _paymentService.CreateCheckoutSession(
+        ErrorOr<CheckoutSession> checkoutSession = await _paymentService.CreateCheckoutSession(
             "",
             total.Amount,
             successUrl,

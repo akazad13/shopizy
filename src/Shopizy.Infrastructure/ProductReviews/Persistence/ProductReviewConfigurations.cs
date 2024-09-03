@@ -16,29 +16,29 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
 
     private static void ConfigureProductReviewsTable(EntityTypeBuilder<ProductReview> builder)
     {
-        builder.ToTable("ProductReviews");
-        builder.HasKey(pr => pr.Id);
-        builder
+        _ = builder.ToTable("ProductReviews");
+        _ = builder.HasKey(pr => pr.Id);
+        _ = builder
             .Property(pr => pr.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProductReviewId.Create(value));
 
-        builder.Property(pr => pr.Comment).HasMaxLength(1000).IsRequired(false);
-        builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        _ = builder.Property(pr => pr.Comment).HasMaxLength(1000).IsRequired(false);
+        _ = builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
+        _ = builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
-        builder.OwnsOne(
+        _ = builder.OwnsOne(
             pr => pr.Rating,
             rb =>
             {
-                rb.Property(r => r.Value).HasPrecision(18, 2);
+                _ = rb.Property(r => r.Value).HasPrecision(18, 2);
             }
         );
 
-        builder
+        _ = builder
             .Property(pr => pr.UserId)
             .HasConversion(id => id.Value, value => UserId.Create(value));
-        builder
+        _ = builder
             .Property(pr => pr.ProductId)
             .HasConversion(id => id.Value, value => ProductId.Create(value));
     }

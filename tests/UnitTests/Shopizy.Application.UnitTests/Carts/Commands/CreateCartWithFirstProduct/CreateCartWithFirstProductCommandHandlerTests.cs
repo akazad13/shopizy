@@ -30,13 +30,13 @@ public class CreateCartWithFirstProductCommandHandlerTests
     public async Task CreateCartWithFirstProduct_ProductDoesNotExist_ReturnsProductNotFound()
     {
         // Arrange
-        var command = CreateCartWithFirstProductCommandUtils.CreateCommand();
-        _mockProductRepository
+        CreateCartWithFirstProductCommand command = CreateCartWithFirstProductCommandUtils.CreateCommand();
+        _ = _mockProductRepository
             .Setup(x => x.IsProductExistAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(false);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        ErrorOr.ErrorOr<Cart> result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         _mockProductRepository.Verify(
@@ -46,27 +46,27 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockCartRepository.Verify(x => x.AddAsync(It.IsAny<Cart>()), Times.Never);
         _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
 
-        result.IsError.Should().BeTrue();
-        result.Errors[0].Should().Be(CustomErrors.Product.ProductNotFound);
+        _ = result.IsError.Should().BeTrue();
+        _ = result.Errors[0].Should().Be(CustomErrors.Product.ProductNotFound);
     }
 
     [Fact]
     public async Task CreateCartWithFirstProduct_ProductExists_CreatesCartWithLineItemAndReturnsCart()
     {
         // Arrange
-        var cart = CartFactory.Create();
+        Cart cart = CartFactory.Create();
         cart.AddLineItem(CartFactory.CreateLineItem());
-        var command = CreateCartWithFirstProductCommandUtils.CreateCommand();
-        _mockProductRepository
+        CreateCartWithFirstProductCommand command = CreateCartWithFirstProductCommandUtils.CreateCommand();
+        _ = _mockProductRepository
             .Setup(x => x.IsProductExistAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(true);
 
-        _mockCartRepository.Setup(x => x.AddAsync(It.IsAny<Cart>()));
-        _mockCartRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        _mockCartRepository.Setup(cr => cr.GetCartByUserIdAsync(cart.UserId)).ReturnsAsync(cart);
+        _ = _mockCartRepository.Setup(x => x.AddAsync(It.IsAny<Cart>()));
+        _ = _mockCartRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockCartRepository.Setup(cr => cr.GetCartByUserIdAsync(cart.UserId)).ReturnsAsync(cart);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        ErrorOr.ErrorOr<Cart> result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         _mockProductRepository.Verify(
@@ -83,10 +83,10 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCartRepository.Verify(cr => cr.GetCartByUserIdAsync(cart.UserId), Times.Once);
 
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(Cart));
-        result.Value.UserId.Should().Be(UserId.Create(command.UserId));
-        result.Value.LineItems.Should().HaveCount(1);
-        result.Value.LineItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType(typeof(Cart));
+        _ = result.Value.UserId.Should().Be(UserId.Create(command.UserId));
+        _ = result.Value.LineItems.Should().HaveCount(1);
+        _ = result.Value.LineItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
     }
 }

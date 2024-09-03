@@ -13,7 +13,7 @@ public class GetUserQueryHandler(IUserRepository userRepository) : IRequestHandl
 
     public async Task<ErrorOr<User>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
 
         if (user is null)
         {

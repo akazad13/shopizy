@@ -29,10 +29,10 @@ public class CreateOrderCommandHandlerTests
     public async Task CreateOrder_ProductExists_CreateOrderAndReturnSuccess()
     {
         // Arrange
-        var product = ProductFactory.CreateProduct();
-        var command = CreateOrderCommandUtils.CreateCommand(product.Id);
+        Domain.Products.Product product = ProductFactory.CreateProduct();
+        CreateOrderCommand command = CreateOrderCommandUtils.CreateCommand(product.Id);
 
-        _mockProductRepository
+        _ = _mockProductRepository
             .Setup(
                 x =>
                     x.GetProductsByIdsAsync(
@@ -41,11 +41,11 @@ public class CreateOrderCommandHandlerTests
             )
             .ReturnsAsync(() => [product]);
 
-        _mockOrderRepository.Setup(x => x.AddAsync(It.IsAny<Order>()));
-        _mockOrderRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockOrderRepository.Setup(x => x.AddAsync(It.IsAny<Order>()));
+        _ = _mockOrderRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        ErrorOr.ErrorOr<Order> result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         _mockProductRepository.Verify(
@@ -58,7 +58,7 @@ public class CreateOrderCommandHandlerTests
         _mockOrderRepository.Verify(x => x.AddAsync(It.IsAny<Order>()), Times.Once);
         _mockOrderRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
 
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(Order));
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType(typeof(Order));
     }
 }

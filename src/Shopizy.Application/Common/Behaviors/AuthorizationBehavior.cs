@@ -20,7 +20,7 @@ public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _a
         var requiredRoles = authorizationAttributes.SelectMany(attr => attr.Roles?.Split(',') ?? []).ToList();
         var requiredPolicies = authorizationAttributes.SelectMany(attr => attr.Policies?.Split(',') ?? []).ToList();
 
-        var authorizationResult = _authorizationService.AuthorizeCurrentUser(request, requiredRoles, requiredPermissions, requiredPolicies);
+        ErrorOr<Success> authorizationResult = _authorizationService.AuthorizeCurrentUser(request, requiredRoles, requiredPermissions, requiredPolicies);
 
         return authorizationResult.IsError ? (dynamic)authorizationResult.Errors : await next();
     }

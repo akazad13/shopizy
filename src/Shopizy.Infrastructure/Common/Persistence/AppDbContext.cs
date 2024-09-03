@@ -44,7 +44,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        _ = modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 
@@ -52,7 +52,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
-        foreach (var domainEvent in domainEvents)
+        foreach (IDomainEvent domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent);
         }
@@ -61,7 +61,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
     {
         // Get pending domain events from session
-        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
+        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out object? value) &&
             value is Queue<IDomainEvent> existingDomainEvents
             ? existingDomainEvents : new();
 

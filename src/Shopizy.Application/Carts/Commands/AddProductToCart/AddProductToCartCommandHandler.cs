@@ -18,7 +18,7 @@ public class AddProductToCartCommandHandler(ICartRepository cartRepository, IPro
 
     public async Task<ErrorOr<Cart>> Handle(AddProductToCartCommand cmd, CancellationToken cancellationToken)
     {
-        var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
+        Cart? cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
         if (cart is null)
         {
@@ -30,7 +30,7 @@ public class AddProductToCartCommandHandler(ICartRepository cartRepository, IPro
             return CustomErrors.Cart.ProductAlreadyExistInCart;
         }
 
-        var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
+        bool product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
         if (!product)
         {

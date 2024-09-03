@@ -24,7 +24,7 @@ public class CreateOrderCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var products = await _productRepository.GetProductsByIdsAsync(
+        List<Domain.Products.Product> products = await _productRepository.GetProductsByIdsAsync(
             request.OrderItems.Select(x => ProductId.Create(x.ProductId)).ToList()
         );
         if (products.Count == 0)

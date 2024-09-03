@@ -27,16 +27,16 @@ public class CreateProductCommandHandlerTests
     {
         // Arrange
 
-        var command = CreateProductCommandUtils.CreateCommand();
-        var product = ProductFactory.CreateProduct();
+        CreateProductCommand command = CreateProductCommandUtils.CreateCommand();
+        Domain.Products.Product product = ProductFactory.CreateProduct();
 
-        _mockProductRepository.Setup(p => p.AddAsync(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
+        _ = _mockProductRepository.Setup(p => p.AddAsync(product));
+        _ = _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<Domain.Products.Product> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value.ValidateResult(command);
 
         _mockProductRepository.Verify(m => m.AddAsync(result.Value), Times.Once);

@@ -29,89 +29,89 @@ public class UpdatePasswordCommandHandlerTests
     public async Task UpdatePassword_WhenUserIsNotFound_ReturnError()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
-        var updatedUser = UserFactory.UpdatePassword(user);
-        var query = UpdatePasswordCommandUtils.CreateCommand();
+        Domain.Users.User user = UserFactory.CreateUser();
+        Domain.Users.User updatedUser = UserFactory.UpdatePassword(user);
+        UpdatePasswordCommand query = UpdatePasswordCommandUtils.CreateCommand();
 
-        _mockUserRepository
+        _ = _mockUserRepository
             .Setup(u => u.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(() => null);
 
-        _mockUserRepository.Setup(u => u.Update(updatedUser));
+        _ = _mockUserRepository.Setup(u => u.Update(updatedUser));
 
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<ErrorOr.Success> result = await _handler.Handle(query, default);
 
         // Assert
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(query.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-        result.IsError.Should().BeTrue();
+        _ = result.IsError.Should().BeTrue();
     }
 
     [Fact]
     public async Task UpdatePassword_WhenPasswordIsNotMatched_ReturnError()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
-        var updatedUser = UserFactory.UpdatePassword(user);
-        var query = UpdatePasswordCommandUtils.CreateCommand();
+        Domain.Users.User user = UserFactory.CreateUser();
+        Domain.Users.User updatedUser = UserFactory.UpdatePassword(user);
+        UpdatePasswordCommand query = UpdatePasswordCommandUtils.CreateCommand();
 
-        _mockUserRepository
+        _ = _mockUserRepository
             .Setup(u => u.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(user);
 
-        _mockPasswordManager
+        _ = _mockPasswordManager
             .Setup(u => u.Verify(user.Password ?? "", Constants.User.NewPassword))
             .Returns(false);
 
-        _mockUserRepository.Setup(u => u.Update(updatedUser));
+        _ = _mockUserRepository.Setup(u => u.Update(updatedUser));
 
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<ErrorOr.Success> result = await _handler.Handle(query, default);
 
         // Assert
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(query.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-        result.IsError.Should().BeTrue();
+        _ = result.IsError.Should().BeTrue();
     }
 
     [Fact]
     public async Task UpdatePassword_WhenUserIsFound_UpdateAndReturnSuccess()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
-        var updatedUser = UserFactory.UpdatePassword(user);
-        var query = UpdatePasswordCommandUtils.CreateCommand();
+        Domain.Users.User user = UserFactory.CreateUser();
+        Domain.Users.User updatedUser = UserFactory.UpdatePassword(user);
+        UpdatePasswordCommand query = UpdatePasswordCommandUtils.CreateCommand();
 
-        _mockUserRepository
+        _ = _mockUserRepository
             .Setup(u => u.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(user);
 
-        _mockPasswordManager
+        _ = _mockPasswordManager
             .Setup(u => u.Verify(user.Password ?? "", Constants.User.NewPassword))
             .Returns(true);
 
-        _mockPasswordManager
+        _ = _mockPasswordManager
             .Setup(u => u.CreateHashString(Constants.User.NewPassword, 10000))
             .Returns("hashstring");
 
-        _mockUserRepository.Setup(u => u.Update(updatedUser));
+        _ = _mockUserRepository.Setup(u => u.Update(updatedUser));
 
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<ErrorOr.Success> result = await _handler.Handle(query, default);
 
         // Assert
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(query.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
     }
 }

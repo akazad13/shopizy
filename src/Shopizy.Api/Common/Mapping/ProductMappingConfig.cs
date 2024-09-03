@@ -14,12 +14,12 @@ public class ProductMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config
+        _ = config
             .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid productId, UpdateProductRequest request),
                 UpdateProductCommand
@@ -28,25 +28,25 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ProductId, src => src.productId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<(Guid UserId, Guid ProductId), DeleteProductCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.ProductId, src => src.ProductId);
 
-        config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
+        _ = config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
 
-        config
+        _ = config
             .NewConfig<Product, ProductResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value)
             .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
             .Map(dest => dest.Sku, src => src.SKU)
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
 
-        config
+        _ = config
             .NewConfig<ProductImage, ProductImageResponse>()
             .Map(dest => dest.ProductImageId, src => src.Id.Value);
 
-        config
+        _ = config
             .NewConfig<(Guid UserId, Guid ProductId, Guid ImageId), DeleteProductImageCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.ProductId, src => src.ProductId)

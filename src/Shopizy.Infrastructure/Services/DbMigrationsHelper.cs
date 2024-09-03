@@ -4,23 +4,26 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Services;
 
-public class DbMigrationsHelper(
-    ILogger<DbMigrationsHelper> logger,
-    AppDbContext context
-    )
+public class DbMigrationsHelper(ILogger<DbMigrationsHelper> logger, AppDbContext context)
 {
+    private readonly AppDbContext _context = context;
+    private readonly ILogger<DbMigrationsHelper> _logger = logger;
+
     public async Task MigrateAsync()
     {
         try
         {
-            if (context.Database.IsSqlServer() && (await context.Database.GetPendingMigrationsAsync()).Any())
+            if (
+                _context.Database.IsSqlServer()
+                && (await _context.Database.GetPendingMigrationsAsync()).Any()
+            )
             {
-                await context.Database.MigrateAsync();
+                await _context.Database.MigrateAsync();
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while initialising the database.");
+            _logger.DatabaseInitializationError(ex);
             throw;
         }
     }

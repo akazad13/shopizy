@@ -23,20 +23,20 @@ public class GetCartQueryHandlerTests
     public async Task GetCart_WhenCartIsFound_ReturnCart()
     {
         // Arrange
-        var cart = CartFactory.Create();
+        Domain.Carts.Cart cart = CartFactory.Create();
         cart.AddLineItem(CartFactory.CreateLineItem());
 
-        var query = GetCartQueryUtils.CreateQuery();
+        GetCartQuery query = GetCartQueryUtils.CreateQuery();
 
-        _mockCartRepository
+        _ = _mockCartRepository
             .Setup(c => c.GetCartByUserIdAsync(UserId.Create(query.UserId)))
             .ReturnsAsync(cart);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<Domain.Carts.Cart?> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value?.ValidateResult(query);
     }
 }

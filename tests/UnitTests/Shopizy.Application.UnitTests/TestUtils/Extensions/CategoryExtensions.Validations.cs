@@ -11,21 +11,21 @@ public static partial class CategoryExtensions
 {
     public static void ValidateResult(this Category category, CreateCategoryCommand command)
     {
-        category.Id.Should().BeOfType(typeof(CategoryId));
-        category.Name.Should().Be(command.Name);
-        category.ParentId.Should().Be(command.ParentId);
+        _ = category.Id.Should().BeOfType(typeof(CategoryId));
+        _ = category.Name.Should().Be(command.Name);
+        _ = category.ParentId.Should().Be(command.ParentId);
     }
 
     public static void ValidateResult(this Category category, GetCategoryQuery query)
     {
-        category.Id.Should().BeOfType(typeof(CategoryId));
-        category.Name.Should().BeOfType(typeof(string));
+        _ = category.Id.Should().BeOfType(typeof(CategoryId));
+        _ = category.Name.Should().BeOfType(typeof(string));
     }
 
     public static void ValidateResult(this Category category, UpdateCategoryCommand command)
     {
-        category.Id.Should().BeOfType(typeof(CategoryId));
-        category.Name.Should().Be(command.Name);
-        category.ParentId.Should().Be(command.ParentId);
+        _ = category.Id.Should().BeOfType(typeof(CategoryId));
+        _ = category.Name.Should().Be(command.Name);
+        _ = category.ParentId.Should().Be(command.ParentId);
     }
 }

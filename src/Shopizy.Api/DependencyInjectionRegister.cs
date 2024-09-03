@@ -6,12 +6,12 @@ public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers();
+        _ = services.AddControllers();
 
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        _ = services.AddEndpointsApiExplorer();
+        _ = services.AddSwaggerGen();
 
-        services.AddMappings();
+        _ = services.AddMappings();
 
         return services;
     }

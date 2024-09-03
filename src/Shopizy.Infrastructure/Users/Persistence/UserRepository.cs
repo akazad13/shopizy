@@ -21,12 +21,12 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        await _dbContext.Users.AddAsync(user);
+        _ = await _dbContext.Users.AddAsync(user);
     }
 
     public void Update(User user)
     {
-        _dbContext.Users.Update(user);
+        _ = _dbContext.Users.Update(user);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

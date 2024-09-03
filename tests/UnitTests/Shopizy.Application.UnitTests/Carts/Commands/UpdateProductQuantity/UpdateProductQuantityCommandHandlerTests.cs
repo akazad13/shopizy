@@ -25,19 +25,19 @@ public class UpdateProductQuantityCommandHandlerTests
     {
         // Arrange
 
-        var command = UpdateProductQuantityCommandUtils.CreateCommand(37);
-        var cart = CartFactory.Create();
+        UpdateProductQuantityCommand command = UpdateProductQuantityCommandUtils.CreateCommand(37);
+        Domain.Carts.Cart cart = CartFactory.Create();
 
-        _mockCartRepository
+        _ = _mockCartRepository
             .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId)))
             .ReturnsAsync(() => null);
 
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr<Success> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors[0].Should().Be(CustomErrors.Cart.CartNotFound);
+        _ = result.IsError.Should().BeTrue();
+        _ = result.Errors[0].Should().Be(CustomErrors.Cart.CartNotFound);
 
         _mockCartRepository.Verify(
             cr => cr.GetCartByIdAsync(CartId.Create(command.CartId)),
@@ -52,22 +52,22 @@ public class UpdateProductQuantityCommandHandlerTests
     {
         // Arrange
 
-        var command = UpdateProductQuantityCommandUtils.CreateCommand(47);
-        var cart = CartFactory.Create();
+        UpdateProductQuantityCommand command = UpdateProductQuantityCommandUtils.CreateCommand(47);
+        Domain.Carts.Cart cart = CartFactory.Create();
 
-        _mockCartRepository
+        _ = _mockCartRepository
             .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId)))
             .ReturnsAsync(cart);
 
-        _mockCartRepository.Setup(cr => cr.Update(cart));
-        _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockCartRepository.Setup(cr => cr.Update(cart));
+        _ = _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr<Success> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType<Success>();
 
         _mockCartRepository.Verify(
             cr => cr.GetCartByIdAsync(CartId.Create(command.CartId)),

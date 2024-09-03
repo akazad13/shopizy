@@ -28,7 +28,7 @@ public class RegisterCommandHandler(
             return CustomErrors.User.DuplicatePhone;
         }
 
-        var hashedPassword = _passwordManager.CreateHashString(command.Password);
+        string hashedPassword = _passwordManager.CreateHashString(command.Password);
 
         var user = User.Create(command.FirstName, command.LastName, command.Phone, hashedPassword);
 
@@ -42,7 +42,7 @@ public class RegisterCommandHandler(
         var roles = new List<string>();
         var permissions = new List<string>();
 
-        var token = _jwtTokenGenerator.GenerateToken(
+        string token = _jwtTokenGenerator.GenerateToken(
             user.Id,
             command.FirstName,
             command.LastName,

@@ -21,16 +21,16 @@ public class ListOrdersQueryHandlerTests
     public async Task ListOrders_WhenEverythingOkay_ReturnOrderList()
     {
         // Arrange
-        var Order = OrderFactory.CreateOrder();
-        var query = ListOrdersQueryUtils.CreateQuery();
-        _mockOrderRepository
+        Domain.Orders.Order Order = OrderFactory.CreateOrder();
+        ListOrdersQuery query = ListOrdersQueryUtils.CreateQuery();
+        _ = _mockOrderRepository
             .Setup(c => c.GetOrdersAsync())
             .ReturnsAsync(() => [Order]);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<List<Domain.Orders.Order>> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
     }
 }

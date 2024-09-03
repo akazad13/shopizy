@@ -41,7 +41,7 @@ public class StripeService(
                     Cvc = cvc,
                 },
             };
-            var token = await _tokenService.CreateAsync(tokenOptions, null, cancellationToken);
+            Token token = await _tokenService.CreateAsync(tokenOptions, null, cancellationToken);
 
             var customerOptions = new CustomerCreateOptions
             {
@@ -49,7 +49,7 @@ public class StripeService(
                 Name = name,
                 Source = token.Id,
             };
-            var customer = await _customerService.CreateAsync(
+            Customer customer = await _customerService.CreateAsync(
                 customerOptions,
                 null,
                 cancellationToken
@@ -83,7 +83,7 @@ public class StripeService(
                 Description = description,
             };
 
-            var charge = await _chargeService.CreateAsync(chargeOptions, null, cancellationToken);
+            Charge charge = await _chargeService.CreateAsync(chargeOptions, null, cancellationToken);
 
             return new ChargeResource(
                 charge.Id,
@@ -138,7 +138,7 @@ public class StripeService(
                 AllowPromotionCodes = true,
             };
 
-            var session = await _sessionService.CreateAsync(options, null, cancellationToken);
+            Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
 
             return new CheckoutSession(session.Id);
         }

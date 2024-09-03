@@ -23,20 +23,20 @@ public class UpdateProductCommandHandlerTests
     public async Task UpdateProduct_WhenProductIsFound_CreateAndReturnProduct()
     {
         // Arrange
-        var command = UpdateProductCommandUtils.CreateCommand();
-        var product = ProductFactory.CreateProduct();
+        UpdateProductCommand command = UpdateProductCommandUtils.CreateCommand();
+        Domain.Products.Product product = ProductFactory.CreateProduct();
 
-        _mockProductRepository
+        _ = _mockProductRepository
             .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
-        _mockProductRepository.Setup(p => p.Update(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
+        _ = _mockProductRepository.Setup(p => p.Update(product));
+        _ = _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<Domain.Products.Product> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value.ValidateResult(command);
 
         _mockProductRepository.Verify(m => m.Update(result.Value), Times.Once);

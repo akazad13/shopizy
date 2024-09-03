@@ -36,8 +36,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
             promoCode,
             deliveryCharge,
             shippingAddress,
-            orderItems);
+            orderItems
+        );
     }
+
     private Order(
         OrderId orderId,
         UserId userId,
@@ -45,7 +47,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         Price deliveryCharge,
         Address shippingAddress,
         List<OrderItem> orderItems
-    ) : base(orderId)
+    )
+        : base(orderId)
     {
         UserId = userId;
         OrderStatus = OrderStatus.Submitted;
@@ -57,9 +60,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         CreatedOn = DateTime.UtcNow;
     }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Order() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public void CancelOrder(string reason)
     {
@@ -70,10 +71,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 
     public Price GetTotal()
     {
-        var totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
-        var totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
+        decimal totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
+        decimal totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
 
-        var chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
+        decimal chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
 
         return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }

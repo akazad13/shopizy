@@ -10,8 +10,8 @@ public class AuthenticationMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AuthResult, AuthResponse>();
-        config.NewConfig<LoginRequest, LoginQuery>();
-        config.NewConfig<RegisterRequest, RegisterCommand>();
+        _ = config.NewConfig<AuthResult, AuthResponse>();
+        _ = config.NewConfig<LoginRequest, LoginQuery>();
+        _ = config.NewConfig<RegisterRequest, RegisterCommand>();
     }
 }

@@ -31,14 +31,14 @@ public class JwtTokenGeneratorTests
     {
         // Arrange
         var userId = UserId.CreateUnique();
-        var firstName = "John";
-        var lastName = "Doe";
-        var phone = "123456789";
+        string firstName = "John";
+        string lastName = "Doe";
+        string phone = "123456789";
         var roles = new List<string> { "Admin", "Moderator" };
         var permissions = new List<string> { "CanCreateProduct", "CanEditProduct" };
 
         // Act
-        var token = _jwtTokenGenerator.GenerateToken(
+        string token = _jwtTokenGenerator.GenerateToken(
             userId,
             firstName,
             lastName,
@@ -50,22 +50,28 @@ public class JwtTokenGeneratorTests
         // Assert
         var jwtToken = new JwtSecurityToken(token);
 
-        jwtToken.Claims.Should().HaveCount(13);
-        jwtToken.Claims.Should().Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
-        jwtToken
+        _ = jwtToken.Claims.Should().HaveCount(13);
+        _ = jwtToken
+            .Claims.Should()
+            .Contain(c =>
+                c.Type == JwtRegisteredClaimNames.NameId && c.Value == userId.Value.ToString()
+            );
+        _ = jwtToken
             .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Name && c.Value == firstName);
-        jwtToken
+        _ = jwtToken
             .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.FamilyName && c.Value == lastName);
-        jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
-        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
-        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
+        _ = jwtToken
+            .Claims.Should()
+            .Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
+        _ = jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
+        _ = jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
 
-        jwtToken
+        _ = jwtToken
             .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanCreateProduct");
-        jwtToken
+        _ = jwtToken
             .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanEditProduct");
     }

@@ -9,11 +9,11 @@ public class PaymentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config
+        _ = config
             .NewConfig<(Guid UserId, CreatePaymentRequest request), CreatePaymentCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
-        config.NewConfig<CheckoutSession, PaymentResponse>();
+        _ = config.NewConfig<CheckoutSession, PaymentResponse>();
     }
 }

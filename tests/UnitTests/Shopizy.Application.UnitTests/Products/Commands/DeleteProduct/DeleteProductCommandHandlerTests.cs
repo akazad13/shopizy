@@ -29,20 +29,20 @@ public class DeleteProductCommandHandlerTests
     {
         // Arrange
 
-        var command = DeleteProductCommandUtils.CreateCommand();
-        var product = ProductFactory.CreateProduct();
+        DeleteProductCommand command = DeleteProductCommandUtils.CreateCommand();
+        Domain.Products.Product product = ProductFactory.CreateProduct();
 
-        _mockProductRepository
+        _ = _mockProductRepository
             .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
-        _mockProductRepository.Setup(p => p.Remove(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
+        _ = _mockProductRepository.Setup(p => p.Remove(product));
+        _ = _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<ErrorOr.Success> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
 
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }

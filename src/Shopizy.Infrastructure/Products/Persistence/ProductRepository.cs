@@ -30,16 +30,16 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     }
     public async Task AddAsync(Product product)
     {
-        await _dbContext.Products.AddAsync(product);
+        _ = await _dbContext.Products.AddAsync(product);
     }
     public void Update(Product product)
     {
-        _dbContext.Update(product);
+        _ = _dbContext.Update(product);
     }
 
     public void Remove(Product product)
     {
-        _dbContext.Remove(product);
+        _ = _dbContext.Remove(product);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

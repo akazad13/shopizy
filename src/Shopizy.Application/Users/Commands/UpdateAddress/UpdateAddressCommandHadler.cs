@@ -17,7 +17,7 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository)
         CancellationToken cancellationToken
     )
     {
-        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        Domain.Users.User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
         if (user is null)
         {
             return CustomErrors.User.UserNotFound;

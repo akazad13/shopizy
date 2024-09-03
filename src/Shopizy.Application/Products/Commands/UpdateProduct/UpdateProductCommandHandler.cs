@@ -16,7 +16,7 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
     public async Task<ErrorOr<Product>> Handle(UpdateProductCommand cmd, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        Product? product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {

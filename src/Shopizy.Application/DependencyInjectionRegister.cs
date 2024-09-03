@@ -8,13 +8,13 @@ public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(msc =>
+        _ = services.AddMediatR(msc =>
         {
-            msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
-            msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
-            msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            _ = msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
+            _ = msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            _ = msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
-        services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
+        _ = services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
 
         return services;
     }
