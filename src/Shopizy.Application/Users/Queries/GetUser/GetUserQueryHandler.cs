@@ -15,8 +15,10 @@ public class GetUserQueryHandler(IUserRepository userRepository) : IRequestHandl
     {
         var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
 
-        if(user is null)
+        if (user is null)
+        {
             return CustomErrors.User.UserNotFound;
+        }
 
         return user;
     }

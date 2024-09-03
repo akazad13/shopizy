@@ -19,7 +19,9 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository)
     {
         var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
         if (user is null)
+        {
             return CustomErrors.User.UserNotFound;
+        }
 
         user.UpdateAddress(
             Address.CreateNew(
@@ -34,7 +36,9 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository)
         _userRepository.Update(user);
 
         if (await _userRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.User.UserNotUpdated;
+        }
 
         return Result.Success;
     }

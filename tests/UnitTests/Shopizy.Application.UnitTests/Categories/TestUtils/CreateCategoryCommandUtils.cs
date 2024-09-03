@@ -1,5 +1,5 @@
-using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.Categories.Commands.CreateCategory;
+using Shopizy.Application.UnitTests.TestUtils.Constants;
 
 namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 

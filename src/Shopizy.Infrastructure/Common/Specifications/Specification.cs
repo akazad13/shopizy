@@ -4,7 +4,7 @@ namespace Shopizy.Infrastructure.Common.Specifications;
 
 public abstract class Specification<TEntity> where TEntity : class
 {
-    protected Specification(){}
+    protected Specification() { }
     protected Specification(Expression<Func<TEntity, bool>>? criteria)
     {
         Criteria = criteria;

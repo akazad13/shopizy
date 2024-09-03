@@ -2,35 +2,34 @@
 
 #nullable disable
 
-namespace shopizy.Infrastructure.Migrations
+namespace shopizy.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class UpdateCartTables : Migration
 {
     /// <inheritdoc />
-    public partial class UpdateCartTables : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_LineItems",
-                table: "LineItems");
+        migrationBuilder.DropPrimaryKey(
+            name: "PK_LineItems",
+            table: "LineItems");
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_LineItems",
-                table: "LineItems",
-                columns: new[] { "Id", "CartId", "ProductId" });
-        }
+        migrationBuilder.AddPrimaryKey(
+            name: "PK_LineItems",
+            table: "LineItems",
+            columns: new[] { "Id", "CartId", "ProductId" });
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_LineItems",
-                table: "LineItems");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropPrimaryKey(
+            name: "PK_LineItems",
+            table: "LineItems");
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_LineItems",
-                table: "LineItems",
-                columns: new[] { "Id", "CartId" });
-        }
+        migrationBuilder.AddPrimaryKey(
+            name: "PK_LineItems",
+            table: "LineItems",
+            columns: new[] { "Id", "CartId" });
     }
 }

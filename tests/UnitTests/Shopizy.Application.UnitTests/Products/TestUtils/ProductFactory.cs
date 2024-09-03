@@ -1,5 +1,5 @@
-using Shopizy.Domain.Products;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Application.UnitTests.Products.TestUtils;

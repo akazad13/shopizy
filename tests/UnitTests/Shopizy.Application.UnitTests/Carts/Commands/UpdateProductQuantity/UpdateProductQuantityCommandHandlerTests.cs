@@ -1,11 +1,11 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.UpdateProductQuantity;
 

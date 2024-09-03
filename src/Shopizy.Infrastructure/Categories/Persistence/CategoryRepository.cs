@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Infrastructure.Categories.Specifications;
-using Shopizy.Infrastructure.Common.Specifications;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Infrastructure.Categories.Specifications;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Categories.Persistence;
 

@@ -1,14 +1,14 @@
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.AddProductImage;
+using Shopizy.Application.Products.Common;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
-using Shopizy.Application.Products.Common;
-using Microsoft.AspNetCore.Http;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Products.Entities;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.AddProductImage;
 

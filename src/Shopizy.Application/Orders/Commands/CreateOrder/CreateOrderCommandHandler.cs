@@ -28,7 +28,9 @@ public class CreateOrderCommandHandler(
             request.OrderItems.Select(x => ProductId.Create(x.ProductId)).ToList()
         );
         if (products.Count == 0)
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         // foreach( var product in products)
         // {
@@ -67,7 +69,9 @@ public class CreateOrderCommandHandler(
 
         await _orderRepository.AddAsync(order);
         if (await _orderRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Order.OrderNotCreated;
+        }
 
         return order;
     }

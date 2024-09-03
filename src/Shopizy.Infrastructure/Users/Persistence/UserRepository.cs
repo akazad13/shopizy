@@ -24,7 +24,8 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         await _dbContext.Users.AddAsync(user);
     }
 
-    public void Update(User user) {
+    public void Update(User user)
+    {
         _dbContext.Users.Update(user);
     }
 

@@ -14,21 +14,26 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
     {
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
-        if(cart is null)
-            return CustomErrors.Cart.CartNotFound;
-        
-        foreach(var productid in cmd.ProductIds)
+        if (cart is null)
         {
-             var lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == productid);
-             if(lineItem is not null)
-             {
+            return CustomErrors.Cart.CartNotFound;
+        }
+
+        foreach (var productid in cmd.ProductIds)
+        {
+            var lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == productid);
+            if (lineItem is not null)
+            {
                 cart.RemoveLineItem(lineItem);
-             }
+            }
         }
         _cartRepository.Update(cart);
-        
+
         if (await _cartRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Cart.CartPrductNotRemoved;
+        }
+
         return Result.Success;
 
     }

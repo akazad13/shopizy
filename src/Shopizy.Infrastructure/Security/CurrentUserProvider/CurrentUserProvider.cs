@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Throw;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
@@ -8,13 +8,15 @@ namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    
+
     public CurrentUser? GetCurrentUser()
     {
         _httpContextAccessor.HttpContext.ThrowIfNull();
 
         if (!_httpContextAccessor.HttpContext!.User.Claims.Any())
+        {
             return null;
+        }
 
         var id = Guid.Parse(GetSingleClaimValue("id"));
         var permissions = GetClaimValues("permissions");

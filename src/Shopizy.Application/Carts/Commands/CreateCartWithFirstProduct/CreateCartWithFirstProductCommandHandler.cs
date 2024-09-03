@@ -18,16 +18,21 @@ public class CreateCartWithFirstProductCommandHandler(IProductRepository product
     {
         var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
-        if(!product)
+        if (!product)
+        {
             return CustomErrors.Product.ProductNotFound;
-        
+        }
+
         var cart = Cart.Create(UserId.Create(cmd.UserId));
         cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
 
         await _cartRepository.AddAsync(cart);
-        
+
         if (await _cartRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Cart.CartNotCreated;
+        }
+
         return (await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId)))!;
     }
 }

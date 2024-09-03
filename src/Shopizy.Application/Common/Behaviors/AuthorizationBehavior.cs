@@ -12,7 +12,9 @@ public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _a
     {
         var authorizationAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToList();
         if (authorizationAttributes.Count == 0)
+        {
             return await next();
+        }
 
         var requiredPermissions = authorizationAttributes.SelectMany(attr => attr.Permissions?.Split(',') ?? []).ToList();
         var requiredRoles = authorizationAttributes.SelectMany(attr => attr.Roles?.Split(',') ?? []).ToList();

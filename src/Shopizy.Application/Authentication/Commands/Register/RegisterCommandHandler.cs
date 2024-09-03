@@ -35,7 +35,9 @@ public class RegisterCommandHandler(
         await _userRepository.AddAsync(user);
 
         if (await _userRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.User.UserNotCreated;
+        }
 
         var roles = new List<string>();
         var permissions = new List<string>();

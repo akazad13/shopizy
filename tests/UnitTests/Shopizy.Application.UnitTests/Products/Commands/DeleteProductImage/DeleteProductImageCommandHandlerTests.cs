@@ -1,11 +1,11 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Products.Commands.DeleteProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Application.Products.Commands.DeleteProduct;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.DeleteProductImage;
 

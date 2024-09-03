@@ -26,9 +26,14 @@ public class LoginQueryHandler(
     {
         var user = await _userRepository.GetUserByPhone(query.Phone);
         if (user is null)
+        {
             return CustomErrors.User.UserNotFoundWhileLogin;
+        }
+
         if (!_passwordManager.Verify(query.Password, user.Password!))
+        {
             return CustomErrors.Authentication.InvalidCredentials;
+        }
 
         var roles = new List<string>() { Role.Admin };
         var permissions = new List<string>()

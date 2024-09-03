@@ -29,7 +29,9 @@ public class CreateOrderCommandHandler(
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
         if (order is null)
+        {
             return CustomErrors.Order.OrderNotFound;
+        }
 
         var total = order.GetTotal();
 

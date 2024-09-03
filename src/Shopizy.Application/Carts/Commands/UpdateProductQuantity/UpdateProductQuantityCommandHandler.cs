@@ -1,9 +1,9 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Domain.Carts.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
@@ -15,15 +15,20 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
     {
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
-        if(cart is null)
+        if (cart is null)
+        {
             return CustomErrors.Cart.CartNotFound;
+        }
 
         cart.UpdateLineItem(ProductId.Create(cmd.ProductId), cmd.Quantity);
-        
+
         _cartRepository.Update(cart);
-        
+
         if (await _cartRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Cart.CartPrductNotAdded;
+        }
+
         return Result.Success;
 
     }

@@ -1,9 +1,9 @@
-using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Orders;
@@ -11,12 +11,12 @@ namespace Shopizy.Domain.Orders;
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly List<OrderItem> _orderItems = [];
-    public UserId UserId { get; private set;}
+    public UserId UserId { get; private set; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string? CancellationReason { get; private set; }
     public string PromoCode { get; private set; }
-    public Address ShippingAddress { get; private set;}
+    public Address ShippingAddress { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }

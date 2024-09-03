@@ -72,7 +72,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
 
     )
     {
-       
+
         Name = name;
         Description = description;
         CategoryId = categoryId;

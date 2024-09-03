@@ -1,12 +1,12 @@
 using Mapster;
 using Shopizy.Application.Products.Commands.CreateProduct;
-using Shopizy.Contracts.Product;
-using Shopizy.Domain.Products;
-using Shopizy.Application.Products.Queries.GetProduct;
-using Shopizy.Domain.Products.Entities;
-using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Commands.DeleteProduct;
 using Shopizy.Application.Products.Commands.DeleteProductImage;
+using Shopizy.Application.Products.Commands.UpdateProduct;
+using Shopizy.Application.Products.Queries.GetProduct;
+using Shopizy.Contracts.Product;
+using Shopizy.Domain.Products;
+using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Api.Common.Mapping;
 

@@ -37,8 +37,7 @@ public class Webhooks(ISender _mediator, IMapper _mapper) : ApiController
         }
         else if (stripeEvent.Type == Events.CustomerCreated)
         {
-            var customer = stripeEvent.Data.Object as Customer;
-            if (customer != null)
+            if (stripeEvent.Data.Object is Customer customer)
             {
                 // var result = await _accountService.UpdateStripeCustomerId(
                 //     customer.Email,

@@ -1,11 +1,11 @@
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
+using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.CreateCartWithFirstProduct;

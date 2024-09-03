@@ -1,11 +1,11 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Products;
-using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Products;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
@@ -18,9 +18,11 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
     {
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
-        if(product is null)
+        if (product is null)
+        {
             return CustomErrors.Product.ProductNotFound;
-            
+        }
+
         product.Update(
             cmd.Name,
             cmd.Description,
@@ -36,7 +38,9 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
         _productRepository.Update(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Product.ProductNotUpdated;
+        }
 
         return product;
 

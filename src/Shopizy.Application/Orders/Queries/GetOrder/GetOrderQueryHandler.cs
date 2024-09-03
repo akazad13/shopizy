@@ -1,9 +1,9 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
-using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Orders.Queries.GetOrder;
 
@@ -15,8 +15,10 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository) : IRequestHa
     {
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
-        if(order is null)
+        if (order is null)
+        {
             return CustomErrors.Order.OrderNotFound;
+        }
 
         return order;
     }
