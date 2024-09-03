@@ -3,30 +3,29 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using shopizy.Infrastructure.Products.Persistence;
-using Shopizy.Infrastructure.Security;
-using Shopizy.Infrastructure.Security.PolicyEnforcer;
-using Shopizy.Application.Common.Interfaces.Authentication;
-using Shopizy.Infrastructure.Authentication;
+using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Customers.Persistence;
+using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
+using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 using Shopizy.Infrastructure.Orders.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
+using shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
+using Shopizy.Infrastructure.Security;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
+using Shopizy.Infrastructure.Security.PolicyEnforcer;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
-using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
-using Shopizy.Infrastructure.Carts.Persistence;
 using Stripe;
 using Stripe.Checkout;
-using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 namespace Shopizy.Infrastructure;
 
@@ -125,8 +124,8 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
-        services.AddDbContext<AppDbContext>(
-            options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         return services;
     }

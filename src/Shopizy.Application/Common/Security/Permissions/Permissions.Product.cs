@@ -1,6 +1,6 @@
 namespace Shopizy.Application.Common.Security.Permissions;
 
-public static partial class Permission
+public static partial class Permissions
 {
     public static class Product
     {

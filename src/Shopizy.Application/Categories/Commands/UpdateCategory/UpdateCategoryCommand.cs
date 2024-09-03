@@ -6,6 +6,6 @@ using Shopizy.Domain.Categories;
 
 namespace Shopizy.Application.Categories.Commands.UpdateCategory;
 
-[Authorize(Permissions = Permission.Category.Modify, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.Category.Modify, Policies = Policy.SelfOrAdmin)]
 public record UpdateCategoryCommand(Guid UserId, Guid CategoryId, string Name, Guid? ParentId)
     : IAuthorizeableRequest<ErrorOr<Category>>;

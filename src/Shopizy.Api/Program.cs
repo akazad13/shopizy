@@ -32,4 +32,4 @@ using (var scope = app.Services.CreateScope())
     await initialiser.MigrateAsync();
 }
 
-app.Run();
+await app.RunAsync();

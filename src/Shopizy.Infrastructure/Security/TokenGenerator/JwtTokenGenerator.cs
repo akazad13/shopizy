@@ -1,25 +1,32 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Infrastructure.Security.TokenGenerator;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
-namespace Shopizy.Infrastructure.Authentication;
+namespace Shopizy.Infrastructure.Security.TokenGenerator;
 
 public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
-    public string GenerateToken(UserId userId, string firstName, string LastName, string phone, List<string> roles, List<string> Permissions)
+
+    public string GenerateToken(
+        UserId userId,
+        string firstName,
+        string LastName,
+        string phone,
+        List<string> roles,
+        List<string> Permissions
+    )
     {
         var claims = new List<Claim>
         {
             new("id", userId.Value.ToString()),
             new(JwtRegisteredClaimNames.Name, firstName),
             new(ClaimTypes.Surname, LastName),
-            new(ClaimTypes.MobilePhone, phone)
+            new(ClaimTypes.MobilePhone, phone),
         };
 
         roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
@@ -38,7 +45,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
             NotBefore = DateTime.UtcNow,
             Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpirationMinutes),
             Subject = new ClaimsIdentity(claims),
-            SigningCredentials = creds
+            SigningCredentials = creds,
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();

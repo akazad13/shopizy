@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Infrastructure.Authentication;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using Xunit;
 
@@ -21,7 +20,7 @@ public class JwtTokenGeneratorTests
             Secret = "a very secret value that will be used to generate the JWT token",
             Issuer = "issuer",
             Audience = "audience",
-            TokenExpirationMinutes = 10
+            TokenExpirationMinutes = 10,
         };
 
         _jwtTokenGenerator = new JwtTokenGenerator(Options.Create(_jwtSettings));
@@ -53,21 +52,21 @@ public class JwtTokenGeneratorTests
 
         jwtToken.Claims.Should().HaveCount(13);
         jwtToken.Claims.Should().Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
-        jwtToken.Claims
-            .Should()
+        jwtToken
+            .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Name && c.Value == firstName);
-        jwtToken.Claims
-            .Should()
+        jwtToken
+            .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.FamilyName && c.Value == lastName);
         jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
         jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
         jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
 
-        jwtToken.Claims
-            .Should()
+        jwtToken
+            .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanCreateProduct");
-        jwtToken.Claims
-            .Should()
+        jwtToken
+            .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanEditProduct");
     }
 }

@@ -6,6 +6,6 @@ using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Payments.Commands.CreatePayment;
 
-[Authorize(Permissions = Permission.Order.Get, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.Order.Get, Policies = Policy.SelfOrAdmin)]
 public record CreatePaymentCommand(Guid UserId, Guid OrderId)
     : IAuthorizeableRequest<ErrorOr<CheckoutSession>>;
