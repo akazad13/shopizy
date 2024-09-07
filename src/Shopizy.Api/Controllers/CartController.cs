@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
-using Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
+using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Contracts.Cart;

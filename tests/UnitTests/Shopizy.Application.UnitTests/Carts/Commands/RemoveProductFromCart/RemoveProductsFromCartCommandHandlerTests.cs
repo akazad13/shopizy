@@ -1,31 +1,31 @@
 using ErrorOr;
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
+using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
-namespace Shopizy.Application.UnitTests.Carts.Commands.RemoveProductsFromCart;
+namespace Shopizy.Application.UnitTests.Carts.Commands.RemoveProductFromCart;
 
-public class RemoveProductsFromCartCommandHandlerTests
+public class RemoveProductFromCartCommandHandlerTests
 {
     private readonly RemoveProductFromCartCommandHandler _handler;
     private readonly Mock<ICartRepository> _mockCartRepository;
 
-    public RemoveProductsFromCartCommandHandlerTests()
+    public RemoveProductFromCartCommandHandlerTests()
     {
         _mockCartRepository = new Mock<ICartRepository>();
         _handler = new RemoveProductFromCartCommandHandler(_mockCartRepository.Object);
     }
 
     [Fact]
-    public async Task RemoveProductsFromCart_WhenCartIsNoFound_ReturnsCartNotFound()
+    public async Task RemoveProductFromCart_WhenCartIsNoFound_ReturnsCartNotFound()
     {
         // Arrange
 
-        RemoveProductFromCartCommand command = RemoveProductsFromCartCommandUtils.CreateCommand();
+        RemoveProductFromCartCommand command = RemoveProductFromCartCommandUtils.CreateCommand();
         Domain.Carts.Cart cart = CartFactory.Create();
 
         _ = _mockCartRepository
@@ -48,11 +48,11 @@ public class RemoveProductsFromCartCommandHandlerTests
     }
 
     [Fact]
-    public async Task RemoveProductsFromCart_WhenCartIsFound_RemoveProductsAndReturnSuccess()
+    public async Task RemoveProductFromCart_WhenCartIsFound_RemoveProductAndReturnSuccess()
     {
         // Arrange
 
-        RemoveProductFromCartCommand command = RemoveProductsFromCartCommandUtils.CreateCommand();
+        RemoveProductFromCartCommand command = RemoveProductFromCartCommandUtils.CreateCommand();
         Domain.Carts.Cart cart = CartFactory.Create();
 
         _ = _mockCartRepository
@@ -60,7 +60,9 @@ public class RemoveProductsFromCartCommandHandlerTests
             .ReturnsAsync(cart);
 
         _ = _mockCartRepository.Setup(cr => cr.Update(cart));
-        _ = _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockCartRepository
+            .Setup(cr => cr.Commit(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
         // Act
         ErrorOr<Success> result = await _handler.Handle(command, default);

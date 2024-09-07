@@ -3,7 +3,7 @@ namespace Shopizy.Contracts.Order;
 public record CreateOrderRequest(
     string PromoCode,
     Price DeliveryCharge,
-    List<OrderItemRequest> OrderItems,
+    IList<OrderItemRequest> OrderItems,
     Address ShippingAddress
 );
 

@@ -4,13 +4,17 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
-namespace Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
+namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 
 public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
-        : IRequestHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
+    : IRequestHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
-    public async Task<ErrorOr<Success>> Handle(RemoveProductFromCartCommand cmd, CancellationToken cancellationToken)
+
+    public async Task<ErrorOr<Success>> Handle(
+        RemoveProductFromCartCommand cmd,
+        CancellationToken cancellationToken
+    )
     {
         Domain.Carts.Cart? cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
@@ -19,14 +23,14 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
             return CustomErrors.Cart.CartNotFound;
         }
 
-        foreach (Guid productid in cmd.ProductIds)
+        Domain.Carts.Entities.LineItem? lineItem = cart.LineItems.FirstOrDefault(li =>
+            li.ProductId.Value == cmd.ProductId
+        );
+        if (lineItem is not null)
         {
-            Domain.Carts.Entities.LineItem? lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == productid);
-            if (lineItem is not null)
-            {
-                cart.RemoveLineItem(lineItem);
-            }
+            cart.RemoveLineItem(lineItem);
         }
+
         _cartRepository.Update(cart);
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
@@ -35,6 +39,5 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
         }
 
         return Result.Success;
-
     }
 }

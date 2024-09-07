@@ -28,7 +28,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
 
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.NameId, userId.Value.ToString()),
+            new("id", userId.Value.ToString()),
             new(JwtRegisteredClaimNames.Name, firstName),
             new(ClaimTypes.Surname, LastName),
             new(ClaimTypes.MobilePhone, phone),

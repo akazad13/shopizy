@@ -53,9 +53,7 @@ public class JwtTokenGeneratorTests
         _ = jwtToken.Claims.Should().HaveCount(13);
         _ = jwtToken
             .Claims.Should()
-            .Contain(c =>
-                c.Type == JwtRegisteredClaimNames.NameId && c.Value == userId.Value.ToString()
-            );
+            .Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
         _ = jwtToken
             .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Name && c.Value == firstName);

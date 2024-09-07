@@ -83,7 +83,11 @@ public class StripeService(
                 Description = description,
             };
 
-            Charge charge = await _chargeService.CreateAsync(chargeOptions, null, cancellationToken);
+            Charge charge = await _chargeService.CreateAsync(
+                chargeOptions,
+                null,
+                cancellationToken
+            );
 
             return new ChargeResource(
                 charge.Id,

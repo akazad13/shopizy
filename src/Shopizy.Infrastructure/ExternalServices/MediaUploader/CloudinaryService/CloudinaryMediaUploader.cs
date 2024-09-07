@@ -26,7 +26,10 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
                     File = new FileDescription(file.Name, stream),
                     Transformation = new Transformation().Width(500).Height(500).Crop("fill"),
                 };
-                ImageUploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
+                ImageUploadResult uploadResult = await _cloudinary.UploadAsync(
+                    uploadParams,
+                    cancellationToken
+                );
 
                 return uploadResult.Error switch
                 {
