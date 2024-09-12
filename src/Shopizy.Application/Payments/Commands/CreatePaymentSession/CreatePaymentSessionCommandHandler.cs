@@ -3,26 +3,27 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
+using Shopizy.Application.Payments.Commands.CreatePayment;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
 
-namespace Shopizy.Application.Payments.Commands.CreatePayment;
+namespace Shopizy.Application.Payments.Commands.CreatePaymentSession;
 
-public class CreateOrderCommandHandler(
+public class CreatePaymentSessionCommandHandler(
     IPaymentRepository paymentRepository,
     IOrderRepository orderRepository,
     IPaymentService paymentService
-) : IRequestHandler<CreatePaymentCommand, ErrorOr<ChargeResource>>
+) : IRequestHandler<CreatePaymentSessionCommand, ErrorOr<CheckoutSession>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IPaymentService _paymentService = paymentService;
 
-    public async Task<ErrorOr<ChargeResource>> Handle(
-        CreatePaymentCommand request,
+    public async Task<ErrorOr<CheckoutSession>> Handle(
+        CreatePaymentSessionCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -47,28 +48,24 @@ public class CreateOrderCommandHandler(
             order.ShippingAddress
         );
 
-        // await _paymentRepository.AddAsync(payment);
+        await _paymentRepository.AddAsync(payment);
 
-        // if (await _paymentRepository.Commit(cancellationToken) <= 0)
-        // {
-        //     return CustomErrors.Payment.PaymentNotCreated;
-        // }
+        if (await _paymentRepository.Commit(cancellationToken) <= 0)
+        {
+            return CustomErrors.Payment.PaymentNotCreated;
+        }
 
-        var customerResource = await _paymentService.CreateCustomer(
-            email: "john@example.com",
-            name: "Kalam",
+        string successUrl = "http://localhost:4200/success";
+        string cancelUrl = "http://localhost:4200/cancel";
+
+        ErrorOr<CheckoutSession> checkoutSession = await _paymentService.CreateCheckoutSession(
+            "",
+            total.Amount,
+            successUrl,
+            cancelUrl,
             cancellationToken
         );
 
-        var createChargeResource = await _paymentService.CreateCharge(
-            currency: "usd",
-            (long)(total.Amount * 100),
-            customerResource.Value.Email,
-            customerResource.Value.CustomerId,
-            description: "Test charge",
-            cancellationToken: cancellationToken
-        );
-
-        return createChargeResource;
+        return checkoutSession;
     }
 }

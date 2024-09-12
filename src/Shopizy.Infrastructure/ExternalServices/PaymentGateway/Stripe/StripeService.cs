@@ -8,14 +8,12 @@ using Stripe.Checkout;
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 public class StripeService(
-    TokenService tokenService,
     CustomerService customerService,
     ChargeService chargeService,
     SessionService sessionService,
     IOptions<StripeSettings> options
 ) : IPaymentService
 {
-    private readonly TokenService _tokenService = tokenService;
     private readonly CustomerService _customerService = customerService;
     private readonly ChargeService _chargeService = chargeService;
     private readonly SessionService _sessionService = sessionService;
@@ -24,38 +22,16 @@ public class StripeService(
     public async Task<ErrorOr<CustomerResource>> CreateCustomer(
         string email,
         string name,
-        string number,
-        string expiryYear,
-        string expiryMonth,
-        string cvc,
         CancellationToken cancellationToken
     )
     {
         try
         {
-            var tokenOptions = new TokenCreateOptions
-            {
-                Card = new TokenCardOptions
-                {
-                    Name = name,
-                    Number = number,
-                    ExpYear = expiryYear,
-                    ExpMonth = expiryMonth,
-                    Cvc = cvc,
-                },
-            };
-            Token token = await _tokenService.CreateAsync(tokenOptions, null, cancellationToken);
-
-            var customerOptions = new CustomerCreateOptions
-            {
-                Email = email,
-                Name = name,
-                Source = token.Id,
-            };
+            var customerOptions = new CustomerCreateOptions { Email = email, Name = name };
             Customer customer = await _customerService.CreateAsync(
-                customerOptions,
-                null,
-                cancellationToken
+                options: customerOptions,
+                requestOptions: null,
+                cancellationToken: cancellationToken
             );
 
             return new CustomerResource(customer.Id, customer.Email, customer.Name);

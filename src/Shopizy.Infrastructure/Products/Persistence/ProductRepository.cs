@@ -16,22 +16,27 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     {
         return _dbContext.Products.AsNoTracking().ToListAsync();
     }
+
     public Task<Product?> GetProductByIdAsync(ProductId id)
     {
         return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
-    public Task<List<Product>> GetProductsByIdsAsync(List<ProductId> ids)
+
+    public Task<List<Product>> GetProductsByIdsAsync(IList<ProductId> ids)
     {
         return ApplySpec(new ProductsByIdsSpec(ids)).ToListAsync();
     }
+
     public Task<bool> IsProductExistAsync(ProductId id)
     {
         return _dbContext.Products.AnyAsync(p => p.Id == id);
     }
+
     public async Task AddAsync(Product product)
     {
         _ = await _dbContext.Products.AddAsync(product);
     }
+
     public void Update(Product product)
     {
         _ = _dbContext.Update(product);

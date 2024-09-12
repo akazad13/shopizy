@@ -6,12 +6,20 @@ using Shopizy.Infrastructure.Security.PolicyEnforcer;
 
 namespace Shopizy.Infrastructure.Security;
 
-public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserProvider currentUserProvider) : IAuthorizationService
+public class AuthorizationService(
+    IPolicyEnforcer policyEnforcer,
+    ICurrentUserProvider currentUserProvider
+) : IAuthorizationService
 {
     private readonly IPolicyEnforcer _policyEnforcer = policyEnforcer;
     private readonly ICurrentUserProvider _currentUserProvider = currentUserProvider;
 
-    public ErrorOr<Success> AuthorizeCurrentUser<T>(IAuthorizeableRequest<T> request, List<string> requiredRoles, List<string> requiredPermissions, List<string> requiredPolicies)
+    public ErrorOr<Success> AuthorizeCurrentUser<T>(
+        IAuthorizeableRequest<T> request,
+        IList<string> requiredRoles,
+        IList<string> requiredPermissions,
+        IList<string> requiredPolicies
+    )
     {
         CurrentUser? currentUser = _currentUserProvider.GetCurrentUser();
 
@@ -22,17 +30,25 @@ public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserPr
 
         if (requiredPermissions.Except(currentUser.Permissions).Any())
         {
-            return Error.Unauthorized(description: "User is missing required permissions for taking this action");
+            return Error.Unauthorized(
+                description: "User is missing required permissions for taking this action"
+            );
         }
 
         if (requiredRoles.Except(currentUser.Roles).Any())
         {
-            return Error.Unauthorized(description: "User is missing required roles for taking this action");
+            return Error.Unauthorized(
+                description: "User is missing required roles for taking this action"
+            );
         }
 
         foreach (string policy in requiredPolicies)
         {
-            ErrorOr<Success> authorizationAgaistPolicyResult = _policyEnforcer.Authorize(request, currentUser, policy);
+            ErrorOr<Success> authorizationAgaistPolicyResult = _policyEnforcer.Authorize(
+                request,
+                currentUser,
+                policy
+            );
             if (authorizationAgaistPolicyResult.IsError)
             {
                 return authorizationAgaistPolicyResult.Errors;

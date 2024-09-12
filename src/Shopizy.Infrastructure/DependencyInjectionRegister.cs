@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
@@ -15,6 +14,7 @@ using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 using Shopizy.Infrastructure.Orders.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
+using shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Security;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
@@ -100,11 +100,12 @@ public static class DependencyInjectionRegister
             .AddScoped<TokenService>()
             .AddScoped<CustomerService>()
             .AddScoped<ChargeService>()
-            .AddScoped<SessionService>();
+            .AddScoped<SessionService>()
+            .AddScoped<CardService>();
 
         _ = services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
 
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
 
         return services;
     }

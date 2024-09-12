@@ -11,4 +11,4 @@ public record ChargeResource(
     string Description
 );
 
-public record CheckoutSession(string SessionId);
+public record CheckoutSession(string SessionId, string PublishableKey);

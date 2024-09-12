@@ -8,10 +8,6 @@ public interface IPaymentService
     Task<ErrorOr<CustomerResource>> CreateCustomer(
         string email,
         string name,
-        string number,
-        string expiryYear,
-        string expiryMonth,
-        string cvc,
         CancellationToken cancellationToken
     );
 
