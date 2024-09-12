@@ -36,7 +36,9 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString())
             .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString());
 
-        _ = config.NewConfig<Guid, ListOrdersQuery>().MapWith(userId => new ListOrdersQuery(userId));
+        _ = config
+            .NewConfig<Guid, ListOrdersQuery>()
+            .MapWith(userId => new ListOrdersQuery(userId));
 
         _ = config
             .NewConfig<OrderItem, OrderItemResponse>()

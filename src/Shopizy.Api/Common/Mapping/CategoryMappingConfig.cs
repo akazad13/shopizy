@@ -31,7 +31,9 @@ public class CategoryMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CategoryId, src => src.CategoryId);
 
-        _ = config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);
+        _ = config
+            .NewConfig<Category, CategoryResponse>()
+            .Map(dest => dest.Id, src => src.Id.Value);
 
         _ = config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
     }

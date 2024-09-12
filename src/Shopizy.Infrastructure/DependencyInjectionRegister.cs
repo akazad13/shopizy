@@ -37,6 +37,23 @@ public static class DependencyInjectionRegister
     )
     {
         ArgumentNullException.ThrowIfNull(services);
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(
+                name: "_myAllowSpecificOrigins",
+                builder =>
+                {
+                    builder
+                        .SetIsOriginAllowed((host) => true)
+                        .WithOrigins(Origins())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }
+            );
+        });
+
         return services
             .AddHttpContextAccessor()
             .AddServices(configuration)
@@ -84,6 +101,8 @@ public static class DependencyInjectionRegister
             .AddScoped<CustomerService>()
             .AddScoped<ChargeService>()
             .AddScoped<SessionService>();
+
+        _ = services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
 
         StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
@@ -142,5 +161,10 @@ public static class DependencyInjectionRegister
             .AddScoped<IUserRepository, UserRepository>();
 
         return services;
+    }
+
+    private static string[] Origins()
+    {
+        return ["http://localhost:4200"];
     }
 }

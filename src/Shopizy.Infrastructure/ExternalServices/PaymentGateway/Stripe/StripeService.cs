@@ -1,4 +1,5 @@
 using ErrorOr;
+using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
 using Stripe;
@@ -10,13 +11,15 @@ public class StripeService(
     TokenService tokenService,
     CustomerService customerService,
     ChargeService chargeService,
-    SessionService sessionService
+    SessionService sessionService,
+    IOptions<StripeSettings> options
 ) : IPaymentService
 {
     private readonly TokenService _tokenService = tokenService;
     private readonly CustomerService _customerService = customerService;
     private readonly ChargeService _chargeService = chargeService;
     private readonly SessionService _sessionService = sessionService;
+    private readonly StripeSettings _stripeSettings = options.Value;
 
     public async Task<ErrorOr<CustomerResource>> CreateCustomer(
         string email,
@@ -144,7 +147,7 @@ public class StripeService(
 
             Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
 
-            return new CheckoutSession(session.Id);
+            return new CheckoutSession(session.Id, _stripeSettings.publishableKey);
         }
         catch (StripeException ex)
         {

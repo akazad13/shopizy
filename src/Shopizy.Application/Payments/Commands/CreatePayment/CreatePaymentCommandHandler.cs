@@ -26,7 +26,9 @@ public class CreateOrderCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        Domain.Orders.Order? order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+        Domain.Orders.Order? order = await _orderRepository.GetOrderByIdAsync(
+            OrderId.Create(request.OrderId)
+        );
 
         if (order is null)
         {
@@ -52,8 +54,8 @@ public class CreateOrderCommandHandler(
             return CustomErrors.Payment.PaymentNotCreated;
         }
 
-        string successUrl = "http://localhost:5054/success";
-        string cancelUrl = "http://localhost:5054/cancel";
+        string successUrl = "http://localhost:4200/success";
+        string cancelUrl = "http://localhost:4200/cancel";
 
         ErrorOr<CheckoutSession> checkoutSession = await _paymentService.CreateCheckoutSession(
             "",
