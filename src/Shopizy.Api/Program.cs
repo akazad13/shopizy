@@ -3,33 +3,29 @@ using Shopizy.Application;
 using Shopizy.Infrastructure;
 using Shopizy.Infrastructure.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPresentation();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPresentation().AddApplication().AddInfrastructure(builder.Configuration);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseInfrastructure();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseSwagger().UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseCors("_myAllowSpecificOrigins");
+app.UseHttpsRedirection().UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
+    DbMigrationsHelper initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
     await initialiser.MigrateAsync();
 }
 
-app.Run();
+await app.RunAsync();

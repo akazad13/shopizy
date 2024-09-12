@@ -22,25 +22,25 @@ public class UpdateAddressCommandHandlerTests
     public async Task UpdateAddress_WhenUserIsFound_UpdateReturnSuccess()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
+        Domain.Users.User user = UserFactory.CreateUser();
         user = UserFactory.UpdateAddress(user);
-        var query = UpdateAddressCommandUtils.CreateCommand();
+        UpdateAddressCommand query = UpdateAddressCommandUtils.CreateCommand();
 
-        _mockUserRepository
+        _ = _mockUserRepository
             .Setup(u => u.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(user);
 
-        _mockUserRepository.Setup(u => u.Update(user));
+        _ = _mockUserRepository.Setup(u => u.Update(user));
 
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _ = _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<ErrorOr.Success> result = await _handler.Handle(query, default);
 
         // Assert
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(query.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
     }
 }

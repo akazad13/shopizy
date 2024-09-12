@@ -11,21 +11,25 @@ namespace Shopizy.Infrastructure.Orders.Persistence;
 public class OrderRepository(AppDbContext dbContext) : IOrderRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+
     public Task<List<Order>> GetOrdersAsync()
     {
         return _dbContext.Orders.AsNoTracking().ToListAsync();
     }
+
     public Task<Order?> GetOrderByIdAsync(OrderId id)
     {
         return ApplySpec(new OrderByIdSpec(id)).FirstOrDefaultAsync();
     }
+
     public async Task AddAsync(Order order)
     {
-        await _dbContext.Orders.AddAsync(order);
+        _ = await _dbContext.Orders.AddAsync(order);
     }
+
     public void Update(Order order)
     {
-        _dbContext.Update(order);
+        _ = _dbContext.Update(order);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

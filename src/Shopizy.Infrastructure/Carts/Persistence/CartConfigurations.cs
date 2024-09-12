@@ -18,45 +18,45 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
 
     private static void ConfigureCartsTable(EntityTypeBuilder<Cart> builder)
     {
-        builder.ToTable("Carts");
-        builder.HasKey(c => c.Id);
+        _ = builder.ToTable("Carts");
+        _ = builder.HasKey(c => c.Id);
 
-        builder.HasIndex(c => c.UserId);
+        _ = builder.HasIndex(c => c.UserId);
 
-        builder
+        _ = builder
             .Property(c => c.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => CartId.Create(value));
 
-        builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        _ = builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
+        _ = builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
-        builder
+        _ = builder
             .Property(c => c.UserId)
             .HasConversion(id => id.Value, value => UserId.Create(value));
     }
 
     private static void ConfigureCartProductIdsTable(EntityTypeBuilder<Cart> builder)
     {
-        builder.OwnsMany(
+        _ = builder.OwnsMany(
             m => m.LineItems,
             ltmb =>
             {
-                ltmb.ToTable("LineItems");
-                ltmb.WithOwner().HasForeignKey("CartId");
-                ltmb.HasKey(nameof(LineItem.Id), "CartId");
-                ltmb.HasIndex("CartId", "ProductId").IsUnique();
+                _ = ltmb.ToTable("LineItems");
+                _ = ltmb.WithOwner().HasForeignKey("CartId");
+                _ = ltmb.HasKey(nameof(LineItem.Id), "CartId");
+                _ = ltmb.HasIndex("CartId", "ProductId").IsUnique();
 
-                ltmb.Property(li => li.Id)
+                _ = ltmb.Property(li => li.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => LineItemId.Create(value));
 
-                ltmb.Property(li => li.ProductId)
+                _ = ltmb.Property(li => li.ProductId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
-                ltmb.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
+                _ = ltmb.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
             }
         );
-        builder.Navigation(p => p.LineItems).UsePropertyAccessMode(PropertyAccessMode.Field);
+        _ = builder.Navigation(p => p.LineItems).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

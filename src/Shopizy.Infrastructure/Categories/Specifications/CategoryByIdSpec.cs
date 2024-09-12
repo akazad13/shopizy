@@ -1,6 +1,6 @@
-using Shopizy.Infrastructure.Common.Specifications;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Categories.Specifications;
 

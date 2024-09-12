@@ -24,18 +24,18 @@ public class UpdateCategoryCommandHandlerTests
     public async Task UpdateCategory_WhenCategoryIsFound_UpdateAndReturnCategory()
     {
         // Arrange
-        var command = UpdateCategoryCommandUtils.CreateCommand();
+        UpdateCategoryCommand command = UpdateCategoryCommandUtils.CreateCommand();
 
-        _mockCategoryRepository
+        _ = _mockCategoryRepository
             .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(command.CategoryId)))
             .ReturnsAsync(Category.Create(command.Name, command.ParentId));
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
+        _ = _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<Category> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value.ValidateResult(command);
     }
 }

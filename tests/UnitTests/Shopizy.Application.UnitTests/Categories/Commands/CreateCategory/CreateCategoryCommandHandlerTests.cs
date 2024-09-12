@@ -23,18 +23,18 @@ public class CreateCategoryCommandHandlerTests
     public async Task CreateCategory_WhenCategoryIsValid_CrateAndReturnCategory()
     {
         // Arrange
-        var createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
+        CreateCategoryCommand createCategoryCommand = CreateCategoryCommandUtils.CreateCommand();
 
-        _mockCategoryRepository
+        _ = _mockCategoryRepository
             .Setup(c => c.GetCategoryByNameAsync(createCategoryCommand.Name))
             .ReturnsAsync(false);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
+        _ = _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(createCategoryCommand, default);
+        ErrorOr.ErrorOr<Domain.Categories.Category> result = await _handler.Handle(createCategoryCommand, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value.ValidateResult(createCategoryCommand);
     }
 
@@ -42,39 +42,39 @@ public class CreateCategoryCommandHandlerTests
     public async Task CreateCategory_WhenCategoryNameIsExist_ReturnDuplicateCategoryError()
     {
         // Arrange
-        var command = CreateCategoryCommandUtils.CreateCommand();
+        CreateCategoryCommand command = CreateCategoryCommandUtils.CreateCommand();
 
-        _mockCategoryRepository
+        _ = _mockCategoryRepository
             .Setup(c => c.GetCategoryByNameAsync(command.Name))
             .ReturnsAsync(true);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
+        _ = _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<Domain.Categories.Category> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
-        result.Errors.First().Should().Be(CustomErrors.Category.DuplicateName);
+        _ = result.IsError.Should().BeTrue();
+        _ = result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
+        _ = result.Errors.First().Should().Be(CustomErrors.Category.DuplicateName);
     }
 
     [Fact]
     public async Task CreateCategory_WhenCategorySaveFailed_ReturnCategoryNotCreatedError()
     {
         // Arrange
-        var command = CreateCategoryCommandUtils.CreateCommand();
+        CreateCategoryCommand command = CreateCategoryCommandUtils.CreateCommand();
 
-        _mockCategoryRepository
+        _ = _mockCategoryRepository
             .Setup(c => c.GetCategoryByNameAsync(command.Name))
             .ReturnsAsync(false);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(0);
+        _ = _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(0);
 
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<Domain.Categories.Category> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
-        result.Errors.First().Should().Be(CustomErrors.Category.CategoryNotCreated);
+        _ = result.IsError.Should().BeTrue();
+        _ = result.Errors.Should().BeOfType(typeof(List<ErrorOr.Error>));
+        _ = result.Errors.First().Should().Be(CustomErrors.Category.CategoryNotCreated);
     }
 }

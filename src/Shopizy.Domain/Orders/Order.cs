@@ -1,9 +1,9 @@
-using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Orders;
@@ -11,12 +11,12 @@ namespace Shopizy.Domain.Orders;
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly List<OrderItem> _orderItems = [];
-    public UserId UserId { get; private set;}
+    public UserId UserId { get; private set; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string? CancellationReason { get; private set; }
     public string PromoCode { get; private set; }
-    public Address ShippingAddress { get; private set;}
+    public Address ShippingAddress { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
@@ -36,8 +36,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
             promoCode,
             deliveryCharge,
             shippingAddress,
-            orderItems);
+            orderItems
+        );
     }
+
     private Order(
         OrderId orderId,
         UserId userId,
@@ -45,7 +47,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         Price deliveryCharge,
         Address shippingAddress,
         List<OrderItem> orderItems
-    ) : base(orderId)
+    )
+        : base(orderId)
     {
         UserId = userId;
         OrderStatus = OrderStatus.Submitted;
@@ -57,14 +60,22 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         CreatedOn = DateTime.UtcNow;
     }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Order() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public void CancelOrder(string reason)
     {
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
         ModifiedOn = DateTime.UtcNow;
+    }
+
+    public Price GetTotal()
+    {
+        decimal totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
+        decimal totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
+
+        decimal chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
+
+        return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }
 }

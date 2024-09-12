@@ -17,19 +17,25 @@ public class UpdatePasswordCommandHandler(IUserRepository userRepository, IPassw
         CancellationToken cancellationToken
     )
     {
-         var user = await _userRepository.GetUserById( UserId.Create(request.UserId ));
-        if(user is null)
+        Domain.Users.User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        if (user is null)
+        {
             return CustomErrors.User.UserNotFound;
+        }
 
-        if(!_passwordManager.Verify(request.OldPassword, user.Password ?? ""))
+        if (!_passwordManager.Verify(request.OldPassword, user.Password ?? ""))
+        {
             return CustomErrors.User.PasswordNotCorrect;
+        }
 
         user.UpdatePassword(_passwordManager.CreateHashString(request.NewPassword));
 
         _userRepository.Update(user);
-        
+
         if (await _userRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.User.PasswordNotUpdated;
+        }
 
         return Result.Success;
     }

@@ -20,11 +20,11 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
     }
     public async Task AddAsync(PromoCode promoCode)
     {
-        await _dbContext.PromoCodes.AddAsync(promoCode);
+        _ = await _dbContext.PromoCodes.AddAsync(promoCode);
     }
     public void Update(PromoCode promoCode)
     {
-        _dbContext.Update(promoCode);
+        _ = _dbContext.Update(promoCode);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

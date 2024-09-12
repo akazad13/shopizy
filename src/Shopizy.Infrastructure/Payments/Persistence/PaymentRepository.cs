@@ -19,11 +19,11 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
     }
     public async Task AddAsync(Payment payment)
     {
-        await _dbContext.Payments.AddAsync(payment);
+        _ = await _dbContext.Payments.AddAsync(payment);
     }
     public void Update(Payment payment)
     {
-        _dbContext.Update(payment);
+        _ = _dbContext.Update(payment);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

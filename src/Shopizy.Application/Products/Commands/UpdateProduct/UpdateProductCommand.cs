@@ -1,13 +1,13 @@
 using ErrorOr;
-using Shopizy.Domain.Products;
-using Shopizy.Application.Common.Security.Request;
-using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Permissions;
+using Shopizy.Application.Common.Security.Policies;
+using Shopizy.Application.Common.Security.Request;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
-[Authorize(Permissions = Permission.Product.Modify, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.Product.Modify, Policies = Policy.SelfOrAdmin)]
 public record UpdateProductCommand(
     Guid UserId,
     Guid ProductId,
@@ -21,5 +21,5 @@ public record UpdateProductCommand(
     string Brand,
     string Tags,
     string Barcode,
-    List<Guid>? SpecificationIds
+    IList<Guid>? SpecificationIds
 ) : IAuthorizeableRequest<ErrorOr<Product>>;

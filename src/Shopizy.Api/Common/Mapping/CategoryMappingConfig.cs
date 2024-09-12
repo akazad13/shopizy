@@ -12,12 +12,12 @@ public class CategoryMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config
+        _ = config
             .NewConfig<(Guid UserId, CreateCategoryRequest Request), CreateCategoryCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.Request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CategoryId, UpdateCategoryRequest Request),
                 UpdateCategoryCommand
@@ -26,14 +26,16 @@ public class CategoryMappingConfig : IRegister
             .Map(dest => dest.CategoryId, src => src.CategoryId)
             .Map(dest => dest, src => src.Request);
 
-        config
+        _ = config
             .NewConfig<(Guid UserId, Guid CategoryId), DeleteCategoryCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CategoryId, src => src.CategoryId);
 
-        config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);
+        _ = config
+            .NewConfig<Category, CategoryResponse>()
+            .Map(dest => dest.Id, src => src.Id.Value);
 
-        config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
+        _ = config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
     }
 }
 

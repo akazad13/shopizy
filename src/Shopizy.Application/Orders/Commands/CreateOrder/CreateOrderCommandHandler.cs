@@ -11,20 +11,27 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
-public class CreateOrderCommandHandler(IProductRepository productRepository, IOrderRepository orderRepository) : IRequestHandler<CreateOrderCommand, ErrorOr<OrderId>>
+public class CreateOrderCommandHandler(
+    IProductRepository productRepository,
+    IOrderRepository orderRepository
+) : IRequestHandler<CreateOrderCommand, ErrorOr<Order>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public async Task<ErrorOr<OrderId>> Handle(
+    public async Task<ErrorOr<Order>> Handle(
         CreateOrderCommand request,
         CancellationToken cancellationToken
     )
     {
-        var products = await _productRepository.GetProductsByIdsAsync( request.OrderItems.Select( x => ProductId.Create( x.ProductId )).ToList() );
-        if(products.Count ==0)
+        List<Domain.Products.Product> products = await _productRepository.GetProductsByIdsAsync(
+            request.OrderItems.Select(x => ProductId.Create(x.ProductId)).ToList()
+        );
+        if (products.Count == 0)
+        {
             return CustomErrors.Product.ProductNotFound;
-        
+        }
+
         // foreach( var product in products)
         // {
         //     if(product.StockQuantity < request.OrderItems.First(p => p.ProductId == items.Id.Value).Quantity)
@@ -36,27 +43,36 @@ public class CreateOrderCommandHandler(IProductRepository productRepository, IOr
         var order = Order.Create(
             userId: UserId.Create(request.UserId),
             promoCode: request.PromoCode,
-            deliveryCharge: Price.CreateNew(request.DeliveryChargeAmount, request.DeliveryChargeCurrency),
+            deliveryCharge: Price.CreateNew(
+                request.DeliveryChargeAmount,
+                request.DeliveryChargeCurrency
+            ),
             shippingAddress: Address.CreateNew(
-                line: request.ShippingAddress.Line,
+                street: request.ShippingAddress.Street,
                 city: request.ShippingAddress.City,
                 state: request.ShippingAddress.State,
                 country: request.ShippingAddress.Country,
                 zipCode: request.ShippingAddress.ZipCode
             ),
-            orderItems: products.ConvertAll( items => OrderItem.Create(
-                name: items.Name,
-                pictureUrl: items.ProductImages.Count == 0? "" : items.ProductImages[0].ImageUrl,
-                unitPrice: items.UnitPrice,
-                quantity: request.OrderItems.First(p => p.ProductId == items.Id.Value).Quantity,
-                discount: items.Discount
-            ) )
+            orderItems: products.ConvertAll(items =>
+                OrderItem.Create(
+                    name: items.Name,
+                    pictureUrl: items.ProductImages.Count == 0
+                        ? ""
+                        : items.ProductImages[0].ImageUrl,
+                    unitPrice: items.UnitPrice,
+                    quantity: request.OrderItems.First(p => p.ProductId == items.Id.Value).Quantity,
+                    discount: items.Discount
+                )
+            )
         );
 
         await _orderRepository.AddAsync(order);
         if (await _orderRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Order.OrderNotCreated;
+        }
 
-        return order.Id;
+        return order;
     }
 }

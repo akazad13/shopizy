@@ -1,14 +1,14 @@
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.AddProductImage;
+using Shopizy.Application.Products.Common;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
-using Shopizy.Application.Products.Common;
-using Microsoft.AspNetCore.Http;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Products.Entities;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.AddProductImage;
 
@@ -32,17 +32,17 @@ public class AddProductImageCommandHandlerTests
     public async Task AddProductImage_WhenProductIsFoundAndImageIsUploaded_AddAndReturnProductImage()
     {
         // Arrange
-        var product = ProductFactory.CreateProduct();
-        var productImage = ProductFactory.CreateProductImage();
+        Domain.Products.Product product = ProductFactory.CreateProduct();
+        ProductImage productImage = ProductFactory.CreateProductImage();
         product.AddProductImage(productImage);
 
-        var command = AddProductImageCommandUtils.CreateCommand(product.Id.Value);
+        AddProductImageCommand command = AddProductImageCommandUtils.CreateCommand(product.Id.Value);
 
-        _mockProductRepository
+        _ = _mockProductRepository
             .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
-        _mockMediaUploader
+        _ = _mockMediaUploader
             .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), default))
             .ReturnsAsync(
                 new PhotoUploadResult(
@@ -51,16 +51,16 @@ public class AddProductImageCommandHandlerTests
                 )
             );
 
-        _mockProductRepository.Setup(p => p.Update(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
+        _ = _mockProductRepository.Setup(p => p.Update(product));
+        _ = _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = await _handler.Handle(command, default);
+        ErrorOr.ErrorOr<ProductImage> result = await _handler.Handle(command, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(ProductImage));
-        result.Value.ImageUrl.Should().Be(productImage.ImageUrl);
-        result.Value.PublicId.Should().Be(productImage.PublicId);
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType(typeof(ProductImage));
+        _ = result.Value.ImageUrl.Should().Be(productImage.ImageUrl);
+        _ = result.Value.PublicId.Should().Be(productImage.PublicId);
 
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }

@@ -25,16 +25,16 @@ public class GetCategoryQueryHandlerTests
     public async Task GetCategory_WhenCategoryIsFound_ReturnCategory()
     {
         // Arrange
-        var query = GetCategoryQueryUtils.CreateQuery();
-        _mockCategoryRepository
+        GetCategoryQuery query = GetCategoryQueryUtils.CreateQuery();
+        _ = _mockCategoryRepository
             .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(query.CategoryId)))
             .ReturnsAsync(Category.Create(Constants.Category.Name, Constants.Category.ParentId));
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<Category?> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value?.ValidateResult(query);
     }
 }

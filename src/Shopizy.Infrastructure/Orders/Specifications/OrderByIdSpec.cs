@@ -1,6 +1,6 @@
-using Shopizy.Infrastructure.Common.Specifications;
-using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Orders;
+using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Orders.Specifications;
 

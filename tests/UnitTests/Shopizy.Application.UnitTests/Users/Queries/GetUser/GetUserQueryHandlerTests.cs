@@ -22,17 +22,17 @@ public class GetUserQueryHandlerTests
     public async Task GetUSer_WhenUserIsFound_ReturnUser()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
+        Domain.Users.User user = UserFactory.CreateUser();
         user = UserFactory.UpdateAddress(user);
-        var query = GetUserQueryUtils.CreateQuery();
-        _mockUserRepository
+        GetUserQuery query = GetUserQueryUtils.CreateQuery();
+        _ = _mockUserRepository
             .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<Domain.Users.User> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
     }
 }

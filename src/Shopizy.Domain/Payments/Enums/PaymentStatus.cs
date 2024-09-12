@@ -1,4 +1,4 @@
-namespace shopizy.Domain.Payments.Enums;
+namespace Shopizy.Domain.Payments.Enums;
 
 public enum PaymentStatus
 {

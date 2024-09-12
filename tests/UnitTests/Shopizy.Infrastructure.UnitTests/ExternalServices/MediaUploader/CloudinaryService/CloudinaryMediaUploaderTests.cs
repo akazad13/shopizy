@@ -26,7 +26,7 @@ public class CloudinaryMediaUploaderTests
     public async Task UploadPhoto_WithValidFile_ReturnSecureUrl()
     {
         // Arrange
-        var filebytes = Encoding.UTF8.GetBytes("dummy image");
+        byte[] filebytes = Encoding.UTF8.GetBytes("dummy image");
         IFormFile file = new FormFile(
             new MemoryStream(filebytes),
             0,
@@ -35,24 +35,24 @@ public class CloudinaryMediaUploaderTests
             "image.png"
         );
 
-        var expectedUrl = "https://res.cloudinary.com/test/image/upload/test";
-        var expectedPublicId = "test";
+        string expectedUrl = "https://res.cloudinary.com/test/image/upload/test";
+        string expectedPublicId = "test";
 
-        _cloudinary
+        _ = _cloudinary
             .Setup(c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ImageUploadResult { Url = new Uri(expectedUrl), PublicId = expectedPublicId }
             );
 
         // Act
-        var result = await _cloudinaryMediaUploader.UploadPhotoAsync(file);
+        ErrorOr<PhotoUploadResult> result = await _cloudinaryMediaUploader.UploadPhotoAsync(file);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(PhotoUploadResult));
-        result.Value.Should().NotBeNull();
-        result.Value.Url.ToString().Should().Be(expectedUrl);
-        result.Value.PublicId.Should().Be(expectedPublicId);
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType(typeof(PhotoUploadResult));
+        _ = result.Value.Should().NotBeNull();
+        _ = result.Value.Url.ToString().Should().Be(expectedUrl);
+        _ = result.Value.PublicId.Should().Be(expectedPublicId);
         _cloudinary.Verify(
             c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()),
             Times.Once
@@ -63,17 +63,17 @@ public class CloudinaryMediaUploaderTests
     public async Task DeletePhoto_WithValidPublicId_DeleteAndReturnBoolean()
     {
         // Arrange
-        var publicId = "test";
-        _cloudinary
+        string publicId = "test";
+        _ = _cloudinary
             .Setup(c => c.DestroyAsync(It.IsAny<DeletionParams>()))
             .ReturnsAsync(new DeletionResult { Result = "ok" });
 
         // Act
-        var result = await _cloudinaryMediaUploader.DeletePhotoAsync(publicId);
+        ErrorOr<Success> result = await _cloudinaryMediaUploader.DeletePhotoAsync(publicId);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(Success));
+        _ = result.IsError.Should().BeFalse();
+        _ = result.Value.Should().BeOfType(typeof(Success));
         _cloudinary.Verify(c => c.DestroyAsync(It.IsAny<DeletionParams>()), Times.Once);
     }
 }

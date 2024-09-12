@@ -23,17 +23,17 @@ public class GetProductQueryHandlerTests
     public async Task GetProduct_WhenProductIsFound_ReturnProduct()
     {
         // Arrange
-        var product = ProductFactory.CreateProduct();
-        var query = GetProductQueryUtils.CreateQuery();
-        _mockProductRepository
+        Domain.Products.Product product = ProductFactory.CreateProduct();
+        GetProductQuery query = GetProductQueryUtils.CreateQuery();
+        _ = _mockProductRepository
             .Setup(c => c.GetProductByIdAsync(ProductId.Create(query.ProductId)))
             .ReturnsAsync(product);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<Domain.Products.Product?> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
         result.Value?.ValidateResult(query);
     }
 

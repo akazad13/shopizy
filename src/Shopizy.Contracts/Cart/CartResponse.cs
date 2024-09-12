@@ -5,7 +5,7 @@ public record CartResponse(
     Guid UserId,
     DateTime CreatedOn,
     DateTime ModifiedOn,
-    List<LineItemResponse> LineItems
+    IList<LineItemResponse> LineItems
 );
 
 public record LineItemResponse(
@@ -22,5 +22,5 @@ public record ProductResponse(
     decimal Discount,
     string Brand,
     int StockQuantity,
-    List<string>? ProductImages
+    IList<string>? ProductImages
 );

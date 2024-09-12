@@ -7,11 +7,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddMappings(this IServiceCollection services)
     {
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(typeof(DependencyInjection).Assembly);
+        TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
+        _ = config.Scan(typeof(DependencyInjection).Assembly);
 
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
+        _ = services.AddSingleton(config).AddScoped<IMapper, ServiceMapper>();
         return services;
     }
 }

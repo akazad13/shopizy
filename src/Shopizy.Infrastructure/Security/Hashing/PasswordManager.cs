@@ -24,9 +24,9 @@ public class PasswordManager : IPasswordManager
                     Version = 1,
                     KeyDerivation = KeyDerivationPrf.HMACSHA512,
                     HashSize = 256 / 8,
-                    SaltSize = 128 / 8
+                    SaltSize = 128 / 8,
                 }
-            }
+            },
         };
 
     private HashVersion DefaultVersion => _versions[1];
@@ -35,7 +35,7 @@ public class PasswordManager : IPasswordManager
     {
         try
         {
-            var dataBytes = Convert.FromBase64String(data);
+            byte[] dataBytes = Convert.FromBase64String(data);
             return Verify(clearText, dataBytes);
         }
         catch
@@ -46,25 +46,25 @@ public class PasswordManager : IPasswordManager
 
     public string CreateHashString(string clearText, int iterations = default)
     {
-        var data = Hash(clearText, iterations);
+        byte[] data = Hash(clearText, iterations);
         return Convert.ToBase64String(data);
     }
 
     public bool IsLatestHastversion(byte[] data)
     {
-        var version = BitConverter.ToInt16(data, 0);
+        short version = BitConverter.ToInt16(data, 0);
         return version == DefaultVersion.Version;
     }
 
     public bool IsLatestHastversion(string data)
     {
-        var dataBytes = Convert.FromBase64String(data);
+        byte[] dataBytes = Convert.FromBase64String(data);
         return IsLatestHastversion(dataBytes);
     }
 
     private byte[] GetRandomBytes(int lengh)
     {
-        var data = new byte[lengh];
+        byte[] data = new byte[lengh];
         using (var randomNumberGen = RandomNumberGenerator.Create())
         {
             randomNumberGen.GetBytes(data);
@@ -74,12 +74,12 @@ public class PasswordManager : IPasswordManager
 
     private byte[] Hash(string clearText, int iterations)
     {
-        var currentVersion = DefaultVersion;
+        HashVersion currentVersion = DefaultVersion;
 
-        var saltBytes = GetRandomBytes(currentVersion.SaltSize);
-        var versionBytes = BitConverter.GetBytes(currentVersion.Version);
-        var iterationBytes = BitConverter.GetBytes(iterations);
-        var hashBytes = KeyDerivation.Pbkdf2(
+        byte[] saltBytes = GetRandomBytes(currentVersion.SaltSize);
+        byte[] versionBytes = BitConverter.GetBytes(currentVersion.Version);
+        byte[] iterationBytes = BitConverter.GetBytes(iterations);
+        byte[] hashBytes = KeyDerivation.Pbkdf2(
             clearText,
             saltBytes,
             currentVersion.KeyDerivation,
@@ -87,12 +87,12 @@ public class PasswordManager : IPasswordManager
             currentVersion.HashSize
         );
 
-        var indexVersion = 0;
-        var indexIteration = indexVersion + versionBytes.Length;
-        var indexSalt = indexIteration + iterationBytes.Length;
-        var indexHash = indexSalt + currentVersion.SaltSize;
+        int indexVersion = 0;
+        int indexIteration = indexVersion + versionBytes.Length;
+        int indexSalt = indexIteration + iterationBytes.Length;
+        int indexHash = indexSalt + currentVersion.SaltSize;
 
-        var resultBytes = new byte[
+        byte[] resultBytes = new byte[
             versionBytes.Length
                 + iterationBytes.Length
                 + currentVersion.SaltSize
@@ -108,23 +108,23 @@ public class PasswordManager : IPasswordManager
     private bool Verify(string clearText, byte[] data)
     {
         //Get the current version and number of iterations
-        var currentVersion = _versions[BitConverter.ToInt16(data, 0)];
-        var iteration = BitConverter.ToInt32(data, 2);
+        HashVersion currentVersion = _versions[BitConverter.ToInt16(data, 0)];
+        int iteration = BitConverter.ToInt32(data, 2);
 
         //Create the byte arrays for the salt and hash
-        var saltBytes = new byte[currentVersion.SaltSize];
-        var hashBytes = new byte[currentVersion.HashSize];
+        byte[] saltBytes = new byte[currentVersion.SaltSize];
+        byte[] hashBytes = new byte[currentVersion.HashSize];
 
         //Calculate the indexes of the salt and the hash
-        var indexSalt = 2 + 4; // Int16 (Version) and Int32 (Iteration)
-        var indexHash = indexSalt + currentVersion.SaltSize;
+        int indexSalt = 2 + 4; // Int16 (Version) and Int32 (Iteration)
+        int indexHash = indexSalt + currentVersion.SaltSize;
 
         //Fill the byte arrays with salt and hash
         Array.Copy(data, indexSalt, saltBytes, 0, currentVersion.SaltSize);
         Array.Copy(data, indexHash, hashBytes, 0, currentVersion.HashSize);
 
         //Hash the current clearText with the parameters given via the data
-        var verificationHashBytes = KeyDerivation.Pbkdf2(
+        byte[] verificationHashBytes = KeyDerivation.Pbkdf2(
             clearText,
             saltBytes,
             currentVersion.KeyDerivation,

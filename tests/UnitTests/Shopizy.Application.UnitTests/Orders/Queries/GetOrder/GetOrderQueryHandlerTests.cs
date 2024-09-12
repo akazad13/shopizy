@@ -22,16 +22,16 @@ public class GetOrderQueryHandlerTests
     public async Task GetOrder_WhenOrderIsFound_ReturnOrder()
     {
         // Arrange
-        var order = OrderFactory.CreateOrder();
-        var query = GetOrderQueryUtils.CreateQuery();
-        _mockOrderRepository
+        Domain.Orders.Order order = OrderFactory.CreateOrder();
+        GetOrderQuery query = GetOrderQueryUtils.CreateQuery();
+        _ = _mockOrderRepository
             .Setup(c => c.GetOrderByIdAsync(OrderId.Create(query.OrderId)))
             .ReturnsAsync(order);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        ErrorOr.ErrorOr<Domain.Orders.Order> result = await _handler.Handle(query, default);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        _ = result.IsError.Should().BeFalse();
     }
 }

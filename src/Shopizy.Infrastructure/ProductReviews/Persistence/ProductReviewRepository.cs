@@ -9,7 +9,7 @@ namespace Shopizy.Infrastructure.ProductReviews.Persistence;
 public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
-    
+
     public Task<List<ProductReview>> GetProductReviewsAsync()
     {
         return _dbContext.ProductReviews.AsNoTracking().ToListAsync();
@@ -20,11 +20,11 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
     }
     public async Task AddAsync(ProductReview productReview)
     {
-        await _dbContext.ProductReviews.AddAsync(productReview);
+        _ = await _dbContext.ProductReviews.AddAsync(productReview);
     }
     public void Update(ProductReview productReview)
     {
-        _dbContext.Update(productReview);
+        _ = _dbContext.Update(productReview);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

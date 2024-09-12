@@ -17,7 +17,7 @@ namespace shopizy.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -452,15 +452,15 @@ namespace shopizy.Infrastructure.Migrations
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
 
-                            b1.Property<string>("Line")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
                             b1.Property<string>("State")
                                 .IsRequired()
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
 
                             b1.Property<string>("ZipCode")
                                 .IsRequired()
@@ -513,15 +513,15 @@ namespace shopizy.Infrastructure.Migrations
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
 
-                            b1.Property<string>("Line")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
                             b1.Property<string>("State")
                                 .IsRequired()
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
 
                             b1.Property<string>("ZipCode")
                                 .IsRequired()
@@ -702,13 +702,13 @@ namespace shopizy.Infrastructure.Migrations
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
 
-                            b1.Property<string>("Line")
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
                             b1.Property<string>("State")
                                 .HasMaxLength(30)
                                 .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Street")
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
 
                             b1.Property<string>("ZipCode")
                                 .HasMaxLength(10)
@@ -722,8 +722,7 @@ namespace shopizy.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>

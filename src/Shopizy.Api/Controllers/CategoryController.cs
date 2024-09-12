@@ -12,57 +12,59 @@ using Shopizy.Contracts.Category;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0")]
-public class CategoryController(ISender _mediator, IMapper _mapper) : ApiController
+public class CategoryController(ISender mediator, IMapper mapper) : ApiController
 {
+    private readonly ISender _mediator = mediator;
+    private readonly IMapper _mapper = mapper;
+
     [HttpGet("categories")]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAsync()
     {
         var query = new ListCategoriesQuery();
-        var result = await _mediator.Send(query);
+        ErrorOr<List<Domain.Categories.Category>> result = await _mediator.Send(query);
 
-        return result.Match(
-            category => Ok(_mapper.Map<List<CategoryResponse>>(category)),
-            Problem);
+        return result.Match(category => Ok(_mapper.Map<List<CategoryResponse>>(category)), Problem);
     }
-    [HttpGet("categories/{categoryId:guid}")]
-    public async Task<IActionResult> GetCategory(Guid categoryId)
-    {
-        var query = _mapper.Map<GetCategoryQuery>(categoryId);
-        var result = await _mediator.Send(query);
 
-        return result.Match(
-            category => Ok(_mapper.Map<CategoryResponse>(category)),
-            Problem);
+    [HttpGet("categories/{categoryId:guid}")]
+    public async Task<IActionResult> GetCategoryAsync(Guid categoryId)
+    {
+        GetCategoryQuery query = _mapper.Map<GetCategoryQuery>(categoryId);
+        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(query);
+
+        return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
 
     [HttpPost("users/{userId:guid}/categories")]
-    public async Task<IActionResult> CreateCategory(Guid userId, CreateCategoryRequest request)
+    public async Task<IActionResult> CreateCategoryAsync(Guid userId, CreateCategoryRequest request)
     {
-        var command = _mapper.Map<CreateCategoryCommand>((userId, request));
-        var result = await _mediator.Send(command);
+        CreateCategoryCommand command = _mapper.Map<CreateCategoryCommand>((userId, request));
+        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(command);
 
-        return result.Match(
-            category => Ok(_mapper.Map<CategoryResponse>(category)),
-            Problem);
+        return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
+
     [HttpPatch("users/{userId:guid}/categories/{categoryId:guid}")]
-    public async Task<IActionResult> UpdateCategory(Guid userId, Guid categoryId, UpdateCategoryRequest request)
+    public async Task<IActionResult> UpdateCategoryAsync(
+        Guid userId,
+        Guid categoryId,
+        UpdateCategoryRequest request
+    )
     {
-        var command = _mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
-        var result = await _mediator.Send(command);
+        UpdateCategoryCommand command = _mapper.Map<UpdateCategoryCommand>(
+            (userId, categoryId, request)
+        );
+        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(command);
 
-        return result.Match(
-            category => Ok(_mapper.Map<CategoryResponse>(category)),
-            Problem);
+        return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
-    [HttpDelete("users/{userId:guid}/categories/{categoryId:guid}")]
-    public async Task<IActionResult> DeleteCategory(Guid userId, Guid categoryId)
-    {
-        var command = _mapper.Map<DeleteCategoryCommand>((userId, categoryId));
-        var result = await _mediator.Send(command);
 
-        return result.Match(
-            category => Ok(_mapper.Map<Success>(category)),
-            Problem);
+    [HttpDelete("users/{userId:guid}/categories/{categoryId:guid}")]
+    public async Task<IActionResult> DeleteCategoryAsync(Guid userId, Guid categoryId)
+    {
+        DeleteCategoryCommand command = _mapper.Map<DeleteCategoryCommand>((userId, categoryId));
+        ErrorOr<Success> result = await _mediator.Send(command);
+
+        return result.Match(category => Ok(_mapper.Map<Success>(category)), Problem);
     }
 }

@@ -25,15 +25,15 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     }
     public async Task AddAsync(Cart cart)
     {
-        await _dbContext.Carts.AddAsync(cart);
+        _ = await _dbContext.Carts.AddAsync(cart);
     }
     public void Update(Cart cart)
     {
-        _dbContext.Update(cart);
+        _ = _dbContext.Update(cart);
     }
     public void Remove(Cart cart)
     {
-        _dbContext.Remove(cart);
+        _ = _dbContext.Remove(cart);
     }
     public Task<int> Commit(CancellationToken cancellationToken)
     {

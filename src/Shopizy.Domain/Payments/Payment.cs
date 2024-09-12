@@ -1,8 +1,8 @@
-using shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Payments.ValueObjects;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
@@ -65,7 +65,6 @@ public sealed class Payment : Entity<PaymentId>
         BillingAddress = billingAddress;
         CreatedOn = DateTime.UtcNow;
     }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     private Payment() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -8,7 +8,11 @@ using Shopizy.Domain.Users;
 
 namespace Shopizy.Application.Authentication.Commands.Register;
 
-public class RegisterCommandHandler(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator, IPasswordManager passwordManager) : IRequestHandler<RegisterCommand, ErrorOr<AuthResult>>
+public class RegisterCommandHandler(
+    IUserRepository userRepository,
+    IJwtTokenGenerator jwtTokenGenerator,
+    IPasswordManager passwordManager
+) : IRequestHandler<RegisterCommand, ErrorOr<AuthResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
@@ -24,29 +28,29 @@ public class RegisterCommandHandler(IUserRepository userRepository, IJwtTokenGen
             return CustomErrors.User.DuplicatePhone;
         }
 
-        var hashedPassword = _passwordManager.CreateHashString(command.Password);
+        string hashedPassword = _passwordManager.CreateHashString(command.Password);
 
-        var user = User.Create(command.FirstName,
-            command.LastName,
-            command.Phone,
-            hashedPassword);
+        var user = User.Create(command.FirstName, command.LastName, command.Phone, hashedPassword);
 
         await _userRepository.AddAsync(user);
 
         if (await _userRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.User.UserNotCreated;
+        }
 
         var roles = new List<string>();
         var permissions = new List<string>();
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, command.FirstName, command.LastName, command.Phone, roles, permissions);
-
-        return new AuthResult(
-            user.Id.Value,
-            user.FirstName,
-            user.LastName,
-            user.Phone,
-            token
+        string token = _jwtTokenGenerator.GenerateToken(
+            user.Id,
+            command.FirstName,
+            command.LastName,
+            command.Phone,
+            roles,
+            permissions
         );
+
+        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Phone, token);
     }
 }

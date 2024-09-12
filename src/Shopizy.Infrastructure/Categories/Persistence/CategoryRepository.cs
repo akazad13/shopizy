@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Infrastructure.Categories.Specifications;
-using Shopizy.Infrastructure.Common.Specifications;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Infrastructure.Categories.Specifications;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Categories.Persistence;
 
@@ -27,17 +27,17 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
 
     public async Task AddAsync(Category category)
     {
-        await _dbContext.Categories.AddAsync(category);
+        _ = await _dbContext.Categories.AddAsync(category);
     }
 
     public void Update(Category category)
     {
-        _dbContext.Update(category);
+        _ = _dbContext.Update(category);
     }
 
     public void Remove(Category category)
     {
-        _dbContext.Remove(category);
+        _ = _dbContext.Remove(category);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

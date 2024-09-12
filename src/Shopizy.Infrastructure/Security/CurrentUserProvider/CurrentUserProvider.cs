@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Throw;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
@@ -8,32 +8,34 @@ namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    
+
     public CurrentUser? GetCurrentUser()
     {
-        _httpContextAccessor.HttpContext.ThrowIfNull();
+        _ = _httpContextAccessor.HttpContext.ThrowIfNull();
 
         if (!_httpContextAccessor.HttpContext!.User.Claims.Any())
+        {
             return null;
+        }
 
         var id = Guid.Parse(GetSingleClaimValue("id"));
-        var permissions = GetClaimValues("permissions");
-        var roles = GetClaimValues(ClaimTypes.Role);
-        var firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
-        var lastName = GetSingleClaimValue(ClaimTypes.Surname);
-        var phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
+        List<string> permissions = GetClaimValues("permissions");
+        List<string> roles = GetClaimValues(ClaimTypes.Role);
+        string firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
+        string lastName = GetSingleClaimValue(ClaimTypes.Surname);
+        string phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
 
         return new CurrentUser(id, firstName, lastName, phone, permissions, roles);
     }
 
-
     private List<string> GetClaimValues(string claimType) =>
-        _httpContextAccessor.HttpContext!.User.Claims
-            .Where(claim => claim.Type == claimType)
+        _httpContextAccessor
+            .HttpContext!.User.Claims.Where(claim => claim.Type == claimType)
             .Select(claim => claim.Value)
             .ToList();
+
     private string GetSingleClaimValue(string claimType) =>
-        _httpContextAccessor.HttpContext!.User.Claims
-            .Single(claim => claim.Type == claimType)
+        _httpContextAccessor
+            .HttpContext!.User.Claims.Single(claim => claim.Type == claimType)
             .Value;
 }

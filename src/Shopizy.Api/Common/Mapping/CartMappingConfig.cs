@@ -1,7 +1,7 @@
 using Mapster;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
-using Shopizy.Application.Carts.Commands.RemoveProductsFromCart;
+using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Contracts.Cart;
@@ -14,7 +14,7 @@ public class CartMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, CreateCartWithFirstProductRequest request),
                 CreateCartWithFirstProductCommand
@@ -22,7 +22,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, AddProductToCartRequest request),
                 AddProductToCartCommand
@@ -31,7 +31,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, UpdateProductQuantityRequest request),
                 UpdateProductQuantityCommand
@@ -40,7 +40,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, RemoveProductFromCartRequest request),
                 RemoveProductFromCartCommand
@@ -49,15 +49,15 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
+        _ = config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
 
-        config
+        _ = config
             .NewConfig<Cart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
             .Map(dest => dest.LineItems, src => src.LineItems);
 
-        config
+        _ = config
             .NewConfig<LineItem, LineItemResponse>()
             .Map(dest => dest.LineItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)
