@@ -10,16 +10,6 @@ public interface IPaymentService
         string name,
         CancellationToken cancellationToken
     );
-
-    Task<ErrorOr<ChargeResource>> CreateCharge(
-        string currency,
-        long amount,
-        string receiptEmail,
-        string customerId,
-        string description,
-        CancellationToken cancellationToken
-    );
-
     Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
         string customerId,
         decimal price,
