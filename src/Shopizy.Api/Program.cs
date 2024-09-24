@@ -12,7 +12,7 @@ WebApplication app = builder.Build();
 app.UseInfrastructure();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     _ = app.UseSwagger().UseSwaggerUI();
 }

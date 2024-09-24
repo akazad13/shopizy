@@ -107,6 +107,7 @@ public class StripeService(
                             {
                                 Name = "test Name",
                                 Description = "test description",
+                                Images = ["https://st2.depositphotos.com/2251265/8722/i/950/depositphotos_87226702-stock-photo-bearded-young-man-standing-on.jpg"]
                             },
                             UnitAmountDecimal = price * 100,
                             Currency = "usd",
@@ -123,7 +124,7 @@ public class StripeService(
 
             Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
 
-            return new CheckoutSession(session.Id, _stripeSettings.publishableKey);
+            return new CheckoutSession(session.Id, _stripeSettings.PublishableKey);
         }
         catch (StripeException ex)
         {
