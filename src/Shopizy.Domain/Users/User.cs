@@ -12,6 +12,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     private readonly List<ProductReview> _productReviews = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+
+    public string Email { get; private set; }
     public string? ProfileImageUrl { get; }
     public string Phone { get; private set; }
     public string? Password { get; private set; }
@@ -24,22 +26,13 @@ public sealed class User : AggregateRoot<UserId, Guid>
 
     public static User Create(string firstName, string lastName, string phone, string? password)
     {
-        return new(
-            UserId.CreateUnique(),
-            firstName,
-            lastName,
-            phone,
-            password
-        );
+        return new(UserId.CreateUnique(), firstName, lastName, phone, password);
     }
 
-    private User(
-        UserId userId,
-        string firstName,
-        string lastName,
-        string phone,
-        string? password
-    ) : base(userId)
+    private User() { }
+
+    private User(UserId userId, string firstName, string lastName, string phone, string? password)
+        : base(userId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -60,5 +53,9 @@ public sealed class User : AggregateRoot<UserId, Guid>
         ModifiedOn = DateTime.UtcNow;
     }
 
-    private User() { }
+    public void UpdateEmail(string email)
+    {
+        Email = email;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }

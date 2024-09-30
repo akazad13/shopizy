@@ -41,19 +41,21 @@ public class StripeService(
     }
 
     public async Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
-        string customerId,
+        string customerEmail,
         decimal price,
         string successUrl,
         string cancelUrl,
         CancellationToken cancellationToken = default
     )
     {
+        // var searchOptions = new CustomerSearchOptions { Query = $"email:'{customerEmail}'" };
+        // var customer = await _customerService.SearchAsync(searchOptions, null, cancellationToken);
+
         try
         {
             var options = new SessionCreateOptions
             {
-                //Customer = customerId,
-
+                Customer = customerEmail,
                 LineItems =
                 [
                     new SessionLineItemOptions
