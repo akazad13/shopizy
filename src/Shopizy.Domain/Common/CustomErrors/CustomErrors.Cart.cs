@@ -7,7 +7,7 @@ public static partial class CustomErrors
     public static class Cart
     {
         public static Error CartNotFound =>
-            Error.NotFound(code: "Cart.CartNotFound", description: "Cart is not found.");
+            Error.Validation(code: "Cart.CartNotFound", description: "Cart is not found.");
         public static Error CartNotCreated =>
             Error.Failure(code: "Cart.CartNotCreated", description: "Failed to create Cart.");
         public static Error CartNotDeleted =>
@@ -18,7 +18,10 @@ public static partial class CustomErrors
                 description: "Failed to add product to Cart."
             );
         public static Error CartPrductNotFound =>
-            Error.NotFound(code: "User.CartImageNotFound", description: "Cart image is not found.");
+            Error.Validation(
+                code: "User.CartImageNotFound",
+                description: "Cart image is not found."
+            );
         public static Error CartNotUpdated =>
             Error.Failure(code: "Cart.CartNotUpdated", description: "Failed to update Cart.");
         public static Error CartPrductNotRemoved =>
