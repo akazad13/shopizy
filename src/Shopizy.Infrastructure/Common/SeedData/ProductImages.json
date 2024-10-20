@@ -1,0 +1,72 @@
+[
+    {
+        "id": "4DBB9D7F-5B09-4ECF-AEB9-B1F5F6473379",
+        "productId": "571D3D66-18F2-4DA8-A57B-D06D4D1C9EEF",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420812/shopizy/mpjks43jpxo9eagempgu.jpg",
+        "seq": 0,
+        "publicId": "mpjks43jpxo9eagempgu"
+    },
+    {
+        "id": "4CD04D71-3249-4AE3-B079-5369C55ABB48",
+        "productId": "096A127A-65AF-4C0C-A294-2E1990136711",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/izygsyuzqsd71ricsyon.jpg",
+        "seq": 0,
+        "publicId": "izygsyuzqsd71ricsyon"
+    },
+    {
+        "id": "0D46C06C-12FB-42C1-B0CA-86E58226ED8F",
+        "productId": "8419FD69-61A5-4D9D-A289-1E377CC17082",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/soy4l9t0xba9dz2aq3li.jpg",
+        "seq": 0,
+        "publicId": "soy4l9t0xba9dz2aq3li"
+    },
+    {
+        "id": "D6FAC361-FA14-4E47-9B90-5C8C4EBA6762",
+        "productId": "CBB8A3A9-03DB-40E4-A89B-9C91D21B3934",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/uxix3peu5uhvzai2n8do.jpg",
+        "seq": 0,
+        "publicId": "uxix3peu5uhvzai2n8do"
+    },
+    {
+        "id": "26BBDC5E-270A-45F0-9AC8-2B4CC28C2126",
+        "productId": "96A1503F-B7EA-4C12-8946-89035399F45E",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/rbzoctialordszafqium.jpg",
+        "seq": 0,
+        "publicId": "rbzoctialordszafqium"
+    },
+    {
+        "id": "91A192FC-81A4-4BF0-9704-97630689F461",
+        "productId": "E02500EA-2957-4601-A051-951CB9957CBE",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420810/shopizy/i7rpwhzj6iqthgbkfftr.jpg",
+        "seq": 0,
+        "publicId": "i7rpwhzj6iqthgbkfftr"
+    },
+    {
+        "id": "44868001-5253-4A64-9CA3-039CD129ED05",
+        "productId": "A34BA283-62A1-43C6-8FB0-748DBDE8BA7D",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/dhpe8da07epnawtqftof.jpg",
+        "seq": 0,
+        "publicId": "dhpe8da07epnawtqftof"
+    },
+    {
+        "id": "27332C6A-AFDC-4586-A83B-915707DE419F",
+        "productId": "D7C96816-1656-4DBC-B709-0F626807347F",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/awjhedzbdirmtve1ukj6.jpg",
+        "seq": 0,
+        "publicId": "awjhedzbdirmtve1ukj6"
+    },
+    {
+        "id": "D3E23931-88E9-4E0E-9A61-77BFC02FA964",
+        "productId": "DF22BA6B-A15B-4125-AF29-07E242AF6F2D",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420811/shopizy/laeklvddgoewdct3hrly.jpg",
+        "seq": 0,
+        "publicId": "laeklvddgoewdct3hrly"
+    },
+    {
+        "id": "D3E23931-88E9-4E0E-9A61-77BFC02FA964",
+        "productId": "9EB9982F-E672-4184-8399-044277EEF754",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420812/shopizy/ojtymvp04czf75leclg2.jpg",
+        "seq": 0,
+        "publicId": "ojtymvp04czf75leclg2"
+    }
+]

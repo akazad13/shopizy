@@ -9,11 +9,14 @@ using Shopizy.Domain.Products;
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(IProductRepository productRepository)
-        : IRequestHandler<CreateProductCommand, ErrorOr<Product>>
+    : IRequestHandler<CreateProductCommand, ErrorOr<Product>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<ErrorOr<Product>> Handle(CreateProductCommand cmd, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Product>> Handle(
+        CreateProductCommand cmd,
+        CancellationToken cancellationToken
+    )
     {
         var product = Product.Create(
             cmd.Name,
@@ -24,7 +27,7 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
             cmd.Discount,
             cmd.Brand,
             cmd.Barcode,
-            cmd.Tags, ""
+            cmd.Tags
         );
 
         await _productRepository.AddAsync(product);
@@ -35,6 +38,5 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
         }
 
         return product;
-
     }
 }

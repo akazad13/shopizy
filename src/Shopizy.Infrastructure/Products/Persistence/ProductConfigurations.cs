@@ -32,7 +32,6 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         _ = builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
         _ = builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
         _ = builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
-        _ = builder.Property(p => p.BreadCrums).HasMaxLength(100).IsRequired(false);
         _ = builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         _ = builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
@@ -55,8 +54,12 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
             .Property(p => p.CategoryId)
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
-        _ = builder.Navigation(p => p.ProductImages).UsePropertyAccessMode(PropertyAccessMode.Field);
-        _ = builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
+        _ = builder
+            .Navigation(p => p.ProductImages)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        _ = builder
+            .Navigation(p => p.ProductReviews)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)

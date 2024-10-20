@@ -22,7 +22,6 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public string Barcode { get; private set; }
     public string Tags { get; private set; }
     public AverageRating AverageRating { get; private set; }
-    public string BreadCrums { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
 
@@ -38,8 +37,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         decimal? discount,
         string brand,
         string barcode,
-        string tags,
-        string breadCrums
+        string tags
     )
     {
         return new Product(
@@ -54,8 +52,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             brand,
             barcode,
             tags,
-            AverageRating.CreateNew(0),
-            breadCrums
+            AverageRating.CreateNew(0)
         );
     }
 
@@ -69,10 +66,8 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string brand,
         string barcode,
         string tags
-
     )
     {
-
         Name = name;
         Description = description;
         CategoryId = categoryId;
@@ -89,14 +84,17 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     {
         _productImages.AddRange(productImages);
     }
+
     public void AddProductImage(ProductImage productImage)
     {
         _productImages.Add(productImage);
     }
+
     public void RemoveProductImage(ProductImage productImage)
     {
         _ = _productImages.Remove(productImage);
     }
+
     private Product(
         ProductId productId,
         string name,
@@ -109,9 +107,9 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string brand,
         string barcode,
         string tags,
-        AverageRating averageRating,
-        string breadCrums
-    ) : base(productId)
+        AverageRating averageRating
+    )
+        : base(productId)
     {
         Name = name;
         Description = description;
@@ -124,7 +122,6 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Barcode = barcode;
         Tags = tags;
         AverageRating = averageRating;
-        BreadCrums = breadCrums;
         CreatedOn = DateTime.UtcNow;
     }
 
