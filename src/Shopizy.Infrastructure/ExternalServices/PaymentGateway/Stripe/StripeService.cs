@@ -9,13 +9,11 @@ namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 public class StripeService(
     CustomerService customerService,
-    ChargeService chargeService,
     SessionService sessionService,
     IOptions<StripeSettings> options
 ) : IPaymentService
 {
     private readonly CustomerService _customerService = customerService;
-    private readonly ChargeService _chargeService = chargeService;
     private readonly SessionService _sessionService = sessionService;
     private readonly StripeSettings _stripeSettings = options.Value;
 
@@ -42,61 +40,22 @@ public class StripeService(
         }
     }
 
-    public async Task<ErrorOr<ChargeResource>> CreateCharge(
-        string currency,
-        long amount,
-        string receiptEmail,
-        string customerId,
-        string description,
-        CancellationToken cancellationToken
-    )
-    {
-        try
-        {
-            var chargeOptions = new ChargeCreateOptions
-            {
-                Currency = currency,
-                Amount = amount,
-                ReceiptEmail = receiptEmail,
-                Customer = customerId,
-                Description = description,
-            };
-
-            Charge charge = await _chargeService.CreateAsync(
-                chargeOptions,
-                null,
-                cancellationToken
-            );
-
-            return new ChargeResource(
-                charge.Id,
-                charge.Currency,
-                charge.Amount,
-                charge.CustomerId,
-                charge.ReceiptEmail,
-                charge.Description
-            );
-        }
-        catch (StripeException ex)
-        {
-            return Error.Failure(description: ex.Message);
-        }
-    }
-
     public async Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
-        string customerId,
+        string customerEmail,
         decimal price,
         string successUrl,
         string cancelUrl,
         CancellationToken cancellationToken = default
     )
     {
+        // var searchOptions = new CustomerSearchOptions { Query = $"email:'{customerEmail}'" };
+        // var customer = await _customerService.SearchAsync(searchOptions, null, cancellationToken);
+
         try
         {
             var options = new SessionCreateOptions
             {
-                //Customer = customerId,
-
+                Customer = customerEmail,
                 LineItems =
                 [
                     new SessionLineItemOptions
@@ -107,6 +66,10 @@ public class StripeService(
                             {
                                 Name = "test Name",
                                 Description = "test description",
+                                Images =
+                                [
+                                    "https://st2.depositphotos.com/2251265/8722/i/950/depositphotos_87226702-stock-photo-bearded-young-man-standing-on.jpg",
+                                ],
                             },
                             UnitAmountDecimal = price * 100,
                             Currency = "usd",
@@ -123,7 +86,7 @@ public class StripeService(
 
             Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
 
-            return new CheckoutSession(session.Id, _stripeSettings.publishableKey);
+            return new CheckoutSession(session.Id, _stripeSettings.PublishableKey);
         }
         catch (StripeException ex)
         {

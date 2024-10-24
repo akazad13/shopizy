@@ -1,7 +1,6 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shopizy.Application.Payments.Commands.CreatePayment;
 using Shopizy.Application.Payments.Commands.CreatePaymentSession;
 using Shopizy.Contracts.Payment;
 
@@ -12,17 +11,6 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
-
-    [HttpPost]
-    public async Task<IActionResult> CreatePaymentAsync(Guid userId, CreatePaymentRequest request)
-    {
-        CreatePaymentCommand command = _mapper.Map<CreatePaymentCommand>((userId, request));
-        ErrorOr.ErrorOr<Application.Common.models.ChargeResource> result = await _mediator.Send(
-            command
-        );
-
-        return result.Match(Payment => Ok(_mapper.Map<PaymentResponse>(Payment)), Problem);
-    }
 
     [HttpPost("session")]
     public async Task<IActionResult> CreatePaymentSessoinAsync(

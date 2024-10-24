@@ -1,0 +1,117 @@
+[
+    {
+        "id": "4D7EAB45-6A55-46D3-B50F-0460AA9A68A7",
+        "name": "Men",
+        "parentId": null
+    },
+    {
+        "id": "87D86D61-4662-4C7A-AEB8-CE94744A60E6",
+        "name": "Clothing",
+        "parentId": "4D7EAB45-6A55-46D3-B50F-0460AA9A68A7"
+    },
+    {
+        "id": "A54CF347-6858-40C7-8951-088682581EFF",
+        "name": "Accessories",
+        "parentId": "4D7EAB45-6A55-46D3-B50F-0460AA9A68A7"
+    },
+    {
+        "id": "106F4F94-5E70-4340-B23E-462AF5FC7BFC",
+        "name": "T-Shirts",
+        "parentId": "87D86D61-4662-4C7A-AEB8-CE94744A60E6"
+    },
+    {
+        "id": "124BCF8E-83FB-4B24-A8E1-405A8E45C091",
+        "name": "Pants",
+        "parentId": "87D86D61-4662-4C7A-AEB8-CE94744A60E6"
+    },
+    {
+        "id": "4A577A76-1884-4F6A-812F-CABDDC6A5A2A",
+        "name": "Jackets",
+        "parentId": "87D86D61-4662-4C7A-AEB8-CE94744A60E6"
+    },
+    {
+        "id": "632DFDA9-CC2E-487B-8C88-608005F124E2",
+        "name": "Sweaters",
+        "parentId": "87D86D61-4662-4C7A-AEB8-CE94744A60E6"
+    },
+    {
+        "id": "77FAE516-7FE4-4752-9330-AE293FBA3705",
+        "name": "Watches",
+        "parentId": "A54CF347-6858-40C7-8951-088682581EFF"
+    },
+    {
+        "id": "1C47AB9B-A761-4D53-8DB8-79D343BF6B8B",
+        "name": "Wallets",
+        "parentId": "A54CF347-6858-40C7-8951-088682581EFF"
+    },
+    {
+        "id": "D003BD1D-4D11-4945-89DB-5C53306CD062",
+        "name": "Sunglasses",
+        "parentId": "A54CF347-6858-40C7-8951-088682581EFF"
+    },
+    {
+        "id": "023B882A-0810-49C3-BAF2-AB4CE20C50B0",
+        "name": "Belts",
+        "parentId": "A54CF347-6858-40C7-8951-088682581EFF"
+    },
+    {
+        "id": "7EC6E84A-1EF7-4A48-8FA9-40E946258216",
+        "name": "Women",
+        "parentId": null
+    },
+    {
+        "id": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03",
+        "name": "Clothing",
+        "parentId": "7EC6E84A-1EF7-4A48-8FA9-40E946258216"
+    },
+    {
+        "id": "30300EA8-DA82-4F54-A4C8-A26D37393D38",
+        "name": "Accessories",
+        "parentId": "7EC6E84A-1EF7-4A48-8FA9-40E946258216"
+    },
+    {
+        "id": "BA5FE17F-8977-4034-BEC3-227AA99502CC",
+        "name": "Tops",
+        "parentId": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03"
+    },
+    {
+        "id": "35E6EF59-3419-4A43-9C23-3976722B06F9",
+        "name": "Pants",
+        "parentId": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03"
+    },
+    {
+        "id": "A805A418-2D53-4430-9968-D031C4F39FD4",
+        "name": "T-Shirts",
+        "parentId": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03"
+    },
+    {
+        "id": "050132D0-956A-496F-B9BB-B674E8015A92",
+        "name": "Sweaters",
+        "parentId": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03"
+    },
+    {
+        "id": "F5B601F5-302C-4D60-9465-FF96B3EA9367",
+        "name": "Jackets",
+        "parentId": "BD4CD7C9-054A-41BB-8D8B-6A4E817B3E03"
+    },
+    {
+        "id": "4D31286C-9E2E-406A-9C01-E035E6F2A20D",
+        "name": "Watches",
+        "parentId": "30300EA8-DA82-4F54-A4C8-A26D37393D38"
+    },
+    {
+        "id": "615E2664-92E8-411B-BEF3-AE953CD325A8",
+        "name": "Bags",
+        "parentId": "30300EA8-DA82-4F54-A4C8-A26D37393D38"
+    },
+    {
+        "id": "9E6F1330-730C-47AE-B2F9-65863B5609CC",
+        "name": "Sunglasses",
+        "parentId": "30300EA8-DA82-4F54-A4C8-A26D37393D38"
+    },
+    {
+        "id": "782ECF8A-A91A-44B1-8CB4-2E482380352C",
+        "name": "Hats",
+        "parentId": "30300EA8-DA82-4F54-A4C8-A26D37393D38"
+    }
+]

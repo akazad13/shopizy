@@ -7,6 +7,7 @@ using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using Shopizy.Application.Categories.Queries.ListCategories;
+using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
 
 namespace Shopizy.Api.Controllers;
@@ -20,17 +21,28 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [HttpGet("categories")]
     public async Task<IActionResult> GetAsync()
     {
-        var query = new ListCategoriesQuery();
-        ErrorOr<List<Domain.Categories.Category>> result = await _mediator.Send(query);
+        var result = await _mediator.Send(new ListCategoriesQuery());
 
         return result.Match(category => Ok(_mapper.Map<List<CategoryResponse>>(category)), Problem);
+    }
+
+    [HttpGet("categories-tree")]
+    public async Task<IActionResult> GetCategoriesAsync()
+    {
+        var result = await _mediator.Send(new ListCategoriesQuery());
+
+        var categoriesModel = _mapper.Map<List<CategoryTreeResponse>>(result.Value);
+
+        var categoryTree = BuildCategoryTree(categoriesModel);
+
+        return Ok(categoryTree);
     }
 
     [HttpGet("categories/{categoryId:guid}")]
     public async Task<IActionResult> GetCategoryAsync(Guid categoryId)
     {
-        GetCategoryQuery query = _mapper.Map<GetCategoryQuery>(categoryId);
-        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(query);
+        var query = _mapper.Map<GetCategoryQuery>(categoryId);
+        var result = await _mediator.Send(query);
 
         return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
@@ -38,8 +50,8 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [HttpPost("users/{userId:guid}/categories")]
     public async Task<IActionResult> CreateCategoryAsync(Guid userId, CreateCategoryRequest request)
     {
-        CreateCategoryCommand command = _mapper.Map<CreateCategoryCommand>((userId, request));
-        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(command);
+        var command = _mapper.Map<CreateCategoryCommand>((userId, request));
+        var result = await _mediator.Send(command);
 
         return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
@@ -51,10 +63,8 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
         UpdateCategoryRequest request
     )
     {
-        UpdateCategoryCommand command = _mapper.Map<UpdateCategoryCommand>(
-            (userId, categoryId, request)
-        );
-        ErrorOr<Domain.Categories.Category> result = await _mediator.Send(command);
+        var command = _mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
+        var result = await _mediator.Send(command);
 
         return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
     }
@@ -62,9 +72,26 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [HttpDelete("users/{userId:guid}/categories/{categoryId:guid}")]
     public async Task<IActionResult> DeleteCategoryAsync(Guid userId, Guid categoryId)
     {
-        DeleteCategoryCommand command = _mapper.Map<DeleteCategoryCommand>((userId, categoryId));
-        ErrorOr<Success> result = await _mediator.Send(command);
+        var command = _mapper.Map<DeleteCategoryCommand>((userId, categoryId));
+        var result = await _mediator.Send(command);
 
         return result.Match(category => Ok(_mapper.Map<Success>(category)), Problem);
+    }
+
+    private static IEnumerable<CategoryTreeResponse> BuildCategoryTree(
+        List<CategoryTreeResponse> allCategories,
+        Guid? parentId = null
+    )
+    {
+        // Get all categories with the given parentId
+        var subCategories = allCategories.Where(c => c.ParentId == parentId);
+
+        // Recursively build the tree by adding children to each category
+        foreach (var category in subCategories)
+        {
+            category.Children = BuildCategoryTree(allCategories, category.Id);
+        }
+
+        return subCategories;
     }
 }

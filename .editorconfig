@@ -259,7 +259,7 @@ dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
 dotnet_naming_style.static_prefix_style.required_prefix = s_
 dotnet_naming_style.static_prefix_style.required_suffix =
-dotnet_naming_style.static_prefix_style.word_separator = 
+dotnet_naming_style.static_prefix_style.word_separator =
 dotnet_naming_style.static_prefix_style.capitalization = camel_case
 
 # const fields should have s_ prefix
@@ -271,7 +271,7 @@ dotnet_naming_symbols.const_fields.required_modifiers = const
 dotnet_naming_symbols.const_fields.applicable_accessibilities = private, internal, private_protected
 dotnet_naming_style.const_prefix_style.required_prefix = s_
 dotnet_naming_style.const_prefix_style.required_suffix =
-dotnet_naming_style.const_prefix_style.word_separator = 
+dotnet_naming_style.const_prefix_style.word_separator =
 dotnet_naming_style.const_prefix_style.capitalization = camel_case
 
 #==========================
@@ -286,9 +286,9 @@ dotnet_naming_symbols.suffix_async_private_internal.applicable_kinds = method
 dotnet_naming_symbols.suffix_async_private_internal.applicable_accessibilities = private,internal,private_protected,protected_internal
 dotnet_naming_symbols.suffix_async_private_internal.required_modifiers = async
 # Naming styles
-dotnet_naming_style.asyncsuffix_private_internal.required_prefix = 
+dotnet_naming_style.asyncsuffix_private_internal.required_prefix =
 dotnet_naming_style.asyncsuffix_private_internal.required_suffix = Async
-dotnet_naming_style.asyncsuffix_private_internal.word_separator = 
+dotnet_naming_style.asyncsuffix_private_internal.word_separator =
 dotnet_naming_style.asyncsuffix_private_internal.capitalization = camel_case
 
 # Naming rules (public)
@@ -300,9 +300,9 @@ dotnet_naming_symbols.suffix_async_public.applicable_kinds = method
 dotnet_naming_symbols.suffix_async_public.applicable_accessibilities = public,protected
 dotnet_naming_symbols.suffix_async_public.required_modifiers = async
 # Naming styles
-dotnet_naming_style.asyncsuffix_public.required_prefix = 
+dotnet_naming_style.asyncsuffix_public.required_prefix =
 dotnet_naming_style.asyncsuffix_public.required_suffix = Async
-dotnet_naming_style.asyncsuffix_public.word_separator = 
+dotnet_naming_style.asyncsuffix_public.word_separator =
 dotnet_naming_style.asyncsuffix_public.capitalization = pascal_case
 
 ###########################
@@ -311,7 +311,8 @@ dotnet_naming_style.asyncsuffix_public.capitalization = pascal_case
 
 dotnet_diagnostic.IDE0003.severity = warning    # IDE0003: Name can be simplified
 dotnet_diagnostic.IDE0005.severity = suggestion # IDE0005: Using directive is unnecessary
-dotnet_diagnostic.IDE0008.severity = suggestion # IDE0008: Use explicit type instead of var
+dotnet_diagnostic.IDE0007.severity = suggestion # IDE0007: Use var instead of explicit type
+dotnet_diagnostic.IDE0008.severity = none       # IDE0008: Use explicit type instead of var
 dotnet_diagnostic.IDE0017.severity = warning    # IDE0017 Object initialization can be simplified
 dotnet_diagnostic.IDE0018.severity = warning    # IDE0018: Variable declaration can be inlined
 dotnet_diagnostic.IDE0019.severity = warning    # IDE0019: Use pattern matching to avoid 'as' followed by a 'null' check

@@ -10,7 +10,7 @@ namespace Shopizy.Domain.Orders;
 
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
-    private readonly List<OrderItem> _orderItems = [];
+    private readonly IList<OrderItem> _orderItems = [];
     public UserId UserId { get; private set; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
@@ -18,8 +18,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public string PromoCode { get; private set; }
     public Address ShippingAddress { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
-    public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
+    public DateTime CreatedOn { get; private set; }
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public static Order Create(
@@ -27,7 +27,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         string promoCode,
         Price deliveryCharge,
         Address shippingAddress,
-        List<OrderItem> orderItems
+        IList<OrderItem> orderItems
     )
     {
         return new Order(
@@ -46,7 +46,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         string promoCode,
         Price deliveryCharge,
         Address shippingAddress,
-        List<OrderItem> orderItems
+        IList<OrderItem> orderItems
     )
         : base(orderId)
     {

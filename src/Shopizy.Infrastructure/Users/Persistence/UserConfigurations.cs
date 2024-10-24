@@ -29,6 +29,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         _ = builder.Property(u => u.Phone).HasMaxLength(15);
 
         _ = builder.Property(u => u.Password).IsRequired(false);
+        _ = builder.Property(u => u.Email).IsRequired(false);
         _ = builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
         _ = builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
@@ -46,6 +47,8 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         );
 
         _ = builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
-        _ = builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
+        _ = builder
+            .Navigation(p => p.ProductReviews)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

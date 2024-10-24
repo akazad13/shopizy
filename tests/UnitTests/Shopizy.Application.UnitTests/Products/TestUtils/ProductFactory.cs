@@ -17,8 +17,7 @@ public static class ProductFactory
             Constants.Product.Discount,
             Constants.Product.Brand,
             Constants.Product.Tags,
-            Constants.Product.Barcode,
-            ""
+            Constants.Product.Barcode
         );
     }
 

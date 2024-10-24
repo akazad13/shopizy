@@ -3,6 +3,7 @@ using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Categories.Queries.GetCategory;
+using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
 using Shopizy.Domain.Categories;
 
@@ -35,12 +36,10 @@ public class CategoryMappingConfig : IRegister
             .NewConfig<Category, CategoryResponse>()
             .Map(dest => dest.Id, src => src.Id.Value);
 
+        _ = config
+            .NewConfig<Category, CategoryTreeResponse>()
+            .Map(dest => dest.Id, src => src.Id.Value);
+
         _ = config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
     }
 }
-
-
-// Map(dest => dest.FullName, src => $"{src.Title} {src.FirstName} {src.LastName}")
-//       .Map(dest => dest.Age,
-//             src => DateTime.Now.Year - src.DateOfBirth.Value.Year,
-//             srcCond => srcCond.DateOfBirth.HasValue);

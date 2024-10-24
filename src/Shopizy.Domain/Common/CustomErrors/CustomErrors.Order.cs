@@ -7,7 +7,7 @@ public static partial class CustomErrors
     public static class Order
     {
         public static Error OrderNotFound =>
-            Error.NotFound(code: "Order.OrderNotFound", description: "Order is not found.");
+            Error.Validation(code: "Order.OrderNotFound", description: "Order is not found.");
         public static Error OrderNotCreated =>
             Error.Failure(code: "Order.OrderNotCreated", description: "Failed to create Order.");
         public static Error OrderNotDeleted =>

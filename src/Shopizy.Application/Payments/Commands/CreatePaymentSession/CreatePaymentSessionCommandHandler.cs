@@ -3,7 +3,6 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
-using Shopizy.Application.Payments.Commands.CreatePayment;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
@@ -15,11 +14,13 @@ namespace Shopizy.Application.Payments.Commands.CreatePaymentSession;
 public class CreatePaymentSessionCommandHandler(
     IPaymentRepository paymentRepository,
     IOrderRepository orderRepository,
+    IUserRepository userRepository,
     IPaymentService paymentService
 ) : IRequestHandler<CreatePaymentSessionCommand, ErrorOr<CheckoutSession>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly IUserRepository _userRepository = userRepository;
     private readonly IPaymentService _paymentService = paymentService;
 
     public async Task<ErrorOr<CheckoutSession>> Handle(
@@ -38,10 +39,12 @@ public class CreatePaymentSessionCommandHandler(
 
         Domain.Common.ValueObjects.Price total = order.GetTotal();
 
+        Domain.Users.User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+
         var payment = Payment.Create(
             UserId.Create(request.UserId),
             OrderId.Create(request.OrderId),
-            "",
+            request.PaymentType,
             "",
             PaymentStatus.Pending,
             total,
@@ -55,14 +58,11 @@ public class CreatePaymentSessionCommandHandler(
             return CustomErrors.Payment.PaymentNotCreated;
         }
 
-        string successUrl = "http://localhost:4200/success";
-        string cancelUrl = "http://localhost:4200/cancel";
-
         ErrorOr<CheckoutSession> checkoutSession = await _paymentService.CreateCheckoutSession(
-            "",
+            user?.Email ?? "",
             total.Amount,
-            successUrl,
-            cancelUrl,
+            request.SuccessUrl,
+            request.CancelUrl,
             cancellationToken
         );
 
