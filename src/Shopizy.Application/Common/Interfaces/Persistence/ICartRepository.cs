@@ -7,7 +7,7 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 public interface ICartRepository
 {
     Task<List<Cart>> GetCartsAsync();
-    Task<Cart?> GetCartByIdAsync(CartId id);
+    Task<Cart?> GetCartByIdAsync(CartId id, CancellationToken cancellationToken);
     Task<Cart?> GetCartByUserIdAsync(UserId id);
     Task AddAsync(Cart cart);
     void Update(Cart cart);

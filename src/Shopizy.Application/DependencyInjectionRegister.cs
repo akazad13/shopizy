@@ -1,4 +1,5 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Behaviors;
 
@@ -8,13 +9,14 @@ public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        _ = services.AddMediatR(msc =>
+        services.AddMediatR(msc =>
         {
-            _ = msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
-            _ = msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
-            _ = msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
+            msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
-        _ = services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
+        services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
+        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }

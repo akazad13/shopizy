@@ -24,12 +24,12 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
 
     public async Task AddAsync(Order order)
     {
-        _ = await _dbContext.Orders.AddAsync(order);
+        await _dbContext.Orders.AddAsync(order);
     }
 
     public void Update(Order order)
     {
-        _ = _dbContext.Update(order);
+        _dbContext.Update(order);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

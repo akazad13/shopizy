@@ -22,4 +22,22 @@ public static class CreateProductCommandUtils
             []
         );
     }
+
+    public static CreateProductCommand CreateCommandWithEmptyProductName()
+    {
+        return new CreateProductCommand(
+            Constants.User.Id.Value,
+            "",
+            Constants.Product.Description,
+            Constants.Category.Id.Value,
+            Constants.Product.UnitPrice,
+            Constants.Product.Currency,
+            Constants.Product.Discount,
+            Constants.Product.Sku,
+            Constants.Product.Brand,
+            Constants.Product.Tags,
+            Constants.Product.Barcode,
+            []
+        );
+    }
 }

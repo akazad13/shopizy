@@ -1,15 +1,15 @@
 using System.Reflection;
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Wrappers;
 
 namespace Shopizy.Application.Common.Behaviors;
 
 public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _authorizationService)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IAuthorizeableRequest<TResponse>
-    where TResponse : IErrorOr
+    where TResponse : IResult<GenericResponse>
 {
     public async Task<TResponse> Handle(
         TRequest request,
@@ -36,13 +36,13 @@ public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _a
             .SelectMany(attr => attr.Policies?.Split(',') ?? [])
             .ToList();
 
-        ErrorOr<Success> authorizationResult = _authorizationService.AuthorizeCurrentUser(
+        var authorizationResult = _authorizationService.AuthorizeCurrentUser(
             request,
             requiredRoles,
             requiredPermissions,
             requiredPolicies
         );
 
-        return authorizationResult.IsError ? (dynamic)authorizationResult.Errors : await next();
+        return authorizationResult.Succeeded() ? await next() : (dynamic)authorizationResult;
     }
 }

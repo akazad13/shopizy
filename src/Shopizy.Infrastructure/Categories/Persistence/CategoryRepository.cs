@@ -11,6 +11,7 @@ namespace Shopizy.Infrastructure.Categories.Persistence;
 public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+
     public Task<bool> GetCategoryByNameAsync(string name)
     {
         return _dbContext.Categories.AnyAsync(category => category.Name == name);
@@ -20,6 +21,7 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
     {
         return ApplySpec(new CategoryByIdSpec(id)).FirstOrDefaultAsync();
     }
+
     public Task<List<Category>> GetCategoriesAsync()
     {
         return _dbContext.Categories.AsNoTracking().ToListAsync();
@@ -27,23 +29,24 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
 
     public async Task AddAsync(Category category)
     {
-        _ = await _dbContext.Categories.AddAsync(category);
+        await _dbContext.Categories.AddAsync(category);
     }
 
     public void Update(Category category)
     {
-        _ = _dbContext.Update(category);
+        _dbContext.Update(category);
     }
 
     public void Remove(Category category)
     {
-        _ = _dbContext.Remove(category);
+        _dbContext.Remove(category);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }
+
     private IQueryable<Category> ApplySpec(Specification<Category> spec)
     {
         return SpecificationEvaluator.GetQuery(_dbContext.Categories, spec);

@@ -14,13 +14,9 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     public DateTime? ModifiedOn { get; private set; }
     public IReadOnlyList<LineItem> LineItems => _lineItems.AsReadOnly();
 
-    public static Cart Create(
-        UserId userId
-    )
+    public static Cart Create(UserId userId)
     {
-        return new Cart(
-            CartId.CreateUnique(),
-            userId);
+        return new Cart(CartId.CreateUnique(), userId);
     }
 
     public void AddLineItem(LineItem lineItem)
@@ -30,7 +26,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
 
     public void RemoveLineItem(LineItem lineItem)
     {
-        _ = _lineItems.Remove(lineItem);
+        _lineItems.Remove(lineItem);
     }
 
     public void UpdateLineItem(ProductId productId, int quantity)
@@ -38,10 +34,8 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
         _lineItems.Find(li => li.ProductId == productId)?.UpdateQuantity(quantity);
     }
 
-    private Cart(
-        CartId cartId,
-        UserId userId
-    ) : base(cartId)
+    private Cart(CartId cartId, UserId userId)
+        : base(cartId)
     {
         UserId = userId;
         CreatedOn = DateTime.UtcNow;

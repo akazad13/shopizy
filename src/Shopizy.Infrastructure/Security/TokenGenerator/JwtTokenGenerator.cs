@@ -22,9 +22,9 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
         IList<string> Permissions
     )
     {
-        _ = Guard.Against.Null(roles);
-        _ = Guard.Against.Null(Permissions);
-        _ = Guard.Against.Null(userId);
+        Guard.Against.Null(roles);
+        Guard.Against.Null(Permissions);
+        Guard.Against.Null(userId);
 
         var claims = new List<Claim>
         {

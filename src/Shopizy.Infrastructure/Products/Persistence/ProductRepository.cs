@@ -34,17 +34,17 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
 
     public async Task AddAsync(Product product)
     {
-        _ = await _dbContext.Products.AddAsync(product);
+        await _dbContext.Products.AddAsync(product);
     }
 
     public void Update(Product product)
     {
-        _ = _dbContext.Update(product);
+        _dbContext.Update(product);
     }
 
     public void Remove(Product product)
     {
-        _ = _dbContext.Remove(product);
+        _dbContext.Remove(product);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

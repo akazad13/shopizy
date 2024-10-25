@@ -12,10 +12,10 @@ public record LineItemResponse(
     Guid LineItemId,
     Guid ProductId,
     int Quantity,
-    ProductResponse Product
+    LineProductResponse Product
 );
 
-public record ProductResponse(
+public record LineProductResponse(
     string Name,
     string Description,
     string Price,

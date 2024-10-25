@@ -1,15 +1,14 @@
+using Microsoft.AspNetCore.Http.Features;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
-using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Orders.TestUtils;
 
 public static class CreateOrderCommandUtils
 {
-    public static CreateOrderCommand CreateCommand(ProductId productId)
+    public static CreateOrderCommand CreateCommand(IList<Guid> productIds)
     {
-        var orderItem1 = new OrderItemCommand(productId.Value, 1);
-        // var orderItem2 = new OrderItemCommand(Constants.Product.Id.Value, 4);
+        var orderItems = CreateOrderItemCommand(productIds);
         var addressCommand = new AddressCommand(
             Constants.User.Address.Street,
             Constants.User.Address.City,
@@ -22,8 +21,16 @@ public static class CreateOrderCommandUtils
             Constants.Order.PromoCode,
             Constants.Order.DeliveryCharge.Amount,
             Constants.Order.DeliveryCharge.Currency,
-            [orderItem1],
+            orderItems,
             addressCommand
         );
+    }
+
+    public static IEnumerable<OrderItemCommand> CreateOrderItemCommand(IList<Guid> productIds)
+    {
+        foreach (var productId in productIds)
+        {
+            yield return new OrderItemCommand(productId, 1);
+        }
     }
 }

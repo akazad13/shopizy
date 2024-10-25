@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
-using Throw;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 
@@ -11,7 +11,7 @@ public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICu
 
     public CurrentUser? GetCurrentUser()
     {
-        _ = _httpContextAccessor.HttpContext.ThrowIfNull();
+        Guard.Against.Null(_httpContextAccessor.HttpContext);
 
         if (!_httpContextAccessor.HttpContext!.User.Claims.Any())
         {

@@ -1,8 +1,8 @@
-using ErrorOr;
 using Shopizy.Application.Common.models;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Wrappers;
 
 namespace Shopizy.Application.Payments.Commands.CreatePaymentSession;
 
@@ -13,4 +13,4 @@ public record CreatePaymentSessionCommand(
     string PaymentType,
     string SuccessUrl,
     string CancelUrl
-) : IAuthorizeableRequest<ErrorOr<CheckoutSession>>;
+) : IAuthorizeableRequest<IResult<CheckoutSession>>;

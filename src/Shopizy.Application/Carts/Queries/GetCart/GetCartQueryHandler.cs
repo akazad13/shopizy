@@ -1,16 +1,22 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Carts.Queries.GetCart;
 
-public class GetCartQueryHandler(ICartRepository cartRepository) : IRequestHandler<GetCartQuery, ErrorOr<Cart?>>
+public class GetCartQueryHandler(ICartRepository cartRepository)
+    : IRequestHandler<GetCartQuery, IResult<Cart?>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
-    public async Task<ErrorOr<Cart?>> Handle(GetCartQuery query, CancellationToken cancellationToken)
+
+    public async Task<IResult<Cart?>> Handle(
+        GetCartQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(query.UserId));
+        var cart = await _cartRepository.GetCartByUserIdAsync(UserId.Create(query.UserId));
+        return Response<Cart?>.SuccessResponese(cart);
     }
 }

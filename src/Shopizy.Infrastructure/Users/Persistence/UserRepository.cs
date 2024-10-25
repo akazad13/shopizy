@@ -9,6 +9,7 @@ namespace Shopizy.Infrastructure.Users.Persistence;
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+
     public Task<User?> GetUserByPhone(string phone)
     {
         return _dbContext.Users.SingleOrDefaultAsync(u => u.Phone == phone);
@@ -21,12 +22,12 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        _ = await _dbContext.Users.AddAsync(user);
+        await _dbContext.Users.AddAsync(user);
     }
 
     public void Update(User user)
     {
-        _ = _dbContext.Users.Update(user);
+        _dbContext.Users.Update(user);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

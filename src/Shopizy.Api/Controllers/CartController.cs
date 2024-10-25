@@ -6,7 +6,9 @@ using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Contracts.Cart;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
@@ -17,70 +19,95 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
     private readonly IMapper _mapper = mapper;
 
     [HttpGet]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> GetCartAsync(Guid userId)
     {
-        GetCartQuery query = _mapper.Map<GetCartQuery>(userId);
-        ErrorOr.ErrorOr<Domain.Carts.Cart> result = await _mediator.Send(query);
+        var query = _mapper.Map<GetCartQuery>(userId);
+        var result = await _mediator.Send(query);
 
-        return result.Match(Product => Ok(_mapper.Map<CartResponse?>(Product)), Problem);
+        return result.Match<IActionResult>(
+            Product => Ok(_mapper.Map<CartResponse?>(Product)),
+            BadRequest
+        );
     }
 
     [HttpPost]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> CreateCartWithFirstProductAsync(
         Guid userId,
         CreateCartWithFirstProductRequest request
     )
     {
-        CreateCartWithFirstProductCommand command = _mapper.Map<CreateCartWithFirstProductCommand>(
-            (userId, request)
-        );
-        ErrorOr.ErrorOr<Domain.Carts.Cart> result = await _mediator.Send(command);
+        var command = _mapper.Map<CreateCartWithFirstProductCommand>((userId, request));
+        var result = await _mediator.Send(command);
 
-        return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
+        return result.Match<IActionResult>(
+            product => Ok(_mapper.Map<CartResponse>(product)),
+            BadRequest
+        );
     }
 
     [HttpPatch("{cartId:guid}/add-product")]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> AddProductToCartAsync(
         Guid userId,
         Guid cartId,
         AddProductToCartRequest request
     )
     {
-        AddProductToCartCommand command = _mapper.Map<AddProductToCartCommand>(
-            (userId, cartId, request)
-        );
-        ErrorOr.ErrorOr<Domain.Carts.Cart> result = await _mediator.Send(command);
+        var command = _mapper.Map<AddProductToCartCommand>((userId, cartId, request));
+        var result = await _mediator.Send(command);
 
-        return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
+        return result.Match<IActionResult>(
+            product => Ok(_mapper.Map<CartResponse>(product)),
+            BadRequest
+        );
     }
 
     [HttpPatch("{cartId:guid}/update-quantity")]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> UpdateProductQuantityAsync(
         Guid userId,
         Guid cartId,
         UpdateProductQuantityRequest request
     )
     {
-        UpdateProductQuantityCommand command = _mapper.Map<UpdateProductQuantityCommand>(
-            (userId, cartId, request)
-        );
-        ErrorOr.ErrorOr<ErrorOr.Success> result = await _mediator.Send(command);
+        var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, request));
+        var result = await _mediator.Send(command);
 
-        return result.Match(success => Ok(success), Problem);
+        return result.Match<IActionResult>(success => Ok(success), BadRequest);
     }
 
     [HttpDelete("{cartId:guid}/remove-products")]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> RemoveProductFromCartAsync(
         Guid userId,
         Guid cartId,
         RemoveProductFromCartRequest request
     )
     {
-        RemoveProductFromCartCommand command = _mapper.Map<RemoveProductFromCartCommand>(
-            (userId, cartId, request)
-        );
-        ErrorOr.ErrorOr<ErrorOr.Success> result = await _mediator.Send(command);
+        var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, request));
+        var result = await _mediator.Send(command);
 
-        return result.Match(success => Ok(success), Problem);
+        return result.Match<IActionResult>(success => Ok(success), BadRequest);
     }
 }

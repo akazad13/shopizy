@@ -8,7 +8,7 @@ public static partial class CartExtensions
 {
     public static void ValidateResult(this Cart cart, GetCartQuery query)
     {
-        _ = cart.UserId.Value.Should().Be(query.UserId);
-        _ = cart.LineItems.Should().HaveCount(1);
+        cart.UserId.Value.Should().Be(query.UserId);
+        cart.LineItems.Should().HaveCount(1);
     }
 }

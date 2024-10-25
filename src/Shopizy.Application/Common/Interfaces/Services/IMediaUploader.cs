@@ -1,14 +1,14 @@
-using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Common;
 
 namespace Shopizy.Application.Common.Interfaces.Services;
 
 public interface IMediaUploader
 {
-    Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
+    Task<IResult<PhotoUploadResult>> UploadPhotoAsync(
         IFormFile file,
         CancellationToken cancellationToken = default
     );
-    Task<ErrorOr<Success>> DeletePhotoAsync(string publicId);
+    Task<Result> DeletePhotoAsync(string publicId);
 }

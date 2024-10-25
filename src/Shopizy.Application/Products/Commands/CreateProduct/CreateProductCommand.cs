@@ -1,7 +1,7 @@
-using ErrorOr;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Products;
 
@@ -21,4 +21,4 @@ public record CreateProductCommand(
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds
-) : IAuthorizeableRequest<ErrorOr<Product>>;
+) : IAuthorizeableRequest<IResult<Product>>;

@@ -18,9 +18,11 @@ public static class AddProductImageCommandUtils
         writer.Write(content);
         writer.Flush();
         ms.Position = 0;
-        _ = fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-        _ = fileMock.Setup(_ => _.FileName).Returns(fileName);
-        _ = fileMock.Setup(_ => _.Length).Returns(ms.Length);
+
+        fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+        fileMock.Setup(_ => _.FileName).Returns(fileName);
+        fileMock.Setup(_ => _.Length).Returns(ms.Length);
+
         ms.Dispose();
 
         return new AddProductImageCommand(Constants.User.Id.Value, productId, fileMock.Object);

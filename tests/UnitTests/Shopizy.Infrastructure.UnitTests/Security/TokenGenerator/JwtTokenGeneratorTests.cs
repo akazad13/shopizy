@@ -50,26 +50,22 @@ public class JwtTokenGeneratorTests
         // Assert
         var jwtToken = new JwtSecurityToken(token);
 
-        _ = jwtToken.Claims.Should().HaveCount(13);
-        _ = jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
-        _ = jwtToken
+        jwtToken.Claims.Should().HaveCount(13);
+        jwtToken.Claims.Should().Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
+        jwtToken
             .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Name && c.Value == firstName);
-        _ = jwtToken
+        jwtToken
             .Claims.Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.FamilyName && c.Value == lastName);
-        _ = jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
-        _ = jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
-        _ = jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
+        jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
+        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
+        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
 
-        _ = jwtToken
+        jwtToken
             .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanCreateProduct");
-        _ = jwtToken
+        jwtToken
             .Claims.Should()
             .Contain(c => c.Type == "permissions" && c.Value == "CanEditProduct");
     }

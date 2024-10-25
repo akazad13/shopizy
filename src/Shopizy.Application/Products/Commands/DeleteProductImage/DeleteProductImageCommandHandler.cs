@@ -1,38 +1,46 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Products.Commands.DeleteProductImage;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
 
-namespace Shopizy.Application.Products.Commands.DeleteProduct;
+namespace Shopizy.Application.Products.Commands.DeleteProductImage;
 
-public class DeleteProductImageCommandHandler(IProductRepository productRepository, IMediaUploader mediaUploader)
-        : IRequestHandler<DeleteProductImageCommand, ErrorOr<Success>>
+public class DeleteProductImageCommandHandler(
+    IProductRepository productRepository,
+    IMediaUploader mediaUploader
+) : IRequestHandler<DeleteProductImageCommand, IResult<GenericResponse>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IMediaUploader _mediaUploader = mediaUploader;
 
-    public async Task<ErrorOr<Success>> Handle(DeleteProductImageCommand cmd, CancellationToken cancellationToken)
+    public async Task<IResult<GenericResponse>> Handle(
+        DeleteProductImageCommand cmd,
+        CancellationToken cancellationToken
+    )
     {
-        Domain.Products.Product? product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return Response<GenericResponse>.ErrorResponse([CustomErrors.Product.ProductNotFound]);
         }
 
-        Domain.Products.Entities.ProductImage? prodImage = product.ProductImages.FirstOrDefault(pi => pi.Id == ProductImageId.Create(cmd.ImageId));
+        var prodImage = product.ProductImages.FirstOrDefault(pi =>
+            pi.Id == ProductImageId.Create(cmd.ImageId)
+        );
 
         if (prodImage is null)
         {
-            return CustomErrors.Product.ProductImageNotFound;
+            return Response<GenericResponse>.ErrorResponse(
+                [CustomErrors.Product.ProductImageNotFound]
+            );
         }
 
-        ErrorOr<Success> res = await _mediaUploader.DeletePhotoAsync(prodImage.PublicId);
+        var res = await _mediaUploader.DeletePhotoAsync(prodImage.PublicId);
 
-        if (!res.IsError)
+        if (res.Succeeded)
         {
             product.RemoveProductImage(prodImage);
 
@@ -40,11 +48,13 @@ public class DeleteProductImageCommandHandler(IProductRepository productReposito
 
             if (await _productRepository.Commit(cancellationToken) <= 0)
             {
-                return CustomErrors.Product.ProductImageNotAdded;
+                return Response<GenericResponse>.ErrorResponse(
+                    [CustomErrors.Product.ProductImageNotAdded]
+                );
             }
 
-            return Result.Success;
+            return Response<GenericResponse>.SuccessResponese("Delete product image successfully.");
         }
-        return res.Errors;
+        return Response<GenericResponse>.ErrorResponse(res.Errors);
     }
 }

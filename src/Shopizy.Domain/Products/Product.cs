@@ -92,7 +92,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
 
     public void RemoveProductImage(ProductImage productImage)
     {
-        _ = _productImages.Remove(productImage);
+        _productImages.Remove(productImage);
     }
 
     private Product(
