@@ -2,6 +2,7 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.ListProducts;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.ListProducts;
@@ -21,8 +22,8 @@ public class ListProductsQueryHandlerTests
     public async Task ShouldReturnEmptyListWhenNoProductsAreAvailableAsync()
     {
         // Arrange
-        var query = new ListProductsQuery();
-        _mockProductRepository.Setup(x => x.GetProductsAsync()).ReturnsAsync(() => []);
+        var query = new ListProductsQuery(null, null, null);
+        _mockProductRepository.Setup(x => x.GetProductsAsync(It.IsAny<string>(), It.IsAny<IList<CategoryId>>(), It.IsAny<double>())).ReturnsAsync(() => []);
 
         // Act
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
