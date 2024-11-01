@@ -14,18 +14,18 @@ public sealed class CategoryConfigurations : IEntityTypeConfiguration<Category>
 
     private static void ConfigureCategoriesTable(EntityTypeBuilder<Category> builder)
     {
-        _ = builder.ToTable("Categories");
-        _ = builder.HasKey(c => c.Id);
+        builder.ToTable("Categories");
+        builder.HasKey(c => c.Id);
 
-        _ = builder
+        builder
             .Property(c => c.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
-        _ = builder.Property(c => c.Name).HasMaxLength(100);
-        _ = builder.Property(c => c.ParentId).IsRequired(false);
+        builder.Property(c => c.Name).HasMaxLength(100);
+        builder.Property(c => c.ParentId).IsRequired(false);
 
-        _ = builder.HasMany(c => c.Products).WithOne().OnDelete(DeleteBehavior.NoAction);
-        _ = builder.Navigation(p => p.Products).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.HasMany(c => c.Products).WithOne().OnDelete(DeleteBehavior.NoAction);
+        builder.Navigation(p => p.Products).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

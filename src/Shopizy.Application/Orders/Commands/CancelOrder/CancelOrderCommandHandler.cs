@@ -1,20 +1,25 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 
 namespace Shopizy.Application.Orders.Commands.CancelOrder;
 
-public class CancelOrderCommandHandler(IOrderRepository orderRepository) : IRequestHandler<CancelOrderCommand, ErrorOr<Success>>
+public class CancelOrderCommandHandler(IOrderRepository orderRepository)
+    : IRequestHandler<CancelOrderCommand, IResult<GenericResponse>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
-    public async Task<ErrorOr<Success>> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
+
+    public async Task<IResult<GenericResponse>> Handle(
+        CancelOrderCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        Domain.Orders.Order? order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return Response<GenericResponse>.ErrorResponse([CustomErrors.Order.OrderNotFound]);
         }
 
         order.CancelOrder(request.Reason);
@@ -23,9 +28,8 @@ public class CancelOrderCommandHandler(IOrderRepository orderRepository) : IRequ
 
         if (await _orderRepository.Commit(cancellationToken) <= 0)
         {
-            return CustomErrors.Order.OrderNotCancelled;
+            return Response<GenericResponse>.ErrorResponse([CustomErrors.Order.OrderNotCancelled]);
         }
-
-        return Result.Success;
+        return Response<GenericResponse>.SuccessResponese("Successfully canceled the order.");
     }
 }

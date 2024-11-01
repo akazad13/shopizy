@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Authentication.Commands.Register;
 using Shopizy.Application.Authentication.Common;
@@ -10,8 +11,10 @@ public class AuthenticationMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        _ = config.NewConfig<AuthResult, AuthResponse>();
-        _ = config.NewConfig<LoginRequest, LoginQuery>();
-        _ = config.NewConfig<RegisterRequest, RegisterCommand>();
+        Guard.Against.Null(config);
+
+        config.NewConfig<AuthResult, AuthResponse>();
+        config.NewConfig<LoginRequest, LoginQuery>();
+        config.NewConfig<RegisterRequest, RegisterCommand>();
     }
 }

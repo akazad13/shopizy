@@ -14,22 +14,22 @@ public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode
 
     private static void ConfigurePromoCodesTable(EntityTypeBuilder<PromoCode> builder)
     {
-        _ = builder.ToTable("PromoCodes");
-        _ = builder.HasKey(pc => pc.Id);
-        _ = builder.HasIndex(pc => pc.Code);
+        builder.ToTable("PromoCodes");
+        builder.HasKey(pc => pc.Id);
+        builder.HasIndex(pc => pc.Code);
 
-        _ = builder
+        builder
             .Property(pc => pc.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => PromoCodeId.Create(value));
 
-        _ = builder.Property(pc => pc.Code).HasMaxLength(15);
-        _ = builder.Property(pc => pc.Description).HasMaxLength(100).IsRequired(false);
-        _ = builder.Property(pc => pc.Discount).HasPrecision(18, 2);
-        _ = builder.Property(pc => pc.IsPerchantage).HasDefaultValue(true);
-        _ = builder.Property(pc => pc.IsActive).HasDefaultValue(true);
-        _ = builder.Property(pc => pc.CreatedOn).HasColumnType("smalldatetime");
-        _ = builder.Property(pc => pc.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
-        _ = builder.Property(pc => pc.NumOfTimeUsed).HasDefaultValue(0);
+        builder.Property(pc => pc.Code).HasMaxLength(15);
+        builder.Property(pc => pc.Description).HasMaxLength(100).IsRequired(false);
+        builder.Property(pc => pc.Discount).HasPrecision(18, 2);
+        builder.Property(pc => pc.IsPerchantage).HasDefaultValue(true);
+        builder.Property(pc => pc.IsActive).HasDefaultValue(true);
+        builder.Property(pc => pc.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(pc => pc.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        builder.Property(pc => pc.NumOfTimeUsed).HasDefaultValue(0);
     }
 }

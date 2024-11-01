@@ -6,6 +6,6 @@ public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryCommand>
 {
     public UpdateCategoryValidator()
     {
-        _ = RuleFor(category => category.Name).NotEmpty().MaximumLength(100);
+        RuleFor(category => category.Name).NotEmpty().MaximumLength(100);
     }
 }

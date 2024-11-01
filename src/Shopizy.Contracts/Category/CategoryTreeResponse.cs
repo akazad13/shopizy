@@ -1,9 +1,8 @@
 namespace shopizy.Contracts.Category;
 
-public class CategoryTreeResponse
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public Guid? ParentId { get; set; }
-    public IEnumerable<CategoryTreeResponse>? Children { get; set; }
-}
+public record CategoryTreeResponse(
+    Guid Id,
+    string Name,
+    Guid? ParentId,
+    List<CategoryTreeResponse>? Children
+);

@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
@@ -14,7 +15,9 @@ public class OrderMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        _ = config
+        Guard.Against.Null(config);
+
+        config
             .NewConfig<(Guid UserId, CreateOrderRequest request), CreateOrderCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request)
@@ -23,12 +26,12 @@ public class OrderMappingConfig : IRegister
                 dest => dest.DeliveryChargeCurrency,
                 src => (Currency)src.request.DeliveryCharge.Currency
             );
-        _ = config
+        config
             .NewConfig<(Guid UserId, Guid OrderId), GetOrderQuery>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.OrderId, src => src.OrderId);
 
-        _ = config
+        config
             .NewConfig<Order, OrderResponse>()
             .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
@@ -36,15 +39,13 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString())
             .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString());
 
-        _ = config
-            .NewConfig<Guid, ListOrdersQuery>()
-            .MapWith(userId => new ListOrdersQuery(userId));
+        config.NewConfig<Guid, ListOrdersQuery>().MapWith(userId => new ListOrdersQuery(userId));
 
-        _ = config
+        config
             .NewConfig<OrderItem, OrderItemResponse>()
             .Map(dest => dest.OrderItemId, src => src.Id.Value);
 
-        _ = config
+        config
             .NewConfig<
                 (Guid UserId, Guid OrderId, CancelOrderRequest request),
                 CancelOrderCommand

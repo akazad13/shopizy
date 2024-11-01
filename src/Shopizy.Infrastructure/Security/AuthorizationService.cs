@@ -1,6 +1,6 @@
-using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.Security.Request;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.PolicyEnforcer;
 
@@ -14,7 +14,7 @@ public class AuthorizationService(
     private readonly IPolicyEnforcer _policyEnforcer = policyEnforcer;
     private readonly ICurrentUserProvider _currentUserProvider = currentUserProvider;
 
-    public ErrorOr<Success> AuthorizeCurrentUser<T>(
+    public IResult<GenericResponse> AuthorizeCurrentUser<T>(
         IAuthorizeableRequest<T> request,
         IList<string> requiredRoles,
         IList<string> requiredPermissions,
@@ -25,35 +25,35 @@ public class AuthorizationService(
 
         if (currentUser == null)
         {
-            return Error.Unauthorized(description: "User is unauthorized.");
+            return Response<GenericResponse>.ErrorResponse(["User is unauthorized."]);
         }
 
         if (requiredPermissions.Except(currentUser.Permissions).Any())
         {
-            return Error.Unauthorized(
-                description: "User is missing required permissions for taking this action"
+            return Response<GenericResponse>.ErrorResponse(
+                ["User is missing required permissions for taking this action."]
             );
         }
 
         if (requiredRoles.Except(currentUser.Roles).Any())
         {
-            return Error.Unauthorized(
-                description: "User is missing required roles for taking this action"
+            return Response<GenericResponse>.ErrorResponse(
+                ["User is missing required roles for taking this action."]
             );
         }
 
         foreach (string policy in requiredPolicies)
         {
-            ErrorOr<Success> authorizationAgaistPolicyResult = _policyEnforcer.Authorize(
+            var authorizationAgaistPolicyResult = _policyEnforcer.Authorize(
                 request,
                 currentUser,
                 policy
             );
-            if (authorizationAgaistPolicyResult.IsError)
+            if (!authorizationAgaistPolicyResult.Succeeded())
             {
-                return authorizationAgaistPolicyResult.Errors;
+                return authorizationAgaistPolicyResult;
             }
         }
-        return Result.Success;
+        return Response<GenericResponse>.SuccessResponese("");
     }
 }

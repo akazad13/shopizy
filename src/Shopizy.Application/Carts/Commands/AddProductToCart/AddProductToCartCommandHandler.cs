@@ -1,6 +1,6 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
@@ -10,31 +10,39 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
-public class AddProductToCartCommandHandler(ICartRepository cartRepository, IProductRepository productRepository)
-        : IRequestHandler<AddProductToCartCommand, ErrorOr<Cart>>
+public class AddProductToCartCommandHandler(
+    ICartRepository cartRepository,
+    IProductRepository productRepository
+) : IRequestHandler<AddProductToCartCommand, IResult<Cart>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly ICartRepository _cartRepository = cartRepository;
 
-    public async Task<ErrorOr<Cart>> Handle(AddProductToCartCommand cmd, CancellationToken cancellationToken)
+    public async Task<IResult<Cart>> Handle(
+        AddProductToCartCommand cmd,
+        CancellationToken cancellationToken
+    )
     {
-        Cart? cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
+        var cart = await _cartRepository.GetCartByIdAsync(
+            CartId.Create(cmd.CartId),
+            cancellationToken
+        );
 
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return Response<Cart>.ErrorResponse([CustomErrors.Cart.CartNotFound]);
         }
 
         if (cart.LineItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
         {
-            return CustomErrors.Cart.ProductAlreadyExistInCart;
+            return Response<Cart>.ErrorResponse([CustomErrors.Cart.ProductAlreadyExistInCart]);
         }
 
-        bool product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
         if (!product)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return Response<Cart>.ErrorResponse([CustomErrors.Product.ProductNotFound]);
         }
 
         cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
@@ -43,9 +51,11 @@ public class AddProductToCartCommandHandler(ICartRepository cartRepository, IPro
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
         {
-            return CustomErrors.Cart.CartPrductNotAdded;
+            return Response<Cart>.ErrorResponse([CustomErrors.Cart.CartPrductNotAdded]);
         }
 
-        return (await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId)))!;
+        return Response<Cart>.SuccessResponese(
+            await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId))
+        );
     }
 }

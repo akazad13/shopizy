@@ -12,38 +12,38 @@ public static partial class ProductExtensions
 {
     public static void ValidateResult(this Product product, CreateProductCommand command)
     {
-        _ = product.Name.Should().Be(command.Name);
-        _ = product.Description.Should().Be(command.Description);
-        _ = product.UnitPrice.Amount.Should().Be(command.UnitPrice);
-        _ = product.UnitPrice.Currency.Should().Be(command.Currency);
-        _ = product.Discount.Should().Be(command.Discount);
-        _ = product.SKU.Should().Be(command.Sku);
-        _ = product.Brand.Should().Be(command.Brand);
-        _ = product.Barcode.Should().Be(command.Barcode);
-        _ = product.StockQuantity.Should().Be(0);
-        _ = product.Tags.Should().Be(command.Tags);
-        _ = product.CategoryId.Should().BeOfType(typeof(CategoryId));
-        _ = product.ModifiedOn.Should().Be(null);
+        product.Name.Should().Be(command.Name);
+        product.Description.Should().Be(command.Description);
+        product.UnitPrice.Amount.Should().Be(command.UnitPrice);
+        product.UnitPrice.Currency.Should().Be(command.Currency);
+        product.Discount.Should().Be(command.Discount);
+        product.SKU.Should().Be(command.Sku);
+        product.Brand.Should().Be(command.Brand);
+        product.Barcode.Should().Be(command.Barcode);
+        product.StockQuantity.Should().Be(0);
+        product.Tags.Should().Be(command.Tags);
+        product.CategoryId.Should().BeOfType(typeof(CategoryId));
+        product.ModifiedOn.Should().Be(null);
     }
 
     public static void ValidateResult(this Product product, GetProductQuery query)
     {
-        _ = product.Id.Should().BeOfType(typeof(ProductId));
-        _ = product.Name.Should().BeOfType(typeof(string));
+        product.Id.Should().BeOfType(typeof(ProductId));
+        product.Name.Should().BeOfType(typeof(string));
     }
 
     public static void ValidateResult(this Product product, UpdateProductCommand command)
     {
-        _ = product.Name.Should().Be(command.Name);
-        _ = product.Description.Should().Be(command.Description);
-        _ = product.UnitPrice.Amount.Should().Be(command.UnitPrice);
-        _ = product.UnitPrice.Currency.Should().Be(command.Currency);
-        _ = product.Discount.Should().Be(command.Discount);
-        _ = product.SKU.Should().Be(command.Sku);
-        _ = product.Brand.Should().Be(command.Brand);
-        _ = product.Barcode.Should().Be(command.Barcode);
-        _ = product.Tags.Should().Be(command.Tags);
-        _ = product.CategoryId.Should().BeOfType(typeof(CategoryId));
-        _ = product.ModifiedOn.Should().BeAfter(product.CreatedOn);
+        product.Name.Should().Be(command.Name);
+        product.Description.Should().Be(command.Description);
+        product.UnitPrice.Amount.Should().Be(command.UnitPrice);
+        product.UnitPrice.Currency.Should().Be(command.Currency);
+        product.Discount.Should().Be(command.Discount);
+        product.SKU.Should().Be(command.Sku);
+        product.Brand.Should().Be(command.Brand);
+        product.Barcode.Should().Be(command.Barcode);
+        product.Tags.Should().Be(command.Tags);
+        product.CategoryId.Should().BeOfType(typeof(CategoryId));
+        product.ModifiedOn.Should().BeAfter(product.CreatedOn);
     }
 }

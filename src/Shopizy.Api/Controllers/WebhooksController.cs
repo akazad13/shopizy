@@ -27,13 +27,11 @@ public class Webhooks(IOptions<StripeSettings> options) : ApiController
                 $"Webhook notification with type: {stripeEvent.Type} found for {stripeEvent.Id}"
             );
 
-
-
-            if (stripeEvent.Type == Events.PaymentIntentSucceeded)
+            if (stripeEvent.Type == EventTypes.PaymentIntentSucceeded)
             {
                 // Some code here
             }
-            else if (stripeEvent.Type == Events.CustomerCreated)
+            else if (stripeEvent.Type == EventTypes.CustomerCreated)
             {
                 if (stripeEvent.Data.Object is Customer)
                 {
@@ -47,15 +45,14 @@ public class Webhooks(IOptions<StripeSettings> options) : ApiController
                     // }
                 }
             }
-            else if (stripeEvent.Type == Events.CheckoutSessionCompleted) { }
-            else if (stripeEvent.Type == Events.InvoicePaid) { }
-            else if (stripeEvent.Type == Events.InvoicePaymentFailed) { }
+            else if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted) { }
+            else if (stripeEvent.Type == EventTypes.InvoicePaid) { }
+            else if (stripeEvent.Type == EventTypes.InvoicePaymentFailed) { }
             else
             {
                 Console.WriteLine("Default");
             }
         }
-
         catch (Exception e)
         {
             Console.WriteLine($"Something failed {e}");

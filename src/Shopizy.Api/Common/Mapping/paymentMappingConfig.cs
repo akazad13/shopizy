@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Common.models;
 using Shopizy.Application.Payments.Commands.CreatePaymentSession;
@@ -9,7 +10,9 @@ public class PaymentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        _ = config
+        Guard.Against.Null(config);
+
+        config
             .NewConfig<
                 (Guid UserId, CreatePaymentSessionRequest request),
                 CreatePaymentSessionCommand
@@ -17,8 +20,8 @@ public class PaymentMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
-        _ = config.NewConfig<ChargeResource, PaymentResponse>();
+        config.NewConfig<ChargeResource, PaymentResponse>();
 
-        _ = config.NewConfig<CheckoutSession, PaymentSessionResponse>();
+        config.NewConfig<CheckoutSession, PaymentSessionResponse>();
     }
 }

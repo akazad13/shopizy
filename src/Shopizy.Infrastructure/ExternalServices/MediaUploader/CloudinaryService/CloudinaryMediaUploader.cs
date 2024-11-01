@@ -1,8 +1,8 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Common;
 
 namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
@@ -11,7 +11,7 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 {
     private readonly ICloudinary _cloudinary = cloudinary;
 
-    public async Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
+    public async Task<IResult<PhotoUploadResult>> UploadPhotoAsync(
         IFormFile file,
         CancellationToken cancellationToken = default
     )
@@ -26,44 +26,40 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
                     File = new FileDescription(file.Name, stream),
                     Transformation = new Transformation().Width(500).Height(500).Crop("fill"),
                 };
-                ImageUploadResult uploadResult = await _cloudinary.UploadAsync(
-                    uploadParams,
-                    cancellationToken
-                );
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
 
                 return uploadResult.Error switch
                 {
-                    null => new PhotoUploadResult(
-                        uploadResult.Url.ToString(),
-                        uploadResult.PublicId
+                    null => Response<PhotoUploadResult>.SuccessResponese(
+                        new PhotoUploadResult(uploadResult.Url.ToString(), uploadResult.PublicId)
                     ),
-                    _ => ErrorOr.Error.Failure(description: uploadResult.Error.Message),
+                    _ => Response<PhotoUploadResult>.ErrorResponse([uploadResult.Error.Message]),
                 };
             }
-            return ErrorOr.Error.Failure(description: "File not found!");
+            return Response<PhotoUploadResult>.ErrorResponse(["File not found!"]);
         }
         catch (Exception ex)
         {
-            return ErrorOr.Error.Failure(description: ex.Message);
+            return Response<PhotoUploadResult>.ErrorResponse([ex.Message]);
         }
     }
 
-    public async Task<ErrorOr<Success>> DeletePhotoAsync(string publicId)
+    public async Task<Result> DeletePhotoAsync(string publicId)
     {
         try
         {
             var deleteParams = new DeletionParams(publicId);
-            DeletionResult result = await _cloudinary.DestroyAsync(deleteParams);
+            var result = await _cloudinary.DestroyAsync(deleteParams);
 
             return result.Result switch
             {
-                "ok" => Result.Success,
-                _ => ErrorOr.Error.Failure(description: result.Error.Message),
+                "ok" => Result.Success(),
+                _ => Result.Failure([result.Error.Message]),
             };
         }
         catch (Exception ex)
         {
-            return ErrorOr.Error.Failure(description: ex.Message);
+            return Result.Failure([ex.Message]);
         }
     }
 }

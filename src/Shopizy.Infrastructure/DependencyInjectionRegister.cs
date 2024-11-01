@@ -74,16 +74,16 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
-        _ = services
+        services
             .AddSingleton<IDateTimeProvider, SystemDateTimeProvider>()
             .AddScoped<IAppDbContext, AppDbContext>()
             .AddScoped<DbMigrationsHelper>();
 
-        _ = services.Configure<CloudinarySettings>(
+        services.Configure<CloudinarySettings>(
             configuration.GetSection(CloudinarySettings.Section)
         );
 
-        _ = services.AddTransient<ICloudinary, Cloudinary>(sp =>
+        services.AddTransient<ICloudinary, Cloudinary>(sp =>
         {
             var acc = new CloudinaryDotNet.Account(
                 configuration.GetValue<string>("CloudinarySettings:CloudName"),
@@ -94,7 +94,7 @@ public static class DependencyInjectionRegister
             cloudinary.Api.Secure = configuration.GetValue<bool>("CloudinarySettings:Secure");
             return cloudinary;
         });
-        _ = services
+        services
             .AddScoped<IMediaUploader, CloudinaryMediaUploader>()
             .AddScoped<IPaymentService, StripeService>()
             .AddScoped<TokenService>()
@@ -103,7 +103,7 @@ public static class DependencyInjectionRegister
             .AddScoped<SessionService>()
             .AddScoped<CardService>();
 
-        _ = services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
+        services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
 
         StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
 
@@ -112,7 +112,7 @@ public static class DependencyInjectionRegister
 
     public static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
-        _ = services
+        services
             .AddScoped<IAuthorizationService, AuthorizationService>()
             .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
             .AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
@@ -125,12 +125,12 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
-        _ = services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
 
-        _ = services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-        _ = services.AddScoped<IPasswordManager, PasswordManager>();
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IPasswordManager, PasswordManager>();
 
-        _ = services
+        services
             .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
             .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
@@ -143,7 +143,7 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
-        _ = services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         return services;
@@ -151,7 +151,7 @@ public static class DependencyInjectionRegister
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        _ = services
+        services
             .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<ICartRepository, CartRepository>()
             .AddScoped<IOrderRepository, OrderRepository>()

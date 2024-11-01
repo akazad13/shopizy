@@ -15,26 +15,35 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     {
         return _dbContext.Carts.AsNoTracking().ToListAsync();
     }
-    public Task<Cart?> GetCartByIdAsync(CartId id)
+
+    public Task<Cart?> GetCartByIdAsync(CartId id, CancellationToken cancellationToken)
     {
-        return _dbContext.Carts.FirstOrDefaultAsync(c => c.Id == id);
+        return _dbContext.Carts.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
+
     public Task<Cart?> GetCartByUserIdAsync(UserId id)
     {
-        return _dbContext.Carts.Include(c => c.LineItems).ThenInclude(li => li.Product).FirstOrDefaultAsync(c => c.UserId == id);
+        return _dbContext
+            .Carts.Include(c => c.LineItems)
+            .ThenInclude(li => li.Product)
+            .FirstOrDefaultAsync(c => c.UserId == id);
     }
+
     public async Task AddAsync(Cart cart)
     {
-        _ = await _dbContext.Carts.AddAsync(cart);
+        await _dbContext.Carts.AddAsync(cart);
     }
+
     public void Update(Cart cart)
     {
-        _ = _dbContext.Update(cart);
+        _dbContext.Update(cart);
     }
+
     public void Remove(Cart cart)
     {
-        _ = _dbContext.Remove(cart);
+        _dbContext.Remove(cart);
     }
+
     public Task<int> Commit(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);

@@ -17,67 +17,63 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
 
     private static void ConfigureProductsTable(EntityTypeBuilder<Product> builder)
     {
-        _ = builder.ToTable("Products").HasKey(p => p.Id);
+        builder.ToTable("Products").HasKey(p => p.Id);
 
-        _ = builder
+        builder
             .Property(p => p.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProductId.Create(value));
 
-        _ = builder.Property(p => p.Name).HasMaxLength(100).IsRequired();
-        _ = builder.Property(p => p.Description).HasMaxLength(200);
-        _ = builder.Property(p => p.SKU).HasMaxLength(50);
-        _ = builder.Property(p => p.StockQuantity);
-        _ = builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
-        _ = builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
-        _ = builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
-        _ = builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
-        _ = builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
-        _ = builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        builder.Property(p => p.Name).HasMaxLength(100).IsRequired();
+        builder.Property(p => p.Description).HasMaxLength(200);
+        builder.Property(p => p.SKU).HasMaxLength(50);
+        builder.Property(p => p.StockQuantity);
+        builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
+        builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
+        builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
+        builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
-        _ = builder.OwnsOne(
+        builder.OwnsOne(
             p => p.UnitPrice,
             pb =>
             {
-                _ = pb.Property(p => p.Amount).HasPrecision(18, 2);
+                pb.Property(p => p.Amount).HasPrecision(18, 2);
             }
         );
-        _ = builder.OwnsOne(
+        builder.OwnsOne(
             p => p.AverageRating,
             avrb =>
             {
-                _ = avrb.Property(avr => avr.Value).HasPrecision(18, 2);
+                avrb.Property(avr => avr.Value).HasPrecision(18, 2);
             }
         );
 
-        _ = builder
+        builder
             .Property(p => p.CategoryId)
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
-        _ = builder
-            .Navigation(p => p.ProductImages)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
-        _ = builder
-            .Navigation(p => p.ProductReviews)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductImages).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)
     {
-        _ = builder.OwnsMany(
+        builder.OwnsMany(
             p => p.ProductImages,
             pib =>
             {
-                _ = pib.ToTable("ProductImages");
+                pib.ToTable("ProductImages");
 
-                _ = pib.WithOwner().HasForeignKey("ProductId");
-                _ = pib.HasKey("ProductId", nameof(ProductImage.Id));
+                pib.WithOwner().HasForeignKey("ProductId");
+                pib.HasKey("ProductId", nameof(ProductImage.Id));
 
-                _ = pib.Property(pi => pi.PublicId).HasMaxLength(100);
-                _ = pib.Property(pi => pi.Id)
+                pib.Property(pi => pi.PublicId).HasMaxLength(100);
+                pib.Property(pi => pi.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductImageId.Create(value));
-                _ = pib.Property(pi => pi.ImageUrl).IsRequired();
+                pib.Property(pi => pi.ImageUrl).IsRequired();
             }
         );
     }

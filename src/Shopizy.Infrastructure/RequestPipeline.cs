@@ -7,7 +7,7 @@ public static class RequestPipeline
 {
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
     {
-        _ = app.UseMiddleware<EventualConsistencyMiddleware>();
+        app.UseMiddleware<EventualConsistencyMiddleware>();
         return app;
     }
 }

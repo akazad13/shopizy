@@ -14,17 +14,20 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
     {
         return _dbContext.PromoCodes.AsNoTracking().ToListAsync();
     }
+
     public Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id)
     {
         return _dbContext.PromoCodes.FirstOrDefaultAsync(c => c.Id == id);
     }
+
     public async Task AddAsync(PromoCode promoCode)
     {
-        _ = await _dbContext.PromoCodes.AddAsync(promoCode);
+        await _dbContext.PromoCodes.AddAsync(promoCode);
     }
+
     public void Update(PromoCode promoCode)
     {
-        _ = _dbContext.Update(promoCode);
+        _dbContext.Update(promoCode);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

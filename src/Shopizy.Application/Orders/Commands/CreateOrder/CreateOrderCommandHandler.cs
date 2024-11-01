@@ -1,6 +1,6 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
@@ -14,22 +14,22 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 public class CreateOrderCommandHandler(
     IProductRepository productRepository,
     IOrderRepository orderRepository
-) : IRequestHandler<CreateOrderCommand, ErrorOr<Order>>
+) : IRequestHandler<CreateOrderCommand, IResult<Order>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public async Task<ErrorOr<Order>> Handle(
+    public async Task<IResult<Order>> Handle(
         CreateOrderCommand request,
         CancellationToken cancellationToken
     )
     {
-        List<Domain.Products.Product> products = await _productRepository.GetProductsByIdsAsync(
+        var products = await _productRepository.GetProductsByIdsAsync(
             request.OrderItems.Select(x => ProductId.Create(x.ProductId)).ToList()
         );
         if (products.Count == 0)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return Response<Order>.ErrorResponse([CustomErrors.Product.ProductNotFound]);
         }
 
         // foreach( var product in products)
@@ -70,9 +70,8 @@ public class CreateOrderCommandHandler(
         await _orderRepository.AddAsync(order);
         if (await _orderRepository.Commit(cancellationToken) <= 0)
         {
-            return CustomErrors.Order.OrderNotCreated;
+            return Response<Order>.ErrorResponse([CustomErrors.Order.OrderNotCreated]);
         }
-
-        return order;
+        return Response<Order>.SuccessResponese(order);
     }
 }

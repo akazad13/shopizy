@@ -1,7 +1,7 @@
-using ErrorOr;
 using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
+using Shopizy.Application.Common.Wrappers;
 using Stripe;
 using Stripe.Checkout;
 
@@ -17,7 +17,7 @@ public class StripeService(
     private readonly SessionService _sessionService = sessionService;
     private readonly StripeSettings _stripeSettings = options.Value;
 
-    public async Task<ErrorOr<CustomerResource>> CreateCustomer(
+    public async Task<IResult<CustomerResource>> CreateCustomer(
         string email,
         string name,
         CancellationToken cancellationToken
@@ -32,15 +32,17 @@ public class StripeService(
                 cancellationToken: cancellationToken
             );
 
-            return new CustomerResource(customer.Id, customer.Email, customer.Name);
+            return Response<CustomerResource>.SuccessResponese(
+                new CustomerResource(customer.Id, customer.Email, customer.Name)
+            );
         }
         catch (StripeException ex)
         {
-            return Error.Failure(description: ex.Message);
+            return Response<CustomerResource>.ErrorResponse([ex.Message]);
         }
     }
 
-    public async Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
+    public async Task<IResult<CheckoutSession>> CreateCheckoutSession(
         string customerEmail,
         decimal price,
         string successUrl,
@@ -86,11 +88,13 @@ public class StripeService(
 
             Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
 
-            return new CheckoutSession(session.Id, _stripeSettings.PublishableKey);
+            return Response<CheckoutSession>.SuccessResponese(
+                new CheckoutSession(session.Id, _stripeSettings.PublishableKey)
+            );
         }
         catch (StripeException ex)
         {
-            return Error.Failure(description: ex.Message);
+            return Response<CheckoutSession>.ErrorResponse([ex.Message]);
         }
     }
 }

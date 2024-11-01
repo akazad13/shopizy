@@ -1,8 +1,8 @@
-using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
+using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
@@ -16,30 +16,28 @@ public class CreatePaymentSessionCommandHandler(
     IOrderRepository orderRepository,
     IUserRepository userRepository,
     IPaymentService paymentService
-) : IRequestHandler<CreatePaymentSessionCommand, ErrorOr<CheckoutSession>>
+) : IRequestHandler<CreatePaymentSessionCommand, IResult<CheckoutSession>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPaymentService _paymentService = paymentService;
 
-    public async Task<ErrorOr<CheckoutSession>> Handle(
+    public async Task<IResult<CheckoutSession>> Handle(
         CreatePaymentSessionCommand request,
         CancellationToken cancellationToken
     )
     {
-        Domain.Orders.Order? order = await _orderRepository.GetOrderByIdAsync(
-            OrderId.Create(request.OrderId)
-        );
+        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return Response<CheckoutSession>.ErrorResponse([CustomErrors.Order.OrderNotFound]);
         }
 
-        Domain.Common.ValueObjects.Price total = order.GetTotal();
+        var total = order.GetTotal();
 
-        Domain.Users.User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
 
         var payment = Payment.Create(
             UserId.Create(request.UserId),
@@ -55,17 +53,17 @@ public class CreatePaymentSessionCommandHandler(
 
         if (await _paymentRepository.Commit(cancellationToken) <= 0)
         {
-            return CustomErrors.Payment.PaymentNotCreated;
+            return Response<CheckoutSession>.ErrorResponse(
+                [CustomErrors.Payment.PaymentNotCreated]
+            );
         }
 
-        ErrorOr<CheckoutSession> checkoutSession = await _paymentService.CreateCheckoutSession(
+        return await _paymentService.CreateCheckoutSession(
             user?.Email ?? "",
             total.Amount,
             request.SuccessUrl,
             request.CancelUrl,
             cancellationToken
         );
-
-        return checkoutSession;
     }
 }

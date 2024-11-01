@@ -9,21 +9,25 @@ namespace Shopizy.Infrastructure.Customers.Persistence;
 public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+
     public Task<List<Payment>> GetPaymentsAsync()
     {
         return _dbContext.Payments.AsNoTracking().ToListAsync();
     }
+
     public Task<Payment?> GetPaymentByIdAsync(PaymentId id)
     {
         return _dbContext.Payments.FirstOrDefaultAsync(c => c.Id == id);
     }
+
     public async Task AddAsync(Payment payment)
     {
-        _ = await _dbContext.Payments.AddAsync(payment);
+        await _dbContext.Payments.AddAsync(payment);
     }
+
     public void Update(Payment payment)
     {
-        _ = _dbContext.Update(payment);
+        _dbContext.Update(payment);
     }
 
     public Task<int> Commit(CancellationToken cancellationToken)

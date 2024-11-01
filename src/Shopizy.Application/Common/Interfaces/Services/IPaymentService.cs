@@ -1,16 +1,16 @@
-using ErrorOr;
 using Shopizy.Application.Common.models;
+using Shopizy.Application.Common.Wrappers;
 
 namespace Shopizy.Application.Common.Interfaces.Services;
 
 public interface IPaymentService
 {
-    Task<ErrorOr<CustomerResource>> CreateCustomer(
+    Task<IResult<CustomerResource>> CreateCustomer(
         string email,
         string name,
         CancellationToken cancellationToken
     );
-    Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
+    Task<IResult<CheckoutSession>> CreateCheckoutSession(
         string customerEmail,
         decimal price,
         string successUrl,
