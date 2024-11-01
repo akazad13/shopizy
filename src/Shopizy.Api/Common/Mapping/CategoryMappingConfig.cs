@@ -3,6 +3,7 @@ using Mapster;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
+using shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
@@ -40,6 +41,8 @@ public class CategoryMappingConfig : IRegister
         config
             .NewConfig<Category, CategoryTreeResponse>()
             .Map(dest => dest.Id, src => src.Id.Value);
+
+        config.NewConfig<CategoryTree, CategoryTreeResponse>();
 
         config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
     }

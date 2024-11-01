@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -12,9 +13,14 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<List<Product>> GetProductsAsync()
+    public Task<List<Product>> GetProductsAsync(
+        string? name,
+        IList<CategoryId>? categoryIds,
+        double? averageRating
+    )
     {
-        return _dbContext.Products.AsNoTracking().ToListAsync();
+        return ApplySpec(new ProductsByCriteriaSpec(name, categoryIds, averageRating))
+            .ToListAsync();
     }
 
     public Task<Product?> GetProductByIdAsync(ProductId id)

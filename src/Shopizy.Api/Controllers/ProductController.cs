@@ -9,6 +9,7 @@ using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.ListProducts;
+using shopizy.Contracts.Product;
 using Shopizy.Contracts.Product;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -25,9 +26,9 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
-    public async Task<IActionResult> GetAsync()
+    public async Task<IActionResult> GetAsync([FromQuery] ProductsCriteriaRequest request)
     {
-        var query = new ListProductsQuery();
+        var query = _mapper.Map<ListProductsQuery>(request);
         var result = await _mediator.Send(query);
 
         return result.Match<IActionResult>(

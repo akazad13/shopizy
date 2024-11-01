@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
+using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using Shopizy.Application.Categories.Queries.ListCategories;
 using Shopizy.Application.Common.Wrappers;
@@ -29,7 +30,7 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
         var result = await _mediator.Send(new ListCategoriesQuery());
 
         return result.Match<IActionResult>(
-            category => Ok(_mapper.Map<List<CategoryResponse>>(category)),
+            categories => Ok(_mapper.Map<List<CategoryResponse>>(categories)),
             BadRequest
         );
     }
@@ -41,12 +42,12 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
     public async Task<IActionResult> GetCategoriesAsync()
     {
-        var result = await _mediator.Send(new ListCategoriesQuery());
+        var result = await _mediator.Send(new CategoriesTreeQuery());
 
-        var categoriesModel = _mapper.Map<List<CategoryTreeResponse>>(result);
-        var categoryTree = BuildCategoryTree(categoriesModel);
-
-        return Ok(categoryTree);
+        return result.Match<IActionResult>(
+            categories => Ok(_mapper.Map<List<CategoryTreeResponse>>(categories)),
+            BadRequest
+        );
     }
 
     [HttpGet("categories/{categoryId:guid}")]
@@ -128,22 +129,5 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
                 new GenericResponse(ex.Message, [ex.InnerException.Message])
             );
         }
-    }
-
-    private static IEnumerable<CategoryTreeResponse> BuildCategoryTree(
-        List<CategoryTreeResponse> allCategories,
-        Guid? parentId = null
-    )
-    {
-        // Get all categories with the given parentId
-        var subCategories = allCategories.Where(c => c.ParentId == parentId);
-
-        // Recursively build the tree by adding children to each category
-        foreach (var category in subCategories)
-        {
-            category.Children = BuildCategoryTree(allCategories, category.Id);
-        }
-
-        return subCategories;
     }
 }
