@@ -19,7 +19,7 @@ public class GetProductsQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnEmptyListWhenNoProductsAreAvailableAsync()
+    public async Task ShouldReturnNullWhenNoProductsAreAvailableAsync()
     {
         // Arrange
         var query = new GetProductsQuery(null, null, null, 1, 10);
@@ -39,8 +39,7 @@ public class GetProductsQueryHandlerTests
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
 
         // Assert
-        result.Should().BeOfType<List<Product>>();
-        result.Should().BeEmpty();
+        result.Should().BeNull();
     }
 
     // [Fact]
