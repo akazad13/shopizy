@@ -9,7 +9,9 @@ public interface IProductRepository
     Task<List<Product>> GetProductsAsync(
         string? name,
         IList<CategoryId>? categoryIds,
-        double? averageRating
+        double? averageRating,
+        int pageNumber,
+        int pageSize
     );
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task<List<Product>> GetProductsByIdsAsync(IList<ProductId> ids);

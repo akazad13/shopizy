@@ -5,7 +5,7 @@ using Shopizy.Application.Products.Commands.DeleteProduct;
 using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
-using Shopizy.Application.Products.Queries.ListProducts;
+using Shopizy.Application.Products.Queries.GetProducts;
 using shopizy.Contracts.Product;
 using Shopizy.Contracts.Product;
 using Shopizy.Domain.Products;
@@ -19,7 +19,7 @@ public class ProductMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
-        config.NewConfig<ProductsCriteriaRequest, ListProductsQuery>();
+        config.NewConfig<ProductsCriteriaRequest, GetProductsQuery>();
 
         config
             .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()

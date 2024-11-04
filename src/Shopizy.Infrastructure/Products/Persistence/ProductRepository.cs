@@ -16,10 +16,14 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public Task<List<Product>> GetProductsAsync(
         string? name,
         IList<CategoryId>? categoryIds,
-        double? averageRating
+        double? averageRating,
+        int pageNumber,
+        int pageSize
     )
     {
         return ApplySpec(new ProductsByCriteriaSpec(name, categoryIds, averageRating))
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
     }
 

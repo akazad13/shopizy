@@ -1,29 +1,39 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Products.Queries.ListProducts;
+using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 
-namespace Shopizy.Application.UnitTests.Products.Queries.ListProducts;
+namespace Shopizy.Application.UnitTests.Products.Queries.GetProducts;
 
-public class ListProductsQueryHandlerTests
+public class GetProductsQueryHandlerTests
 {
-    private readonly ListProductsQueryHandler _sut;
+    private readonly GetProductsQueryHandler _sut;
     private readonly Mock<IProductRepository> _mockProductRepository;
 
-    public ListProductsQueryHandlerTests()
+    public GetProductsQueryHandlerTests()
     {
         _mockProductRepository = new Mock<IProductRepository>();
-        _sut = new ListProductsQueryHandler(_mockProductRepository.Object);
+        _sut = new GetProductsQueryHandler(_mockProductRepository.Object);
     }
 
     [Fact]
     public async Task ShouldReturnEmptyListWhenNoProductsAreAvailableAsync()
     {
         // Arrange
-        var query = new ListProductsQuery(null, null, null);
-        _mockProductRepository.Setup(x => x.GetProductsAsync(It.IsAny<string>(), It.IsAny<IList<CategoryId>>(), It.IsAny<double>())).ReturnsAsync(() => []);
+        var query = new GetProductsQuery(null, null, null, 1, 10);
+        _mockProductRepository
+            .Setup(x =>
+                x.GetProductsAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<IList<CategoryId>>(),
+                    It.IsAny<double>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>()
+                )
+            )
+            .ReturnsAsync(() => []);
 
         // Act
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
