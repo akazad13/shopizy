@@ -21,7 +21,7 @@
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Shopizy.Application\shopizy.Application.csproj" />
-    <ProjectReference Include="..\..\..\src\Shopizy.Domain\shopizy.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Shopizy.Application\Shopizy.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\Shopizy.Domain\Shopizy.Domain.csproj" />
   </ItemGroup>
 </Project>
