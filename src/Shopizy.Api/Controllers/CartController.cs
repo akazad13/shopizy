@@ -93,7 +93,7 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         return result.Match<IActionResult>(success => Ok(success), BadRequest);
     }
 
-    [HttpDelete("{cartId:guid}/remove-products")]
+    [HttpDelete("{cartId:guid}/remove-product/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(GenericResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
@@ -102,10 +102,10 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
     public async Task<IActionResult> RemoveProductFromCartAsync(
         Guid userId,
         Guid cartId,
-        RemoveProductFromCartRequest request
+        Guid productId
     )
     {
-        var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, request));
+        var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, productId));
         var result = await _mediator.Send(command);
 
         return result.Match<IActionResult>(success => Ok(success), BadRequest);

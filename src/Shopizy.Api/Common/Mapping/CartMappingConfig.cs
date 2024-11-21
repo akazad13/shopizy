@@ -44,13 +44,10 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest, src => src.request);
 
         config
-            .NewConfig<
-                (Guid UserId, Guid CartId, RemoveProductFromCartRequest request),
-                RemoveProductFromCartCommand
-            >()
+            .NewConfig<(Guid UserId, Guid CartId, Guid ProductId), RemoveProductFromCartCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
-            .Map(dest => dest, src => src.request);
+            .Map(dest => dest.ProductId, src => src.ProductId);
 
         config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
 
