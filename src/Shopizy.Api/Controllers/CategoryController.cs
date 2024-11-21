@@ -1,5 +1,6 @@
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
@@ -10,6 +11,7 @@ using Shopizy.Application.Categories.Queries.ListCategories;
 using Shopizy.Application.Common.Wrappers;
 using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
+using Shopizy.Contracts.Common;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
@@ -68,10 +70,10 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
 
     [HttpPost("users/{userId:guid}/categories")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CategoryResponse))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateCategoryAsync(Guid userId, CreateCategoryRequest request)
     {
         var command = _mapper.Map<CreateCategoryCommand>((userId, request));
@@ -79,7 +81,7 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
 
         return result.Match<IActionResult>(
             category => Ok(_mapper.Map<CategoryResponse>(category)),
-            BadRequest
+            Problem
         );
     }
 

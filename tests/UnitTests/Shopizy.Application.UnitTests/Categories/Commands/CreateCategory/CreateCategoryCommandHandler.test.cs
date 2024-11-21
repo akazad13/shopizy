@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Categories;
@@ -36,11 +35,12 @@ public class CreateCategoryCommandHandlerTests
         _mockCategoryRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.ValidateResult(command);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.ValidateResult(command);
     }
 
     // Should return an error when trying to create a category with a duplicate name
@@ -56,11 +56,12 @@ public class CreateCategoryCommandHandlerTests
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Errors.First().Should().Be(CustomErrors.Category.DuplicateName);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.Category.DuplicateName);
     }
 
     // Should return an category not created error when category save failed
@@ -76,11 +77,12 @@ public class CreateCategoryCommandHandlerTests
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(0);
 
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Errors.First().Should().Be(CustomErrors.Category.CategoryNotCreated);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.Category.CategoryNotCreated);
     }
 
     // Should handle concurrent category creation requests without data corruption
