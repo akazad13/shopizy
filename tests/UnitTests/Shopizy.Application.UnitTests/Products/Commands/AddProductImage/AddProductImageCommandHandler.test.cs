@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Commands.AddProductImage;
 using Shopizy.Application.Products.Common;
 using Shopizy.Application.UnitTests.Products.TestUtils;
@@ -46,7 +45,7 @@ public class AddProductImageCommandHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Errors.Should().Contain(CustomErrors.Product.ProductImageNotUploaded);
     }
 
@@ -65,7 +64,7 @@ public class AddProductImageCommandHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Errors.Should().Contain(CustomErrors.Product.ProductNotFound);
     }
 
@@ -141,7 +140,7 @@ public class AddProductImageCommandHandlerTests
     //             Result<PhotoUploadResult>.Success(new PhotoUploadResult("url", "publicId"))
     //         );
 
-    //     var tasks = new List<Task<IResult<ProductImage>>>();
+    //     var tasks = new List<Task<ErrorOr<ProductImage>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {

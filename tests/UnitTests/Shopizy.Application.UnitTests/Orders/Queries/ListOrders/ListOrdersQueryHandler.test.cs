@@ -133,7 +133,7 @@ public class ListOrdersQueryHandlerTests
     //     var mockOrderRepository = new Mock<IOrderRepository>();
     //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
 
-    //     var tasks = new List<Task<IResult<List<Order>>>>();
+    //     var tasks = new List<Task<ErrorOr<List<Order>>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {

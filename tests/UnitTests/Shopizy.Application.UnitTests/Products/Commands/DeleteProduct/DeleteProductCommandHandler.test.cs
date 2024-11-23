@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Commands.DeleteProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Products;
@@ -45,7 +44,7 @@ public class DeleteProductCommandHandlerTests
 
         // Assert
 
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Message.Should().BeEquivalentTo("Delete product successfully.");
 
         _mockProductRepository.Verify(x => x.Remove(product), Times.Once);

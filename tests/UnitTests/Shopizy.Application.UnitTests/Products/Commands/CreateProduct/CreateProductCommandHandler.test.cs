@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
@@ -35,7 +34,7 @@ public class CreateProductCommandHandlerTests
         var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Should().NotBeNull();
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().Be(CustomErrors.Product.ProductNotCreated);
@@ -252,7 +251,7 @@ public class CreateProductCommandHandlerTests
     //         .ReturnsAsync(1);
 
     //     // Act
-    //     var tasks = new List<Task<IResult<Product>>>();
+    //     var tasks = new List<Task<ErrorOr<Product>>>();
     //     for (int i = 0; i < 10; i++)
     //     {
     //         tasks.Add(

@@ -1,8 +1,8 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Payments.Commands.CreatePaymentSession;
+using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Payment;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -16,10 +16,10 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
 
     [HttpPost("session")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(PaymentSessionResponse))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(GenericResponse))]
-    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(GenericResponse))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreatePaymentSessoinAsync(
         Guid userId,
         CreatePaymentSessionRequest request
@@ -28,9 +28,6 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
         var command = _mapper.Map<CreatePaymentSessionCommand>((userId, request));
         var result = await _mediator.Send(command);
 
-        return result.Match<IActionResult>(
-            Payment => Ok(_mapper.Map<PaymentSessionResponse>(Payment)),
-            BadRequest
-        );
+        return result.Match(Payment => Ok(_mapper.Map<PaymentSessionResponse>(Payment)), Problem);
     }
 }

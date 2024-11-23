@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;

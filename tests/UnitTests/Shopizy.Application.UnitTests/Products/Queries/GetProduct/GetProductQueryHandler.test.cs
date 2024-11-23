@@ -90,7 +90,7 @@ public class GetProductQueryHandlerTests
     //     var queryHandler = new GetProductQueryHandler(mockProductRepository.Object);
     //     var query = new GetProductQuery { ProductId = productId.Value };
 
-    //     var tasks = new List<Task<IResult<Product?>>>();
+    //     var tasks = new List<Task<ErrorOr<Product?>>>();
     //     for (int i = 0; i < 10; i++)
     //     {
     //         tasks.Add(queryHandler.Handle(query, CancellationToken.None));

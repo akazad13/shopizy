@@ -1,6 +1,6 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
@@ -13,12 +13,12 @@ namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 public class AddProductToCartCommandHandler(
     ICartRepository cartRepository,
     IProductRepository productRepository
-) : IRequestHandler<AddProductToCartCommand, IResult<Cart>>
+) : IRequestHandler<AddProductToCartCommand, ErrorOr<Cart>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly ICartRepository _cartRepository = cartRepository;
 
-    public async Task<IResult<Cart>> Handle(
+    public async Task<ErrorOr<Cart>> Handle(
         AddProductToCartCommand cmd,
         CancellationToken cancellationToken
     )
@@ -30,19 +30,19 @@ public class AddProductToCartCommandHandler(
 
         if (cart is null)
         {
-            return Response<Cart>.ErrorResponse([CustomErrors.Cart.CartNotFound]);
+            return CustomErrors.Cart.CartNotFound;
         }
 
         if (cart.LineItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
         {
-            return Response<Cart>.ErrorResponse([CustomErrors.Cart.ProductAlreadyExistInCart]);
+            return CustomErrors.Cart.ProductAlreadyExistInCart;
         }
 
         var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
         if (!product)
         {
-            return Response<Cart>.ErrorResponse([CustomErrors.Product.ProductNotFound]);
+            return CustomErrors.Product.ProductNotFound;
         }
 
         cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
@@ -51,11 +51,9 @@ public class AddProductToCartCommandHandler(
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<Cart>.ErrorResponse([CustomErrors.Cart.CartPrductNotAdded]);
+            return CustomErrors.Cart.CartPrductNotAdded;
         }
 
-        return Response<Cart>.SuccessResponese(
-            await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId))
-        );
+        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId));
     }
 }

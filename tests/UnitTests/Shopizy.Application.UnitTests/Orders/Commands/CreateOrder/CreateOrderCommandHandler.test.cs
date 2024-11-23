@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;
@@ -74,7 +73,7 @@ public class CreateOrderCommandHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
+        result.Should().BeOfType(typeof(Success));
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().Be(CustomErrors.Product.ProductNotFound);
     }

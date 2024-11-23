@@ -3,7 +3,6 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProducts;
 
@@ -175,7 +174,7 @@ public class GetProductsQueryHandlerTests
 
     //     var sut = new ListProductQueryHandler(mockProductRepository.Object);
 
-    //     var tasks = new List<Task<IResult<List<Product>?>>>();
+    //     var tasks = new List<Task<ErrorOr<List<Product>?>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {

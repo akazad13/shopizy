@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.ValueObjects;
@@ -66,7 +65,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await _sut.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.True(result.IsSuccess);
     //     Assert.Equal("successfully updated cart.", result.Data.Message);
     //     cartRepositoryMock.Verify(
@@ -102,7 +101,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.False(result.IsSuccess);
     //     Assert.Equal(CustomErrors.Cart.CartPrductNotAdded, result.Errors.First());
     // }
@@ -180,7 +179,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.False(result.IsSuccess);
     //     Assert.Equal(CustomErrors.Cart.CartPrductNotAdded, result.Errors.First());
     // }
@@ -208,7 +207,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.False(result.IsSuccess);
     //     Assert.Equal(CustomErrors.Cart.CartPrductNotAdded, result.Errors.First());
     // }
@@ -237,7 +236,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.True(result.IsSuccess);
     //     Assert.Empty(result.Errors);
     //     cartRepositoryMock.Verify(
@@ -272,7 +271,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.True(result.IsSuccess);
     //     Assert.DoesNotContain(cart.LineItems, li => li.ProductId == productId);
     // }
@@ -300,7 +299,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.True(result.IsSuccess);
     //     Assert.Equal("successfully updated cart.", result.Data.Message);
     //     Assert.Equal(16, cart.LineItems.First().Quantity);
@@ -335,7 +334,7 @@ public class UpdateProductQuantityCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.True(result.IsSuccess);
     //     Assert.Equal(largeQuantity, cart.GetLineItem(ProductId.Create(productId)).Quantity);
     //     cartRepositoryMock.Verify(x => x.Update(cart), Times.Once);

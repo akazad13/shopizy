@@ -1,16 +1,16 @@
+using ErrorOr;
 using MediatR;
 using shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 
 namespace Shopizy.Application.Categories.Queries.CategoriesTree;
 
 public class CategoriesTreeQueryHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<CategoriesTreeQuery, IResult<List<CategoryTree>>>
+    : IRequestHandler<CategoriesTreeQuery, ErrorOr<List<CategoryTree>>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
-    public async Task<IResult<List<CategoryTree>>> Handle(
+    public async Task<ErrorOr<List<CategoryTree>>> Handle(
         CategoriesTreeQuery query,
         CancellationToken cancellationToken
     )
@@ -30,7 +30,7 @@ public class CategoriesTreeQueryHandler(ICategoryRepository categoryRepository)
             ]
         );
 
-        return Response<List<CategoryTree>>.SuccessResponese(categoriesTree);
+        return categoriesTree;
     }
 
     private static List<CategoryTree> BuildCategoryTree(

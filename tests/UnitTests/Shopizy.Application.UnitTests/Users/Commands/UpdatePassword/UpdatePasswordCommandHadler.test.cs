@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdatePassword;
@@ -72,7 +71,7 @@ public class UpdatePasswordCommandHandlerTests
         var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Should().NotBeNull();
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().Be(CustomErrors.User.UserNotFound);
@@ -96,7 +95,7 @@ public class UpdatePasswordCommandHandlerTests
         var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Should().NotBeNull();
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().Be(CustomErrors.User.PasswordNotCorrect);
@@ -138,7 +137,7 @@ public class UpdatePasswordCommandHandlerTests
         var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Should().NotBeNull();
         result.Message.Should().Be("Successfully updated password.");
         result.Errors.Should().BeEmpty();

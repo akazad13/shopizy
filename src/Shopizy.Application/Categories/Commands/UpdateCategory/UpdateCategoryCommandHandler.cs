@@ -1,18 +1,17 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
-using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.UpdateCategory;
 
 public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<UpdateCategoryCommand, IResult<Category>>
+    : IRequestHandler<UpdateCategoryCommand, ErrorOr<Success>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
-    public async Task<IResult<Category>> Handle(
+    public async Task<ErrorOr<Success>> Handle(
         UpdateCategoryCommand cmd,
         CancellationToken cancellationToken
     )
@@ -22,7 +21,7 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
         );
         if (category is null)
         {
-            return Response<Category>.ErrorResponse([CustomErrors.Category.CategoryNotFound]);
+            return CustomErrors.Category.CategoryNotFound;
         }
 
         category.Update(cmd.Name, cmd.ParentId);
@@ -31,8 +30,8 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<Category>.ErrorResponse([CustomErrors.Category.CategoryNotUpdated]);
+            return CustomErrors.Category.CategoryNotUpdated;
         }
-        return Response<Category>.SuccessResponese(category);
+        return Result.Success;
     }
 }

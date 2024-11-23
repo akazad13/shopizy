@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
@@ -32,7 +31,7 @@ public class CancelOrderCommandHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
+        result.Should().BeOfType(typeof(Success));
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().Be(CustomErrors.Order.OrderNotFound);
 
@@ -60,7 +59,7 @@ public class CancelOrderCommandHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
+        result.Should().BeOfType(typeof(Success));
         result.Errors.Should().BeEmpty();
         result.Message.Should().Be("Successfully canceled the order.");
 

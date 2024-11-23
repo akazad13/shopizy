@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Queries.GetOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
@@ -33,7 +32,7 @@ public class GetOrderQueryHandlerTests
         var result = (await _sut.Handle(query, default)).Match(x => null, x => x);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
+        result.Should().BeOfType<Success>();
         result.Errors.Should().NotBeEmpty();
         result.Errors.First().Should().BeEquivalentTo(CustomErrors.Order.OrderNotFound);
     }
@@ -67,7 +66,7 @@ public class GetOrderQueryHandlerTests
     //         .ReturnsAsync((Order)null)
     //         .Callback(() => Thread.Sleep(100)); // Simulate concurrent request
 
-    //     var tasks = new List<Task<IResult<Order>>>();
+    //     var tasks = new List<Task<ErrorOr<Order>>>();
 
     //     for (int i = 0; i < 10; i++) // Simulate 10 concurrent requests
     //     {
@@ -201,7 +200,7 @@ public class GetOrderQueryHandlerTests
     //     var orderId = OrderId.Create(1);
     //     _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(orderId)).ReturnsAsync(new Order(orderId, new List<OrderItem>()));
 
-    //     var tasks = new List<Task<IResult<Order>>>();
+    //     var tasks = new List<Task<ErrorOr<Order>>>();
     //     for (int i = 0; i < 1000; i++)
     //     {
     //         tasks.Add(_sut.Handle(new GetOrderQuery { OrderId = orderId.Value }, CancellationToken.None));

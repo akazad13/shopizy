@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
@@ -266,7 +265,7 @@ public class AddProductToCartCommandHandlerTests
     //     _mockCartRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
     //     // Act
-    //     var tasks = new List<Task<IResult<Cart>>>();
+    //     var tasks = new List<Task<ErrorOr<Cart>>>();
     //     for (var i = 0; i < numberOfCarts; i++)
     //     {
     //         var cmd = new AddProductToCartCommand

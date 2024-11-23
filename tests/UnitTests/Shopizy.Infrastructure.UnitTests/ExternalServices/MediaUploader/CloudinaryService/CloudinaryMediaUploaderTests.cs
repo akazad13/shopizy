@@ -1,10 +1,10 @@
 using System.Text;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using ErrorOr;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Common;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Xunit;
@@ -23,7 +23,7 @@ public class CloudinaryMediaUploaderTests
     }
 
     [Fact]
-    public async Task UploadPhoto_WithValidFile_ReturnSecureUrl()
+    public async Task ShouldReturnReturnSecureUrlWithValidFileAsync()
     {
         // Arrange
         byte[] filebytes = Encoding.UTF8.GetBytes("dummy image");
@@ -48,11 +48,11 @@ public class CloudinaryMediaUploaderTests
         var result = await _cloudinaryMediaUploader.UploadPhotoAsync(file);
 
         // Assert
-        // result.IsError.Should().BeFalse();
-        // result.Value.Should().BeOfType(typeof(PhotoUploadResult));
-        // result.Value.Should().NotBeNull();
-        // result.Value.Url.ToString().Should().Be(expectedUrl);
-        // result.Value.PublicId.Should().Be(expectedPublicId);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType(typeof(PhotoUploadResult));
+        result.Value.Should().NotBeNull();
+        result.Value.Url.ToString().Should().Be(expectedUrl);
+        result.Value.PublicId.Should().Be(expectedPublicId);
         _cloudinary.Verify(
             c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()),
             Times.Once
@@ -60,7 +60,7 @@ public class CloudinaryMediaUploaderTests
     }
 
     [Fact]
-    public async Task DeletePhoto_WithValidPublicId_DeleteAndReturnBoolean()
+    public async Task ShouldDeleteAndReturnSuccessWithValidPublicIdAsync()
     {
         // Arrange
         string publicId = "test";
@@ -72,9 +72,8 @@ public class CloudinaryMediaUploaderTests
         var result = await _cloudinaryMediaUploader.DeletePhotoAsync(publicId);
 
         // Assert
-        result.Succeeded.Should().BeTrue();
-        result.Should().BeOfType(typeof(Result));
-        result.Succeeded.Should().BeTrue();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType(typeof(Success));
         _cloudinary.Verify(c => c.DestroyAsync(It.IsAny<DeletionParams>()), Times.Once);
     }
 }

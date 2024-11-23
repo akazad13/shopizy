@@ -1,11 +1,10 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory;
 
@@ -51,8 +50,8 @@ public class DeleteCategoryCommandHandlerTests
     //     var result = await sut.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<ErrorResponse<GenericResponse>>(result);
-    //     var errorResponse = (ErrorResponse<GenericResponse>)result;
+    //     Assert.IsType<ErrorResponse<Success>>(result);
+    //     var errorResponse = (ErrorResponse<Success>)result;
     //     Assert.Equal(CustomErrors.Category.CategoryNotFound, errorResponse.Errors[0]);
     // }
 
@@ -70,12 +69,14 @@ public class DeleteCategoryCommandHandlerTests
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Message.Should().BeEquivalentTo("Successfully deleted category.");
-        result.Errors.Should().BeEmpty();
+        result.Should().BeOfType(typeof(ErrorOr<Success>));
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType(typeof(Success));
+        result.Value.Should().Be(Result.Success);
 
         _mockCategoryRepository.Verify(x => x.Remove(category), Times.Once);
         _mockCategoryRepository.Verify(m => m.Commit(default), Times.Once);
@@ -104,7 +105,7 @@ public class DeleteCategoryCommandHandlerTests
     //     _categoryRepositoryMock.Verify(x => x.Remove(category), Times.Once);
     //     _categoryRepositoryMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     //     Assert.Equal(
-    //         Response<GenericResponse>.ErrorResponse([CustomErrors.Category.CategoryNotDeleted]),
+    //         Response<Success>.ErrorResponse([CustomErrors.Category.CategoryNotDeleted]),
     //         result
     //     );
     // }
@@ -219,7 +220,7 @@ public class DeleteCategoryCommandHandlerTests
     //     var result = await sut.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     Assert.IsType<Response<GenericResponse>>(result);
+    //     Assert.IsType<Response<Success>>(result);
     //     Assert.False(result.IsSuccess);
     //     Assert.Equal(CustomErrors.Category.CategoryNotDeleted, result.Errors.Single());
     // }
