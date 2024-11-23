@@ -41,12 +41,12 @@ public class AddProductImageCommandHandlerTests
         );
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Success>();
-        result.Errors.Should().Contain(CustomErrors.Product.ProductImageNotUploaded);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Product.ProductImageNotUploaded);
     }
 
     [Fact]
@@ -60,12 +60,12 @@ public class AddProductImageCommandHandlerTests
             .ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Success>();
-        result.Errors.Should().Contain(CustomErrors.Product.ProductNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Product.ProductNotFound);
     }
 
     [Fact]
@@ -86,27 +86,23 @@ public class AddProductImageCommandHandlerTests
             .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), default))
             .ReturnsAsync(
                 () =>
-                    Response<PhotoUploadResult>.SuccessResponese(
-                        new PhotoUploadResult(
-                            Constants.ProductImage.ImageUrl,
-                            Constants.ProductImage.PublicId
-                        )
+                    new PhotoUploadResult(
+                        Constants.ProductImage.ImageUrl,
+                        Constants.ProductImage.PublicId
                     )
             );
 
         _mockProductRepository.Setup(p => p.Update(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(
-            x => x,
-            x => productImage
-        );
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ProductImage));
-        result.ImageUrl.Should().Be(productImage.ImageUrl);
-        result.PublicId.Should().Be(productImage.PublicId);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType(typeof(ProductImage));
+        result.Value.ImageUrl.Should().Be(productImage.ImageUrl);
+        result.Value.PublicId.Should().Be(productImage.PublicId);
 
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }

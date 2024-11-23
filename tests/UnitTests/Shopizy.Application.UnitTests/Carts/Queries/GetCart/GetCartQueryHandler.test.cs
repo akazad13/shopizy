@@ -33,12 +33,13 @@ public class GetCartQueryHandlerTests
             .ReturnsAsync(cart);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => cart);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Cart>();
-        result.ValidateResult(query);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<Cart>();
+        result.Value.ValidateResult(query);
     }
 
     // [Fact]

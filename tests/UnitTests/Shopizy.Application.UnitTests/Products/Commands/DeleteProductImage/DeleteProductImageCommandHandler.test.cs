@@ -1,3 +1,4 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -48,13 +49,11 @@ public class DeleteProductImageCommandHandlerTests
         _mockProductRepository.Setup(p => p.Update(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType<Success>();
-        result.Should().NotBeNull();
-        result.Message.Should().Be("Delete product image successfully.");
-        result.Errors.Should().BeEmpty();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
 
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }

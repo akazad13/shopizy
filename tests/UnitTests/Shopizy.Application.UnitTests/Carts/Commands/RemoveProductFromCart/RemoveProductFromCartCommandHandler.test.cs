@@ -1,3 +1,4 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
@@ -32,14 +33,11 @@ public class RemoveProductFromCartCommandHandlerTests
             .ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(command, default)).Match(
-            x => null,
-            x => Result.Failure([CustomErrors.Cart.CartNotFound])
-        );
-
+        var result = await _sut.Handle(command, default);
         // Assert
-        result.Succeeded.Should().BeFalse();
-        result.Errors.Single().Should().BeEquivalentTo(CustomErrors.Cart.CartNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Cart.CartNotFound);
 
         _mockCartRepository.Verify(
             cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), CancellationToken.None),
@@ -65,13 +63,12 @@ public class RemoveProductFromCartCommandHandlerTests
         _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(
-            x => x.Message,
-            x => null
-        );
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo("successfully removed product from cart.");
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
+
         _mockCartRepository.Verify(
             cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), CancellationToken.None),
             Times.Once

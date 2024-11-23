@@ -68,12 +68,13 @@ public class GetProductQueryHandlerTests
             .ReturnsAsync(product);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<Product>();
-        result.Should().NotBeNull();
-        result.ValidateResult(query);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<Product>();
+        result.Value.ValidateResult(query);
     }
 
     // [Fact]
