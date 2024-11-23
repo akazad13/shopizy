@@ -1,13 +1,13 @@
+using ErrorOr;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Request;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
-[Authorize(Permissions = Permissions.Order.Get, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.Order.Create, Policies = Policy.SelfOrAdmin)]
 public record CreateOrderCommand(
     Guid UserId,
     string PromoCode,
@@ -15,7 +15,7 @@ public record CreateOrderCommand(
     Currency DeliveryChargeCurrency,
     IEnumerable<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
-) : IAuthorizeableRequest<IResult<Order>>;
+) : IAuthorizeableRequest<ErrorOr<Order>>;
 
 public record OrderItemCommand(Guid ProductId, int Quantity);
 

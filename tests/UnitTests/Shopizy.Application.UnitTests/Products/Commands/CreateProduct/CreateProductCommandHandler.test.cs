@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
@@ -32,13 +31,12 @@ public class CreateProductCommandHandlerTests
         var command = CreateProductCommandUtils.CreateCommandWithEmptyProductName();
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().Be(CustomErrors.Product.ProductNotCreated);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.Product.ProductNotCreated);
 
         _mockProductRepository.Verify(m => m.AddAsync(It.IsAny<Product>()), Times.Once);
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
@@ -54,12 +52,13 @@ public class CreateProductCommandHandlerTests
         _mockProductRepository.Setup(p => p.AddAsync(It.IsAny<Product>()));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType<Product>();
-        result.Should().NotBeNull();
-        result.ValidateResult(command);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Product>();
+        result.Value.Should().NotBeNull();
+        result.Value.ValidateResult(command);
 
         _mockProductRepository.Verify(m => m.AddAsync(It.IsAny<Product>()), Times.Once);
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
@@ -252,7 +251,7 @@ public class CreateProductCommandHandlerTests
     //         .ReturnsAsync(1);
 
     //     // Act
-    //     var tasks = new List<Task<IResult<Product>>>();
+    //     var tasks = new List<Task<ErrorOr<Product>>>();
     //     for (int i = 0; i < 10; i++)
     //     {
     //         tasks.Add(

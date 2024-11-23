@@ -7,6 +7,7 @@
     <PackageReference Include="FluentValidation" Version="11.10.0"/>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0"/>
     <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0"/>
+    <PackageReference Include="ErrorOr" Version="2.1.0"/>
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App"/>

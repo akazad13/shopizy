@@ -1,12 +1,12 @@
 using Shopizy.Application.Categories.Queries.GetCategory;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
+using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 
 public static class GetCategoryQueryUtils
 {
-    public static GetCategoryQuery CreateQuery()
+    public static GetCategoryQuery CreateQuery(CategoryId categoryId)
     {
-        return new GetCategoryQuery(Constants.Category.Id.Value);
+        return new GetCategoryQuery(categoryId.Value);
     }
 }

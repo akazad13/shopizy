@@ -1,9 +1,9 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -35,13 +35,11 @@ public class UpdateProductCommandHandlerTests
         _mockProductRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-
-        result.Should().BeOfType<Product>();
-        result.Should().NotBeNull();
-        result.ValidateResult(command);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
 
         _mockProductRepository.Verify(
             x => x.GetProductByIdAsync(It.IsAny<ProductId>()),

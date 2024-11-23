@@ -1,17 +1,17 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
 public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<DeleteCategoryCommand, IResult<GenericResponse>>
+    : IRequestHandler<DeleteCategoryCommand, ErrorOr<Success>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
-    public async Task<IResult<GenericResponse>> Handle(
+    public async Task<ErrorOr<Success>> Handle(
         DeleteCategoryCommand cmd,
         CancellationToken cancellationToken
     )
@@ -21,20 +21,16 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
         );
         if (category is null)
         {
-            return Response<GenericResponse>.ErrorResponse(
-                [CustomErrors.Category.CategoryNotFound]
-            );
+            return CustomErrors.Category.CategoryNotFound;
         }
 
         _categoryRepository.Remove(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<GenericResponse>.ErrorResponse(
-                [CustomErrors.Category.CategoryNotDeleted]
-            );
+            return CustomErrors.Category.CategoryNotDeleted;
         }
 
-        return Response<GenericResponse>.SuccessResponese("Successfully deleted category.");
+        return Result.Success;
     }
 }

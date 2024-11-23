@@ -1,8 +1,8 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Products.ValueObjects;
@@ -49,13 +49,11 @@ public class DeleteProductImageCommandHandlerTests
         _mockProductRepository.Setup(p => p.Update(product));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Message.Should().Be("Delete product image successfully.");
-        result.Errors.Should().BeEmpty();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
 
         _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }
@@ -78,7 +76,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -130,7 +128,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync(It.IsAny<string>(), CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -162,7 +160,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     // Act
     //     await _sut.Handle(command, CancellationToken.None);
@@ -192,7 +190,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -225,7 +223,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -256,7 +254,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -288,7 +286,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.ErrorResponse("Failed to delete photo"));
+    //         .ReturnsAsync(Result<Success>.ErrorResponse("Failed to delete photo"));
 
     //     // Act
     //     var result = await _sut.Handle(command, CancellationToken.None);
@@ -316,7 +314,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     _mockMediaUploader
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     _mockProductRepository.Setup(x => x.Update(product));
 
@@ -355,7 +353,7 @@ public class DeleteProductImageCommandHandlerTests
 
     //     mediaUploaderMock
     //         .Setup(x => x.DeletePhotoAsync("publicId2", CancellationToken.None))
-    //         .ReturnsAsync(Result<GenericResponse>.SuccessResponese("Deleted"));
+    //         .ReturnsAsync(Result<Success>.SuccessResponese("Success"));
 
     //     productRepositoryMock.Setup(x => x.Update(product));
 

@@ -1,10 +1,10 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Roles;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Authentication.Queries.login;
@@ -13,28 +13,26 @@ public class LoginQueryHandler(
     IUserRepository userRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IPasswordManager passwordManager
-) : IRequestHandler<LoginQuery, IResult<AuthResult>>
+) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IPasswordManager _passwordManager = passwordManager;
 
-    public async Task<IResult<AuthResult>> Handle(
+    public async Task<ErrorOr<AuthResult>> Handle(
         LoginQuery query,
         CancellationToken cancellationToken
     )
     {
-        Domain.Users.User? user = await _userRepository.GetUserByPhone(query.Phone);
+        var user = await _userRepository.GetUserByPhone(query.Phone);
         if (user is null)
         {
-            return Response<AuthResult>.ErrorResponse([CustomErrors.User.UserNotFoundWhileLogin]);
+            return CustomErrors.User.UserNotFoundWhileLogin;
         }
 
         if (!_passwordManager.Verify(query.Password, user.Password!))
         {
-            return Response<AuthResult>.ErrorResponse(
-                [CustomErrors.Authentication.InvalidCredentials]
-            );
+            return CustomErrors.Authentication.InvalidCredentials;
         }
 
         var roles = new List<string>() { Role.Admin };
@@ -62,7 +60,7 @@ public class LoginQueryHandler(
             Permissions.User.Delete,
         };
 
-        string token = _jwtTokenGenerator.GenerateToken(
+        var token = _jwtTokenGenerator.GenerateToken(
             user.Id,
             user.FirstName,
             user.LastName,
@@ -71,8 +69,6 @@ public class LoginQueryHandler(
             permissions
         );
 
-        return Response<AuthResult>.SuccessResponese(
-            new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Phone, token)
-        );
+        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Phone, token);
     }
 }

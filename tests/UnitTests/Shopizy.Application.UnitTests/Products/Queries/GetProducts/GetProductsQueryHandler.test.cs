@@ -3,7 +3,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Products;
+using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProducts;
 
@@ -19,7 +19,7 @@ public class GetProductsQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnNullWhenNoProductsAreAvailableAsync()
+    public async Task ShouldReturnErrorWhenNoProductsAreAvailableAsync()
     {
         // Arrange
         var query = new GetProductsQuery(null, null, null, 1, 10);
@@ -33,13 +33,15 @@ public class GetProductsQueryHandlerTests
                     It.IsAny<int>()
                 )
             )
-            .ReturnsAsync(() => []);
+            .ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors.Should().Contain(CustomErrors.Product.ProductNotFound);
     }
 
     // [Fact]
@@ -175,7 +177,7 @@ public class GetProductsQueryHandlerTests
 
     //     var sut = new ListProductQueryHandler(mockProductRepository.Object);
 
-    //     var tasks = new List<Task<IResult<List<Product>?>>>();
+    //     var tasks = new List<Task<ErrorOr<List<Product>?>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {

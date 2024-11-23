@@ -1,6 +1,6 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
@@ -9,11 +9,11 @@ using Shopizy.Domain.Products;
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(IProductRepository productRepository)
-    : IRequestHandler<CreateProductCommand, IResult<Product>>
+    : IRequestHandler<CreateProductCommand, ErrorOr<Product>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<IResult<Product>> Handle(
+    public async Task<ErrorOr<Product>> Handle(
         CreateProductCommand cmd,
         CancellationToken cancellationToken
     )
@@ -34,9 +34,9 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<Product>.ErrorResponse([CustomErrors.Product.ProductNotCreated]);
+            return CustomErrors.Product.ProductNotCreated;
         }
 
-        return Response<Product>.SuccessResponese(product);
+        return product;
     }
 }

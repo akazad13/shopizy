@@ -2,7 +2,6 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
@@ -40,14 +39,13 @@ public class AddProductToCartCommandHandlerTests
             .ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(
-            x => null,
-            x => Result.Failure([CustomErrors.Cart.CartNotFound])
-        );
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Succeeded.Should().BeFalse();
-        result.Errors.Single().Should().BeEquivalentTo(CustomErrors.Cart.CartNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Cart.CartNotFound);
     }
 
     // Should add new line item to cart when product is not already present
@@ -74,19 +72,18 @@ public class AddProductToCartCommandHandlerTests
 
         // Act
 
-        var cart = (await _sut.Handle(command, CancellationToken.None)).Match(
-            x => x,
-            x => existingCart
-        );
+        var cart = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        cart.Should().NotBeNull();
-        cart.Should().BeOfType<Cart>();
-        cart.Should().Be(existingCart);
-        cart.LineItems.Should().HaveCount(1);
-        cart.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
-        cart.LineItems.Should().Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.LineItems[0].Quantity.Should().Be(1);
+        cart.IsError.Should().BeFalse();
+        cart.Value.Should().NotBeNull();
+        cart.Value.Should().BeOfType<Cart>();
+        cart.Value.Should().Be(existingCart);
+        cart.Value.LineItems.Should().HaveCount(1);
+        cart.Value.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
+        cart.Value.LineItems.Should()
+            .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
+        cart.Value.LineItems[0].Quantity.Should().Be(1);
         _mockCartRepository.Verify(
             x => x.Update(It.Is<Cart>(c => c.LineItems.Count == 1)),
             Times.Once
@@ -123,25 +120,24 @@ public class AddProductToCartCommandHandlerTests
             .ReturnsAsync(updatedCart);
 
         // Act
-        var cart = (await _sut.Handle(command, CancellationToken.None)).Match(
-            x => x,
-            x => updatedCart
-        );
+        var cart = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        cart.Should().NotBeNull();
-        cart.Should().BeOfType<Cart>();
-        cart.Should().Be(updatedCart);
-        cart.LineItems.Should().HaveCount(2);
-        cart.LineItems.Should().Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
-        cart.LineItems[0].Quantity.Should().Be(1);
+        cart.IsError.Should().BeFalse();
+        cart.Value.Should().NotBeNull();
+        cart.Value.Should().BeOfType<Cart>();
+        cart.Value.Should().Be(updatedCart);
+        cart.Value.LineItems.Should().HaveCount(2);
+        cart.Value.LineItems.Should()
+            .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
+        cart.Value.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
+        cart.Value.LineItems[0].Quantity.Should().Be(1);
         _mockCartRepository.Verify(
             x => x.Update(It.Is<Cart>(c => c.LineItems.Count == 2)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
-        cart.LineItems.Should()
+        cart.Value.LineItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId) && li.Quantity == 1);
     }
 
@@ -266,7 +262,7 @@ public class AddProductToCartCommandHandlerTests
     //     _mockCartRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
     //     // Act
-    //     var tasks = new List<Task<IResult<Cart>>>();
+    //     var tasks = new List<Task<ErrorOr<Cart>>>();
     //     for (var i = 0; i < numberOfCarts; i++)
     //     {
     //         var cmd = new AddProductToCartCommand

@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Queries.GetOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
@@ -30,12 +29,12 @@ public class GetOrderQueryHandlerTests
         _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(orderId)).ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(query, default)).Match(x => null, x => x);
+        var result = await _sut.Handle(query, default);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().BeEquivalentTo(CustomErrors.Order.OrderNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Order.OrderNotFound);
     }
 
     [Fact]
@@ -50,12 +49,13 @@ public class GetOrderQueryHandlerTests
             .ReturnsAsync(order);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Order>();
-        result.Should().BeEquivalentTo(order);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType(typeof(Order));
+        result.Value.Should().BeEquivalentTo(order);
     }
 
     // [Fact]
@@ -67,7 +67,7 @@ public class GetOrderQueryHandlerTests
     //         .ReturnsAsync((Order)null)
     //         .Callback(() => Thread.Sleep(100)); // Simulate concurrent request
 
-    //     var tasks = new List<Task<IResult<Order>>>();
+    //     var tasks = new List<Task<ErrorOr<Order>>>();
 
     //     for (int i = 0; i < 10; i++) // Simulate 10 concurrent requests
     //     {
@@ -201,7 +201,7 @@ public class GetOrderQueryHandlerTests
     //     var orderId = OrderId.Create(1);
     //     _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(orderId)).ReturnsAsync(new Order(orderId, new List<OrderItem>()));
 
-    //     var tasks = new List<Task<IResult<Order>>>();
+    //     var tasks = new List<Task<ErrorOr<Order>>>();
     //     for (int i = 0; i < 1000; i++)
     //     {
     //         tasks.Add(_sut.Handle(new GetOrderQuery { OrderId = orderId.Value }, CancellationToken.None));

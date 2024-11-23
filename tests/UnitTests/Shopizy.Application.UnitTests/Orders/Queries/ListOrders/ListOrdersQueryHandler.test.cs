@@ -3,6 +3,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Orders.Queries.ListOrders;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.ListOrders;
@@ -19,23 +20,25 @@ public class ListOrdersQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnEmptyListWhenNoOrdersAreFoundAsync()
+    public async Task ShouldReturnNotFoundWhenNoOrdersAreFoundAsync()
     {
         // Arrange
         var mockOrderRepository = new Mock<IOrderRepository>();
         var query = ListOrdersQueryUtils.CreateQuery();
 
-        mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync([]);
+        mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(() => null);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.Order.OrderNotFound);
     }
 
     [Fact]
-    public async Task ReturnOrderListWhenEverythingOkay()
+    public async Task ReturnOrderListWhenEverythingOkayAsync()
     {
         // Arrange
         var Order = OrderFactory.CreateOrder();
@@ -43,13 +46,13 @@ public class ListOrdersQueryHandlerTests
         _mockOrderRepository.Setup(c => c.GetOrdersAsync()).ReturnsAsync(() => [Order]);
 
         // Act
-        var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<List<Order>>();
-        result.Should().NotBeNull();
-        result.Should().NotBeEmpty();
-        result.Should().Contain(Order);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<List<Order>>();
+        result.Value.Should().NotBeNullOrEmpty();
+        result.Value.Should().Contain(Order);
     }
 
     // [Fact]
@@ -133,7 +136,7 @@ public class ListOrdersQueryHandlerTests
     //     var mockOrderRepository = new Mock<IOrderRepository>();
     //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
 
-    //     var tasks = new List<Task<IResult<List<Order>>>>();
+    //     var tasks = new List<Task<ErrorOr<List<Order>>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {

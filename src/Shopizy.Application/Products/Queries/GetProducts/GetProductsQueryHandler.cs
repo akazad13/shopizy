@@ -1,18 +1,19 @@
 using Ardalis.GuardClauses;
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
 public class GetProductsQueryHandler(IProductRepository productRepository)
-    : IRequestHandler<GetProductsQuery, IResult<List<Product>?>>
+    : IRequestHandler<GetProductsQuery, ErrorOr<List<Product>>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<IResult<List<Product>?>> Handle(
+    public async Task<ErrorOr<List<Product>>> Handle(
         GetProductsQuery query,
         CancellationToken cancellationToken
     )
@@ -29,6 +30,10 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageNumber,
             query.PageSize
         );
-        return Response<List<Product>?>.SuccessResponese(products);
+        if (products == null)
+        {
+            return CustomErrors.Product.ProductNotFound;
+        }
+        return products;
     }
 }

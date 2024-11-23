@@ -1,6 +1,6 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -8,11 +8,11 @@ using Shopizy.Domain.Orders.ValueObjects;
 namespace Shopizy.Application.Orders.Queries.GetOrder;
 
 public class GetOrderQueryHandler(IOrderRepository orderRepository)
-    : IRequestHandler<GetOrderQuery, IResult<Order>>
+    : IRequestHandler<GetOrderQuery, ErrorOr<Order>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public async Task<IResult<Order>> Handle(
+    public async Task<ErrorOr<Order>> Handle(
         GetOrderQuery request,
         CancellationToken cancellationToken
     )
@@ -21,9 +21,9 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository)
 
         if (order is null)
         {
-            return Response<Order>.ErrorResponse([CustomErrors.Order.OrderNotFound]);
+            return CustomErrors.Order.OrderNotFound;
         }
 
-        return Response<Order>.SuccessResponese(order);
+        return order;
     }
 }

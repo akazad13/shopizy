@@ -1,20 +1,19 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommandHandler(IProductRepository productRepository)
-    : IRequestHandler<UpdateProductCommand, IResult<Product>>
+    : IRequestHandler<UpdateProductCommand, ErrorOr<Success>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<IResult<Product>> Handle(
+    public async Task<ErrorOr<Success>> Handle(
         UpdateProductCommand cmd,
         CancellationToken cancellationToken
     )
@@ -23,7 +22,7 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
         if (product is null)
         {
-            return Response<Product>.ErrorResponse([CustomErrors.Product.ProductNotFound]);
+            return CustomErrors.Product.ProductNotFound;
         }
 
         product.Update(
@@ -42,9 +41,9 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<Product>.ErrorResponse([CustomErrors.Product.ProductNotUpdated]);
+            return CustomErrors.Product.ProductNotUpdated;
         }
 
-        return Response<Product>.SuccessResponese(product);
+        return Result.Success;
     }
 }

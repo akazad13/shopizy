@@ -1,8 +1,8 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Products.Common;
 
 namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
@@ -11,7 +11,7 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 {
     private readonly ICloudinary _cloudinary = cloudinary;
 
-    public async Task<IResult<PhotoUploadResult>> UploadPhotoAsync(
+    public async Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
         IFormFile file,
         CancellationToken cancellationToken = default
     )
@@ -30,21 +30,22 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 
                 return uploadResult.Error switch
                 {
-                    null => Response<PhotoUploadResult>.SuccessResponese(
-                        new PhotoUploadResult(uploadResult.Url.ToString(), uploadResult.PublicId)
+                    null => new PhotoUploadResult(
+                        uploadResult.Url.ToString(),
+                        uploadResult.PublicId
                     ),
-                    _ => Response<PhotoUploadResult>.ErrorResponse([uploadResult.Error.Message]),
+                    _ => ErrorOr.Error.Failure(description: uploadResult.Error.Message),
                 };
             }
-            return Response<PhotoUploadResult>.ErrorResponse(["File not found!"]);
+            return ErrorOr.Error.Failure(description: "File not found!");
         }
         catch (Exception ex)
         {
-            return Response<PhotoUploadResult>.ErrorResponse([ex.Message]);
+            return ErrorOr.Error.Failure(description: ex.Message);
         }
     }
 
-    public async Task<Result> DeletePhotoAsync(string publicId)
+    public async Task<ErrorOr<Success>> DeletePhotoAsync(string publicId)
     {
         try
         {
@@ -53,13 +54,13 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 
             return result.Result switch
             {
-                "ok" => Result.Success(),
-                _ => Result.Failure([result.Error.Message]),
+                "ok" => Result.Success,
+                _ => ErrorOr.Error.Failure(description: result.Error.Message),
             };
         }
         catch (Exception ex)
         {
-            return Result.Failure([ex.Message]);
+            return ErrorOr.Error.Failure(description: ex.Message);
         }
     }
 }

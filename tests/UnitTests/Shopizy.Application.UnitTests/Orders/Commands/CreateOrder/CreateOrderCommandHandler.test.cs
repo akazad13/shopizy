@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;
@@ -42,14 +41,14 @@ public class CreateOrderCommandHandlerTests
         _mockOrderRepository.Setup(x => x.Commit(CancellationToken.None)).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Order));
-        result.OrderItems.Count.Should().Be(1);
-        result.OrderItems[0].Quantity.Should().Be(command.OrderItems.First().Quantity);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType(typeof(Order));
+        result.Value.OrderItems.Count.Should().Be(1);
+        result.Value.OrderItems[0].Quantity.Should().Be(command.OrderItems.First().Quantity);
 
         _mockProductRepository.Verify(
             x => x.GetProductsByIdsAsync(It.IsAny<List<ProductId>>()),
@@ -70,13 +69,12 @@ public class CreateOrderCommandHandlerTests
             .ReturnsAsync(() => []);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().Be(CustomErrors.Product.ProductNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.Product.ProductNotFound);
     }
 
     // [Fact]

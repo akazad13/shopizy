@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
 using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
@@ -16,6 +19,26 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger().UseSwaggerUI();
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+        if (errorFeature != null)
+        {
+            var exception = errorFeature.Error;
+
+            await context.Response.WriteAsync(
+                JsonConvert.SerializeObject(
+                    new { message = "Error occured!", errors = new string[] { exception.Message } }
+                ),
+                Encoding.UTF8
+            );
+        }
+    });
+});
 
 app.UseCors("_myAllowSpecificOrigins");
 app.UseHttpsRedirection().UseAuthorization();

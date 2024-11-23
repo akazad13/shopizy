@@ -1,8 +1,8 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdatePassword;
@@ -69,13 +69,12 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().Be(CustomErrors.User.UserNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.User.UserNotFound);
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
@@ -93,13 +92,12 @@ public class UpdatePasswordCommandHandlerTests
         _mockPasswordManager.Setup(x => x.Verify("oldPassword", "password")).Returns(false);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().Be(CustomErrors.User.PasswordNotCorrect);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.User.PasswordNotCorrect);
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockPasswordManager.Verify(
@@ -135,13 +133,12 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Message.Should().Be("Successfully updated password.");
-        result.Errors.Should().BeEmpty();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
+        result.Value.Should().NotBeNull();
 
         _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);

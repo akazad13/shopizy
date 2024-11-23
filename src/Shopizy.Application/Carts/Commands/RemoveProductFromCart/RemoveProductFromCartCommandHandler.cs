@@ -1,17 +1,17 @@
+using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 
 public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
-    : IRequestHandler<RemoveProductFromCartCommand, IResult<GenericResponse>>
+    : IRequestHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
 
-    public async Task<IResult<GenericResponse>> Handle(
+    public async Task<ErrorOr<Success>> Handle(
         RemoveProductFromCartCommand cmd,
         CancellationToken cancellationToken
     )
@@ -23,7 +23,7 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
 
         if (cart is null)
         {
-            return Response<GenericResponse>.ErrorResponse([CustomErrors.Cart.CartNotFound]);
+            return CustomErrors.Cart.CartNotFound;
         }
 
         var lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == cmd.ProductId);
@@ -36,13 +36,9 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
         {
-            return Response<GenericResponse>.ErrorResponse(
-                [CustomErrors.Cart.CartPrductNotRemoved]
-            );
+            return CustomErrors.Cart.CartPrductNotRemoved;
         }
 
-        return Response<GenericResponse>.SuccessResponese(
-            "successfully removed product from cart."
-        );
+        return Result.Success;
     }
 }

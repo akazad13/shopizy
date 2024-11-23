@@ -1,7 +1,7 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdateAddress;
 using Shopizy.Domain.Users;
@@ -37,7 +37,7 @@ public class UpdateAddressCommandHandlerTests
     //     };
 
     //     // Act
-    //     Func<Task<IResult<GenericResponse>>> act = async () =>
+    //     Func<Task<ErrorOr<Success>>> act = async () =>
     //         await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
@@ -68,7 +68,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<ErrorResult<GenericResponse>>();
+    //     result.Should().BeOfType<ErrorResult<Success>>();
     //     result.Errors.Should().Contain(CustomErrors.User.UserNotFound);
     // }
 
@@ -87,13 +87,12 @@ public class UpdateAddressCommandHandlerTests
         _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<GenericResponse>();
-        result.Should().NotBeNull();
-        result.Message.Should().Be("Successfully updated address.");
-        result.Errors.Should().BeEmpty();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<Success>();
+        result.Value.Should().NotBeNull();
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
@@ -147,8 +146,8 @@ public class UpdateAddressCommandHandlerTests
     //     var result1 = task1.Result;
     //     var result2 = task2.Result;
 
-    //     result1.Should().BeOfType<SuccessResult<GenericResponse>>();
-    //     result2.Should().BeOfType<SuccessResult<GenericResponse>>();
+    //     result1.Should().BeOfType<SuccessResult<Success>>();
+    //     result2.Should().BeOfType<SuccessResult<Success>>();
     //     result1.Value.Message.Should().Be("Successfully updated address.");
     //     result2.Value.Message.Should().Be("Successfully updated address.");
     // }
@@ -191,7 +190,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<SuccessResult<GenericResponse>>();
+    //     result.Should().BeOfType<SuccessResult<Success>>();
     //     result.Value.Message.Should().Be("Successfully updated address.");
     // }
 
@@ -251,7 +250,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<ErrorResult<GenericResponse>>();
+    //     result.Should().BeOfType<ErrorResult<Success>>();
     //     result.Errors.Should().Contain(CustomErrors.User.UserNotUpdated);
     // }
 
@@ -279,7 +278,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<ErrorResult<GenericResponse>>();
+    //     result.Should().BeOfType<ErrorResult<Success>>();
     //     result.Errors.Should().Contain(CustomErrors.Database.ReadOnly);
     // }
 
@@ -339,7 +338,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<SuccessResult<GenericResponse>>();
+    //     result.Should().BeOfType<SuccessResult<Success>>();
     //     result.Value.Message.Should().Be("No changes made to address.");
     // }
 
@@ -399,7 +398,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<SuccessResult<GenericResponse>>();
+    //     result.Should().BeOfType<SuccessResult<Success>>();
     //     result.Value.Message.Should().Be("Successfully updated address.");
     // }
 
@@ -453,7 +452,7 @@ public class UpdateAddressCommandHandlerTests
     //     var result = await handler.Handle(command, CancellationToken.None);
 
     //     // Assert
-    //     result.Should().BeOfType<SuccessResult<GenericResponse>>();
+    //     result.Should().BeOfType<SuccessResult<Success>>();
     //     result.Value.Message.Should().Be("Successfully updated address.");
     // }
 }

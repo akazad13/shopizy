@@ -1,7 +1,7 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Wrappers;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
@@ -28,13 +28,12 @@ public class CancelOrderCommandHandlerTests
         var command = CancelOrderCommandUtils.CreateCommand(Guid.Empty);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => null, x => x);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.First().Should().Be(CustomErrors.Order.OrderNotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.Order.OrderNotFound);
 
         _mockOrderRepository.Verify(
             x => x.GetOrderByIdAsync(OrderId.Create(command.OrderId)),
@@ -56,13 +55,11 @@ public class CancelOrderCommandHandlerTests
         _mockOrderRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, CancellationToken.None)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(GenericResponse));
-        result.Errors.Should().BeEmpty();
-        result.Message.Should().Be("Successfully canceled the order.");
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType(typeof(Success));
 
         _mockOrderRepository.Verify(
             x => x.GetOrderByIdAsync(OrderId.Create(command.OrderId)),

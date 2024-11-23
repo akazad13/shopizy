@@ -1,10 +1,9 @@
+using ErrorOr;
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Domain.Categories;
 using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory;
@@ -148,12 +147,14 @@ public class UpdateCategoryCommandHandlerTests
         _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
-        var result = (await _sut.Handle(command, default)).Match(x => x, x => null);
+        var result = await _sut.Handle(command, default);
 
         // Assert
-        result.Should().BeOfType(typeof(Category));
-        result.Should().NotBeNull();
-        result.ValidateResult(command);
+        result.Should().BeOfType(typeof(ErrorOr<Success>));
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType(typeof(Success));
+        result.Value.Should().Be(Result.Success);
     }
 
     // [Fact]
@@ -210,7 +211,7 @@ public class UpdateCategoryCommandHandlerTests
     //         .Setup(repo => repo.Commit(It.IsAny<CancellationToken>()))
     //         .ReturnsAsync(1);
 
-    //     var updateTasks = new List<Task<IResult<Category>>>();
+    //     var updateTasks = new List<Task<ErrorOr<Category>>>();
     //     for (int i = 0; i < 10; i++)
     //     {
     //         var command = new UpdateCategoryCommand(categoryId, $"Updated Category {i}", null);
