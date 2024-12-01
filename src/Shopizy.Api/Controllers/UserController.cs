@@ -61,7 +61,7 @@ public class UserController(ISender mediator, IMapper mapper) : ApiController
         var command = _mapper.Map<UpdatePasswordCommand>((userId, request));
         var result = await _mediator.Send(command);
 
-        return result.Match<IActionResult>(
+        return result.Match(
             success => Ok(SuccessResult.Success("Successfully updated password.")),
             Problem
         );

@@ -78,4 +78,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 
         return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }
+
+    public void UpdatePaymentStatus(PaymentStatus status)
+    {
+        PaymentStatus = status;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }

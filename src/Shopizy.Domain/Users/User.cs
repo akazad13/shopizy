@@ -17,6 +17,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public string? ProfileImageUrl { get; }
     public string Phone { get; private set; }
     public string? Password { get; private set; }
+    public string? CustomerId { get; private set; } = null;
     public Address? Address { get; private set; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
@@ -56,6 +57,12 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public void UpdateEmail(string email)
     {
         Email = email;
+        ModifiedOn = DateTime.UtcNow;
+    }
+
+    public void UpdateCustomerId(string customerId)
+    {
+        CustomerId = customerId;
         ModifiedOn = DateTime.UtcNow;
     }
 }

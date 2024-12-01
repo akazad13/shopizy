@@ -7,7 +7,7 @@ public record CreateOrderRequest(
     Address ShippingAddress
 );
 
-public record Price(decimal Amount, int Currency);
+public record Price(decimal Amount, string Currency);
 
 public record OrderItemRequest(Guid ProductId, int Quantity);
 

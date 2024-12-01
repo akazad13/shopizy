@@ -69,6 +69,7 @@ public class CartMappingConfig : IRegister
                     src.Product.ProductImages == null
                         ? null
                         : src.Product.ProductImages.Select(pi => pi.ImageUrl)
-            );
+            )
+            .Map(dest => dest.Product.Price, src => src.Product.UnitPrice.Amount);
     }
 }

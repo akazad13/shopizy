@@ -87,7 +87,7 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         );
     }
 
-    [HttpDelete("{cartId:guid}/remove-product/{productId:guid}")]
+    [HttpDelete("{cartId:guid}/product/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]

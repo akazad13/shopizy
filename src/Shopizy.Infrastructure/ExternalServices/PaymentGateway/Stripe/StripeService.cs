@@ -1,21 +1,17 @@
 using ErrorOr;
-using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
 using Stripe;
-using Stripe.Checkout;
 
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 public class StripeService(
     CustomerService customerService,
-    SessionService sessionService,
-    IOptions<StripeSettings> options
+    PaymentIntentService paymentIntentService
 ) : IPaymentService
 {
     private readonly CustomerService _customerService = customerService;
-    private readonly SessionService _sessionService = sessionService;
-    private readonly StripeSettings _stripeSettings = options.Value;
+    private readonly PaymentIntentService _paymentIntentService = paymentIntentService;
 
     public async Task<ErrorOr<CustomerResource>> CreateCustomer(
         string email,
@@ -40,57 +36,67 @@ public class StripeService(
         }
     }
 
-    public async Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
-        string customerEmail,
-        decimal price,
-        string successUrl,
-        string cancelUrl,
-        CancellationToken cancellationToken = default
-    )
+    public async Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
     {
-        // var searchOptions = new CustomerSearchOptions { Query = $"email:'{customerEmail}'" };
-        // var customer = await _customerService.SearchAsync(searchOptions, null, cancellationToken);
+        var intentCreateOptions = new PaymentIntentCreateOptions
+        {
+            Customer = request.CustomerId,
+            Amount = request.Amount,
+            Currency = request.Currency,
+            // ConfirmationMethod = "manual",
+            // Confirm = request.CapturePayment,
+            PaymentMethodTypes = request.PaymentMethodTypes,
+            Metadata = request.Metadata,
+            PaymentMethod = request.PaymentMethodId,
+        };
 
         try
         {
-            var options = new SessionCreateOptions
+            var response = await _paymentIntentService.CreateAsync(intentCreateOptions);
+
+            return new CreateSaleResponse
             {
-                Customer = customerEmail,
-                LineItems =
-                [
-                    new SessionLineItemOptions
-                    {
-                        PriceData = new SessionLineItemPriceDataOptions
-                        {
-                            ProductData = new SessionLineItemPriceDataProductDataOptions
-                            {
-                                Name = "test Name",
-                                Description = "test description",
-                                Images =
-                                [
-                                    "https://st2.depositphotos.com/2251265/8722/i/950/depositphotos_87226702-stock-photo-bearded-young-man-standing-on.jpg",
-                                ],
-                            },
-                            UnitAmountDecimal = price * 100,
-                            Currency = "usd",
-                        },
-                        Quantity = 1,
-                    },
-                ],
-                PaymentMethodTypes = ["card"],
-                Mode = "payment",
-                SuccessUrl = successUrl,
-                CancelUrl = cancelUrl,
-                AllowPromotionCodes = true,
+                ResponseStatusCode = (int)response.StripeResponse.StatusCode,
+                Amount = response.Amount,
+                Currency = response.Currency,
+                PaymentIntentId = response.Id,
+                ObjectType = response.Object,
+                PaymentMethodId = response.PaymentMethodId,
+                CaptureMethod = response.CaptureMethod,
+                CustomerId = response.CustomerId,
+                ChargeId = response.LatestChargeId,
+                Status = response.Status,
+                Metadata = response.Metadata,
+                PaymentMethodTypes = response.PaymentMethodTypes,
             };
-
-            Session session = await _sessionService.CreateAsync(options, null, cancellationToken);
-
-            return new CheckoutSession(session.Id, _stripeSettings.PublishableKey);
         }
         catch (StripeException ex)
         {
-            return Error.Failure(description: ex.Message);
+            return Error.Failure(
+                code: ex.StripeResponse.StatusCode.ToString(),
+                description: FormatStripeException(ex)
+            );
         }
+        catch (Exception ex)
+        {
+            return Error.Failure(code: "500", description: ex.Message);
+        }
+    }
+
+    private static string FormatStripeException(StripeException e)
+    {
+        return e.StripeError.Type switch
+        {
+            "card_error" => $"A payment error occurred: {e.StripeError.Message}",
+            "api_connection_error" =>
+                $"An error occurred while trying to connect to the stripe API: ${e.StripeError.Message}",
+            "api_error" => $"An API error occurred: {e.StripeError.Message}",
+            "authentication_error" =>
+                $"An error occurred authenticating to Stripe API: {e.StripeError.Message}",
+            "invalid_request_error" => $"An invalid request occurred: {e.StripeError.Message}",
+            "rate_limit_error" => $"A rate limit error occurred: {e.StripeError.Message}",
+            "validation_error" => $"A validation error occurred: {e.StripeError.Message}",
+            _ => $"An unknown error occured: {e.StripeError.Message}",
+        };
     }
 }

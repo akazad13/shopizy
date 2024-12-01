@@ -54,7 +54,8 @@ public sealed class Payment : Entity<PaymentId>
         PaymentStatus paymentStatus,
         Price total,
         Address billingAddress
-    ) : base(PaymentId)
+    )
+        : base(PaymentId)
     {
         UserId = userId;
         OrderId = orderId;
@@ -67,4 +68,10 @@ public sealed class Payment : Entity<PaymentId>
     }
 
     private Payment() { }
+
+    public void UpdatePaymentStatus(PaymentStatus status)
+    {
+        PaymentStatus = status;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }

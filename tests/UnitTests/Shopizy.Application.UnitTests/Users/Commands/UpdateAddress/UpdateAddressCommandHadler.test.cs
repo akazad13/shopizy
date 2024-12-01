@@ -4,6 +4,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdateAddress;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
@@ -20,57 +21,29 @@ public class UpdateAddressCommandHandlerTests
         _sut = new UpdateAddressCommandHandler(_mockUserRepository.Object);
     }
 
-    // [Fact]
-    // public async Task ShouldThrowExceptionWhenUserIdIsNotProvided()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
-    //     var command = new UpdateAddressCommand
-    //     {
-    //         UserId = null, // Invalid user ID
-    //         Street = "123 Main St",
-    //         City = "New York",
-    //         State = "NY",
-    //         Country = "USA",
-    //         ZipCode = "10001",
-    //     };
+    [Fact]
+    public async Task ShouldReturnErrorResponseWhenUserIsNotFoundAsync()
+    {
+        // Arrange
+        var command = UpdateAddressCommandUtils.CreateCommand();
 
-    //     // Act
-    //     Func<Task<ErrorOr<Success>>> act = async () =>
-    //         await handler.Handle(command, CancellationToken.None);
+        _mockUserRepository
+            .Setup(repo => repo.GetUserById(UserId.Create(command.UserId)))
+            .ReturnsAsync(() => null);
 
-    //     // Assert
-    //     await Assert.ThrowsAsync<ArgumentNullException>(act);
-    // }
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
 
-    // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenUserIsNotFound()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync((Domain.Users.User)null);
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].Should().BeEquivalentTo(CustomErrors.User.UserNotFound);
 
-    //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
-    //     var command = new UpdateAddressCommand
-    //     {
-    //         UserId = "123",
-    //         Street = "123 Main St",
-    //         City = "New York",
-    //         State = "NY",
-    //         Country = "USA",
-    //         ZipCode = "10001",
-    //     };
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.Should().BeOfType<ErrorResult<Success>>();
-    //     result.Errors.Should().Contain(CustomErrors.User.UserNotFound);
-    // }
+        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
+    }
 
     [Fact]
     public async Task ShouldUpdateUserAddressSuccessfullyWhenUserIsFoundAsync()
@@ -80,9 +53,11 @@ public class UpdateAddressCommandHandlerTests
         user = UserFactory.UpdateAddress(user);
         var command = UpdateAddressCommandUtils.CreateCommand();
 
-        _mockUserRepository.Setup(u => u.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockUserRepository
+            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .ReturnsAsync(user);
 
-        _mockUserRepository.Setup(u => u.Update(It.IsAny<User>()));
+        _mockUserRepository.Setup(u => u.Update(user));
 
         _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -99,61 +74,46 @@ public class UpdateAddressCommandHandlerTests
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    // [Fact]
-    // public async Task ShouldHandleConcurrentUpdatesToTheSameUser()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
-    //     var command = new UpdateAddressCommand
-    //     {
-    //         UserId = "123",
-    //         Street = "123 Main St",
-    //         City = "New York",
-    //         State = "NY",
-    //         Country = "USA",
-    //         ZipCode = "10001",
-    //     };
+    [Fact]
+    public async Task ShouldHandleConcurrentUpdatesToTheSameUserAsync()
+    {
+        // Arrange
 
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync(
-    //             new Domain.Users.User(
-    //                 userId: UserId.Create("123"),
-    //                 name: "John Doe",
-    //                 email: "johndoe@example.com",
-    //                 phoneNumber: "1234567890",
-    //                 address: Address.CreateNew(
-    //                     "123 Old St",
-    //                     "Old City",
-    //                     "Old State",
-    //                     "Old Country",
-    //                     "10000"
-    //                 )
-    //             )
-    //         );
+        var command = UpdateAddressCommandUtils.CreateCommand();
+        var user = UserFactory.CreateUser();
 
-    //     var user1 = mockUserRepository.Object.GetUserById(UserId.Create("123")).Result;
-    //     var user2 = mockUserRepository.Object.GetUserById(UserId.Create("123")).Result;
+        _mockUserRepository
+            .Setup(repo => repo.GetUserById(UserId.Create(command.UserId)))
+            .ReturnsAsync(user);
 
-    //     // Act
-    //     var task1 = handler.Handle(command, CancellationToken.None);
-    //     var task2 = handler.Handle(command, CancellationToken.None);
+        _mockUserRepository.Setup(u => u.Update(It.IsAny<User>()));
 
-    //     await Task.WhenAll(task1, task2);
+        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-    //     // Assert
-    //     var result1 = task1.Result;
-    //     var result2 = task2.Result;
+        // Act
+        var task1 = _sut.Handle(command, CancellationToken.None);
+        var task2 = _sut.Handle(command, CancellationToken.None);
 
-    //     result1.Should().BeOfType<SuccessResult<Success>>();
-    //     result2.Should().BeOfType<SuccessResult<Success>>();
-    //     result1.Value.Message.Should().Be("Successfully updated address.");
-    //     result2.Value.Message.Should().Be("Successfully updated address.");
-    // }
+        await Task.WhenAll(task1, task2);
+
+        // Assert
+        var result1 = task1.Result;
+        var result2 = task2.Result;
+
+        result1.Should().BeOfType<ErrorOr<Success>>();
+        result2.Should().BeOfType<ErrorOr<Success>>();
+        result1.IsError.Should().BeFalse();
+        result2.IsError.Should().BeFalse();
+
+        result1.Value.Should().BeOfType<Success>();
+        result1.Value.Should().NotBeNull();
+
+        result2.Value.Should().BeOfType<Success>();
+        result2.Value.Should().NotBeNull();
+    }
 
     // [Fact]
-    // public async Task ShouldValidateAddressFieldsForCorrectFormatAndLength()
+    // public async Task ShouldValidateAddressFieldsForCorrectFormatAndLengthAsync()
     // {
     //     // Arrange
     //     var mockUserRepository = new Mock<IUserRepository>();
@@ -194,68 +154,35 @@ public class UpdateAddressCommandHandlerTests
     //     result.Value.Message.Should().Be("Successfully updated address.");
     // }
 
-    // [Fact]
-    // public async Task ShouldHandleCasesWhereDatabaseConnectionIsLostDuringCommit()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
-    //     var command = new UpdateAddressCommand
-    //     {
-    //         UserId = "123",
-    //         Street = "123 Main St",
-    //         City = "New York",
-    //         State = "NY",
-    //         Country = "USA",
-    //         ZipCode = "10001",
-    //     };
+    [Fact]
+    public async Task ShouldHandleCasesWhereDatabaseConnectionIsLostDuringCommitAsync()
+    {
+        // Arrange
 
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync(
-    //             new Domain.Users.User(
-    //                 userId: UserId.Create("123"),
-    //                 name: "John Doe",
-    //                 email: "johndoe@example.com",
-    //                 phoneNumber: "1234567890",
-    //                 address: Address.CreateNew(
-    //                     "123 Old St",
-    //                     "Old City",
-    //                     "Old State",
-    //                     "Old Country",
-    //                     "10000"
-    //                 )
-    //             )
-    //         );
+        var command = UpdateAddressCommandUtils.CreateCommand();
+        var user = UserFactory.CreateUser();
 
-    //     mockUserRepository
-    //         .Setup(repo => repo.Update(It.IsAny<Domain.Users.User>()))
-    //         .Callback<Domain.Users.User>(user =>
-    //             user.UpdateAddress(
-    //                 Address.CreateNew(
-    //                     street: command.Street,
-    //                     city: command.City,
-    //                     state: command.State,
-    //                     country: command.Country,
-    //                     zipCode: command.ZipCode
-    //                 )
-    //             )
-    //         );
+        _mockUserRepository.Setup(repo => repo.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
 
-    //     mockUserRepository
-    //         .Setup(repo => repo.Commit(It.IsAny<CancellationToken>()))
-    //         .ReturnsAsync(0); // Simulate database connection loss
+        _mockUserRepository
+            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .ReturnsAsync(user);
 
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
+        _mockUserRepository
+            .Setup(repo => repo.Commit(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(0); // Simulate database connection loss
 
-    //     // Assert
-    //     result.Should().BeOfType<ErrorResult<Success>>();
-    //     result.Errors.Should().Contain(CustomErrors.User.UserNotUpdated);
-    // }
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.User.UserNotUpdated);
+    }
 
     // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenDatabaseIsReadOnly()
+    // public async Task ShouldReturnErrorResponseWhenDatabaseIsReadOnlyAsync()
     // {
     //     // Arrange
     //     var mockUserRepository = new Mock<IUserRepository>();
@@ -283,11 +210,10 @@ public class UpdateAddressCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldNotUpdateUserAddressWhenAddressIsUnchanged()
+    // public async Task ShouldNotUpdateUserAddressWhenAddressIsUnchangedAsync()
     // {
     //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
+
     //     var command = new UpdateAddressCommand
     //     {
     //         UserId = "123",
@@ -343,7 +269,7 @@ public class UpdateAddressCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldHandlePartialAddressChange()
+    // public async Task ShouldHandlePartialAddressChangeAsync()
     // {
     //     // Arrange
     //     var mockUserRepository = new Mock<IUserRepository>();
@@ -405,7 +331,7 @@ public class UpdateAddressCommandHandlerTests
     // [Fact]
     // public async Task ShouldHandleCasesWhereUserAddressIsUpdatedToExistingAddress()
     // {
-    //     // Arrange
+    //     Arrange
     //     var mockUserRepository = new Mock<IUserRepository>();
     //     var handler = new UpdateAddressCommandHandler(mockUserRepository.Object);
     //     var command = new UpdateAddressCommand
@@ -448,10 +374,10 @@ public class UpdateAddressCommandHandlerTests
     //         .Setup(repo => repo.Commit(It.IsAny<CancellationToken>()))
     //         .ReturnsAsync(1);
 
-    //     // Act
+    //     Act
     //     var result = await handler.Handle(command, CancellationToken.None);
 
-    //     // Assert
+    //     Assert
     //     result.Should().BeOfType<SuccessResult<Success>>();
     //     result.Value.Message.Should().Be("Successfully updated address.");
     // }

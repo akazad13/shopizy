@@ -11,5 +11,10 @@ public static partial class CustomErrors
                 code: "payment.PaymentNotCreated",
                 description: "Failed to create Payment."
             );
+        public static Error CustomerNotCreated =>
+            Error.Failure(
+                code: "payment.CustomerNotCreated",
+                description: "Failed to create customer."
+            );
     }
 }

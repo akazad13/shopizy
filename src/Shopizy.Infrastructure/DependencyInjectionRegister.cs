@@ -100,7 +100,7 @@ public static class DependencyInjectionRegister
             .AddScoped<TokenService>()
             .AddScoped<CustomerService>()
             .AddScoped<ChargeService>()
-            .AddScoped<SessionService>()
+            .AddScoped<PaymentIntentService>()
             .AddScoped<CardService>();
 
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));

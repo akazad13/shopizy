@@ -27,30 +27,24 @@ public class UpdatePasswordCommandHandlerTests
         );
     }
 
-    // [Fact]
-    // public async Task ShouldThrowExceptionWhenUserIdIsNotProvided()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "newPassword",
-    //     };
+    [Fact]
+    public async Task ShouldThrowExceptionWhenUserIdIsNotProvidedAsync()
+    {
+        // Arrange
+        var command = UpdatePasswordCommandUtils.CreateCommandWithEmptyUserId();
 
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
+        _mockUserRepository
+            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .ReturnsAsync(() => null);
 
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.UserNotFound, result.Errors);
-    // }
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.User.UserNotFound);
+    }
 
     [Fact]
     public async Task ShouldReturnErrorWhenUserIsNotFoundAsync()
@@ -145,36 +139,41 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordIsSameAsOldPassword()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "123",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "oldPassword",
-    //     };
-    //     userRepositoryMock
-    //         .Setup(x => x.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync(new Domain.Users.User(UserId.Create("123"), "oldPassword"));
-    //     passwordManagerMock
-    //         .Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
+    [Fact]
+    public async Task ShouldReturnErrorWhenNewPasswordIsSameAsOldPasswordAsync()
+    {
+        // Arrange
+        var command = UpdatePasswordCommandUtils.CreateCommandWithSameOldAndNewPassword();
+        var user = UserFactory.CreateUser();
+        var updatedUser = UserFactory.UpdatePassword(user);
 
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
+        _mockUserRepository.Setup(x => x.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
 
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordCannotBeSame, result.Errors);
-    // }
+        _mockPasswordManager
+            .Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(true);
+
+        _mockPasswordManager
+            .Setup(u => u.CreateHashString(It.IsAny<string>(), 10000))
+            .Returns("hashstring");
+
+        _mockUserRepository.Setup(u => u.Update(updatedUser));
+
+        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Should().BeOfType<ErrorOr<Success>>();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Errors[0].Should().Be(CustomErrors.User.PasswordSameAsOld);
+
+        _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Never);
+        _mockUserRepository.Verify(x => x.Update(user), Times.Never);
+        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
+    }
 
     // [Fact]
     // public async Task ShouldReturnErrorWhenNewPasswordIsTooShort()

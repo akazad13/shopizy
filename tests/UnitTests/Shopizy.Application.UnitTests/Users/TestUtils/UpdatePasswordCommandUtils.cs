@@ -13,4 +13,22 @@ public static class UpdatePasswordCommandUtils
             Constants.User.NewPassword
         );
     }
+
+    public static UpdatePasswordCommand CreateCommandWithSameOldAndNewPassword()
+    {
+        return new UpdatePasswordCommand(
+            Constants.User.Id.Value,
+            Constants.User.Password,
+            Constants.User.Password
+        );
+    }
+
+    public static UpdatePasswordCommand CreateCommandWithEmptyUserId()
+    {
+        return new UpdatePasswordCommand(
+            Constants.User.Id.Value,
+            Constants.User.Password,
+            Constants.User.Password
+        );
+    }
 }

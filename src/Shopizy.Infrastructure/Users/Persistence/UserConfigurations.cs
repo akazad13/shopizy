@@ -46,6 +46,8 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             }
         );
 
+        builder.Property(u => u.CustomerId).HasMaxLength(256).IsRequired(false);
+
         builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
