@@ -2,21 +2,21 @@ using Shopizy.Domain.Common.Models;
 
 namespace Shopizy.Domain.Carts.ValueObjects;
 
-public sealed class LineItemId : AggregateRootId<Guid>
+public sealed class CartItemId : AggregateRootId<Guid>
 {
     public override Guid Value { get; protected set; }
 
-    private LineItemId(Guid value)
+    private CartItemId(Guid value)
     {
         Value = value;
     }
 
-    public static LineItemId CreateUnique()
+    public static CartItemId CreateUnique()
     {
         return new(Guid.NewGuid());
     }
 
-    public static LineItemId Create(Guid value)
+    public static CartItemId Create(Guid value)
     {
         return new(value);
     }

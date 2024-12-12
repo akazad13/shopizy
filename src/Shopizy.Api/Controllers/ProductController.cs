@@ -26,7 +26,7 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> GetAsync([FromQuery] ProductsCriteriaRequest request)
+    public async Task<IActionResult> SearchAsync([FromQuery] ProductsCriteriaRequest request)
     {
         var query = _mapper.Map<GetProductsQuery>(request);
         var result = await _mediator.Send(query);
@@ -35,7 +35,7 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     }
 
     [HttpGet("products/{productId:guid}")]
-    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductResponse))]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
@@ -44,7 +44,7 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
         var query = _mapper.Map<GetProductQuery>(ProductId);
         var result = await _mediator.Send(query);
 
-        return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
+        return result.Match(product => Ok(_mapper.Map<ProductDetailResponse>(product)), Problem);
     }
 
     [HttpPost("users/{userId:guid}/products")]

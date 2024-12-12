@@ -8,6 +8,7 @@ using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.GetProducts;
 using shopizy.Contracts.Product;
 using Shopizy.Contracts.Product;
+using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Entities;
 
@@ -46,12 +47,25 @@ public class ProductMappingConfig : IRegister
             .NewConfig<Product, ProductResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value)
             .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
+            .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
+
+        config
+            .NewConfig<Product, ProductDetailResponse>()
+            .Map(dest => dest.ProductId, src => src.Id.Value)
+            .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
             .Map(dest => dest.Sku, src => src.SKU)
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
 
         config
             .NewConfig<ProductImage, ProductImageResponse>()
             .Map(dest => dest.ProductImageId, src => src.Id.Value);
+
+        config
+            .NewConfig<ProductReview, ProductReviewResponse>()
+            .Map(dest => dest.ProductReviewId, src => src.Id.Value)
+            .Map(dest => dest.Rating, src => src.Rating.Value)
+            .Map(dest => dest.Reviewer, src => $"{src.User.FirstName} {src.User.LastName}")
+            .Map(dest => dest.ReviewerImageUrl, src => src.User.ProfileImageUrl);
 
         config
             .NewConfig<(Guid UserId, Guid ProductId, Guid ImageId), DeleteProductImageCommand>()

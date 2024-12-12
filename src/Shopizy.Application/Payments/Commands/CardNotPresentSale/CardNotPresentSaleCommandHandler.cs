@@ -45,6 +45,7 @@ public class CardNotPresentSaleCommandHandler(
                 UserId.Create(request.UserId),
                 OrderId.Create(request.OrderId),
                 request.PaymentMethod,
+                request.PaymentMethodId,
                 "",
                 PaymentStatus.Pending,
                 total,
@@ -81,7 +82,7 @@ public class CardNotPresentSaleCommandHandler(
             var req = new CreateSaleRequest()
             {
                 CustomerId = user.CustomerId,
-                PaymentMethodId = request.PaymentMethod,
+                PaymentMethodId = request.PaymentMethodId,
                 Amount = (long)(total.Amount * 100),
                 Currency = request.Currency,
                 PaymentMethodTypes = ["card"],
@@ -101,6 +102,7 @@ public class CardNotPresentSaleCommandHandler(
 
             order.UpdatePaymentStatus(PaymentStatus.Payed);
             payment.UpdatePaymentStatus(PaymentStatus.Payed);
+            payment.UpdateTransactionId(response.Value.ChargeId);
 
             _orderRepository.Update(order);
             _paymentRepository.Update(payment);

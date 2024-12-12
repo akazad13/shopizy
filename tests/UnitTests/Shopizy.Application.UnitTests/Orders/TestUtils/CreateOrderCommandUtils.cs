@@ -18,6 +18,7 @@ public static class CreateOrderCommandUtils
         return new CreateOrderCommand(
             Constants.User.Id.Value,
             Constants.Order.PromoCode,
+            Constants.Order.DeliveryMethod,
             Constants.Order.DeliveryCharge.Amount,
             Constants.Order.DeliveryCharge.Currency,
             orderItems,
@@ -29,7 +30,12 @@ public static class CreateOrderCommandUtils
     {
         foreach (var productId in productIds)
         {
-            yield return new OrderItemCommand(productId, 1);
+            yield return new OrderItemCommand(
+                productId,
+                Constants.Order.Color,
+                Constants.Order.Size,
+                1
+            );
         }
     }
 }

@@ -9,7 +9,7 @@ public interface IProductRepository
     Task<List<Product>> GetProductsAsync(
         string? name,
         IList<CategoryId>? categoryIds,
-        double? averageRating,
+        decimal? averageRating,
         int pageNumber,
         int pageSize
     );

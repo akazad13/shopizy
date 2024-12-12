@@ -2,6 +2,7 @@
     {
         "id": "571D3D66-18F2-4DA8-A57B-D06D4D1C9EEF",
         "name": "Black Rockstar",
+        "ShortDescription": "High quality black t-shirt",
         "description": "High quality black t-shirt",
         "categoryId": "106F4F94-5E70-4340-B23E-462AF5FC7BFC",
         "sku": "MC-10000000T",
@@ -18,6 +19,7 @@
     {
         "id": "096A127A-65AF-4C0C-A294-2E1990136711",
         "name": "Premium Purple",
+        "ShortDescription": "High quality purple t-shirt",
         "description": "High quality purple t-shirt",
         "categoryId": "106F4F94-5E70-4340-B23E-462AF5FC7BFC",
         "sku": "MC-10000002T",
@@ -34,6 +36,7 @@
     {
         "id": "8419FD69-61A5-4D9D-A289-1E377CC17082",
         "name": "Red Dragon",
+        "ShortDescription": "Premium quality red sweater",
         "description": "Premium quality red sweater",
         "categoryId": "632DFDA9-CC2E-487B-8C88-608005F124E2",
         "sku": "MC-10000000S",
@@ -50,6 +53,7 @@
     {
         "id": "CBB8A3A9-03DB-40E4-A89B-9C91D21B3934",
         "name": "Ash life",
+        "ShortDescription": "High quality t-shirt",
         "description": "High quality t-shirt",
         "categoryId": "106F4F94-5E70-4340-B23E-462AF5FC7BFC",
         "sku": "MC-10000004T",
@@ -66,6 +70,7 @@
     {
         "id": "96A1503F-B7EA-4C12-8946-89035399F45E",
         "name": "Red Star",
+        "ShortDescription": "High quality t-shirt for men",
         "description": "High quality t-shirt for men",
         "categoryId": "106F4F94-5E70-4340-B23E-462AF5FC7BFC",
         "sku": "MC-10000006T",
@@ -82,6 +87,7 @@
     {
         "id": "E02500EA-2957-4601-A051-951CB9957CBE",
         "name": "Black Stone",
+        "ShortDescription": "Premium quality t-shirt for women",
         "description": "Premium quality t-shirt for women",
         "categoryId": "A805A418-2D53-4430-9968-D031C4F39FD4",
         "sku": "FC-10000000T",
@@ -98,6 +104,7 @@
     {
         "id": "A34BA283-62A1-43C6-8FB0-748DBDE8BA7D",
         "name": "Elegant peach",
+        "ShortDescription": "High quality women top",
         "description": "High quality women top",
         "categoryId": "BA5FE17F-8977-4034-BEC3-227AA99502CC",
         "sku": "FC-10000002T",
@@ -114,6 +121,7 @@
     {
         "id": "D7C96816-1656-4DBC-B709-0F626807347F",
         "name": "Pure White",
+        "ShortDescription": "High quality women t-shirt",
         "description": "High quality women t-shirt",
         "categoryId": "A805A418-2D53-4430-9968-D031C4F39FD4",
         "sku": "FC-10000004T",
@@ -130,6 +138,7 @@
     {
         "id": "DF22BA6B-A15B-4125-AF29-07E242AF6F2D",
         "name": "Natural Green",
+        "ShortDescription": "High quality t-shirt",
         "description": "High quality t-shirt",
         "categoryId": "A805A418-2D53-4430-9968-D031C4F39FD4",
         "sku": "FC-10000006T",
@@ -146,6 +155,7 @@
     {
         "id": "9EB9982F-E672-4184-8399-044277EEF754",
         "name": "New Way",
+        "ShortDescription": "Premium quality top",
         "description": "Premium quality top",
         "categoryId": "BA5FE17F-8977-4034-BEC3-227AA99502CC",
         "sku": "FC-10000008T",

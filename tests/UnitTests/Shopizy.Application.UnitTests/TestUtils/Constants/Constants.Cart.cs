@@ -12,12 +12,14 @@ public static partial class Constants
         );
     }
 
-    public static class LineItem
+    public static class CartItem
     {
-        public static readonly LineItemId Id = LineItemId.Create(
+        public static readonly CartItemId Id = CartItemId.Create(
             new Guid("dd0aa32a-f7ab-4d48-b33e-1a3c1092f1e2")
         );
         public static readonly ProductId ProductId = Product.Id;
+        public const string Color = "White";
+        public const string Size = "XL";
         public const int Quantity = 5;
     }
 }

@@ -25,7 +25,7 @@ public class GetCartQueryHandlerTests
     {
         // Arrange
         var cart = CartFactory.Create();
-        cart.AddLineItem(CartFactory.CreateLineItem());
+        cart.AddLineItem(CartFactory.CreateCartItem());
         var query = GetCartQueryUtils.CreateQuery();
 
         _mockCartRepository

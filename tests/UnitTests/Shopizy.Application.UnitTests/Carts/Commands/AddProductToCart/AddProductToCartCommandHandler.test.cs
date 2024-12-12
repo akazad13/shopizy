@@ -3,6 +3,7 @@ using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
+using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
@@ -79,13 +80,13 @@ public class AddProductToCartCommandHandlerTests
         cart.Value.Should().NotBeNull();
         cart.Value.Should().BeOfType<Cart>();
         cart.Value.Should().Be(existingCart);
-        cart.Value.LineItems.Should().HaveCount(1);
-        cart.Value.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
-        cart.Value.LineItems.Should()
+        cart.Value.CartItems.Should().HaveCount(1);
+        cart.Value.CartItems[0].ProductId.Should().BeOfType(typeof(ProductId));
+        cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.Value.LineItems[0].Quantity.Should().Be(1);
+        cart.Value.CartItems[0].Quantity.Should().Be(1);
         _mockCartRepository.Verify(
-            x => x.Update(It.Is<Cart>(c => c.LineItems.Count == 1)),
+            x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 1)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
@@ -97,11 +98,23 @@ public class AddProductToCartCommandHandlerTests
     {
         // Arrange
         var existingCart = CartFactory.Create();
-        existingCart.AddLineItem(LineItem.Create(ProductId.CreateUnique()));
+        existingCart.AddLineItem(
+            CartItem.Create(
+                ProductId.CreateUnique(),
+                Constants.CartItem.Color,
+                Constants.CartItem.Size
+            )
+        );
 
         var updatedCart = CartFactory.Create();
-        updatedCart.AddLineItem(LineItem.Create(ProductId.CreateUnique()));
-        updatedCart.AddLineItem(CartFactory.CreateLineItem());
+        updatedCart.AddLineItem(
+            CartItem.Create(
+                ProductId.CreateUnique(),
+                Constants.CartItem.Color,
+                Constants.CartItem.Size
+            )
+        );
+        updatedCart.AddLineItem(CartFactory.CreateCartItem());
 
         var command = AddProductToCartCommandUtils.CreateCommand();
 
@@ -127,17 +140,17 @@ public class AddProductToCartCommandHandlerTests
         cart.Value.Should().NotBeNull();
         cart.Value.Should().BeOfType<Cart>();
         cart.Value.Should().Be(updatedCart);
-        cart.Value.LineItems.Should().HaveCount(2);
-        cart.Value.LineItems.Should()
+        cart.Value.CartItems.Should().HaveCount(2);
+        cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.Value.LineItems[0].ProductId.Should().BeOfType(typeof(ProductId));
-        cart.Value.LineItems[0].Quantity.Should().Be(1);
+        cart.Value.CartItems[0].ProductId.Should().BeOfType(typeof(ProductId));
+        cart.Value.CartItems[0].Quantity.Should().Be(1);
         _mockCartRepository.Verify(
-            x => x.Update(It.Is<Cart>(c => c.LineItems.Count == 2)),
+            x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 2)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
-        cart.Value.LineItems.Should()
+        cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId) && li.Quantity == 1);
     }
 

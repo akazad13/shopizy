@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopizy.Infrastructure.Common.Persistence;
 
@@ -11,9 +12,11 @@ using Shopizy.Infrastructure.Common.Persistence;
 namespace shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211135310_UpdateProductTable")]
+    partial class UpdateProductTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +75,6 @@ namespace shopizy.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
-
-                    b.Property<int>("DeliveryMethod")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
@@ -339,7 +339,7 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Carts.Cart", b =>
                 {
-                    b.OwnsMany("Shopizy.Domain.Carts.Entities.CartItem", "CartItems", b1 =>
+                    b.OwnsMany("Shopizy.Domain.Carts.Entities.LineItem", "LineItems", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .HasColumnType("uniqueidentifier");
@@ -347,19 +347,11 @@ namespace shopizy.Infrastructure.Migrations
                             b1.Property<Guid>("CartId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Color")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<int>("Quantity")
                                 .HasColumnType("int");
-
-                            b1.Property<string>("Size")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("Id", "CartId");
 
@@ -368,7 +360,7 @@ namespace shopizy.Infrastructure.Migrations
                             b1.HasIndex("CartId", "ProductId")
                                 .IsUnique();
 
-                            b1.ToTable("CartItems", (string)null);
+                            b1.ToTable("LineItems", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CartId");
@@ -382,7 +374,7 @@ namespace shopizy.Infrastructure.Migrations
                             b1.Navigation("Product");
                         });
 
-                    b.Navigation("CartItems");
+                    b.Navigation("LineItems");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
@@ -401,10 +393,6 @@ namespace shopizy.Infrastructure.Migrations
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Color")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<decimal>("Discount")
                                 .HasPrecision(18, 2)
                                 .HasColumnType("decimal(18,2)");
@@ -419,10 +407,6 @@ namespace shopizy.Infrastructure.Migrations
 
                             b1.Property<int>("Quantity")
                                 .HasColumnType("int");
-
-                            b1.Property<string>("Size")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("Id", "OrderId");
 

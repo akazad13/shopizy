@@ -43,8 +43,8 @@ public class StripeService(
             Customer = request.CustomerId,
             Amount = request.Amount,
             Currency = request.Currency,
-            // ConfirmationMethod = "manual",
-            // Confirm = request.CapturePayment,
+            // ConfirmationMethod = "manual",  // if Confirm = false, then this will determine how a payment will be confirmed (From frontend/backend)
+            Confirm = request.CapturePayment,
             PaymentMethodTypes = request.PaymentMethodTypes,
             Metadata = request.Metadata,
             PaymentMethod = request.PaymentMethodId,
@@ -53,6 +53,8 @@ public class StripeService(
         try
         {
             var response = await _paymentIntentService.CreateAsync(intentCreateOptions);
+
+            // var result = await _paymentIntentService.ConfirmAsync(response.Id); // if Confirm is false and we manaully confirm payment
 
             return new CreateSaleResponse
             {

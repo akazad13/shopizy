@@ -58,7 +58,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
     {
         // Arrange
         var cart = CartFactory.Create();
-        cart.AddLineItem(CartFactory.CreateLineItem());
+        cart.AddLineItem(CartFactory.CreateCartItem());
         var command = CreateCartWithFirstProductCommandUtils.CreateCommand();
         _mockProductRepository
             .Setup(x => x.IsProductExistAsync(ProductId.Create(command.ProductId)))
@@ -79,7 +79,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockCartRepository.Verify(
             x =>
                 x.AddAsync(
-                    It.Is<Cart>(c => c.UserId.Value == command.UserId && c.LineItems.Count == 1)
+                    It.Is<Cart>(c => c.UserId.Value == command.UserId && c.CartItems.Count == 1)
                 ),
             Times.Once
         );
@@ -90,7 +90,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
         result.Value.Should().NotBeNull();
         result.Value.Should().BeOfType(typeof(Cart));
         result.Value.UserId.Should().Be(UserId.Create(command.UserId));
-        result.Value.LineItems.Should().HaveCount(1);
-        result.Value.LineItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
+        result.Value.CartItems.Should().HaveCount(1);
+        result.Value.CartItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
     }
 }

@@ -10,6 +10,7 @@ public static class OrderFactory
         return Order.Create(
             Constants.User.Id,
             Constants.Order.PromoCode,
+            Constants.Order.DeliveryMethod,
             Constants.Order.DeliveryCharge,
             Constants.User.Address,
             []

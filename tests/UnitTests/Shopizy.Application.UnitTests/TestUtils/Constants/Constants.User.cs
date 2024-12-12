@@ -15,8 +15,8 @@ public static partial class Constants
         public const string LastName = "Doe";
         public const string ProfileImageUrl = "";
         public const string Phone = "1234567890";
-        public const string Password = "password";
-        public const string NewPassword = "password";
+        public const string Password = "oldPassword";
+        public const string NewPassword = "newPassword";
         public static readonly Address Address = Address.CreateNew(
             "Street",
             "City",

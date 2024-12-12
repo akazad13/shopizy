@@ -43,6 +43,7 @@ public class CreateOrderCommandHandler(
         var order = Order.Create(
             userId: UserId.Create(request.UserId),
             promoCode: request.PromoCode,
+            deliveryMethod: request.DeliveryMethod,
             deliveryCharge: Price.CreateNew(
                 request.DeliveryChargeAmount,
                 request.DeliveryChargeCurrency
@@ -54,17 +55,22 @@ public class CreateOrderCommandHandler(
                 country: request.ShippingAddress.Country,
                 zipCode: request.ShippingAddress.ZipCode
             ),
-            orderItems: products.ConvertAll(items =>
-                OrderItem.Create(
-                    name: items.Name,
-                    pictureUrl: items.ProductImages.Count == 0
-                        ? ""
-                        : items.ProductImages[0].ImageUrl,
-                    unitPrice: items.UnitPrice,
-                    quantity: request.OrderItems.First(p => p.ProductId == items.Id.Value).Quantity,
-                    discount: items.Discount
-                )
-            )
+            orderItems: products.ConvertAll(product =>
+            {
+                var item = request.OrderItems.First(p => p.ProductId == product.Id.Value);
+                var photoUrl =
+                    product.ProductImages.Count == 0 ? "" : product.ProductImages[0].ImageUrl;
+
+                return OrderItem.Create(
+                    name: product.Name,
+                    pictureUrl: photoUrl,
+                    unitPrice: product.UnitPrice,
+                    quantity: item.Quantity,
+                    color: item.Color,
+                    size: item.Size,
+                    discount: product.Discount
+                );
+            })
         );
 
         await _orderRepository.AddAsync(order);

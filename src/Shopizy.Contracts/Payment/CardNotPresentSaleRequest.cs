@@ -5,6 +5,7 @@ public record CardNotPresentSaleRequest(
     double Amount,
     string Currency,
     string PaymentMethod,
+    string PaymentMethodId,
     string CardName,
     string CardExpiryMonth,
     string CardExpiryYear,

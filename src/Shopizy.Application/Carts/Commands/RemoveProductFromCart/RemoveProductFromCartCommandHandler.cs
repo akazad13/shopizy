@@ -26,7 +26,7 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
             return CustomErrors.Cart.CartNotFound;
         }
 
-        var lineItem = cart.LineItems.FirstOrDefault(li => li.ProductId.Value == cmd.ProductId);
+        var lineItem = cart.CartItems.FirstOrDefault(li => li.ProductId.Value == cmd.ProductId);
         if (lineItem is not null)
         {
             cart.RemoveLineItem(lineItem);

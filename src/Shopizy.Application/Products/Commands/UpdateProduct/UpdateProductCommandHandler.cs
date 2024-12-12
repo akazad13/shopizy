@@ -26,15 +26,18 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
         }
 
         product.Update(
-            cmd.Name,
-            cmd.Description,
-            CategoryId.Create(cmd.CategoryId),
-            cmd.Sku,
-            Price.CreateNew(cmd.UnitPrice, cmd.Currency),
-            cmd.Discount,
-            cmd.Brand,
-            cmd.Barcode,
-            cmd.Tags
+            name: cmd.Name,
+            shortDescription: cmd.ShortDescription,
+            description: cmd.Description,
+            categoryId: CategoryId.Create(cmd.CategoryId),
+            sku: cmd.Sku,
+            unitPrice: Price.CreateNew(cmd.UnitPrice, cmd.Currency),
+            discount: cmd.Discount,
+            brand: cmd.Brand,
+            barcode: cmd.Barcode,
+            colors: cmd.Colors,
+            sizes: cmd.Sizes,
+            tags: cmd.Tags
         );
 
         _productRepository.Update(product);

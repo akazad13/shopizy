@@ -11,6 +11,7 @@ public record UpdateProductCommand(
     Guid UserId,
     Guid ProductId,
     string Name,
+    string ShortDescription,
     string Description,
     Guid CategoryId,
     decimal UnitPrice,
@@ -18,6 +19,8 @@ public record UpdateProductCommand(
     decimal Discount,
     string Sku,
     string Brand,
+    string Colors,
+    string Sizes,
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds

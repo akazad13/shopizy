@@ -10,6 +10,7 @@ public static class ProductFactory
     {
         return Product.Create(
             Constants.Product.Name,
+            Constants.Product.ShortDescription,
             Constants.Product.Description,
             Constants.Category.Id,
             Constants.Product.Sku,
@@ -17,6 +18,8 @@ public static class ProductFactory
             Constants.Product.Discount,
             Constants.Product.Brand,
             Constants.Product.Tags,
+            Constants.Product.Colors,
+            Constants.Product.Sizes,
             Constants.Product.Barcode
         );
     }

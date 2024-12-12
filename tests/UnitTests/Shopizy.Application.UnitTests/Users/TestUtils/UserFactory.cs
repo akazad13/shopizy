@@ -20,10 +20,4 @@ public static class UserFactory
         user.UpdateAddress(Constants.User.Address);
         return user;
     }
-
-    public static User UpdatePassword(User user)
-    {
-        user.UpdatePassword(Constants.User.NewPassword);
-        return user;
-    }
 }

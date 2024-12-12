@@ -11,6 +11,7 @@ public static class UpdateProductCommandUtils
             Constants.User.Id.Value,
             Constants.Product.Id.Value,
             Constants.Product.Name,
+            Constants.Product.ShortDescription,
             Constants.Product.Description,
             Constants.Category.Id.Value,
             Constants.Product.UnitPrice,
@@ -18,6 +19,8 @@ public static class UpdateProductCommandUtils
             Constants.Product.Discount,
             Constants.Product.Sku,
             Constants.Product.Brand,
+            Constants.Product.Colors,
+            Constants.Product.Sizes,
             Constants.Product.Tags,
             Constants.Product.Barcode,
             []

@@ -55,11 +55,11 @@ public class CartMappingConfig : IRegister
             .NewConfig<Cart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
-            .Map(dest => dest.LineItems, src => src.LineItems);
+            .Map(dest => dest.CartItems, src => src.CartItems);
 
         config
-            .NewConfig<LineItem, LineItemResponse>()
-            .Map(dest => dest.LineItemId, src => src.Id.Value)
+            .NewConfig<CartItem, CartItemResponse>()
+            .Map(dest => dest.CartItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.Product, src => src.Product)

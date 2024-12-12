@@ -12,6 +12,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 {
     private readonly IList<OrderItem> _orderItems = [];
     public UserId UserId { get; private set; }
+    public DeliveryMethods DeliveryMethod { get; private set; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
     public string? CancellationReason { get; private set; }
@@ -25,6 +26,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public static Order Create(
         UserId userId,
         string promoCode,
+        int deliveryMethod,
         Price deliveryCharge,
         Address shippingAddress,
         IList<OrderItem> orderItems
@@ -34,6 +36,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
             OrderId.CreateUnique(),
             userId,
             promoCode,
+            deliveryMethod,
             deliveryCharge,
             shippingAddress,
             orderItems
@@ -44,6 +47,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         OrderId orderId,
         UserId userId,
         string promoCode,
+        int deliveryMethod,
         Price deliveryCharge,
         Address shippingAddress,
         IList<OrderItem> orderItems
@@ -53,6 +57,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         UserId = userId;
         OrderStatus = OrderStatus.Submitted;
         PromoCode = promoCode;
+        DeliveryMethod = (DeliveryMethods)deliveryMethod;
         DeliveryCharge = deliveryCharge;
         ShippingAddress = shippingAddress;
         _orderItems = orderItems;
