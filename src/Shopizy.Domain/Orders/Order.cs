@@ -89,4 +89,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         PaymentStatus = status;
         ModifiedOn = DateTime.UtcNow;
     }
+
+    public void UpdateOrderStatus(OrderStatus status)
+    {
+        OrderStatus = status;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }

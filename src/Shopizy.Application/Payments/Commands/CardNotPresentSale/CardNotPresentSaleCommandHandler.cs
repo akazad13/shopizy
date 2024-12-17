@@ -4,6 +4,7 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.Enums;
@@ -101,6 +102,7 @@ public class CardNotPresentSaleCommandHandler(
             }
 
             order.UpdatePaymentStatus(PaymentStatus.Payed);
+            order.UpdateOrderStatus(OrderStatus.Paid);
             payment.UpdatePaymentStatus(PaymentStatus.Payed);
             payment.UpdateTransactionId(response.Value.ChargeId);
 

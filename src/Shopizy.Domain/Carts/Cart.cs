@@ -30,9 +30,9 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
         ModifiedOn = DateTime.UtcNow;
     }
 
-    public void UpdateLineItem(ProductId productId, int quantity)
+    public void UpdateLineItem(CartItemId cartItemId, int quantity)
     {
-        _cartItems.Find(li => li.ProductId == productId)?.UpdateQuantity(quantity);
+        _cartItems.Find(li => li.Id == cartItemId)?.UpdateQuantity(quantity);
         ModifiedOn = DateTime.UtcNow;
     }
 

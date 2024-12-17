@@ -2,6 +2,7 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
+using Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Payment;
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,12 +23,25 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateSaleAsync(Guid userId, CardNotPresentSaleRequest request)
     {
-        var command = _mapper.Map<CardNotPresentSaleCommand>((userId, request));
-        var result = await _mediator.Send(command);
+        if (request.PaymentMethod.ToLower() == "Card")
+        {
+            var command = _mapper.Map<CardNotPresentSaleCommand>((userId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Payment successfull collected.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Payment successfull collected.")),
+                Problem
+            );
+        }
+        else
+        {
+            var command = _mapper.Map<CashOnDeliverySaleCommand>((userId, request));
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+                success => Ok(SuccessResult.Success("Payment successfull collected.")),
+                Problem
+            );
+        }
     }
 }

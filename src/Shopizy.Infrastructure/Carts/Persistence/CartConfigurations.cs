@@ -45,7 +45,6 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
                 ci.ToTable("CartItems");
                 ci.WithOwner().HasForeignKey("CartId");
                 ci.HasKey(nameof(CartItem.Id), "CartId");
-                ci.HasIndex("CartId", "ProductId").IsUnique();
 
                 ci.Property(li => li.Id)
                     .ValueGeneratedNever()

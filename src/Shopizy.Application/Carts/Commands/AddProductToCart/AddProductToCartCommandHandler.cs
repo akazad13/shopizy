@@ -33,7 +33,13 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Cart.CartNotFound;
         }
 
-        if (cart.CartItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
+        if (
+            cart.CartItems.Any(li =>
+                li.ProductId == ProductId.Create(cmd.ProductId)
+                && li.Color == cmd.Color
+                && li.Size == cmd.Size
+            )
+        )
         {
             return CustomErrors.Cart.ProductAlreadyExistInCart;
         }

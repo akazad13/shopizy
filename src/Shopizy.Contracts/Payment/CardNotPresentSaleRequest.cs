@@ -2,10 +2,14 @@ namespace Shopizy.Contracts.Payment;
 
 public record CardNotPresentSaleRequest(
     Guid OrderId,
-    double Amount,
+    decimal Amount,
     string Currency,
     string PaymentMethod,
-    string PaymentMethodId,
+    string? PaymentMethodId,
+    CardInfo? CardInfo
+);
+
+public record CardInfo(
     string CardName,
     string CardExpiryMonth,
     string CardExpiryYear,

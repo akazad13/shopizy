@@ -3,7 +3,6 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
@@ -27,7 +26,7 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
             return CustomErrors.Cart.CartNotFound;
         }
 
-        cart.UpdateLineItem(ProductId.Create(cmd.ProductId), cmd.Quantity);
+        cart.UpdateLineItem(CartItemId.Create(cmd.ItemId), cmd.Quantity);
 
         _cartRepository.Update(cart);
 

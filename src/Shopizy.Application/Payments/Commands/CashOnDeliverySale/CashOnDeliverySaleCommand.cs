@@ -1,21 +1,15 @@
 using ErrorOr;
-using Shopizy.Application.Common.models;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Request;
 
-namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
+namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 
 [Authorize(Permissions = Permissions.Order.Get, Policies = Policy.SelfOrAdmin)]
-public record CardNotPresentSaleCommand(
+public record CashOnDeliverySaleCommand(
     Guid UserId,
     Guid OrderId,
     decimal Amount,
     string Currency,
-    string PaymentMethod,
-    string PaymentMethodId,
-    string CardName,
-    string CardExpiryMonth,
-    string CardExpiryYear,
-    string LastDigits
+    string PaymentMethod
 ) : IAuthorizeableRequest<ErrorOr<Success>>;
