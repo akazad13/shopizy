@@ -13,6 +13,7 @@ using Shopizy.Infrastructure.Customers.Persistence;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 using Shopizy.Infrastructure.Orders.Persistence;
+using Shopizy.Infrastructure.Permissions.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
 using shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
@@ -25,7 +26,6 @@ using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Stripe;
-using Stripe.Checkout;
 
 namespace Shopizy.Infrastructure;
 
@@ -159,7 +159,8 @@ public static class DependencyInjectionRegister
             .AddScoped<IProductReviewRepository, ProductReviewRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IPromoCodeRepository, PromoCodeRepository>()
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IPermissionRepository, PermissionRepository>();
 
         return services;
     }

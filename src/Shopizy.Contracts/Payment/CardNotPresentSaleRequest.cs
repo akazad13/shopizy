@@ -9,9 +9,4 @@ public record CardNotPresentSaleRequest(
     CardInfo? CardInfo
 );
 
-public record CardInfo(
-    string CardName,
-    string CardExpiryMonth,
-    string CardExpiryYear,
-    string LastDigits
-);
+public record CardInfo(string CardName, int CardExpiryMonth, int CardExpiryYear, string LastDigits);

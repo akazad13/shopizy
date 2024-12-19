@@ -7,6 +7,7 @@ using Shopizy.Domain.Categories;
 using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Payments;
+using Shopizy.Domain.Permissions;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.PromoCodes;
@@ -29,6 +30,7 @@ public class AppDbContext(
     public DbSet<ProductReview> ProductReviews { get; set; }
     public DbSet<PromoCode> PromoCodes { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

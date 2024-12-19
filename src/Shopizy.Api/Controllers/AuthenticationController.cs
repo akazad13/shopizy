@@ -24,9 +24,12 @@ public class AuthenticationController(ISender mediator, IMapper mapper) : ApiCon
     public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
-        var authResult = await _mediator.Send(command);
+        var result = await _mediator.Send(command);
 
-        return authResult.Match(authResult => Ok(_mapper.Map<AuthResponse>(authResult)), Problem);
+        return result.Match(
+            success => Ok(SuccessResult.Success("Your account has been added. Please log in.")),
+            Problem
+        );
     }
 
     [HttpPost("login")]

@@ -1,4 +1,5 @@
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.TestUtils.Constants;
@@ -24,5 +25,7 @@ public static partial class Constants
             "Country",
             "ZipCode"
         );
+
+        public static readonly PermissionId PermissionId = PermissionId.CreateUnique();
     }
 }

@@ -1,5 +1,4 @@
 using ErrorOr;
-using MediatR;
 using Shopizy.Application.Common.Security.Permissions;
 using Shopizy.Application.Common.Security.Policies;
 using Shopizy.Application.Common.Security.Request;

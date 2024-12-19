@@ -13,26 +13,13 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
 {
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
 
-    public string GenerateToken(
-        UserId userId,
-        string firstName,
-        string LastName,
-        string phone,
-        IList<string> roles,
-        IList<string> Permissions
-    )
+    public string GenerateToken(UserId userId, IList<string> roles, IEnumerable<string> Permissions)
     {
         Guard.Against.Null(roles);
         Guard.Against.Null(Permissions);
         Guard.Against.Null(userId);
 
-        var claims = new List<Claim>
-        {
-            new("id", userId.Value.ToString()),
-            new(JwtRegisteredClaimNames.Name, firstName),
-            new(ClaimTypes.Surname, LastName),
-            new(ClaimTypes.MobilePhone, phone),
-        };
+        var claims = new List<Claim> { new("id", userId.Value.ToString()) };
 
         foreach (string role in roles)
         {
