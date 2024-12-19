@@ -25,7 +25,8 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             .HasConversion(id => id.Value, value => PaymentId.Create(value));
 
         builder.Property(p => p.PaymentMethod).HasMaxLength(20);
-        builder.Property(p => p.TransactionId).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.PaymentMethodId).HasMaxLength(260);
+        builder.Property(p => p.TransactionId).HasMaxLength(260).IsRequired(false);
         builder.Property(p => p.PaymentStatus);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
@@ -55,7 +56,7 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             .Property(p => p.OrderId)
             .HasConversion(id => id.Value, value => OrderId.Create(value));
 
-        builder.HasOne(c => c.User).WithOne().OnDelete(DeleteBehavior.NoAction);
-        builder.HasOne(c => c.Order).WithOne().OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(c => c.User).WithMany().OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(c => c.Order).WithMany().OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -13,7 +13,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
     public void Configure(EntityTypeBuilder<Cart> builder)
     {
         ConfigureCartsTable(builder);
-        ConfigureCartProductIdsTable(builder);
+        ConfigureCartItemsTable(builder);
     }
 
     private static void ConfigureCartsTable(EntityTypeBuilder<Cart> builder)
@@ -36,27 +36,26 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
             .HasConversion(id => id.Value, value => UserId.Create(value));
     }
 
-    private static void ConfigureCartProductIdsTable(EntityTypeBuilder<Cart> builder)
+    private static void ConfigureCartItemsTable(EntityTypeBuilder<Cart> builder)
     {
         builder.OwnsMany(
-            m => m.LineItems,
-            ltmb =>
+            m => m.CartItems,
+            ci =>
             {
-                ltmb.ToTable("LineItems");
-                ltmb.WithOwner().HasForeignKey("CartId");
-                ltmb.HasKey(nameof(LineItem.Id), "CartId");
-                ltmb.HasIndex("CartId", "ProductId").IsUnique();
+                ci.ToTable("CartItems");
+                ci.WithOwner().HasForeignKey("CartId");
+                ci.HasKey(nameof(CartItem.Id), "CartId");
 
-                ltmb.Property(li => li.Id)
+                ci.Property(li => li.Id)
                     .ValueGeneratedNever()
-                    .HasConversion(id => id.Value, value => LineItemId.Create(value));
+                    .HasConversion(id => id.Value, value => CartItemId.Create(value));
 
-                ltmb.Property(li => li.ProductId)
+                ci.Property(li => li.ProductId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
-                ltmb.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
+                ci.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
             }
         );
-        builder.Navigation(p => p.LineItems).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.CartItems).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -24,7 +24,11 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.DeliveryChargeAmount, src => src.request.DeliveryCharge.Amount)
             .Map(
                 dest => dest.DeliveryChargeCurrency,
-                src => (Currency)src.request.DeliveryCharge.Currency
+                src =>
+                    src.request.DeliveryCharge.Currency == "usd" ? Currency.usd
+                    : src.request.DeliveryCharge.Currency == "bdt" ? Currency.bdt
+                    : src.request.DeliveryCharge.Currency == "euro" ? Currency.euro
+                    : Currency.usd
             );
         config
             .NewConfig<(Guid UserId, Guid OrderId), GetOrderQuery>()

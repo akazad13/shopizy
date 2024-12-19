@@ -24,7 +24,7 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     public Task<Cart?> GetCartByUserIdAsync(UserId id)
     {
         return _dbContext
-            .Carts.Include(c => c.LineItems)
+            .Carts.Include(c => c.CartItems)
             .ThenInclude(li => li.Product)
             .FirstOrDefaultAsync(c => c.UserId == id);
     }

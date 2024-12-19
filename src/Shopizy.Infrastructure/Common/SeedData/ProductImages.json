@@ -68,5 +68,12 @@
         "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1729420812/shopizy/ojtymvp04czf75leclg2.jpg",
         "seq": 0,
         "publicId": "ojtymvp04czf75leclg2"
+    },
+    {
+        "id": "A8A70F86-7987-4BB4-A344-1B2133DCC609",
+        "productId": "096A127A-65AF-4C0C-A294-2E1990136711",
+        "imageUrl": "https://res.cloudinary.com/akazad13/image/upload/v1733579506/shopizy/men2_2_d4dn3p.jpg",
+        "seq": 1,
+        "publicId": "men2_2_d4dn3p"
     }
 ]

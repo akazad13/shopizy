@@ -28,7 +28,7 @@ public class GetProductsQueryHandlerTests
                 x.GetProductsAsync(
                     It.IsAny<string>(),
                     It.IsAny<IList<CategoryId>>(),
-                    It.IsAny<double>(),
+                    It.IsAny<decimal>(),
                     It.IsAny<int>(),
                     It.IsAny<int>()
                 )

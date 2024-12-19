@@ -1,37 +1,38 @@
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.Models;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Carts;
 
 public sealed class Cart : AggregateRoot<CartId, Guid>
 {
-    private readonly List<LineItem> _lineItems = [];
+    private readonly List<CartItem> _cartItems = [];
     public UserId UserId { get; }
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
-    public IReadOnlyList<LineItem> LineItems => _lineItems.AsReadOnly();
+    public IReadOnlyList<CartItem> CartItems => _cartItems.AsReadOnly();
 
     public static Cart Create(UserId userId)
     {
         return new Cart(CartId.CreateUnique(), userId);
     }
 
-    public void AddLineItem(LineItem lineItem)
+    public void AddLineItem(CartItem lineItem)
     {
-        _lineItems.Add(lineItem);
+        _cartItems.Add(lineItem);
     }
 
-    public void RemoveLineItem(LineItem lineItem)
+    public void RemoveLineItem(CartItem lineItem)
     {
-        _lineItems.Remove(lineItem);
+        _cartItems.Remove(lineItem);
+        ModifiedOn = DateTime.UtcNow;
     }
 
-    public void UpdateLineItem(ProductId productId, int quantity)
+    public void UpdateLineItem(CartItemId cartItemId, int quantity)
     {
-        _lineItems.Find(li => li.ProductId == productId)?.UpdateQuantity(quantity);
+        _cartItems.Find(li => li.Id == cartItemId)?.UpdateQuantity(quantity);
+        ModifiedOn = DateTime.UtcNow;
     }
 
     private Cart(CartId cartId, UserId userId)

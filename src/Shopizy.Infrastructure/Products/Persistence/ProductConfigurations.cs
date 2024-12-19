@@ -24,13 +24,16 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProductId.Create(value));
 
-        builder.Property(p => p.Name).HasMaxLength(100).IsRequired();
+        builder.Property(p => p.Name).HasMaxLength(50).IsRequired();
+        builder.Property(p => p.ShortDescription).HasMaxLength(100);
         builder.Property(p => p.Description).HasMaxLength(200);
         builder.Property(p => p.SKU).HasMaxLength(50);
         builder.Property(p => p.StockQuantity);
         builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
         builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
         builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
+        builder.Property(p => p.Colors).HasMaxLength(50).IsRequired();
+        builder.Property(p => p.Sizes).HasMaxLength(20).IsRequired();
         builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);

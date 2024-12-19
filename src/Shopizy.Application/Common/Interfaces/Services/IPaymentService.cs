@@ -10,11 +10,5 @@ public interface IPaymentService
         string name,
         CancellationToken cancellationToken
     );
-    Task<ErrorOr<CheckoutSession>> CreateCheckoutSession(
-        string customerEmail,
-        decimal price,
-        string successUrl,
-        string cancelUrl,
-        CancellationToken cancellationToken = default
-    );
+    Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request);
 }

@@ -11,13 +11,14 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 public record CreateOrderCommand(
     Guid UserId,
     string PromoCode,
+    int DeliveryMethod,
     decimal DeliveryChargeAmount,
     Currency DeliveryChargeCurrency,
     IEnumerable<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
 ) : IAuthorizeableRequest<ErrorOr<Order>>;
 
-public record OrderItemCommand(Guid ProductId, int Quantity);
+public record OrderItemCommand(Guid ProductId, string Color, string Size, int Quantity);
 
 public record AddressCommand(
     string Street,

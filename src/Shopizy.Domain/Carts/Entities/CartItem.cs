@@ -5,15 +5,17 @@ using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Domain.Carts.Entities;
 
-public sealed class LineItem : Entity<LineItemId>
+public sealed class CartItem : Entity<CartItemId>
 {
     public Product Product { get; private set; } = null!;
     public ProductId ProductId { get; private set; }
+    public string Color { get; private set; }
+    public string Size { get; private set; }
     public int Quantity { get; private set; }
 
-    public static LineItem Create(ProductId productId)
+    public static CartItem Create(ProductId productId, string color, string size)
     {
-        return new LineItem(LineItemId.CreateUnique(), productId);
+        return new CartItem(CartItemId.CreateUnique(), productId, color, size);
     }
 
     public void UpdateQuantity(int quantity)
@@ -21,11 +23,14 @@ public sealed class LineItem : Entity<LineItemId>
         Quantity = quantity;
     }
 
-    private LineItem(LineItemId lineItemId, ProductId productId) : base(lineItemId)
+    private CartItem(CartItemId CartItemId, ProductId productId, string color, string size)
+        : base(CartItemId)
     {
         ProductId = productId;
+        Color = color;
+        Size = size;
         Quantity = 1;
     }
 
-    private LineItem() { }
+    private CartItem() { }
 }

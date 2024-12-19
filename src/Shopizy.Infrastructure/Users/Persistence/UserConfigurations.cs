@@ -10,6 +10,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         ConfigureUsersTable(builder);
+        ConfigureUserPermissionsTable(builder);
     }
 
     private static void ConfigureUsersTable(EntityTypeBuilder<User> builder)
@@ -46,7 +47,33 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             }
         );
 
+        builder.Property(u => u.CustomerId).HasMaxLength(256).IsRequired(false);
+
         builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureUserPermissionsTable(EntityTypeBuilder<User> builder)
+    {
+        builder.OwnsMany(
+            u => u.PermissionIds,
+            permissionBuilder =>
+            {
+                permissionBuilder.ToTable("UserPermissionIds");
+
+                permissionBuilder.WithOwner().HasForeignKey("UserId");
+
+                permissionBuilder.HasKey("Id");
+
+                permissionBuilder
+                    .Property(d => d.Value)
+                    .HasColumnName("PermissionId")
+                    .ValueGeneratedNever();
+            }
+        );
+
+        builder
+            .Metadata.FindNavigation(nameof(User.PermissionIds))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

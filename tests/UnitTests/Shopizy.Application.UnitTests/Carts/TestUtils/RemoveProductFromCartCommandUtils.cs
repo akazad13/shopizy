@@ -10,7 +10,7 @@ public static class RemoveProductFromCartCommandUtils
         return new RemoveProductFromCartCommand(
             Constants.User.Id.Value,
             Constants.Cart.Id.Value,
-            Constants.Product.Id.Value
+            Constants.CartItem.Id.Value
         );
     }
 }

@@ -24,6 +24,11 @@ public static partial class CustomErrors
                 code: "User.PasswordNotCorrect",
                 description: "Password is not correct."
             );
+        public static Error PasswordSameAsOld =>
+            Error.Validation(
+                code: "User.PasswordSameAsOld",
+                description: "Password is same as old password."
+            );
         public static Error PasswordNotUpdated =>
             Error.Validation(
                 code: "User.PasswordNotUpdated",

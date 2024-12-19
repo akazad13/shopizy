@@ -7,7 +7,7 @@ namespace Shopizy.Application.Products.Queries.GetProducts;
 public record GetProductsQuery(
     string? Name,
     IList<Guid>? CategoryIds,
-    double? AverageRating,
+    decimal? AverageRating,
     int PageNumber,
     int PageSize
 ) : IRequest<ErrorOr<List<Product>>>;

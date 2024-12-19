@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -21,11 +20,8 @@ public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICu
         var id = Guid.Parse(GetSingleClaimValue("id"));
         List<string> permissions = GetClaimValues("permissions");
         List<string> roles = GetClaimValues(ClaimTypes.Role);
-        string firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
-        string lastName = GetSingleClaimValue(ClaimTypes.Surname);
-        string phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
 
-        return new CurrentUser(id, firstName, lastName, phone, permissions, roles);
+        return new CurrentUser(id, permissions, roles);
     }
 
     private List<string> GetClaimValues(string claimType) =>

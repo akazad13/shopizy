@@ -30,7 +30,7 @@ public class CreateCartWithFirstProductCommandHandler(
         }
 
         var cart = Cart.Create(UserId.Create(cmd.UserId));
-        cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
+        cart.AddLineItem(CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size));
 
         await _cartRepository.AddAsync(cart);
 

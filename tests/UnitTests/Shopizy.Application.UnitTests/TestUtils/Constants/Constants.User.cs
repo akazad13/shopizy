@@ -1,4 +1,5 @@
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.TestUtils.Constants;
@@ -15,8 +16,8 @@ public static partial class Constants
         public const string LastName = "Doe";
         public const string ProfileImageUrl = "";
         public const string Phone = "1234567890";
-        public const string Password = "password";
-        public const string NewPassword = "password";
+        public const string Password = "oldPassword";
+        public const string NewPassword = "newPassword";
         public static readonly Address Address = Address.CreateNew(
             "Street",
             "City",
@@ -24,5 +25,7 @@ public static partial class Constants
             "Country",
             "ZipCode"
         );
+
+        public static readonly PermissionId PermissionId = PermissionId.CreateUnique();
     }
 }

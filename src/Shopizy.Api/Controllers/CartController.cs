@@ -66,7 +66,7 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
     }
 
-    [HttpPatch("{cartId:guid}/update-quantity")]
+    [HttpPatch("{cartId:guid}/items/{itemId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -75,10 +75,11 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
     public async Task<IActionResult> UpdateProductQuantityAsync(
         Guid userId,
         Guid cartId,
+        Guid itemId,
         UpdateProductQuantityRequest request
     )
     {
-        var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, request));
+        var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, itemId, request));
         var result = await _mediator.Send(command);
 
         return result.Match(
@@ -87,19 +88,15 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         );
     }
 
-    [HttpDelete("{cartId:guid}/remove-product/{productId:guid}")]
+    [HttpDelete("{cartId:guid}/items/{itemId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> RemoveProductFromCartAsync(
-        Guid userId,
-        Guid cartId,
-        Guid productId
-    )
+    public async Task<IActionResult> RemoveItemFromCartAsync(Guid userId, Guid cartId, Guid itemId)
     {
-        var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, productId));
+        var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, itemId));
         var result = await _mediator.Send(command);
 
         return result.Match(

@@ -1,36 +1,55 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
 
 namespace Shopizy.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler(
     IUserRepository userRepository,
-    IJwtTokenGenerator jwtTokenGenerator,
     IPasswordManager passwordManager
-) : IRequestHandler<RegisterCommand, ErrorOr<AuthResult>>
+) : IRequestHandler<RegisterCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IPasswordManager _passwordManager = passwordManager;
 
-    public async Task<ErrorOr<AuthResult>> Handle(
+    public async Task<ErrorOr<Success>> Handle(
         RegisterCommand command,
         CancellationToken cancellationToken
     )
     {
-        if ((await _userRepository.GetUserByPhone(command.Phone)) is not null)
+        if ((await _userRepository.GetUserByPhoneAsync(command.Phone)) is not null)
         {
             return CustomErrors.User.DuplicatePhone;
         }
 
         var hashedPassword = _passwordManager.CreateHashString(command.Password);
 
-        var user = User.Create(command.FirstName, command.LastName, command.Phone, hashedPassword);
+        var permissionIds = new List<PermissionId>()
+        {
+            PermissionId.Create(new("249E733D-5BDC-49C3-91CA-06AE25A9C897")),
+            PermissionId.Create(new("D6C2E3C6-314B-4F2E-A407-34139B145771")),
+            PermissionId.Create(new("9601BA5E-EB54-4487-BFE0-563462D3CC25")),
+            PermissionId.Create(new("0374E597-604E-4146-8F40-8C994D26C290")),
+            PermissionId.Create(new("ACD9D507-AC45-4CD2-B0F4-91126C71319A")),
+            PermissionId.Create(new("2A19090A-B3F3-4B30-9CED-934EE0503D26")),
+            PermissionId.Create(new("4B88CB16-0228-4669-BA7F-B75F42A3B7AF")),
+            PermissionId.Create(new("5E2A486B-D9A0-4F83-8FF2-C56EF97CE485")),
+            PermissionId.Create(new("DD25381D-063C-4A3A-9539-DEEC640919A4")),
+            PermissionId.Create(new("20082930-3857-4B34-80D0-E256B9B585D8")),
+            PermissionId.Create(new("0C65A58A-D472-4D5D-848E-EAC46F988F5D")),
+        };
+
+        var user = User.Create(
+            command.FirstName,
+            command.LastName,
+            command.Phone,
+            hashedPassword,
+            permissionIds
+        );
 
         await _userRepository.AddAsync(user);
 
@@ -39,18 +58,6 @@ public class RegisterCommandHandler(
             return CustomErrors.User.UserNotCreated;
         }
 
-        var roles = new List<string>();
-        var permissions = new List<string>();
-
-        var token = _jwtTokenGenerator.GenerateToken(
-            user.Id,
-            command.FirstName,
-            command.LastName,
-            command.Phone,
-            roles,
-            permissions
-        );
-
-        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Phone, token);
+        return Result.Success;
     }
 }

@@ -9,7 +9,7 @@ internal class ProductsByCriteriaSpec : Specification<Product>
     public ProductsByCriteriaSpec(
         string? name,
         IList<CategoryId>? categoryIds,
-        double? averageRating
+        decimal? averageRating
     )
         : base(product =>
             (name == null || product.Name.Contains(name))

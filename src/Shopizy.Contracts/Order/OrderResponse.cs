@@ -16,7 +16,10 @@ public record OrderResponse(
 public record OrderItemResponse(
     Guid OrderItemId,
     string Name,
+    Price UnitPrice,
     string PictureUrl,
+    string Color,
+    string Size,
     int Quantity,
     decimal Discount
 );

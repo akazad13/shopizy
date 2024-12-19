@@ -16,7 +16,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public Task<List<Product>> GetProductsAsync(
         string? name,
         IList<CategoryId>? categoryIds,
-        double? averageRating,
+        decimal? averageRating,
         int pageNumber,
         int pageSize
     )
@@ -29,7 +29,10 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
 
     public Task<Product?> GetProductByIdAsync(ProductId id)
     {
-        return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        return _dbContext
+            .Products.Include(p => p.ProductReviews)
+            .ThenInclude(p => p.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public Task<List<Product>> GetProductsByIdsAsync(IList<ProductId> ids)

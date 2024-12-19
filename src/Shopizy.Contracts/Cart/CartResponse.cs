@@ -5,17 +5,19 @@ public record CartResponse(
     Guid UserId,
     DateTime CreatedOn,
     DateTime ModifiedOn,
-    IList<LineItemResponse> LineItems
+    IList<CartItemResponse> CartItems
 );
 
-public record LineItemResponse(
-    Guid LineItemId,
+public record CartItemResponse(
+    Guid CartItemId,
     Guid ProductId,
+    string Color,
+    string Size,
     int Quantity,
-    LineProductResponse Product
+    CartProductResponse Product
 );
 
-public record LineProductResponse(
+public record CartProductResponse(
     string Name,
     string Description,
     string Price,

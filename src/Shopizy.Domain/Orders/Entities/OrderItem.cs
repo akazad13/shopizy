@@ -9,6 +9,8 @@ public sealed class OrderItem : Entity<OrderItemId>
     public string Name { get; private set; }
     public string PictureUrl { get; private set; }
     public Price UnitPrice { get; private set; }
+    public string Color { get; private set; }
+    public string Size { get; private set; }
     public int Quantity { get; private set; }
     public decimal Discount { get; private set; }
 
@@ -17,6 +19,8 @@ public sealed class OrderItem : Entity<OrderItemId>
         string pictureUrl,
         Price unitPrice,
         int quantity,
+        string color,
+        string size,
         decimal? discount
     )
     {
@@ -26,6 +30,8 @@ public sealed class OrderItem : Entity<OrderItemId>
             pictureUrl,
             unitPrice,
             quantity,
+            color,
+            size,
             discount
         );
     }
@@ -36,13 +42,18 @@ public sealed class OrderItem : Entity<OrderItemId>
         string pictureUrl,
         Price unitPrice,
         int quantity,
+        string color,
+        string size,
         decimal? discount
-    ) : base(orderItemId)
+    )
+        : base(orderItemId)
     {
         Name = name;
         PictureUrl = pictureUrl;
         UnitPrice = unitPrice;
         Quantity = quantity;
+        Color = color;
+        Size = size;
         Discount = discount ?? 0;
     }
 
@@ -55,6 +66,6 @@ public sealed class OrderItem : Entity<OrderItemId>
 
     public Price TotalDiscount()
     {
-        return Price.CreateNew((Discount / 100) * Quantity, UnitPrice.Currency);
+        return Price.CreateNew(UnitPrice.Amount * (Discount / 100) * Quantity, UnitPrice.Currency);
     }
 }

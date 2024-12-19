@@ -1,6 +1,7 @@
 namespace Shopizy.Domain.Common.Models;
 
-public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents where TId : notnull
+public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
+    where TId : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = [];
     public TId Id { get; protected set; }
@@ -50,5 +51,4 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
 
         return copy;
     }
-
 }

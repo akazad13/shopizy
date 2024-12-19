@@ -16,6 +16,7 @@ public sealed class Payment : Entity<PaymentId>
     public User User { get; set; } = null!;
     public UserId UserId { get; set; }
     public string PaymentMethod { get; private set; }
+    public string PaymentMethodId { get; private set; }
     public string TransactionId { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
     public Price Total { get; private set; }
@@ -27,6 +28,7 @@ public sealed class Payment : Entity<PaymentId>
         UserId userId,
         OrderId orderId,
         string paymentMethod,
+        string paymentMethodId,
         string transactionId,
         PaymentStatus paymentStatus,
         Price total,
@@ -38,6 +40,7 @@ public sealed class Payment : Entity<PaymentId>
             userId,
             orderId,
             paymentMethod,
+            paymentMethodId,
             transactionId,
             paymentStatus,
             total,
@@ -50,15 +53,18 @@ public sealed class Payment : Entity<PaymentId>
         UserId userId,
         OrderId orderId,
         string paymentMethod,
+        string paymentMethodId,
         string transactionId,
         PaymentStatus paymentStatus,
         Price total,
         Address billingAddress
-    ) : base(PaymentId)
+    )
+        : base(PaymentId)
     {
         UserId = userId;
         OrderId = orderId;
         PaymentMethod = paymentMethod;
+        PaymentMethodId = paymentMethodId;
         TransactionId = transactionId;
         PaymentStatus = paymentStatus;
         Total = total;
@@ -67,4 +73,16 @@ public sealed class Payment : Entity<PaymentId>
     }
 
     private Payment() { }
+
+    public void UpdatePaymentStatus(PaymentStatus status)
+    {
+        PaymentStatus = status;
+        ModifiedOn = DateTime.UtcNow;
+    }
+
+    public void UpdateTransactionId(string transactionId)
+    {
+        TransactionId = transactionId;
+        ModifiedOn = DateTime.UtcNow;
+    }
 }

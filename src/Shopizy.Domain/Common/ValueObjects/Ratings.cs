@@ -4,14 +4,14 @@ namespace Shopizy.Domain.Common.ValueObjects;
 
 public sealed class Rating : ValueObject
 {
-    public double Value { get; private set; }
+    public decimal Value { get; private set; }
 
-    private Rating(double value)
+    private Rating(decimal value)
     {
         Value = value;
     }
 
-    public static Rating CreateNew(double value)
+    public static Rating CreateNew(decimal value)
     {
         return new(value);
     }

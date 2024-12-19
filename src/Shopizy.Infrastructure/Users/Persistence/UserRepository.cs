@@ -10,7 +10,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<User?> GetUserByPhone(string phone)
+    public Task<User?> GetUserByPhoneAsync(string phone)
     {
         return _dbContext.Users.SingleOrDefaultAsync(u => u.Phone == phone);
     }

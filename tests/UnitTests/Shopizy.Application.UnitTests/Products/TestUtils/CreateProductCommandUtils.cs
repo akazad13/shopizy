@@ -10,6 +10,7 @@ public static class CreateProductCommandUtils
         return new CreateProductCommand(
             Constants.User.Id.Value,
             Constants.Product.Name,
+            Constants.Product.ShortDescription,
             Constants.Product.Description,
             Constants.Category.Id.Value,
             Constants.Product.UnitPrice,
@@ -17,6 +18,8 @@ public static class CreateProductCommandUtils
             Constants.Product.Discount,
             Constants.Product.Sku,
             Constants.Product.Brand,
+            Constants.Product.Colors,
+            Constants.Product.Sizes,
             Constants.Product.Tags,
             Constants.Product.Barcode,
             []
@@ -28,6 +31,7 @@ public static class CreateProductCommandUtils
         return new CreateProductCommand(
             Constants.User.Id.Value,
             "",
+            Constants.Product.ShortDescription,
             Constants.Product.Description,
             Constants.Category.Id.Value,
             Constants.Product.UnitPrice,
@@ -36,6 +40,8 @@ public static class CreateProductCommandUtils
             Constants.Product.Sku,
             Constants.Product.Brand,
             Constants.Product.Tags,
+            Constants.Product.Colors,
+            Constants.Product.Sizes,
             Constants.Product.Barcode,
             []
         );

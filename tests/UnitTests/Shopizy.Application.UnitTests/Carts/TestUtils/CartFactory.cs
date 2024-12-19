@@ -11,8 +11,12 @@ public static class CartFactory
         return Cart.Create(Constants.User.Id);
     }
 
-    public static LineItem CreateLineItem()
+    public static CartItem CreateCartItem()
     {
-        return LineItem.Create(Constants.Product.Id);
+        return CartItem.Create(
+            Constants.CartItem.ProductId,
+            Constants.CartItem.Color,
+            Constants.CartItem.Size
+        );
     }
 }

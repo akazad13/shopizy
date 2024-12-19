@@ -12,6 +12,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     private readonly List<ProductImage> _productImages = [];
     private readonly List<ProductReview> _productReviews = [];
     public string Name { get; private set; }
+    public string ShortDescription { get; private set; }
     public string Description { get; private set; }
     public CategoryId CategoryId { get; private set; }
     public string SKU { get; private set; }
@@ -19,6 +20,9 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
     public Price UnitPrice { get; private set; }
     public decimal? Discount { get; private set; }
     public string Brand { get; private set; }
+    public string Colors { get; private set; }
+    public string Sizes { get; private set; }
+    public int Favourites { get; private set; }
     public string Barcode { get; private set; }
     public string Tags { get; private set; }
     public AverageRating AverageRating { get; private set; }
@@ -30,6 +34,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
 
     public static Product Create(
         string name,
+        string shortDescription,
         string description,
         CategoryId categoryId,
         string sku,
@@ -37,12 +42,15 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         decimal? discount,
         string brand,
         string barcode,
+        string colors,
+        string sizes,
         string tags
     )
     {
         return new Product(
             ProductId.CreateUnique(),
             name,
+            shortDescription,
             description,
             categoryId,
             sku,
@@ -51,6 +59,8 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             discount,
             brand,
             barcode,
+            colors,
+            sizes,
             tags,
             AverageRating.CreateNew(0)
         );
@@ -58,6 +68,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
 
     public void Update(
         string name,
+        string shortDescription,
         string description,
         CategoryId categoryId,
         string sku,
@@ -65,10 +76,13 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         decimal? discount,
         string brand,
         string barcode,
+        string colors,
+        string sizes,
         string tags
     )
     {
         Name = name;
+        ShortDescription = shortDescription;
         Description = description;
         CategoryId = categoryId;
         SKU = sku;
@@ -76,11 +90,13 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Discount = discount;
         Brand = brand;
         Barcode = barcode;
+        Colors = colors;
+        Sizes = sizes;
         Tags = tags;
         ModifiedOn = DateTime.UtcNow;
     }
 
-    public void AddProductImages(List<ProductImage> productImages)
+    public void AddProductImages(IList<ProductImage> productImages)
     {
         _productImages.AddRange(productImages);
     }
@@ -95,9 +111,15 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         _productImages.Remove(productImage);
     }
 
+    public void UpdateFavourite()
+    {
+        Favourites += 1;
+    }
+
     private Product(
         ProductId productId,
         string name,
+        string shortDescription,
         string description,
         CategoryId categoryId,
         string sku,
@@ -106,12 +128,15 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         decimal? discount,
         string brand,
         string barcode,
+        string colors,
+        string sizes,
         string tags,
         AverageRating averageRating
     )
         : base(productId)
     {
         Name = name;
+        ShortDescription = shortDescription;
         Description = description;
         CategoryId = categoryId;
         SKU = sku;
@@ -120,6 +145,8 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Discount = discount;
         Brand = brand;
         Barcode = barcode;
+        Colors = colors;
+        Sizes = sizes;
         Tags = tags;
         AverageRating = averageRating;
         CreatedOn = DateTime.UtcNow;

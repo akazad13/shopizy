@@ -20,7 +20,12 @@ public class UpdatePasswordCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        Domain.Users.User? user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        if (request.OldPassword == request.NewPassword)
+        {
+            return CustomErrors.User.PasswordSameAsOld;
+        }
+
+        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
         if (user is null)
         {
             return CustomErrors.User.UserNotFound;

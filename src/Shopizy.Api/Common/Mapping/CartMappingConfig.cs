@@ -36,18 +36,19 @@ public class CartMappingConfig : IRegister
 
         config
             .NewConfig<
-                (Guid UserId, Guid CartId, UpdateProductQuantityRequest request),
+                (Guid UserId, Guid CartId, Guid ItemId, UpdateProductQuantityRequest request),
                 UpdateProductQuantityCommand
             >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
+            .Map(dest => dest.ItemId, src => src.ItemId)
             .Map(dest => dest, src => src.request);
 
         config
-            .NewConfig<(Guid UserId, Guid CartId, Guid ProductId), RemoveProductFromCartCommand>()
+            .NewConfig<(Guid UserId, Guid CartId, Guid ItemId), RemoveProductFromCartCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
-            .Map(dest => dest.ProductId, src => src.ProductId);
+            .Map(dest => dest.ItemId, src => src.ItemId);
 
         config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
 
@@ -55,11 +56,11 @@ public class CartMappingConfig : IRegister
             .NewConfig<Cart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
-            .Map(dest => dest.LineItems, src => src.LineItems);
+            .Map(dest => dest.CartItems, src => src.CartItems);
 
         config
-            .NewConfig<LineItem, LineItemResponse>()
-            .Map(dest => dest.LineItemId, src => src.Id.Value)
+            .NewConfig<CartItem, CartItemResponse>()
+            .Map(dest => dest.CartItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.Product, src => src.Product)
@@ -69,6 +70,7 @@ public class CartMappingConfig : IRegister
                     src.Product.ProductImages == null
                         ? null
                         : src.Product.ProductImages.Select(pi => pi.ImageUrl)
-            );
+            )
+            .Map(dest => dest.Product.Price, src => src.Product.UnitPrice.Amount);
     }
 }

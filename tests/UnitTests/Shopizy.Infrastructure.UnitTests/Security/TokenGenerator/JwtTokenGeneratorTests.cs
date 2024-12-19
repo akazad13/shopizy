@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Authentication;
@@ -31,34 +30,18 @@ public class JwtTokenGeneratorTests
     {
         // Arrange
         var userId = UserId.CreateUnique();
-        string firstName = "John";
-        string lastName = "Doe";
-        string phone = "123456789";
         var roles = new List<string> { "Admin", "Moderator" };
         var permissions = new List<string> { "CanCreateProduct", "CanEditProduct" };
 
         // Act
-        string token = _jwtTokenGenerator.GenerateToken(
-            userId,
-            firstName,
-            lastName,
-            phone,
-            roles,
-            permissions
-        );
+        string token = _jwtTokenGenerator.GenerateToken(userId, roles, permissions);
 
         // Assert
         var jwtToken = new JwtSecurityToken(token);
 
-        jwtToken.Claims.Should().HaveCount(13);
+        jwtToken.Claims.Should().HaveCount(10);
         jwtToken.Claims.Should().Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
-        jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == JwtRegisteredClaimNames.Name && c.Value == firstName);
-        jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == JwtRegisteredClaimNames.FamilyName && c.Value == lastName);
-        jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.MobilePhone && c.Value == phone);
+
         jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
         jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
 

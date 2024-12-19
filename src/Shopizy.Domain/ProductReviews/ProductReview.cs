@@ -2,6 +2,7 @@ using Shopizy.Domain.Common.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.ProductReviews;
@@ -9,6 +10,7 @@ namespace Shopizy.Domain.ProductReviews;
 public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
 {
     public UserId UserId { get; set; }
+    public User User { get; set; }
     public ProductId ProductId { get; set; }
     public Rating Rating { get; set; }
     public string Comment { get; set; }
@@ -37,7 +39,8 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
         ProductId productId,
         Rating rating,
         string comment
-    ) : base(productReviewId)
+    )
+        : base(productReviewId)
     {
         UserId = userId;
         ProductId = productId;

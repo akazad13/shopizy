@@ -4,16 +4,16 @@ namespace Shopizy.Domain.Common.ValueObjects;
 
 public sealed class AverageRating : ValueObject
 {
-    private AverageRating(double value, int numRatings)
+    private AverageRating(decimal value, int numRatings)
     {
         Value = value;
         NumRatings = numRatings;
     }
 
-    public double Value { get; private set; }
+    public decimal Value { get; private set; }
     public int NumRatings { get; private set; }
 
-    public static AverageRating CreateNew(double rating = 0, int numRatings = 0)
+    public static AverageRating CreateNew(decimal rating = 0, int numRatings = 0)
     {
         return new AverageRating(rating, numRatings);
     }

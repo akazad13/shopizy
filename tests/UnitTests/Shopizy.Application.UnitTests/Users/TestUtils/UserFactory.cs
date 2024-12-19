@@ -11,19 +11,14 @@ public static class UserFactory
             Constants.User.FirstName,
             Constants.User.LastName,
             Constants.User.Phone,
-            Constants.User.Password
+            Constants.User.Password,
+            [Constants.User.PermissionId]
         );
     }
 
     public static User UpdateAddress(User user)
     {
         user.UpdateAddress(Constants.User.Address);
-        return user;
-    }
-
-    public static User UpdatePassword(User user)
-    {
-        user.UpdatePassword(Constants.User.NewPassword);
         return user;
     }
 }

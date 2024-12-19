@@ -9,7 +9,9 @@ public static class CreateCartWithFirstProductCommandUtils
     {
         return new CreateCartWithFirstProductCommand(
             Constants.User.Id.Value,
-            Constants.Product.Id.Value
+            Constants.Product.Id.Value,
+            Constants.CartItem.Color,
+            Constants.CartItem.Size
         );
     }
 }

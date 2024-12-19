@@ -74,7 +74,7 @@ public class RemoveProductFromCartCommandHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(
-            x => x.Update(It.Is<Cart>(c => c.LineItems.Count == 0)),
+            x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 0)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);

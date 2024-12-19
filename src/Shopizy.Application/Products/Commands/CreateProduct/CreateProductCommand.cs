@@ -11,6 +11,7 @@ namespace Shopizy.Application.Products.Commands.CreateProduct;
 public record CreateProductCommand(
     Guid UserId,
     string Name,
+    string ShortDescription,
     string Description,
     Guid CategoryId,
     decimal UnitPrice,
@@ -18,6 +19,8 @@ public record CreateProductCommand(
     decimal Discount,
     string Sku,
     string Brand,
+    string Colors,
+    string Sizes,
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds

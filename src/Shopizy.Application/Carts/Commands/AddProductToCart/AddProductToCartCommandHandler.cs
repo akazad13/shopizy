@@ -33,7 +33,13 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Cart.CartNotFound;
         }
 
-        if (cart.LineItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
+        if (
+            cart.CartItems.Any(li =>
+                li.ProductId == ProductId.Create(cmd.ProductId)
+                && li.Color == cmd.Color
+                && li.Size == cmd.Size
+            )
+        )
         {
             return CustomErrors.Cart.ProductAlreadyExistInCart;
         }
@@ -45,7 +51,7 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Product.ProductNotFound;
         }
 
-        cart.AddLineItem(LineItem.Create(ProductId.Create(cmd.ProductId)));
+        cart.AddLineItem(CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size));
 
         _cartRepository.Update(cart);
 
