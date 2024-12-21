@@ -21,7 +21,7 @@ public class GetCartQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnValidCartWhenUserHasItemsInCartAsync()
+    public async Task ShouldReturnValidCartWhenUserHasItemsInCart()
     {
         // Arrange
         var cart = CartFactory.Create();

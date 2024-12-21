@@ -47,7 +47,7 @@ public class UpdatePasswordCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenUserIsNotFoundAsync()
+    public async Task ShouldReturnErrorWhenUserIsNotFound()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -75,7 +75,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenOldPasswordDoesNotMatchAsync()
+    public async Task ShouldReturnErrorWhenOldPasswordDoesNotMatch()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -102,7 +102,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldUpdatePasswordWhenOldPasswordIsCorrectAndNewPasswordIsProvidedAsync()
+    public async Task ShouldUpdatePasswordWhenOldPasswordIsCorrectAndNewPasswordIsProvided()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -138,7 +138,7 @@ public class UpdatePasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenNewPasswordIsSameAsOldPasswordAsync()
+    public async Task ShouldReturnErrorWhenNewPasswordIsSameAsOldPassword()
     {
         // Arrange
         var command = UpdatePasswordCommandUtils.CreateCommandWithSameOldAndNewPassword();

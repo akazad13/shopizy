@@ -2,11 +2,12 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
+using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.CreateCartWithFirstProduct;
 
@@ -15,20 +16,23 @@ public class CreateCartWithFirstProductCommandHandlerTests
     private readonly CreateCartWithFirstProductCommandHandler _sut;
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<ICartRepository> _mockCartRepository;
+    private readonly Mock<ICurrentUser> _mockCurrentUser;
 
     public CreateCartWithFirstProductCommandHandlerTests()
     {
         _mockProductRepository = new Mock<IProductRepository>();
         _mockCartRepository = new Mock<ICartRepository>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
         _sut = new CreateCartWithFirstProductCommandHandler(
             _mockProductRepository.Object,
-            _mockCartRepository.Object
+            _mockCartRepository.Object,
+            _mockCurrentUser.Object
         );
     }
 
     // Should returns product not found when product doest not exist
     [Fact]
-    public async Task ShouldReturnsProductNotFoundWhenProductDoesNotExistAsync()
+    public async Task ShouldReturnsProductNotFoundWhenProductDoesNotExist()
     {
         // Arrange
         var command = CreateCartWithFirstProductCommandUtils.CreateCommand();
@@ -54,7 +58,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
 
     // Should creates cart with line item and returns when product exists
     [Fact]
-    public async Task ShouldCreatesCartWithLineItemAndReturnsWhenProductExistsAsync()
+    public async Task ShouldCreatesCartWithLineItemAndReturnsWhenProductExists()
     {
         // Arrange
         var cart = CartFactory.Create();
@@ -63,6 +67,8 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockProductRepository
             .Setup(x => x.IsProductExistAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(true);
+
+        _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         _mockCartRepository.Setup(x => x.AddAsync(It.IsAny<Cart>()));
         _mockCartRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
@@ -79,7 +85,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
         _mockCartRepository.Verify(
             x =>
                 x.AddAsync(
-                    It.Is<Cart>(c => c.UserId.Value == command.UserId && c.CartItems.Count == 1)
+                    It.Is<Cart>(c => c.UserId == Constants.User.Id && c.CartItems.Count == 1)
                 ),
             Times.Once
         );
@@ -89,7 +95,7 @@ public class CreateCartWithFirstProductCommandHandlerTests
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeNull();
         result.Value.Should().BeOfType(typeof(Cart));
-        result.Value.UserId.Should().Be(UserId.Create(command.UserId));
+        result.Value.UserId.Should().Be(Constants.User.Id);
         result.Value.CartItems.Should().HaveCount(1);
         result.Value.CartItems[0].ProductId.Should().Be(ProductId.Create(command.ProductId));
     }

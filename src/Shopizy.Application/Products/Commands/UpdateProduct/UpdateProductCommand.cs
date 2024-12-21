@@ -6,7 +6,7 @@ using Shopizy.Domain.Common.Enums;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
-[Authorize(Permissions = Permissions.Product.Modify, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.Product.Modify, Policies = Policy.Admin)]
 public record UpdateProductCommand(
     Guid UserId,
     Guid ProductId,

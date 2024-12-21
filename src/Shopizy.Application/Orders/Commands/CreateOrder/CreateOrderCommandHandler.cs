@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
@@ -13,11 +14,13 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler(
     IProductRepository productRepository,
-    IOrderRepository orderRepository
+    IOrderRepository orderRepository,
+    ICurrentUser currentUser
 ) : IRequestHandler<CreateOrderCommand, ErrorOr<Order>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Order>> Handle(
         CreateOrderCommand request,
@@ -41,7 +44,7 @@ public class CreateOrderCommandHandler(
         // }
 
         var order = Order.Create(
-            userId: UserId.Create(request.UserId),
+            userId: UserId.Create(_currentUser.GetCurrentUserId()),
             promoCode: request.PromoCode,
             deliveryMethod: request.DeliveryMethod,
             deliveryCharge: Price.CreateNew(

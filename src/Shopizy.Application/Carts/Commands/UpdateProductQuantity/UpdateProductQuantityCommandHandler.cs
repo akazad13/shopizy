@@ -26,7 +26,7 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
             return CustomErrors.Cart.CartNotFound;
         }
 
-        cart.UpdateLineItem(CartItemId.Create(cmd.ItemId), cmd.Quantity);
+        cart.UpdateLineItem(CartItemId.Create(cmd.CartItemId), cmd.Quantity);
 
         _cartRepository.Update(cart);
 

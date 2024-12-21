@@ -23,7 +23,7 @@ public class CloudinaryMediaUploaderTests
     }
 
     [Fact]
-    public async Task ShouldReturnReturnSecureUrlWithValidFileAsync()
+    public async Task ShouldReturnReturnSecureUrlWithValidFile()
     {
         // Arrange
         byte[] filebytes = Encoding.UTF8.GetBytes("dummy image");
@@ -60,7 +60,7 @@ public class CloudinaryMediaUploaderTests
     }
 
     [Fact]
-    public async Task ShouldDeleteAndReturnSuccessWithValidPublicIdAsync()
+    public async Task ShouldDeleteAndReturnSuccessWithValidPublicId()
     {
         // Arrange
         string publicId = "test";

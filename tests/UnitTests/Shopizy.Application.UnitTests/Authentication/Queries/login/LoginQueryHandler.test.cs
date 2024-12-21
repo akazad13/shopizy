@@ -1,0 +1,353 @@
+using FluentAssertions;
+using Moq;
+using Shopizy.Application.Authentication.Common;
+using Shopizy.Application.Authentication.Queries.login;
+using Shopizy.Application.Common.Interfaces.Authentication;
+using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.UnitTests.Authentication.TestUtils;
+using Shopizy.Application.UnitTests.Users.TestUtils;
+using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Permissions;
+using Shopizy.Domain.Users;
+
+namespace Shopizy.Application.UnitTests.Authentication.Queries.login;
+
+public class LoginQueryHandlerTests
+{
+    private readonly Mock<IUserRepository> _mockUserRepository;
+    private readonly Mock<IPermissionRepository> _mockPermissionRepository;
+    private readonly Mock<IJwtTokenGenerator> _mockJwtTokenGenerator;
+    private readonly Mock<IPasswordManager> _mockPasswordManager;
+    private readonly LoginQueryHandler _handler;
+
+    public LoginQueryHandlerTests()
+    {
+        _mockUserRepository = new Mock<IUserRepository>();
+        _mockPermissionRepository = new Mock<IPermissionRepository>();
+        _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
+        _mockPasswordManager = new Mock<IPasswordManager>();
+
+        _handler = new LoginQueryHandler(
+            _mockUserRepository.Object,
+            _mockPermissionRepository.Object,
+            _mockJwtTokenGenerator.Object,
+            _mockPasswordManager.Object
+        );
+    }
+
+    [Fact]
+    public async Task ShouldReturnsUserNotFoundWhileLoginErrorWhenUserNotFound()
+    {
+        // Arrange
+        var query = new LoginQuery("1234567890", "password");
+        _mockUserRepository
+            .Setup(r => r.GetUserByPhoneAsync(query.Phone))
+            .ReturnsAsync((User?)null);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(CustomErrors.User.UserNotFoundWhileLogin);
+    }
+
+    [Fact]
+    public async Task ShouldReturnsInvalidCredentialsErrorWhenInvalidPassword()
+    {
+        // Arrange
+        var query = new LoginQuery("1234567890", "password");
+        var user = User.Create("John", "Doe", "1234567890", "password", []);
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password)).Returns(false);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(CustomErrors.Authentication.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task ShouldGeneratesTokenWithCorrectDataWhenValidCredentials()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        var permissions = AuthFactory.GetPermissions();
+        var expectedToken = "generated_token";
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.IsAny<List<string>>(),
+                    It.Is<IEnumerable<string>>(p =>
+                        p.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
+                    )
+                )
+            )
+            .Returns(expectedToken);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result
+            .Value.Should()
+            .BeEquivalentTo(
+                new AuthResult(
+                    user.Id.Value,
+                    user.FirstName,
+                    user.LastName,
+                    user.Phone,
+                    expectedToken
+                )
+            );
+        _mockJwtTokenGenerator.Verify(
+            j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.Is<List<string>>(r => !r.Any()),
+                    It.Is<IEnumerable<string>>(p =>
+                        p.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
+                    )
+                ),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task ShouldReturnsAuthResultWithEmptyPermissionsWhenEmptyPermissionList()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync([]);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+            )
+            .Returns("generatedToken");
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<AuthResult>();
+        result.Value.Id.Should().Be(user.Id.Value);
+        result.Value.FirstName.Should().Be(user.FirstName);
+        result.Value.LastName.Should().Be(user.LastName);
+        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Token.Should().Be("generatedToken");
+        _mockJwtTokenGenerator.Verify(
+            j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.Is<List<string>>(r => r.Count == 0),
+                    It.Is<IEnumerable<string>>(p => !p.Any())
+                ),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task ShouldReturnsAuthResultWithCorrectDetailsWhenValidCredentials()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        var permissions = AuthFactory.GetPermissions();
+
+        var token = "generatedToken";
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+            )
+            .Returns(token);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<AuthResult>();
+        result.Value.Id.Should().Be(user.Id.Value);
+        result.Value.FirstName.Should().Be(user.FirstName);
+        result.Value.LastName.Should().Be(user.LastName);
+        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Token.Should().Be(token);
+    }
+
+    [Fact]
+    public async Task ShouldReturnsAuthResultWithEmptyPermissionsWhenUserWithNoAssignedPermissions()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        var allPermissions = new List<Permission> { Permission.Create("SomePermission") };
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+            )
+            .Returns("generatedToken");
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<AuthResult>();
+        result.Value.Token.Should().Be("generatedToken");
+        _mockJwtTokenGenerator.Verify(
+            j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.Is<List<string>>(r => r.Count == 0),
+                    It.Is<IEnumerable<string>>(p => !p.Any())
+                ),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task ShouldReturnAuthResultWithAssignedPermissionsWhenCorrectlyFiltersAndSelectsAssignedPermissions()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        var allPermissions = AuthFactory.GetPermissions();
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(pm => pm.Verify(query.Password, user.Password)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+            )
+            .Returns("generatedToken");
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        _mockJwtTokenGenerator.Verify(
+            j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.Is<List<string>>(roles => roles.Count == 0),
+                    It.Is<IEnumerable<string>>(permissions =>
+                        permissions.Count() == 2
+                        && permissions.Contains("get:category")
+                        && permissions.Contains("get:product")
+                    )
+                ),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task ShouldThrowsOperationCanceledExceptionWhenCancellationRequested()
+    {
+        // Arrange
+        var query = new LoginQuery("1234567890", "password");
+        var cancellationTokenSource = new CancellationTokenSource();
+        await cancellationTokenSource.CancelAsync();
+
+        // Act & Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            () => _handler.Handle(query, cancellationTokenSource.Token)
+        );
+
+        cancellationTokenSource.Dispose();
+    }
+
+    [Fact]
+    public async Task ShouldReturnsInvalidCredentialsErrorWhenNullPassword()
+    {
+        // Arrange
+        var query = new LoginQuery("1234567890", null!);
+        var user = UserFactory.CreateUser();
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager
+            .Setup(pm => pm.Verify(It.IsAny<string>(), user.Password!))
+            .Returns(false);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(CustomErrors.Authentication.InvalidCredentials);
+    }
+
+    [Fact]
+    public async Task ShouldReturnsCorrectAuthResultWithEmptyRolesWhenValidCredentials()
+    {
+        // Arrange
+        var query = LoginQueryUtils.CreateQuery();
+        var user = UserFactory.CreateUser();
+
+        var permissions = AuthFactory.GetPermissions();
+
+        var expectedToken = "generatedToken";
+
+        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockPasswordManager.Setup(pm => pm.Verify(query.Password, user.Password)).Returns(true);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
+        _mockJwtTokenGenerator
+            .Setup(j =>
+                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+            )
+            .Returns(expectedToken);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<AuthResult>();
+        result.Value.Id.Should().Be(user.Id.Value);
+        result.Value.FirstName.Should().Be(user.FirstName);
+        result.Value.LastName.Should().Be(user.LastName);
+        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Token.Should().Be(expectedToken);
+
+        _mockJwtTokenGenerator.Verify(
+            j =>
+                j.GenerateToken(
+                    user.Id,
+                    It.Is<List<string>>(roles => roles.Count == 0),
+                    It.Is<IEnumerable<string>>(perms =>
+                        perms.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
+                    )
+                ),
+            Times.Once
+        );
+    }
+}

@@ -8,7 +8,6 @@ public static class CreateCartWithFirstProductCommandUtils
     public static CreateCartWithFirstProductCommand CreateCommand()
     {
         return new CreateCartWithFirstProductCommand(
-            Constants.User.Id.Value,
             Constants.Product.Id.Value,
             Constants.CartItem.Color,
             Constants.CartItem.Size

@@ -12,7 +12,7 @@ public static class UserFactory
             Constants.User.LastName,
             Constants.User.Phone,
             Constants.User.Password,
-            [Constants.User.PermissionId]
+            Constants.User.PermissionIds
         );
     }
 

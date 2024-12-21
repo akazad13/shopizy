@@ -27,7 +27,7 @@ public class DeleteProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldSuccessfullyDeleteAProductWithValidIdAsync()
+    public async Task ShouldSuccessfullyDeleteAProductWithValidId()
     {
         // Arrange
         var command = DeleteProductCommandUtils.CreateCommand();

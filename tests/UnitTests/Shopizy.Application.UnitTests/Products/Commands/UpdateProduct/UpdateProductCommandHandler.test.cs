@@ -21,7 +21,7 @@ public class UpdateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldUpdateTheProductSuccessfullyWhenAllRequiredFieldsAreProvidedAsync()
+    public async Task ShouldUpdateTheProductSuccessfullyWhenAllRequiredFieldsAreProvided()
     {
         // Arrange
         var command = UpdateProductCommandUtils.CreateCommand();

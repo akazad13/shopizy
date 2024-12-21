@@ -7,6 +7,6 @@ using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Application.Products.Commands.AddProductImage;
 
-[Authorize(Permissions = Permissions.Product.Create, Policies = Policy.SelfOrAdmin)]
-public record AddProductImageCommand(Guid UserId, Guid ProductId, IFormFile? File)
+[Authorize(Permissions = Permissions.Product.Create, Policies = Policy.Admin)]
+public record AddProductImageCommand(Guid ProductId, IFormFile? File)
     : IAuthorizeableRequest<ErrorOr<ProductImage>>;

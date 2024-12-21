@@ -26,6 +26,14 @@ public class RegisterCommandHandler(
             return CustomErrors.User.DuplicatePhone;
         }
 
+        if (
+            string.IsNullOrEmpty(command.FirstName?.Trim())
+            || string.IsNullOrEmpty(command.LastName?.Trim())
+        )
+        {
+            return CustomErrors.User.InvalidName;
+        }
+
         var hashedPassword = _passwordManager.CreateHashString(command.Password);
 
         var permissionIds = new List<PermissionId>()

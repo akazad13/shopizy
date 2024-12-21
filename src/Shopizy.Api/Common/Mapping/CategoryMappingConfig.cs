@@ -19,22 +19,16 @@ public class CategoryMappingConfig : IRegister
 
         config
             .NewConfig<(Guid UserId, CreateCategoryRequest Request), CreateCategoryCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.Request);
 
         config
-            .NewConfig<
-                (Guid UserId, Guid CategoryId, UpdateCategoryRequest Request),
-                UpdateCategoryCommand
-            >()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .NewConfig<(Guid CategoryId, UpdateCategoryRequest Request), UpdateCategoryCommand>()
             .Map(dest => dest.CategoryId, src => src.CategoryId)
             .Map(dest => dest, src => src.Request);
 
         config
-            .NewConfig<(Guid UserId, Guid CategoryId), DeleteCategoryCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.CategoryId, src => src.CategoryId);
+            .NewConfig<Guid, DeleteCategoryCommand>()
+            .MapWith(src => new DeleteCategoryCommand(src));
 
         config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);
 

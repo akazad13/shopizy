@@ -37,7 +37,6 @@ public class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService _a
             .ToList();
 
         var authorizationResult = _authorizationService.AuthorizeCurrentUser(
-            request,
             requiredRoles,
             requiredPermissions,
             requiredPolicies

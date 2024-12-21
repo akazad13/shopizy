@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/v1.0/users/{userId:guid}/payments")]
+[Route("api/v1.0/payments")]
 public class PaymentController(ISender mediator, IMapper mapper) : ApiController
 {
     private readonly ISender _mediator = mediator;
@@ -21,11 +21,11 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateSaleAsync(Guid userId, CardNotPresentSaleRequest request)
+    public async Task<IActionResult> CreateSaleAsync(CardNotPresentSaleRequest request)
     {
         if (request.PaymentMethod.ToLower() == "Card")
         {
-            var command = _mapper.Map<CardNotPresentSaleCommand>((userId, request));
+            var command = _mapper.Map<CardNotPresentSaleCommand>(request);
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -35,7 +35,7 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
         }
         else
         {
-            var command = _mapper.Map<CashOnDeliverySaleCommand>((userId, request));
+            var command = _mapper.Map<CashOnDeliverySaleCommand>(request);
             var result = await _mediator.Send(command);
 
             return result.Match(

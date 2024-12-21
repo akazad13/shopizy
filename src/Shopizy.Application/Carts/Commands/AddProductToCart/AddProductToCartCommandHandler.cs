@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
@@ -12,11 +13,13 @@ namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
 public class AddProductToCartCommandHandler(
     ICartRepository cartRepository,
-    IProductRepository productRepository
+    IProductRepository productRepository,
+    ICurrentUser currentUser
 ) : IRequestHandler<AddProductToCartCommand, ErrorOr<Cart>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Cart>> Handle(
         AddProductToCartCommand cmd,
@@ -60,6 +63,8 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Cart.CartPrductNotAdded;
         }
 
-        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId));
+        return await _cartRepository.GetCartByUserIdAsync(
+            UserId.Create(_currentUser.GetCurrentUserId())
+        );
     }
 }

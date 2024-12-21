@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Behaviors;
+using Shopizy.Application.Common.Security.CurrentUser;
 
 namespace Shopizy.Application;
 
@@ -16,6 +17,8 @@ public static class DependencyInjectionRegister
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
         // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }

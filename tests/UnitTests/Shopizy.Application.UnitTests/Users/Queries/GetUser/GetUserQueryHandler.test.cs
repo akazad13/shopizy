@@ -20,7 +20,7 @@ public class GetUserQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnUserObjectWhenValidUserIdIsProvidedAsync()
+    public async Task ShouldReturnUserObjectWhenValidUserIdIsProvided()
     {
         // Arrange
         var user = UserFactory.CreateUser();

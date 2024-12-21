@@ -7,6 +7,6 @@ public static class GetOrderQueryUtils
 {
     public static GetOrderQuery CreateQuery()
     {
-        return new GetOrderQuery(Constants.User.Id.Value, Constants.Order.Id.Value);
+        return new GetOrderQuery(Constants.Order.Id.Value);
     }
 }

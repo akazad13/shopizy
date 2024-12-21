@@ -26,6 +26,10 @@ public static partial class Constants
             "ZipCode"
         );
 
-        public static readonly PermissionId PermissionId = PermissionId.CreateUnique();
+        public static readonly IList<PermissionId> PermissionIds =
+        [
+            PermissionConstants.GetCategoryPermission.Id,
+            PermissionConstants.GetProductPermission.Id,
+        ];
     }
 }

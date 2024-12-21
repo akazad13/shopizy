@@ -2,6 +2,7 @@ using FluentAssertions;
 using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Carts;
@@ -16,21 +17,25 @@ public class AddProductToCartCommandHandlerTests
 {
     private readonly Mock<ICartRepository> _mockCartRepository;
     private readonly Mock<IProductRepository> _mockProductRepository;
+    private readonly Mock<ICurrentUser> _mockCurrentUser;
     private readonly AddProductToCartCommandHandler _sut;
 
     public AddProductToCartCommandHandlerTests()
     {
         _mockCartRepository = new Mock<ICartRepository>();
         _mockProductRepository = new Mock<IProductRepository>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
+
         _sut = new AddProductToCartCommandHandler(
             _mockCartRepository.Object,
-            _mockProductRepository.Object
+            _mockProductRepository.Object,
+            _mockCurrentUser.Object
         );
     }
 
     // Should return error when cart is not found
     [Fact]
-    public async Task ShouldReturnErrorWhenCartIdIsInvalidAsync()
+    public async Task ShouldReturnErrorWhenCartIdIsInvalid()
     {
         // Arrange
         var command = AddProductToCartCommandUtils.CreateCommand();
@@ -51,7 +56,7 @@ public class AddProductToCartCommandHandlerTests
 
     // Should add new line item to cart when product is not already present
     [Fact]
-    public async Task ShouldAddNewLineItemToCartWhenProductIsNotAlreadyPresentAsync()
+    public async Task ShouldAddNewLineItemToCartWhenProductIsNotAlreadyPresent()
     {
         // Arrange
         var existingCart = CartFactory.Create();
@@ -70,6 +75,8 @@ public class AddProductToCartCommandHandlerTests
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(existingCart.UserId))
             .ReturnsAsync(existingCart);
+
+        _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
 
@@ -94,7 +101,7 @@ public class AddProductToCartCommandHandlerTests
 
     // Should add new line item for another product
     [Fact]
-    public async Task ShouldAddNewLineItemForAnotherProductAsync()
+    public async Task ShouldAddNewLineItemForAnotherProduct()
     {
         // Arrange
         var existingCart = CartFactory.Create();
@@ -131,6 +138,8 @@ public class AddProductToCartCommandHandlerTests
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(updatedCart.UserId))
             .ReturnsAsync(updatedCart);
+
+        _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
         var cart = await _sut.Handle(command, CancellationToken.None);

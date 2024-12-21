@@ -30,15 +30,11 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldThrowExceptionWhenFileIsNullAsync()
+    public async Task ShouldThrowExceptionWhenFileIsNull()
     {
         // Arrange
 
-        var command = new AddProductImageCommand(
-            Constants.User.Id.Value,
-            Constants.Product.Id.Value,
-            null
-        );
+        var command = new AddProductImageCommand(Constants.Product.Id.Value, null);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -50,7 +46,7 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorResponseWhenProductIsNotFoundAsync()
+    public async Task ShouldReturnErrorResponseWhenProductIsNotFound()
     {
         // Arrange
         var command = AddProductImageCommandUtils.CreateCommand(Constants.Product.Id.Value);
@@ -69,7 +65,7 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnProductImageWhenProductIsFoundAndImageIsUploadedAsync()
+    public async Task ShouldReturnProductImageWhenProductIsFoundAndImageIsUploaded()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();

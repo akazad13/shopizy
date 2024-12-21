@@ -20,7 +20,7 @@ public class ListOrdersQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnNotFoundWhenNoOrdersAreFoundAsync()
+    public async Task ShouldReturnNotFoundWhenNoOrdersAreFound()
     {
         // Arrange
         var mockOrderRepository = new Mock<IOrderRepository>();
@@ -38,7 +38,7 @@ public class ListOrdersQueryHandlerTests
     }
 
     [Fact]
-    public async Task ReturnOrderListWhenEverythingOkayAsync()
+    public async Task ReturnOrderListWhenEverythingOkay()
     {
         // Arrange
         var Order = OrderFactory.CreateOrder();

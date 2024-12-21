@@ -57,7 +57,7 @@ public class DeleteCategoryCommandHandlerTests
 
     // Should delete the category and return a success response when the category exists
     [Fact]
-    public async Task ShouldDeleteCategoryAndReturnSuccessResponseWhenCategoryExistsAsync()
+    public async Task ShouldDeleteCategoryAndReturnSuccessResponseWhenCategoryExists()
     {
         // Arrange
         var command = DeleteCategoryCommandUtils.CreateCommand();

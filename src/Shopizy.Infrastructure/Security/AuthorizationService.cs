@@ -1,6 +1,5 @@
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.Security.Request;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.PolicyEnforcer;
 
@@ -14,8 +13,7 @@ public class AuthorizationService(
     private readonly IPolicyEnforcer _policyEnforcer = policyEnforcer;
     private readonly ICurrentUserProvider _currentUserProvider = currentUserProvider;
 
-    public ErrorOr<Success> AuthorizeCurrentUser<T>(
-        IAuthorizeableRequest<T> request,
+    public ErrorOr<Success> AuthorizeCurrentUser(
         IList<string> requiredRoles,
         IList<string> requiredPermissions,
         IList<string> requiredPolicies
@@ -44,11 +42,7 @@ public class AuthorizationService(
 
         foreach (string policy in requiredPolicies)
         {
-            var authorizationAgaistPolicyResult = _policyEnforcer.Authorize(
-                request,
-                currentUser,
-                policy
-            );
+            var authorizationAgaistPolicyResult = _policyEnforcer.Authorize(currentUser, policy);
             if (authorizationAgaistPolicyResult.IsError)
             {
                 return authorizationAgaistPolicyResult.Errors;

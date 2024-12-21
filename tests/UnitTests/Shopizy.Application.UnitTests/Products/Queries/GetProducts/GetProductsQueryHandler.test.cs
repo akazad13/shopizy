@@ -19,7 +19,7 @@ public class GetProductsQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenNoProductsAreAvailableAsync()
+    public async Task ShouldReturnErrorWhenNoProductsAreAvailable()
     {
         // Arrange
         var query = new GetProductsQuery(null, null, null, 1, 10);

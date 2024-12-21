@@ -7,6 +7,6 @@ public static class DeleteProductCommandUtils
 {
     public static DeleteProductCommand CreateCommand()
     {
-        return new DeleteProductCommand(Constants.User.Id.Value, Constants.Product.Id.Value);
+        return new DeleteProductCommand(Constants.Product.Id.Value);
     }
 }

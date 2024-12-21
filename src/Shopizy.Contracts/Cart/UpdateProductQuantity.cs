@@ -1,3 +1,3 @@
 namespace Shopizy.Contracts.Cart;
 
-public record UpdateProductQuantityRequest(Guid ProductId, int Quantity);
+public record UpdateProductQuantityRequest(int Quantity);

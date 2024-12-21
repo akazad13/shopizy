@@ -3,6 +3,7 @@ using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Common.models;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -16,13 +17,15 @@ public class CardNotPresentSaleCommandHandler(
     IPaymentRepository paymentRepository,
     IOrderRepository orderRepository,
     IUserRepository userRepository,
-    IPaymentService paymentService
+    IPaymentService paymentService,
+    ICurrentUser currentUser
 ) : IRequestHandler<CardNotPresentSaleCommand, ErrorOr<Success>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPaymentService _paymentService = paymentService;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Success>> Handle(
         CardNotPresentSaleCommand request,
@@ -40,10 +43,12 @@ public class CardNotPresentSaleCommandHandler(
 
             var total = order.GetTotal();
 
-            var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+            var user = await _userRepository.GetUserById(
+                UserId.Create(_currentUser.GetCurrentUserId())
+            );
 
             var payment = Payment.Create(
-                UserId.Create(request.UserId),
+                UserId.Create(_currentUser.GetCurrentUserId()),
                 OrderId.Create(request.OrderId),
                 request.PaymentMethod,
                 request.PaymentMethodId,

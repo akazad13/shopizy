@@ -7,6 +7,6 @@ public static class DeleteCategoryCommandUtils
 {
     public static DeleteCategoryCommand CreateCommand()
     {
-        return new DeleteCategoryCommand(Constants.User.Id.Value, Constants.Category.Id.Value);
+        return new DeleteCategoryCommand(Constants.Category.Id.Value);
     }
 }

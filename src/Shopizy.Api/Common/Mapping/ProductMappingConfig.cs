@@ -22,24 +22,16 @@ public class ProductMappingConfig : IRegister
 
         config.NewConfig<ProductsCriteriaRequest, GetProductsQuery>();
 
-        config
-            .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest, src => src.request);
+        config.NewConfig<CreateProductRequest, CreateProductCommand>();
 
         config
-            .NewConfig<
-                (Guid UserId, Guid productId, UpdateProductRequest request),
-                UpdateProductCommand
-            >()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .NewConfig<(Guid productId, UpdateProductRequest request), UpdateProductCommand>()
             .Map(dest => dest.ProductId, src => src.productId)
             .Map(dest => dest, src => src.request);
 
         config
-            .NewConfig<(Guid UserId, Guid ProductId), DeleteProductCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.ProductId, src => src.ProductId);
+            .NewConfig<Guid, DeleteProductCommand>()
+            .MapWith(src => new DeleteProductCommand(src));
 
         config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
 
@@ -68,8 +60,7 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ReviewerImageUrl, src => src.User.ProfileImageUrl);
 
         config
-            .NewConfig<(Guid UserId, Guid ProductId, Guid ImageId), DeleteProductImageCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .NewConfig<(Guid ProductId, Guid ImageId), DeleteProductImageCommand>()
             .Map(dest => dest.ProductId, src => src.ProductId)
             .Map(dest => dest.ImageId, src => src.ImageId);
     }

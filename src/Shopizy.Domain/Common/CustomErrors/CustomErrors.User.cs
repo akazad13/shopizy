@@ -34,5 +34,11 @@ public static partial class CustomErrors
                 code: "User.PasswordNotUpdated",
                 description: "Failed to update password."
             );
+
+        public static Error InvalidName =>
+            Error.Validation(code: "User.InvalidName", description: "Invalid first/last name.");
+
+        public static Error InvalidPhoneFormat =>
+            Error.Validation(code: "User.InvalidPhoneFormat", description: "Invalid phone format.");
     }
 }

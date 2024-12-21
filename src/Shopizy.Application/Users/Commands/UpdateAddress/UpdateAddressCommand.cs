@@ -5,7 +5,7 @@ using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Users.Commands.UpdateAddress;
 
-[Authorize(Permissions = Permissions.User.Modify, Policies = Policy.SelfOrAdmin)]
+[Authorize(Permissions = Permissions.User.Modify, Policies = Policy.Admin)]
 public record UpdateAddressCommand(
     Guid UserId,
     string Street,

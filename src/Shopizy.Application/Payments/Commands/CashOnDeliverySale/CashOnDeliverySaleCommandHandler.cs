@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Common.ValueObjects;
@@ -14,11 +15,13 @@ namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 
 public class CashOnDeliverySaleCommandHandler(
     IPaymentRepository paymentRepository,
-    IOrderRepository orderRepository
+    IOrderRepository orderRepository,
+    ICurrentUser currentUser
 ) : IRequestHandler<CashOnDeliverySaleCommand, ErrorOr<Success>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Success>> Handle(
         CashOnDeliverySaleCommand request,
@@ -35,7 +38,7 @@ public class CashOnDeliverySaleCommandHandler(
             }
 
             var payment = Payment.Create(
-                UserId.Create(request.UserId),
+                UserId.Create(_currentUser.GetCurrentUserId()),
                 OrderId.Create(request.OrderId),
                 request.PaymentMethod,
                 "",

@@ -22,7 +22,7 @@ public class CancelOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnOrderIsNotFoundWhenOrderIdIsNotProvidedAsync()
+    public async Task ShouldReturnOrderIsNotFoundWhenOrderIdIsNotProvided()
     {
         // Arrange
         var command = CancelOrderCommandUtils.CreateCommand(Guid.Empty);
@@ -44,7 +44,7 @@ public class CancelOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldCancelTheOrderWhenOrderExistsAndCancellationReasonIsValidAsync()
+    public async Task ShouldCancelTheOrderWhenOrderExistsAndCancellationReasonIsValid()
     {
         // Arrange
         var order = OrderFactory.CreateOrder();

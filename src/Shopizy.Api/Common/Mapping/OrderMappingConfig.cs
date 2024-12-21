@@ -3,7 +3,6 @@ using Mapster;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
-using Shopizy.Application.Orders.Queries.ListOrders;
 using Shopizy.Contracts.Order;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
@@ -18,22 +17,18 @@ public class OrderMappingConfig : IRegister
         Guard.Against.Null(config);
 
         config
-            .NewConfig<(Guid UserId, CreateOrderRequest request), CreateOrderCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest, src => src.request)
-            .Map(dest => dest.DeliveryChargeAmount, src => src.request.DeliveryCharge.Amount)
+            .NewConfig<CreateOrderRequest, CreateOrderCommand>()
+            .Map(dest => dest.DeliveryChargeAmount, src => src.DeliveryCharge.Amount)
             .Map(
                 dest => dest.DeliveryChargeCurrency,
                 src =>
-                    src.request.DeliveryCharge.Currency == "usd" ? Currency.usd
-                    : src.request.DeliveryCharge.Currency == "bdt" ? Currency.bdt
-                    : src.request.DeliveryCharge.Currency == "euro" ? Currency.euro
+                    src.DeliveryCharge.Currency == "usd" ? Currency.usd
+                    : src.DeliveryCharge.Currency == "bdt" ? Currency.bdt
+                    : src.DeliveryCharge.Currency == "euro" ? Currency.euro
                     : Currency.usd
             );
-        config
-            .NewConfig<(Guid UserId, Guid OrderId), GetOrderQuery>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.OrderId, src => src.OrderId);
+
+        config.NewConfig<Guid, GetOrderQuery>().MapWith(orderId => new GetOrderQuery(orderId));
 
         config
             .NewConfig<Order, OrderResponse>()
@@ -43,18 +38,12 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString())
             .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString());
 
-        config.NewConfig<Guid, ListOrdersQuery>().MapWith(userId => new ListOrdersQuery(userId));
-
         config
             .NewConfig<OrderItem, OrderItemResponse>()
             .Map(dest => dest.OrderItemId, src => src.Id.Value);
 
         config
-            .NewConfig<
-                (Guid UserId, Guid OrderId, CancelOrderRequest request),
-                CancelOrderCommand
-            >()
-            .Map(dest => dest.UserId, src => src.UserId)
+            .NewConfig<(Guid OrderId, CancelOrderRequest request), CancelOrderCommand>()
             .Map(dest => dest.OrderId, src => src.OrderId)
             .Map(dest => dest.Reason, src => src.request.Reason);
     }

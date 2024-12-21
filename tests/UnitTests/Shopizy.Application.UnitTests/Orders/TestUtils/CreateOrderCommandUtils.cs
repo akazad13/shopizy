@@ -16,7 +16,6 @@ public static class CreateOrderCommandUtils
             Constants.User.Address.ZipCode
         );
         return new CreateOrderCommand(
-            Constants.User.Id.Value,
             Constants.Order.PromoCode,
             Constants.Order.DeliveryMethod,
             Constants.Order.DeliveryCharge.Amount,

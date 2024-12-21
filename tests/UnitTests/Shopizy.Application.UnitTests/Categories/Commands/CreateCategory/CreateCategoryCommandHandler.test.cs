@@ -22,7 +22,7 @@ public class CreateCategoryCommandHandlerTests
 
     // Should create a new category successfully
     [Fact]
-    public async Task ShouldCreateANewCategorySuccessfullyAsync()
+    public async Task ShouldCreateANewCategorySuccessfully()
     {
         // Arrange
         var command = CreateCategoryCommandUtils.CreateCommand();
@@ -45,7 +45,7 @@ public class CreateCategoryCommandHandlerTests
 
     // Should return an error when trying to create a category with a duplicate name
     [Fact]
-    public async Task ShouldReturnErrorWhenCreatingCategoryWithDuplicateNameAsync()
+    public async Task ShouldReturnErrorWhenCreatingCategoryWithDuplicateName()
     {
         // Arrange
         var command = CreateCategoryCommandUtils.CreateCommand();
@@ -66,7 +66,7 @@ public class CreateCategoryCommandHandlerTests
 
     // Should return an category not created error when category save failed
     [Fact]
-    public async Task ShouldReturnCategoryNotCreatedErrorWhenCategorySaveFailedAsync()
+    public async Task ShouldReturnCategoryNotCreatedErrorWhenCategorySaveFailed()
     {
         // Arrange
         var command = CreateCategoryCommandUtils.CreateCommand();

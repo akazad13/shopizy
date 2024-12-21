@@ -11,7 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/v1.0/users/{userId:guid}/orders")]
+[Route("api/v1.0/orders")]
 public class OrderController(ISender mediator, IMapper mapper) : ApiController
 {
     private readonly ISender _mediator = mediator;
@@ -22,9 +22,9 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> GetOrdersAsync(Guid UserId)
+    public async Task<IActionResult> GetOrdersAsync()
     {
-        var query = _mapper.Map<ListOrdersQuery>(UserId);
+        var query = new ListOrdersQuery();
         var result = await _mediator.Send(query);
 
         return result.Match(Product => Ok(_mapper.Map<List<OrderResponse>>(Product)), Problem);
@@ -35,9 +35,9 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> GetOrderAsync(Guid userId, Guid orderId)
+    public async Task<IActionResult> GetOrderAsync(Guid orderId)
     {
-        var query = _mapper.Map<GetOrderQuery>((userId, orderId));
+        var query = _mapper.Map<GetOrderQuery>(orderId);
         var result = await _mediator.Send(query);
 
         return result.Match(order => Ok(_mapper.Map<OrderResponse>(order)), Problem);
@@ -49,9 +49,9 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateOrderAsync(Guid userId, CreateOrderRequest request)
+    public async Task<IActionResult> CreateOrderAsync(CreateOrderRequest request)
     {
-        var command = _mapper.Map<CreateOrderCommand>((userId, request));
+        var command = _mapper.Map<CreateOrderCommand>(request);
         var result = await _mediator.Send(command);
 
         return result.Match(order => Ok(_mapper.Map<OrderResponse>(order)), Problem);
@@ -63,13 +63,9 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CancelOrderAsync(
-        Guid userId,
-        Guid orderId,
-        CancelOrderRequest request
-    )
+    public async Task<IActionResult> CancelOrderAsync(Guid orderId, CancelOrderRequest request)
     {
-        var command = _mapper.Map<CancelOrderCommand>((userId, orderId, request));
+        var command = _mapper.Map<CancelOrderCommand>((orderId, request));
         var result = await _mediator.Send(command);
 
         return result.Match(

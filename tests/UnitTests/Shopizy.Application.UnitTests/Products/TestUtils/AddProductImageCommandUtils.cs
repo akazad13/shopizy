@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Products.Commands.AddProductImage;
-using Shopizy.Application.UnitTests.TestUtils.Constants;
 
 namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
@@ -25,6 +24,6 @@ public static class AddProductImageCommandUtils
 
         ms.Dispose();
 
-        return new AddProductImageCommand(Constants.User.Id.Value, productId, fileMock.Object);
+        return new AddProductImageCommand(productId, fileMock.Object);
     }
 }

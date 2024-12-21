@@ -5,6 +5,5 @@ using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
-[Authorize(Permissions = Permissions.Category.Delete, Policies = Policy.SelfOrAdmin)]
-public record DeleteCategoryCommand(Guid UserId, Guid CategoryId)
-    : IAuthorizeableRequest<ErrorOr<Success>>;
+[Authorize(Permissions = Permissions.Category.Delete, Policies = Policy.Admin)]
+public record DeleteCategoryCommand(Guid CategoryId) : IAuthorizeableRequest<ErrorOr<Success>>;

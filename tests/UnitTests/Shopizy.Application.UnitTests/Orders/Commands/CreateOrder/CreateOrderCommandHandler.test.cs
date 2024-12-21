@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;
@@ -14,20 +15,23 @@ public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
+    private readonly Mock<ICurrentUser> _mockCurrentUser;
     private readonly CreateOrderCommandHandler _sut;
 
     public CreateOrderCommandHandlerTests()
     {
         _mockProductRepository = new Mock<IProductRepository>();
         _mockOrderRepository = new Mock<IOrderRepository>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
         _sut = new CreateOrderCommandHandler(
             _mockProductRepository.Object,
-            _mockOrderRepository.Object
+            _mockOrderRepository.Object,
+            _mockCurrentUser.Object
         );
     }
 
     [Fact]
-    public async Task ShouldHandleValidOrderCreationRequestAsync()
+    public async Task ShouldHandleValidOrderCreationRequest()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();
@@ -59,7 +63,7 @@ public class CreateOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenProductIdNotFoundAsync()
+    public async Task ShouldReturnErrorWhenProductIdNotFound()
     {
         // Arrange
         var command = CreateOrderCommandUtils.CreateCommand([]);

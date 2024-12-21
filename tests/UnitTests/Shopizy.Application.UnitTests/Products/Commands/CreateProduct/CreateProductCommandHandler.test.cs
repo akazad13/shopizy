@@ -25,7 +25,7 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldThrowExceptionWhenProductNameIsEmptyAsync()
+    public async Task ShouldThrowExceptionWhenProductNameIsEmpty()
     {
         // Arrange
         var command = CreateProductCommandUtils.CreateCommandWithEmptyProductName();
@@ -43,7 +43,7 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldCreateAndReturnProductWhenProductIsValidAsync()
+    public async Task ShouldCreateAndReturnProductWhenProductIsValid()
     {
         // Arrange
 

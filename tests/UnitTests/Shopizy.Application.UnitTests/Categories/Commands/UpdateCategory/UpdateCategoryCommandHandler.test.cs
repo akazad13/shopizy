@@ -135,7 +135,7 @@ public class UpdateCategoryCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldReturnCategoryWhenCategoryIsUpdatedSuccessfullyAsync()
+    public async Task ShouldReturnCategoryWhenCategoryIsUpdatedSuccessfully()
     {
         // Arrange
         var command = UpdateCategoryCommandUtils.CreateCommand();

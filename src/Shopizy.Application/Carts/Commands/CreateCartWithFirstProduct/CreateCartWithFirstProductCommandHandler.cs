@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Common.CustomErrors;
@@ -11,11 +12,13 @@ namespace Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 
 public class CreateCartWithFirstProductCommandHandler(
     IProductRepository productRepository,
-    ICartRepository cartRepository
+    ICartRepository cartRepository,
+    ICurrentUser currentUser
 ) : IRequestHandler<CreateCartWithFirstProductCommand, ErrorOr<Cart>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Cart>> Handle(
         CreateCartWithFirstProductCommand cmd,
@@ -29,7 +32,7 @@ public class CreateCartWithFirstProductCommandHandler(
             return CustomErrors.Product.ProductNotFound;
         }
 
-        var cart = Cart.Create(UserId.Create(cmd.UserId));
+        var cart = Cart.Create(UserId.Create(_currentUser.GetCurrentUserId()));
         cart.AddLineItem(CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size));
 
         await _cartRepository.AddAsync(cart);
@@ -39,6 +42,8 @@ public class CreateCartWithFirstProductCommandHandler(
             return CustomErrors.Cart.CartNotCreated;
         }
 
-        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId));
+        return await _cartRepository.GetCartByUserIdAsync(
+            UserId.Create(_currentUser.GetCurrentUserId())
+        );
     }
 }

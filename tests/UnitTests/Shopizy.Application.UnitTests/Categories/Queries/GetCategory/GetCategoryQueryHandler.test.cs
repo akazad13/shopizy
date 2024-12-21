@@ -21,7 +21,7 @@ public class GetCategoryQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnCategoryDetailsWhenCategoryIsFoundAsync()
+    public async Task ShouldReturnCategoryDetailsWhenCategoryIsFound()
     {
         // Arrange
         var category = CategoryFactory.Create();
@@ -43,7 +43,7 @@ public class GetCategoryQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnCategoryNotFoundErrorWhenCategoryIdDoesNotExistAsync()
+    public async Task ShouldReturnCategoryNotFoundErrorWhenCategoryIdDoesNotExist()
     {
         // Arrange
         var query = GetCategoryQueryUtils.CreateQuery(Constants.Category.Id);
