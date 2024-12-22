@@ -39,9 +39,9 @@ public class LoginQueryHandlerTests
     public async Task ShouldReturnsUserNotFoundWhileLoginErrorWhenUserNotFound()
     {
         // Arrange
-        var query = new LoginQuery("1234567890", "password");
+        var query = new LoginQuery("test@test.com", "password");
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(query.Phone))
+            .Setup(r => r.GetUserByEmailAsync(query.Email))
             .ReturnsAsync((User?)null);
 
         // Act
@@ -56,10 +56,10 @@ public class LoginQueryHandlerTests
     public async Task ShouldReturnsInvalidCredentialsErrorWhenInvalidPassword()
     {
         // Arrange
-        var query = new LoginQuery("1234567890", "password");
-        var user = User.Create("John", "Doe", "1234567890", "password", []);
+        var query = new LoginQuery("test@test.com", "password");
+        var user = User.Create("John", "Doe", "test@test.com", "password", []);
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password)).Returns(false);
 
         // Act
@@ -80,7 +80,7 @@ public class LoginQueryHandlerTests
         var permissions = AuthFactory.GetPermissions();
         var expectedToken = "generated_token";
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
         _mockJwtTokenGenerator
@@ -107,7 +107,7 @@ public class LoginQueryHandlerTests
                     user.Id.Value,
                     user.FirstName,
                     user.LastName,
-                    user.Phone,
+                    user.Email,
                     expectedToken
                 )
             );
@@ -115,7 +115,7 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(r => !r.Any()),
+                    It.Is<List<string>>(r => r.Count == 0),
                     It.Is<IEnumerable<string>>(p =>
                         p.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
                     )
@@ -131,7 +131,7 @@ public class LoginQueryHandlerTests
         var query = LoginQueryUtils.CreateQuery();
         var user = UserFactory.CreateUser();
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync([]);
         _mockJwtTokenGenerator
@@ -150,7 +150,7 @@ public class LoginQueryHandlerTests
         result.Value.Id.Should().Be(user.Id.Value);
         result.Value.FirstName.Should().Be(user.FirstName);
         result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Email.Should().Be(user.Email);
         result.Value.Token.Should().Be("generatedToken");
         _mockJwtTokenGenerator.Verify(
             j =>
@@ -174,7 +174,7 @@ public class LoginQueryHandlerTests
 
         var token = "generatedToken";
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
         _mockJwtTokenGenerator
@@ -192,7 +192,7 @@ public class LoginQueryHandlerTests
         result.Value.Id.Should().Be(user.Id.Value);
         result.Value.FirstName.Should().Be(user.FirstName);
         result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Email.Should().Be(user.Email);
         result.Value.Token.Should().Be(token);
     }
 
@@ -205,7 +205,7 @@ public class LoginQueryHandlerTests
 
         var allPermissions = new List<Permission> { Permission.Create("SomePermission") };
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
         _mockJwtTokenGenerator
@@ -241,7 +241,7 @@ public class LoginQueryHandlerTests
 
         var allPermissions = AuthFactory.GetPermissions();
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(pm => pm.Verify(query.Password, user.Password)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
         _mockJwtTokenGenerator
@@ -275,7 +275,7 @@ public class LoginQueryHandlerTests
     public async Task ShouldThrowsOperationCanceledExceptionWhenCancellationRequested()
     {
         // Arrange
-        var query = new LoginQuery("1234567890", "password");
+        var query = new LoginQuery("test@test.com", "password");
         var cancellationTokenSource = new CancellationTokenSource();
         await cancellationTokenSource.CancelAsync();
 
@@ -291,9 +291,9 @@ public class LoginQueryHandlerTests
     public async Task ShouldReturnsInvalidCredentialsErrorWhenNullPassword()
     {
         // Arrange
-        var query = new LoginQuery("1234567890", null!);
+        var query = new LoginQuery("test@test.com", null!);
         var user = UserFactory.CreateUser();
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager
             .Setup(pm => pm.Verify(It.IsAny<string>(), user.Password!))
             .Returns(false);
@@ -317,7 +317,7 @@ public class LoginQueryHandlerTests
 
         var expectedToken = "generatedToken";
 
-        _mockUserRepository.Setup(r => r.GetUserByPhoneAsync(query.Phone)).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(pm => pm.Verify(query.Password, user.Password)).Returns(true);
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
         _mockJwtTokenGenerator
@@ -335,7 +335,7 @@ public class LoginQueryHandlerTests
         result.Value.Id.Should().Be(user.Id.Value);
         result.Value.FirstName.Should().Be(user.FirstName);
         result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Phone.Should().Be(user.Phone);
+        result.Value.Email.Should().Be(user.Email);
         result.Value.Token.Should().Be(expectedToken);
 
         _mockJwtTokenGenerator.Verify(

@@ -10,7 +10,7 @@ public static class UserFactory
         return User.Create(
             Constants.User.FirstName,
             Constants.User.LastName,
-            Constants.User.Phone,
+            Constants.User.Email,
             Constants.User.Password,
             Constants.User.PermissionIds
         );

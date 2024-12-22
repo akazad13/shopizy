@@ -27,22 +27,22 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnDuplicatePhoneErrorWhenUserWithSamePhoneAlreadyExists()
+    public async Task ShouldReturnDuplicateEmailErrorWhenUserWithSameEmailAlreadyExists()
     {
         // Arrange
-        var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
+        var command = new RegisterCommand("John", "Doe", "test@test.com", "password123");
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
-            .ReturnsAsync(User.Create("Existing", "User", command.Phone, "hashedPassword", []));
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
+            .ReturnsAsync(User.Create("Existing", "User", command.Email, "hashedPassword", []));
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().Contain(CustomErrors.User.DuplicatePhone);
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
+        result.Errors.Should().Contain(CustomErrors.User.DuplicateEmail);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -69,7 +69,7 @@ public class RegisterCommandHandlerTests
         };
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
 
         _mockPasswordManager
@@ -84,7 +84,7 @@ public class RegisterCommandHandlerTests
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().BeOfType<Success>();
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
             r =>
@@ -92,7 +92,7 @@ public class RegisterCommandHandlerTests
                     It.Is<User>(u =>
                         u.FirstName == command.FirstName
                         && u.LastName == command.LastName
-                        && u.Phone == command.Phone
+                        && u.Email == command.Email
                         && u.Password == hashedPassword
                         && u.PermissionIds.Select(p => p.Value)
                             .SequenceEqual(expectedPermissionIds.Select(p => p.Value))
@@ -111,7 +111,7 @@ public class RegisterCommandHandlerTests
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
 
         _mockPasswordManager
@@ -128,7 +128,7 @@ public class RegisterCommandHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().Contain(CustomErrors.User.UserNotCreated);
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
@@ -142,7 +142,7 @@ public class RegisterCommandHandlerTests
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
 
         _mockPasswordManager
@@ -220,7 +220,7 @@ public class RegisterCommandHandlerTests
         var command = new RegisterCommand(firstName, lastName, "1234567890", "password123");
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
 
         // Act
@@ -229,7 +229,7 @@ public class RegisterCommandHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().Contain(CustomErrors.User.InvalidName);
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
         _mockPasswordManager.Verify(
@@ -277,7 +277,7 @@ public class RegisterCommandHandlerTests
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
         _mockPasswordManager
             .Setup(pm => pm.CreateHashString(command.Password, 10000))
@@ -299,16 +299,16 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldHandleConcurrentRegistrationAttemptsForSamePhoneNumber()
+    public async Task ShouldHandleConcurrentRegistrationAttemptsForSameEmail()
     {
         // Arrange
-        var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
+        var command = new RegisterCommand("John", "Doe", "test@test.com", "password123");
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
-            .SetupSequence(r => r.GetUserByPhoneAsync(command.Phone))
+            .SetupSequence(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null)
-            .ReturnsAsync(User.Create("Existing", "User", command.Phone, "existingHash", []));
+            .ReturnsAsync(User.Create("Existing", "User", command.Email, "existingHash", []));
 
         _mockPasswordManager
             .Setup(pm => pm.CreateHashString(command.Password, 1000))
@@ -328,9 +328,9 @@ public class RegisterCommandHandlerTests
         results[0].IsError.Should().BeFalse();
         results[0].Value.Should().BeOfType<Success>();
         results[1].IsError.Should().BeTrue();
-        results[1].Errors.Should().Contain(CustomErrors.User.DuplicatePhone);
+        results[1].Errors.Should().Contain(CustomErrors.User.DuplicateEmail);
 
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Exactly(2));
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Exactly(2));
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
@@ -371,17 +371,18 @@ public class RegisterCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldHandleExtremelyLongInputValuesForFirstNameLastNameAndPhone()
+    public async Task ShouldHandleExtremelyLongInputValuesForFirstNameLastNameAndEmail()
     {
         // Arrange
         var longFirstName = new string('A', 1000);
         var longLastName = new string('B', 1000);
-        var longPhone = new string('1', 1000);
-        var command = new RegisterCommand(longFirstName, longLastName, longPhone, "password123");
+        var longEmail = new string('a', 500);
+        longEmail += "@test.com";
+        var command = new RegisterCommand(longFirstName, longLastName, longEmail, "password123");
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
-            .Setup(r => r.GetUserByPhoneAsync(command.Phone))
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
         _mockPasswordManager
             .Setup(pm => pm.CreateHashString(command.Password, 10000))
@@ -395,7 +396,7 @@ public class RegisterCommandHandlerTests
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().BeOfType<Success>();
-        _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
             r =>
@@ -403,7 +404,7 @@ public class RegisterCommandHandlerTests
                     It.Is<User>(u =>
                         u.FirstName == longFirstName
                         && u.LastName == longLastName
-                        && u.Phone == longPhone
+                        && u.Email == longEmail
                         && u.Password == hashedPassword
                         && u.PermissionIds.Count == 11
                     )

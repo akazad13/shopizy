@@ -7,6 +7,6 @@ public static class LoginQueryUtils
 {
     public static LoginQuery CreateQuery()
     {
-        return new LoginQuery(Constants.User.Phone, Constants.User.Password);
+        return new LoginQuery(Constants.User.Email, Constants.User.Password);
     }
 }

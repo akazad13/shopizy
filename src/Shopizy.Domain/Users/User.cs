@@ -51,7 +51,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     {
         FirstName = firstName;
         LastName = lastName;
-        Phone = email;
+        Email = email;
         Password = password;
         _permissionIds = permissionIds.ToList();
         CreatedOn = DateTime.UtcNow;
