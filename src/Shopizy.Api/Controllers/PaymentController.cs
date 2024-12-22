@@ -23,7 +23,7 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateSaleAsync(CardNotPresentSaleRequest request)
     {
-        if (request.PaymentMethod.ToLower() == "Card")
+        if (request.PaymentMethod.ToLower() == "card")
         {
             var command = _mapper.Map<CardNotPresentSaleCommand>(request);
             var result = await _mediator.Send(command);

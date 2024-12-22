@@ -26,7 +26,7 @@ public class LoginQueryHandler(
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var user = await _userRepository.GetUserByPhoneAsync(query.Phone);
+        var user = await _userRepository.GetUserByEmailAsync(query.Email);
         if (user is null)
         {
             return CustomErrors.User.UserNotFoundWhileLogin;
@@ -52,6 +52,6 @@ public class LoginQueryHandler(
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, roles, assignedPermissions);
 
-        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Phone, token);
+        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);
     }
 }

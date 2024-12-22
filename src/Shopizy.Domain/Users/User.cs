@@ -1,20 +1,18 @@
 using Shopizy.Domain.Common.Models;
-using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
-using Shopizy.Domain.ProductReviews;
+using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Domain.Users;
 
 public sealed class User : AggregateRoot<UserId, Guid>
 {
-    private readonly IList<Order> _orders = [];
-    private readonly IList<ProductReview> _productReviews = [];
+    private readonly IList<OrderId> _orderIds = [];
+    private readonly IList<ProductReviewId> _productReviewIds = [];
     private readonly IList<PermissionId> _permissionIds = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-
     public string Email { get; private set; }
     public string? ProfileImageUrl { get; }
     public string Phone { get; private set; }
@@ -24,19 +22,19 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
 
-    public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
-    public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
+    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
+    public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
     public IReadOnlyList<PermissionId> PermissionIds => _permissionIds.AsReadOnly();
 
     public static User Create(
         string firstName,
         string lastName,
-        string phone,
+        string email,
         string? password,
         IList<PermissionId> permissionIds
     )
     {
-        return new(UserId.CreateUnique(), firstName, lastName, phone, password, permissionIds);
+        return new(UserId.CreateUnique(), firstName, lastName, email, password, permissionIds);
     }
 
     private User() { }
@@ -45,7 +43,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
         UserId userId,
         string firstName,
         string lastName,
-        string phone,
+        string email,
         string? password,
         IList<PermissionId> permissionIds
     )
@@ -53,7 +51,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     {
         FirstName = firstName;
         LastName = lastName;
-        Phone = phone;
+        Phone = email;
         Password = password;
         _permissionIds = permissionIds.ToList();
         CreatedOn = DateTime.UtcNow;

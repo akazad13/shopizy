@@ -20,7 +20,7 @@ public record CartItemResponse(
 public record CartProductResponse(
     string Name,
     string Description,
-    string Price,
+    decimal Price,
     decimal Discount,
     string Brand,
     int StockQuantity,

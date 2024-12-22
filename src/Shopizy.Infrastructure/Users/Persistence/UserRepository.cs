@@ -10,9 +10,9 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<User?> GetUserByPhoneAsync(string phone)
+    public Task<User?> GetUserByEmailAsync(string email)
     {
-        return _dbContext.Users.SingleOrDefaultAsync(u => u.Phone == phone);
+        return _dbContext.Users.SingleOrDefaultAsync(u => u.Email == email);
     }
 
     public Task<User?> GetUserById(UserId id)

@@ -6,8 +6,8 @@ public static partial class CustomErrors
 {
     public static class User
     {
-        public static Error DuplicatePhone =>
-            Error.Conflict(code: "User.DuplicatePhone", description: "Phone is already in use.");
+        public static Error DuplicateEmail =>
+            Error.Conflict(code: "User.DuplicateEmail", description: "Email is already in use.");
         public static Error UserNotFoundWhileLogin =>
             Error.Unauthorized(
                 code: "User.UserNotFound",

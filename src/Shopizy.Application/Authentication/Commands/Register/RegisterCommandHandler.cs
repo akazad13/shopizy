@@ -21,9 +21,9 @@ public class RegisterCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        if ((await _userRepository.GetUserByPhoneAsync(command.Phone)) is not null)
+        if ((await _userRepository.GetUserByEmailAsync(command.Email)) is not null)
         {
-            return CustomErrors.User.DuplicatePhone;
+            return CustomErrors.User.DuplicateEmail;
         }
 
         if (
@@ -54,7 +54,7 @@ public class RegisterCommandHandler(
         var user = User.Create(
             command.FirstName,
             command.LastName,
-            command.Phone,
+            command.Email,
             hashedPassword,
             permissionIds
         );

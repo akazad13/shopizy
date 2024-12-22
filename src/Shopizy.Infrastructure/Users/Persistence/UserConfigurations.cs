@@ -11,12 +11,14 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
     {
         ConfigureUsersTable(builder);
         ConfigureUserPermissionsTable(builder);
+        ConfigureProductReviewIdsTable(builder);
+        ConfigureOrderIdsTable(builder);
     }
 
     private static void ConfigureUsersTable(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users").HasKey(u => u.Id);
-        builder.HasIndex(u => u.Phone);
+        builder.HasIndex(u => u.Email);
 
         builder
             .Property(u => u.Id)
@@ -24,13 +26,12 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             .HasConversion(id => id.Value, value => UserId.Create(value));
 
         builder.Property(u => u.FirstName).HasMaxLength(50);
-
         builder.Property(u => u.LastName).HasMaxLength(50);
 
-        builder.Property(u => u.Phone).HasMaxLength(15);
+        builder.Property(u => u.Email).HasMaxLength(50).IsRequired(true);
+        builder.Property(u => u.Phone).HasMaxLength(15).IsRequired(false);
 
         builder.Property(u => u.Password).IsRequired(false);
-        builder.Property(u => u.Email).IsRequired(false);
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
@@ -49,8 +50,8 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.CustomerId).HasMaxLength(256).IsRequired(false);
 
-        builder.Navigation(p => p.Orders).UsePropertyAccessMode(PropertyAccessMode.Field);
-        builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.OrderIds).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductReviewIds).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static void ConfigureUserPermissionsTable(EntityTypeBuilder<User> builder)
@@ -74,6 +75,51 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder
             .Metadata.FindNavigation(nameof(User.PermissionIds))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureProductReviewIdsTable(EntityTypeBuilder<User> builder)
+    {
+        builder.OwnsMany(
+            m => m.ProductReviewIds,
+            reviewBuilder =>
+            {
+                reviewBuilder.ToTable("ProductReviewIds");
+
+                reviewBuilder.WithOwner().HasForeignKey("UseId");
+
+                reviewBuilder.HasKey("Id");
+
+                reviewBuilder
+                    .Property(r => r.Value)
+                    .HasColumnName("ProductReviewId")
+                    .ValueGeneratedNever();
+            }
+        );
+
+        builder
+            .Metadata.FindNavigation(nameof(User.ProductReviewIds))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureOrderIdsTable(EntityTypeBuilder<User> builder)
+    {
+        builder.OwnsMany(
+            m => m.OrderIds,
+            reviewBuilder =>
+            {
+                reviewBuilder.ToTable("OrderIds");
+
+                reviewBuilder.WithOwner().HasForeignKey("UseId");
+
+                reviewBuilder.HasKey("Id");
+
+                reviewBuilder.Property(r => r.Value).HasColumnName("OrderId").ValueGeneratedNever();
+            }
+        );
+
+        builder
+            .Metadata.FindNavigation(nameof(User.OrderIds))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }
