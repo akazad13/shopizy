@@ -13,9 +13,9 @@ public sealed class CartItem : Entity<CartItemId>
     public string Size { get; private set; }
     public int Quantity { get; private set; }
 
-    public static CartItem Create(ProductId productId, string color, string size)
+    public static CartItem Create(ProductId productId, string color, string size, int quantity)
     {
-        return new CartItem(CartItemId.CreateUnique(), productId, color, size);
+        return new CartItem(CartItemId.CreateUnique(), productId, color, size, quantity);
     }
 
     public void UpdateQuantity(int quantity)
@@ -23,13 +23,19 @@ public sealed class CartItem : Entity<CartItemId>
         Quantity = quantity;
     }
 
-    private CartItem(CartItemId CartItemId, ProductId productId, string color, string size)
+    private CartItem(
+        CartItemId CartItemId,
+        ProductId productId,
+        string color,
+        string size,
+        int quantity
+    )
         : base(CartItemId)
     {
         ProductId = productId;
         Color = color;
         Size = size;
-        Quantity = 1;
+        Quantity = quantity;
     }
 
     private CartItem() { }

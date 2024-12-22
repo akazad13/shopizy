@@ -1,7 +1,6 @@
 using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
-using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
@@ -16,8 +15,6 @@ public class CartMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         Guard.Against.Null(config);
-
-        config.NewConfig<CreateCartWithFirstProductRequest, CreateCartWithFirstProductCommand>();
 
         config
             .NewConfig<(Guid CartId, AddProductToCartRequest request), AddProductToCartCommand>()

@@ -54,7 +54,9 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Product.ProductNotFound;
         }
 
-        cart.AddLineItem(CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size));
+        cart.AddLineItem(
+            CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size, cmd.Quantity)
+        );
 
         _cartRepository.Update(cart);
 

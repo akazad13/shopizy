@@ -16,7 +16,7 @@ public class AuthenticationController(ISender mediator, IMapper mapper) : ApiCon
     private readonly IMapper _mapper = mapper;
 
     [HttpPost("register")]
-    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(AuthResponse))]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]

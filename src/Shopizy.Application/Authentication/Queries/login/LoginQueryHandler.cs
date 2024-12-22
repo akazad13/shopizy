@@ -3,6 +3,7 @@ using MediatR;
 using Shopizy.Application.Authentication.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Authentication.Queries.login;
@@ -11,13 +12,15 @@ public class LoginQueryHandler(
     IUserRepository userRepository,
     IPermissionRepository permissionRepository,
     IJwtTokenGenerator jwtTokenGenerator,
-    IPasswordManager passwordManager
+    IPasswordManager passwordManager,
+    ICartRepository cartRepository
 ) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPermissionRepository _permissionRepository = permissionRepository;
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IPasswordManager _passwordManager = passwordManager;
+    private readonly ICartRepository _cartRepository = cartRepository;
 
     public async Task<ErrorOr<AuthResult>> Handle(
         LoginQuery query,
@@ -51,6 +54,15 @@ public class LoginQueryHandler(
         }
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, roles, assignedPermissions);
+
+        var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
+
+        if (cart is null)
+        {
+            cart = Cart.Create(user.Id);
+            await _cartRepository.AddAsync(cart);
+            await _cartRepository.Commit(cancellationToken);
+        }
 
         return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);
     }

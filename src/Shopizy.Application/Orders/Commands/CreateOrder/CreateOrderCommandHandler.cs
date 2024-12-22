@@ -43,6 +43,8 @@ public class CreateOrderCommandHandler(
         //     }
         // }
 
+
+
         var order = Order.Create(
             userId: UserId.Create(_currentUser.GetCurrentUserId()),
             promoCode: request.PromoCode,
@@ -58,22 +60,27 @@ public class CreateOrderCommandHandler(
                 country: request.ShippingAddress.Country,
                 zipCode: request.ShippingAddress.ZipCode
             ),
-            orderItems: products.ConvertAll(product =>
-            {
-                var item = request.OrderItems.First(p => p.ProductId == product.Id.Value);
-                var photoUrl =
-                    product.ProductImages.Count == 0 ? "" : product.ProductImages[0].ImageUrl;
+            orderItems: request
+                .OrderItems.ToList()
+                .ConvertAll(item =>
+                {
+                    var product = products.First(p => p.Id.Value == item.ProductId);
+                    var photoUrl =
+                        product.ProductImages.Count == 0 ? "" : product.ProductImages[0].ImageUrl;
 
-                return OrderItem.Create(
-                    name: product.Name,
-                    pictureUrl: photoUrl,
-                    unitPrice: product.UnitPrice,
-                    quantity: item.Quantity,
-                    color: item.Color,
-                    size: item.Size,
-                    discount: product.Discount
-                );
-            })
+                    return OrderItem.Create(
+                        name: product.Name,
+                        pictureUrl: photoUrl,
+                        unitPrice: Price.CreateNew(
+                            product.UnitPrice.Amount,
+                            product.UnitPrice.Currency
+                        ),
+                        quantity: item.Quantity,
+                        color: item.Color,
+                        size: item.Size,
+                        discount: product.Discount
+                    );
+                })
         );
 
         await _orderRepository.AddAsync(order);
@@ -81,6 +88,9 @@ public class CreateOrderCommandHandler(
         {
             return CustomErrors.Order.OrderNotCreated;
         }
+
+        // remove cart items events
+
         return order;
     }
 }

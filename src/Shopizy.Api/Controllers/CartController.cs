@@ -2,7 +2,6 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
-using Shopizy.Application.Carts.Commands.CreateCartWithFirstProduct;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Carts.Queries.GetCart;
@@ -29,22 +28,6 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         var result = await _mediator.Send(query);
 
         return result.Match(Product => Ok(_mapper.Map<CartResponse>(Product)), Problem);
-    }
-
-    [HttpPost]
-    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
-    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
-    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateCartWithFirstProductAsync(
-        CreateCartWithFirstProductRequest request
-    )
-    {
-        var command = _mapper.Map<CreateCartWithFirstProductCommand>(request);
-        var result = await _mediator.Send(command);
-
-        return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
     }
 
     [HttpPatch("{cartId:guid}")]

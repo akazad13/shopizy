@@ -27,8 +27,8 @@ public class DeleteProductImageCommandHandler(
             return CustomErrors.Product.ProductNotFound;
         }
 
-        Domain.Products.Entities.ProductImage? prodImage = product.ProductImages.FirstOrDefault(
-            pi => pi.Id == ProductImageId.Create(cmd.ImageId)
+        var prodImage = product.ProductImages.FirstOrDefault(pi =>
+            pi.Id == ProductImageId.Create(cmd.ImageId)
         );
 
         if (prodImage is null)

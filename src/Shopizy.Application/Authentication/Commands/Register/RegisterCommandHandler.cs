@@ -2,6 +2,7 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
@@ -10,11 +11,13 @@ namespace Shopizy.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler(
     IUserRepository userRepository,
-    IPasswordManager passwordManager
+    IPasswordManager passwordManager,
+    ICartRepository cartRepository
 ) : IRequestHandler<RegisterCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordManager _passwordManager = passwordManager;
+    private readonly ICartRepository _cartRepository = cartRepository;
 
     public async Task<ErrorOr<Success>> Handle(
         RegisterCommand command,
@@ -65,6 +68,10 @@ public class RegisterCommandHandler(
         {
             return CustomErrors.User.UserNotCreated;
         }
+
+        var cart = Cart.Create(user.Id);
+        await _cartRepository.AddAsync(cart);
+        await _cartRepository.Commit(cancellationToken);
 
         return Result.Success;
     }
