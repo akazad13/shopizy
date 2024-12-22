@@ -109,7 +109,8 @@ public class AddProductToCartCommandHandlerTests
             CartItem.Create(
                 ProductId.CreateUnique(),
                 Constants.CartItem.Color,
-                Constants.CartItem.Size
+                Constants.CartItem.Size,
+                1
             )
         );
 
@@ -118,7 +119,8 @@ public class AddProductToCartCommandHandlerTests
             CartItem.Create(
                 ProductId.CreateUnique(),
                 Constants.CartItem.Color,
-                Constants.CartItem.Size
+                Constants.CartItem.Size,
+                1
             )
         );
         updatedCart.AddLineItem(CartFactory.CreateCartItem());

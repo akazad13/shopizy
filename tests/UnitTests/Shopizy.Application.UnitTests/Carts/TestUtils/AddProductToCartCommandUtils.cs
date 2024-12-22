@@ -11,7 +11,8 @@ public static class AddProductToCartCommandUtils
             Constants.Cart.Id.Value,
             Constants.Product.Id.Value,
             Constants.CartItem.Color,
-            Constants.CartItem.Size
+            Constants.CartItem.Size,
+            1
         );
     }
 }

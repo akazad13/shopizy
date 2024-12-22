@@ -16,7 +16,8 @@ public static class CartFactory
         return CartItem.Create(
             Constants.CartItem.ProductId,
             Constants.CartItem.Color,
-            Constants.CartItem.Size
+            Constants.CartItem.Size,
+            1
         );
     }
 }
