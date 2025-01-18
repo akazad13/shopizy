@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Users.Commands.UpdateAddress;
 using Shopizy.Application.Users.Commands.UpdatePassword;
+using Shopizy.Application.Users.Commands.UpdateUser;
 using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.User;
@@ -28,6 +29,23 @@ public class UserController(ISender mediator, IMapper mapper) : ApiController
         var result = await _mediator.Send(query);
 
         return result.Match(user => Ok(_mapper.Map<UserDetails>(user)), Problem);
+    }
+
+    [HttpPut]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(Success))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
+    public async Task<IActionResult> UpdateUserAsync(Guid userId, UpdateUserRequest request)
+    {
+        var command = _mapper.Map<UpdateUserCommand>((userId, request));
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            success => Ok(SuccessResult.Success("Successfully updated user.")),
+            Problem
+        );
     }
 
     [HttpPatch("address")]

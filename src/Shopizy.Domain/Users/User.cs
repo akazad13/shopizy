@@ -8,9 +8,9 @@ namespace Shopizy.Domain.Users;
 
 public sealed class User : AggregateRoot<UserId, Guid>
 {
-    private readonly IList<OrderId> _orderIds = [];
-    private readonly IList<ProductReviewId> _productReviewIds = [];
-    private readonly IList<PermissionId> _permissionIds = [];
+    private readonly List<OrderId> _orderIds = [];
+    private readonly List<ProductReviewId> _productReviewIds = [];
+    private readonly List<PermissionId> _permissionIds = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
@@ -57,9 +57,15 @@ public sealed class User : AggregateRoot<UserId, Guid>
         CreatedOn = DateTime.UtcNow;
     }
 
-    public void UpdateAddress(Address address)
+    public void UpdateAddress(
+        string street,
+        string city,
+        string state,
+        string country,
+        string zipCode
+    )
     {
-        Address = address;
+        Address = Address.CreateNew(street, city, state, country, zipCode);
         ModifiedOn = DateTime.UtcNow;
     }
 
@@ -69,9 +75,23 @@ public sealed class User : AggregateRoot<UserId, Guid>
         ModifiedOn = DateTime.UtcNow;
     }
 
-    public void UpdateEmail(string email)
+    public void Update(
+        string firstName,
+        string lastName,
+        string email,
+        string? phone,
+        string street,
+        string city,
+        string state,
+        string country,
+        string zipCode
+    )
     {
+        FirstName = firstName;
+        LastName = lastName;
         Email = email;
+        Phone = phone ?? string.Empty;
+        Address = Address.CreateNew(street, city, state, country, zipCode);
         ModifiedOn = DateTime.UtcNow;
     }
 

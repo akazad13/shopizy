@@ -5,9 +5,9 @@ namespace Shopizy.Application.UnitTests.Users.TestUtils;
 
 public static class UpdateAddressCommandUtils
 {
-    public static UpdateAddressCommand CreateCommand()
+    public static UpdateUserCommand CreateCommand()
     {
-        return new UpdateAddressCommand(
+        return new UpdateUserCommand(
             Constants.User.Id.Value,
             Constants.User.Address.Street,
             Constants.User.Address.City,

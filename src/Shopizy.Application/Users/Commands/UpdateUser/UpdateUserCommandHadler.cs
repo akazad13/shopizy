@@ -2,17 +2,18 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
-namespace Shopizy.Application.Users.Commands.UpdateAddress;
+namespace Shopizy.Application.Users.Commands.UpdateUser;
 
-public class UpdateAddressCommandHandler(IUserRepository userRepository)
-    : IRequestHandler<UpdateAddressCommand, ErrorOr<Success>>
+public class UpdateUserCommandHandler(IUserRepository userRepository)
+    : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<ErrorOr<Success>> Handle(
-        UpdateAddressCommand request,
+        UpdateUserCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -22,7 +23,11 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository)
             return CustomErrors.User.UserNotFound;
         }
 
-        user.UpdateAddress(
+        user.Update(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.PhoneNumber,
             request.Street,
             request.City,
             request.State,

@@ -6,8 +6,6 @@ namespace Shopizy.Infrastructure.Orders.Specifications;
 
 public class OrderByIdSpec : Specification<Order>
 {
-    public OrderByIdSpec(OrderId id) : base(order => order.Id == id)
-    {
-        AddInclude(order => order.OrderItems);
-    }
+    public OrderByIdSpec(OrderId id)
+        : base(order => order.Id == id) => AddInclude(order => order.OrderItems);
 }

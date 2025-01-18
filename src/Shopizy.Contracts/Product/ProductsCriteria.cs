@@ -1,6 +1,6 @@
 namespace shopizy.Contracts.Product;
 
-public record ProductsCriteriaRequest(
+public record ProductsCriteria(
     string? Name,
     IList<Guid>? CategoryIds,
     decimal? AverageRating,

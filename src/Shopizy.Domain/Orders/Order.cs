@@ -55,7 +55,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         : base(orderId)
     {
         UserId = userId;
-        OrderStatus = OrderStatus.Submitted;
+        OrderStatus = OrderStatus.Pending;
         PromoCode = promoCode;
         DeliveryMethod = (DeliveryMethods)deliveryMethod;
         DeliveryCharge = deliveryCharge;

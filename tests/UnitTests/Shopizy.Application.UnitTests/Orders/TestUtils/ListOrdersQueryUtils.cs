@@ -1,11 +1,11 @@
-using Shopizy.Application.Orders.Queries.ListOrders;
+using Shopizy.Application.Orders.Queries.GetOrders;
 
 namespace Shopizy.Application.UnitTests.Orders.TestUtils;
 
-public static class ListOrdersQueryUtils
+public static class GetOrdersQueryUtils
 {
-    public static ListOrdersQuery CreateQuery()
+    public static GetOrdersQuery CreateQuery()
     {
-        return new ListOrdersQuery();
+        return new GetOrdersQuery();
     }
 }

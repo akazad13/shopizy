@@ -12,17 +12,12 @@ public partial class InitialChanges : Migration
     {
         migrationBuilder.CreateTable(
             name: "Categories",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: false
-                    ),
-                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Categories", x => x.Id);
@@ -31,44 +26,31 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "PromoCodes",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Code = table.Column<string>(
-                        type: "nvarchar(15)",
-                        maxLength: 15,
-                        nullable: false
-                    ),
-                    Description = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: true
-                    ),
-                    Discount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    IsPerchantage = table.Column<bool>(
-                        type: "bit",
-                        nullable: false,
-                        defaultValue: true
-                    ),
-                    IsActive = table.Column<bool>(
-                        type: "bit",
-                        nullable: false,
-                        defaultValue: true
-                    ),
-                    NumOfTimeUsed = table.Column<int>(
-                        type: "int",
-                        nullable: false,
-                        defaultValue: 0
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Code = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                Description = table.Column<string>(
+                    type: "nvarchar(100)",
+                    maxLength: 100,
+                    nullable: true
+                ),
+                Discount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                IsPerchantage = table.Column<bool>(
+                    type: "bit",
+                    nullable: false,
+                    defaultValue: true
+                ),
+                IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                NumOfTimeUsed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_PromoCodes", x => x.Id);
@@ -77,29 +59,24 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "Users",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: false
-                    ),
-                    LastName = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: false
-                    ),
-                    Phone = table.Column<string>(
-                        type: "nvarchar(15)",
-                        maxLength: 15,
-                        nullable: false
-                    ),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                FirstName = table.Column<string>(
+                    type: "nvarchar(50)",
+                    maxLength: 50,
+                    nullable: false
+                ),
+                LastName = table.Column<string>(
+                    type: "nvarchar(50)",
+                    maxLength: 50,
+                    nullable: false
+                ),
+                Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Users", x => x.Id);
@@ -108,70 +85,49 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "Products",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: false
-                    ),
-                    Description = table.Column<string>(
-                        type: "nvarchar(200)",
-                        maxLength: 200,
-                        nullable: false
-                    ),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SKU = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: false
-                    ),
-                    StockQuantity = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice_Amount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    UnitPrice_Currency = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: true
-                    ),
-                    Brand = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: true
-                    ),
-                    Barcode = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: true
-                    ),
-                    Tags = table.Column<string>(
-                        type: "nvarchar(200)",
-                        maxLength: 200,
-                        nullable: true
-                    ),
-                    AverageRating_Value = table.Column<double>(
-                        type: "float(18)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    AverageRating_NumRatings = table.Column<int>(type: "int", nullable: false),
-                    BreadCrums = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: true
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                Description = table.Column<string>(
+                    type: "nvarchar(200)",
+                    maxLength: 200,
+                    nullable: false
+                ),
+                CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                SKU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                StockQuantity = table.Column<int>(type: "int", nullable: false),
+                UnitPrice_Amount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                UnitPrice_Currency = table.Column<int>(type: "int", nullable: false),
+                Discount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: true
+                ),
+                Brand = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                Barcode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                Tags = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                AverageRating_Value = table.Column<double>(
+                    type: "float(18)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                AverageRating_NumRatings = table.Column<int>(type: "int", nullable: false),
+                BreadCrums = table.Column<string>(
+                    type: "nvarchar(100)",
+                    maxLength: 100,
+                    nullable: true
+                ),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Products", x => x.Id);
@@ -186,43 +142,39 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "Customers",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProfileImageUrl = table.Column<string>(
-                        type: "nvarchar(max)",
-                        nullable: true
-                    ),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Address_Line = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: true
-                    ),
-                    Address_City = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: true
-                    ),
-                    Address_State = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: true
-                    ),
-                    Address_Country = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: true
-                    ),
-                    Address_ZipCode = table.Column<string>(
-                        type: "nvarchar(10)",
-                        maxLength: 10,
-                        nullable: true
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Address_Line = table.Column<string>(
+                    type: "nvarchar(100)",
+                    maxLength: 100,
+                    nullable: true
+                ),
+                Address_City = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: true
+                ),
+                Address_State = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: true
+                ),
+                Address_Country = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: true
+                ),
+                Address_ZipCode = table.Column<string>(
+                    type: "nvarchar(10)",
+                    maxLength: 10,
+                    nullable: true
+                ),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Customers", x => x.Id);
@@ -237,14 +189,13 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "ProductImages",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Seq = table.Column<int>(type: "int", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                Seq = table.Column<int>(type: "int", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_ProductImages", x => new { x.ProductId, x.Id });
@@ -260,57 +211,56 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "Orders",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DeliveryCharge_Amount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    DeliveryCharge_Currency = table.Column<int>(type: "int", nullable: false),
-                    OrderStatus = table.Column<int>(type: "int", nullable: false),
-                    PromoCode = table.Column<string>(
-                        type: "nvarchar(15)",
-                        maxLength: 15,
-                        nullable: true
-                    ),
-                    ShippingAddress_Line = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: false
-                    ),
-                    ShippingAddress_City = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    ShippingAddress_State = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    ShippingAddress_Country = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    ShippingAddress_ZipCode = table.Column<string>(
-                        type: "nvarchar(10)",
-                        maxLength: 10,
-                        nullable: false
-                    ),
-                    PaymentStatus = table.Column<string>(
-                        type: "nvarchar(20)",
-                        maxLength: 20,
-                        nullable: false
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                DeliveryCharge_Amount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                DeliveryCharge_Currency = table.Column<int>(type: "int", nullable: false),
+                OrderStatus = table.Column<int>(type: "int", nullable: false),
+                PromoCode = table.Column<string>(
+                    type: "nvarchar(15)",
+                    maxLength: 15,
+                    nullable: true
+                ),
+                ShippingAddress_Line = table.Column<string>(
+                    type: "nvarchar(100)",
+                    maxLength: 100,
+                    nullable: false
+                ),
+                ShippingAddress_City = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                ShippingAddress_State = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                ShippingAddress_Country = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                ShippingAddress_ZipCode = table.Column<string>(
+                    type: "nvarchar(10)",
+                    maxLength: 10,
+                    nullable: false
+                ),
+                PaymentStatus = table.Column<string>(
+                    type: "nvarchar(20)",
+                    maxLength: 20,
+                    nullable: false
+                ),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Orders", x => x.Id);
@@ -326,26 +276,25 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "ProductReviews",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Rating_Value = table.Column<double>(
-                        type: "float(18)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    Comment = table.Column<string>(
-                        type: "nvarchar(1000)",
-                        maxLength: 1000,
-                        nullable: true
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Rating_Value = table.Column<double>(
+                    type: "float(18)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                Comment = table.Column<string>(
+                    type: "nvarchar(1000)",
+                    maxLength: 1000,
+                    nullable: true
+                ),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_ProductReviews", x => x.Id);
@@ -368,32 +317,27 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "OrderItems",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: false
-                    ),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UnitPrice_Amount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    UnitPrice_Currency = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    )
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                UnitPrice_Amount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                UnitPrice_Currency = table.Column<int>(type: "int", nullable: false),
+                Quantity = table.Column<int>(type: "int", nullable: false),
+                Discount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_OrderItems", x => new { x.Id, x.OrderId });
@@ -409,58 +353,57 @@ public partial class InitialChanges : Migration
 
         migrationBuilder.CreateTable(
             name: "Payments",
-            columns: table =>
-                new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaymentMethod = table.Column<string>(
-                        type: "nvarchar(20)",
-                        maxLength: 20,
-                        nullable: false
-                    ),
-                    TransactionId = table.Column<string>(
-                        type: "nvarchar(50)",
-                        maxLength: 50,
-                        nullable: true
-                    ),
-                    PaymentStatus = table.Column<int>(type: "int", nullable: false),
-                    Total_Amount = table.Column<decimal>(
-                        type: "decimal(18,2)",
-                        precision: 18,
-                        scale: 2,
-                        nullable: false
-                    ),
-                    Total_Currency = table.Column<int>(type: "int", nullable: false),
-                    BillingAddress_Line = table.Column<string>(
-                        type: "nvarchar(100)",
-                        maxLength: 100,
-                        nullable: false
-                    ),
-                    BillingAddress_City = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    BillingAddress_State = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    BillingAddress_Country = table.Column<string>(
-                        type: "nvarchar(30)",
-                        maxLength: 30,
-                        nullable: false
-                    ),
-                    BillingAddress_ZipCode = table.Column<string>(
-                        type: "nvarchar(10)",
-                        maxLength: 10,
-                        nullable: false
-                    ),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
-                },
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                PaymentMethod = table.Column<string>(
+                    type: "nvarchar(20)",
+                    maxLength: 20,
+                    nullable: false
+                ),
+                TransactionId = table.Column<string>(
+                    type: "nvarchar(50)",
+                    maxLength: 50,
+                    nullable: true
+                ),
+                PaymentStatus = table.Column<int>(type: "int", nullable: false),
+                Total_Amount = table.Column<decimal>(
+                    type: "decimal(18,2)",
+                    precision: 18,
+                    scale: 2,
+                    nullable: false
+                ),
+                Total_Currency = table.Column<int>(type: "int", nullable: false),
+                BillingAddress_Line = table.Column<string>(
+                    type: "nvarchar(100)",
+                    maxLength: 100,
+                    nullable: false
+                ),
+                BillingAddress_City = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                BillingAddress_State = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                BillingAddress_Country = table.Column<string>(
+                    type: "nvarchar(30)",
+                    maxLength: 30,
+                    nullable: false
+                ),
+                BillingAddress_ZipCode = table.Column<string>(
+                    type: "nvarchar(10)",
+                    maxLength: 10,
+                    nullable: false
+                ),
+                CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+            },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Payments", x => x.Id);

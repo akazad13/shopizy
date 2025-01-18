@@ -107,7 +107,7 @@ public class CardNotPresentSaleCommandHandler(
             }
 
             order.UpdatePaymentStatus(PaymentStatus.Payed);
-            order.UpdateOrderStatus(OrderStatus.Paid);
+            order.UpdateOrderStatus(OrderStatus.Processing);
             payment.UpdatePaymentStatus(PaymentStatus.Payed);
             payment.UpdateTransactionId(response.Value.ChargeId);
 

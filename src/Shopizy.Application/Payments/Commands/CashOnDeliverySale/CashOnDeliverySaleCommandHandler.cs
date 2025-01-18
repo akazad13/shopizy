@@ -54,7 +54,7 @@ public class CashOnDeliverySaleCommandHandler(
             {
                 return CustomErrors.Payment.PaymentNotCreated;
             }
-            order.UpdateOrderStatus(OrderStatus.AwaitingValidation);
+            order.UpdateOrderStatus(OrderStatus.Processing);
 
             _orderRepository.Update(order);
             await _orderRepository.Commit(cancellationToken);

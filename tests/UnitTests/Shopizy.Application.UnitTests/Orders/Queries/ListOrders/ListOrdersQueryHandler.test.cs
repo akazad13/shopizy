@@ -1,22 +1,22 @@
 using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Orders.Queries.ListOrders;
+using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.ListOrders;
 
-public class ListOrdersQueryHandlerTests
+public class GetOrdersQueryHandlerTests
 {
-    private readonly ListOrdersQueryHandler _sut;
+    private readonly GetOrdersQueryHandler _sut;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
 
-    public ListOrdersQueryHandlerTests()
+    public GetOrdersQueryHandlerTests()
     {
         _mockOrderRepository = new Mock<IOrderRepository>();
-        _sut = new ListOrdersQueryHandler(_mockOrderRepository.Object);
+        _sut = new GetOrdersQueryHandler(_mockOrderRepository.Object);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class ListOrdersQueryHandlerTests
     {
         // Arrange
         var mockOrderRepository = new Mock<IOrderRepository>();
-        var query = ListOrdersQueryUtils.CreateQuery();
+        var query = GetOrdersQueryUtils.CreateQuery();
 
         mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(() => null);
 
@@ -42,7 +42,7 @@ public class ListOrdersQueryHandlerTests
     {
         // Arrange
         var Order = OrderFactory.CreateOrder();
-        var query = ListOrdersQueryUtils.CreateQuery();
+        var query = GetOrdersQueryUtils.CreateQuery();
         _mockOrderRepository.Setup(c => c.GetOrdersAsync()).ReturnsAsync(() => [Order]);
 
         // Act
@@ -63,10 +63,10 @@ public class ListOrdersQueryHandlerTests
     //     var largeNumberOfOrders = new List<Order>(Enumerable.Repeat(new Order(), 10001));
     //     mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(largeNumberOfOrders);
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
-    //     var result = await handler.Handle(new ListOrdersQuery(), CancellationToken.None);
+    //     var result = await handler.Handle(new GetOrdersQuery(), CancellationToken.None);
 
     //     // Assert
     //     Assert.IsType<Response<List<Order>>>(result);
@@ -87,10 +87,10 @@ public class ListOrdersQueryHandlerTests
     //     };
     //     mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(unsortedOrders);
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
-    //     var result = await handler.Handle(new ListOrdersQuery(), CancellationToken.None);
+    //     var result = await handler.Handle(new GetOrdersQuery(), CancellationToken.None);
 
     //     // Assert
     //     Assert.IsType<Response<List<Order>>>(result);
@@ -114,11 +114,11 @@ public class ListOrdersQueryHandlerTests
     //     };
     //     mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(orders);
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
     //     var result = await handler.Handle(
-    //         new ListOrdersQuery { CustomerId = 1 },
+    //         new GetOrdersQuery { CustomerId = 1 },
     //         CancellationToken.None
     //     );
 
@@ -134,13 +134,13 @@ public class ListOrdersQueryHandlerTests
     // {
     //     // Arrange
     //     var mockOrderRepository = new Mock<IOrderRepository>();
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     var tasks = new List<Task<ErrorOr<List<Order>>>>();
 
     //     for (int i = 0; i < 10; i++)
     //     {
-    //         tasks.Add(handler.Handle(new ListOrdersQuery(), CancellationToken.None));
+    //         tasks.Add(handler.Handle(new GetOrdersQuery(), CancellationToken.None));
     //     }
 
     //     // Act
@@ -164,10 +164,10 @@ public class ListOrdersQueryHandlerTests
     //         .Setup(repo => repo.GetOrdersAsync())
     //         .ThrowsAsync(new DbException("Database connection failed"));
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
-    //     var result = await handler.Handle(new ListOrdersQuery(), CancellationToken.None);
+    //     var result = await handler.Handle(new GetOrdersQuery(), CancellationToken.None);
 
     //     // Assert
     //     Assert.IsType<Response<List<Order>>>(result);
@@ -181,7 +181,7 @@ public class ListOrdersQueryHandlerTests
     // {
     //     // Arrange
     //     var mockOrderRepository = new Mock<IOrderRepository>();
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
     //     var result = handler.Handle(null, CancellationToken.None);
@@ -203,11 +203,11 @@ public class ListOrdersQueryHandlerTests
     //                 largeNumberOfOrders.Skip(pageNumber * pageSize).Take(pageSize).ToList()
     //         );
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
     //     var result = await handler.Handle(
-    //         new ListOrdersQuery { PageNumber = 0, PageSize = 1000 },
+    //         new GetOrdersQuery { PageNumber = 0, PageSize = 1000 },
     //         CancellationToken.None
     //     );
 
@@ -232,11 +232,11 @@ public class ListOrdersQueryHandlerTests
     //         .Setup(repo => repo.GetOrdersAsync(It.Is<string>(s => s == "Keyword")))
     //         .ReturnsAsync(ordersWithKeyword);
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
     //     var result = await handler.Handle(
-    //         new ListOrdersQuery { Keyword = "Keyword" },
+    //         new GetOrdersQuery { Keyword = "Keyword" },
     //         CancellationToken.None
     //     );
 
@@ -259,11 +259,11 @@ public class ListOrdersQueryHandlerTests
     //             (int page, int pageSize) => allOrders.Skip(page * pageSize).Take(pageSize).ToList()
     //         );
 
-    //     var handler = new ListOrdersQueryHandler(mockOrderRepository.Object);
+    //     var handler = new GetOrdersQueryHandler(mockOrderRepository.Object);
 
     //     // Act
     //     var result = await handler.Handle(
-    //         new ListOrdersQuery { PageSize = 50 },
+    //         new GetOrdersQuery { PageSize = 50 },
     //         CancellationToken.None
     //     );
 

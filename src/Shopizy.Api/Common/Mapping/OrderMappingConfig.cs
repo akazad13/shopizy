@@ -3,6 +3,7 @@ using Mapster;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
+using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Contracts.Order;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
@@ -15,6 +16,8 @@ public class OrderMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         Guard.Against.Null(config);
+
+        config.NewConfig<OrdersCriteria, GetOrdersQuery>();
 
         config
             .NewConfig<CreateOrderRequest, CreateOrderCommand>()
@@ -31,7 +34,7 @@ public class OrderMappingConfig : IRegister
         config.NewConfig<Guid, GetOrderQuery>().MapWith(orderId => new GetOrderQuery(orderId));
 
         config
-            .NewConfig<Order, OrderResponse>()
+            .NewConfig<Order, OrderDetailResponse>()
             .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
             .Map(dest => dest, src => src)
@@ -46,5 +49,12 @@ public class OrderMappingConfig : IRegister
             .NewConfig<(Guid OrderId, CancelOrderRequest request), CancelOrderCommand>()
             .Map(dest => dest.OrderId, src => src.OrderId)
             .Map(dest => dest.Reason, src => src.request.Reason);
+
+        config
+            .NewConfig<OrderDto, OrderResponse>()
+            .Map(dest => dest.OrderId, src => src.Id.Value)
+            .Map(dest => dest.UserId, src => src.UserId.Value)
+            .Map(dest => dest, src => src)
+            .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString());
     }
 }
