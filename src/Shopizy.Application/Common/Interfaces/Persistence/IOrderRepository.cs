@@ -18,6 +18,7 @@ public interface IOrderRepository
         OrderType orderType = OrderType.Ascending
     );
     Task<Order?> GetOrderByIdAsync(OrderId id);
+    IQueryable<Order> GetOrdersByUserId(UserId userId);
     Task AddAsync(Order order);
     void Update(Order order);
     Task<int> Commit(CancellationToken cancellationToken);

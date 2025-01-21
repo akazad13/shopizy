@@ -18,7 +18,13 @@ public static class UserFactory
 
     public static User UpdateAddress(User user)
     {
-        user.UpdateAddress(Constants.User.Address);
+        user.UpdateAddress(
+            Constants.User.Address.Street,
+            Constants.User.Address.City,
+            Constants.User.Address.State,
+            Constants.User.Address.Country,
+            Constants.User.Address.ZipCode
+        );
         return user;
     }
 }

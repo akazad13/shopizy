@@ -4,7 +4,9 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.ListOrders;
 
@@ -26,7 +28,21 @@ public class GetOrdersQueryHandlerTests
         var mockOrderRepository = new Mock<IOrderRepository>();
         var query = GetOrdersQueryUtils.CreateQuery();
 
-        mockOrderRepository.Setup(repo => repo.GetOrdersAsync()).ReturnsAsync(() => null);
+        var customerId = query.CustomerId is null ? null : UserId.Create(query.CustomerId.Value);
+
+        mockOrderRepository
+            .Setup(repo =>
+                repo.GetOrdersAsync(
+                    customerId,
+                    query.StartDate,
+                    query.EndDate,
+                    query.Status,
+                    query.PageNumber,
+                    query.PageSize,
+                    OrderType.Ascending
+                )
+            )
+            .ReturnsAsync(() => null);
 
         // Act
         var result = await _sut.Handle(query, CancellationToken.None);
@@ -43,16 +59,29 @@ public class GetOrdersQueryHandlerTests
         // Arrange
         var Order = OrderFactory.CreateOrder();
         var query = GetOrdersQueryUtils.CreateQuery();
-        _mockOrderRepository.Setup(c => c.GetOrdersAsync()).ReturnsAsync(() => [Order]);
+        var customerId = query.CustomerId is null ? null : UserId.Create(query.CustomerId.Value);
+
+        _mockOrderRepository
+            .Setup(c =>
+                c.GetOrdersAsync(
+                    customerId,
+                    query.StartDate,
+                    query.EndDate,
+                    query.Status,
+                    query.PageNumber,
+                    query.PageSize,
+                    OrderType.Ascending
+                )
+            )
+            .ReturnsAsync(() => [Order]);
 
         // Act
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<List<Order>>();
+        result.Value.Should().BeOfType<List<OrderDto>>();
         result.Value.Should().NotBeNullOrEmpty();
-        result.Value.Should().Contain(Order);
     }
 
     // [Fact]

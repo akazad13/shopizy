@@ -45,6 +45,11 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         return ApplySpec(new OrderByIdSpec(id)).FirstOrDefaultAsync();
     }
 
+    public IQueryable<Order> GetOrdersByUserId(UserId userId)
+    {
+        return _dbContext.Orders.Where(o => o.UserId == userId);
+    }
+
     public async Task AddAsync(Order order)
     {
         await _dbContext.Orders.AddAsync(order);

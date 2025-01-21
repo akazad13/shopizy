@@ -57,7 +57,7 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
         return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
     }
 
-    [HttpDelete("{orderId:guid}")]
+    [HttpPatch("{orderId:guid}/cancel")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
