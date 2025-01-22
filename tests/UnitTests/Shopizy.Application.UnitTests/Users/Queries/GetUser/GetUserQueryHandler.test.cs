@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Queries.GetUser;
@@ -13,12 +14,18 @@ public class GetUserQueryHandlerTests
     private readonly GetUserQueryHandler _sut;
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
+    private readonly Mock<ICacheHelper> _mockCacheHelper;
 
     public GetUserQueryHandlerTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
         _mockOrderRepository = new Mock<IOrderRepository>();
-        _sut = new GetUserQueryHandler(_mockUserRepository.Object, _mockOrderRepository.Object);
+        _mockCacheHelper = new Mock<ICacheHelper>();
+        _sut = new GetUserQueryHandler(
+            _mockUserRepository.Object,
+            _mockOrderRepository.Object,
+            _mockCacheHelper.Object
+        );
     }
 
     [Fact]
@@ -31,6 +38,10 @@ public class GetUserQueryHandlerTests
         _mockUserRepository
             .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
             .ReturnsAsync(user);
+
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{user.Id.Value}"))
+            .ReturnsAsync(() => null);
 
         // Act
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
