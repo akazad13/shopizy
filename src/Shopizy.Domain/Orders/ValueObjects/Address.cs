@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Shopizy.Domain.Common.Models;
 
 namespace Shopizy.Domain.Orders.ValueObjects;
@@ -10,6 +11,7 @@ public sealed class Address : ValueObject
     public string Country { get; private set; }
     public string ZipCode { get; private set; }
 
+    [JsonConstructor]
     private Address(string street, string city, string state, string country, string zipCode)
     {
         Street = street;

@@ -6,7 +6,7 @@ public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers().AddNewtonsoftJson();
         services.AddEndpointsApiExplorer().AddSwaggerGen();
         services.AddMappings();
 
