@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
-using Shopizy.Application.Orders.Queries.ListOrders;
+using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,16 +22,16 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> GetOrdersAsync()
+    public async Task<IActionResult> GetOrdersAsync([FromQuery] OrdersCriteria criteria)
     {
-        var query = new ListOrdersQuery();
+        var query = _mapper.Map<GetOrdersQuery>(criteria);
         var result = await _mediator.Send(query);
 
         return result.Match(Product => Ok(_mapper.Map<List<OrderResponse>>(Product)), Problem);
     }
 
     [HttpGet("{orderId:guid}")]
-    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderResponse))]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
@@ -40,11 +40,11 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
         var query = _mapper.Map<GetOrderQuery>(orderId);
         var result = await _mediator.Send(query);
 
-        return result.Match(order => Ok(_mapper.Map<OrderResponse>(order)), Problem);
+        return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
     }
 
     [HttpPost]
-    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderResponse))]
+    [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
@@ -54,10 +54,10 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
         var command = _mapper.Map<CreateOrderCommand>(request);
         var result = await _mediator.Send(command);
 
-        return result.Match(order => Ok(_mapper.Map<OrderResponse>(order)), Problem);
+        return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
     }
 
-    [HttpDelete("{orderId:guid}")]
+    [HttpPatch("{orderId:guid}/cancel")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]

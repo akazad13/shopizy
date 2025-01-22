@@ -20,7 +20,7 @@ public class ProductMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
-        config.NewConfig<ProductsCriteriaRequest, GetProductsQuery>();
+        config.NewConfig<ProductsCriteria, GetProductsQuery>();
 
         config.NewConfig<CreateProductRequest, CreateProductCommand>();
 

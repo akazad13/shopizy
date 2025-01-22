@@ -12,11 +12,13 @@ public class GetUserQueryHandlerTests
 {
     private readonly GetUserQueryHandler _sut;
     private readonly Mock<IUserRepository> _mockUserRepository;
+    private readonly Mock<IOrderRepository> _mockOrderRepository;
 
     public GetUserQueryHandlerTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
-        _sut = new GetUserQueryHandler(_mockUserRepository.Object);
+        _mockOrderRepository = new Mock<IOrderRepository>();
+        _sut = new GetUserQueryHandler(_mockUserRepository.Object, _mockOrderRepository.Object);
     }
 
     [Fact]
@@ -34,7 +36,7 @@ public class GetUserQueryHandlerTests
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
 
         // Assert
-        result.Should().BeOfType<User>();
+        result.Should().BeOfType<UserDto>();
         result.Should().NotBeNull();
     }
 

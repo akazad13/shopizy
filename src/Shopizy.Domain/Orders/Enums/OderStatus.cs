@@ -2,12 +2,12 @@ namespace Shopizy.Domain.Orders.Enums;
 
 public enum OrderStatus
 {
-    Submitted = 1,
-    AwaitingValidation = 2,
-    StockConfirmed = 3,
-    Paid = 4,
-    Shipped = 5,
-    Cancelled = 6,
+    Pending = 1,
+    Processing = 2,
+    Shipping = 3,
+    Delivered = 4,
+    Cancelled = 5,
+    Refunded = 6,
 }
 
 public enum DeliveryMethods

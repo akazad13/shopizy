@@ -3,6 +3,14 @@ namespace Shopizy.Contracts.Order;
 public record OrderResponse(
     Guid OrderId,
     Guid UserId,
+    Price Total,
+    string OrderStatus,
+    DateTime CreatedOn
+);
+
+public record OrderDetailResponse(
+    Guid OrderId,
+    Guid UserId,
     Price DeliveryCharge,
     string OrderStatus,
     string PromoCode,

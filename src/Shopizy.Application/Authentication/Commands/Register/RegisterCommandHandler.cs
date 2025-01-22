@@ -52,6 +52,7 @@ public class RegisterCommandHandler(
             PermissionId.Create(new("DD25381D-063C-4A3A-9539-DEEC640919A4")),
             PermissionId.Create(new("20082930-3857-4B34-80D0-E256B9B585D8")),
             PermissionId.Create(new("0C65A58A-D472-4D5D-848E-EAC46F988F5D")),
+            PermissionId.Create(new("C920A577-1669-4167-B056-5E0A03329C55")),
         };
 
         var user = User.Create(

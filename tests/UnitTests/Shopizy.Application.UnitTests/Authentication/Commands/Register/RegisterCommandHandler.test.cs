@@ -70,6 +70,7 @@ public class RegisterCommandHandlerTests
             PermissionId.Create(new("DD25381D-063C-4A3A-9539-DEEC640919A4")),
             PermissionId.Create(new("20082930-3857-4B34-80D0-E256B9B585D8")),
             PermissionId.Create(new("0C65A58A-D472-4D5D-848E-EAC46F988F5D")),
+            PermissionId.Create(new("C920A577-1669-4167-B056-5E0A03329C55")),
         };
 
         _mockUserRepository
@@ -181,7 +182,7 @@ public class RegisterCommandHandlerTests
             r =>
                 r.AddAsync(
                     It.Is<User>(u =>
-                        u.PermissionIds.Count == 11
+                        u.PermissionIds.Count == 12
                         && u.PermissionIds.Contains(
                             PermissionId.Create(new Guid("249E733D-5BDC-49C3-91CA-06AE25A9C897"))
                         )
@@ -214,6 +215,9 @@ public class RegisterCommandHandlerTests
                         )
                         && u.PermissionIds.Contains(
                             PermissionId.Create(new Guid("0C65A58A-D472-4D5D-848E-EAC46F988F5D"))
+                        )
+                        && u.PermissionIds.Contains(
+                            PermissionId.Create(new Guid("C920A577-1669-4167-B056-5E0A03329C55"))
                         )
                     )
                 ),
@@ -438,7 +442,7 @@ public class RegisterCommandHandlerTests
                         && u.LastName == longLastName
                         && u.Email == longEmail
                         && u.Password == hashedPassword
-                        && u.PermissionIds.Count == 11
+                        && u.PermissionIds.Count == 12
                     )
                 ),
             Times.Once

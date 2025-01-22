@@ -1,9 +1,10 @@
-using Shopizy.Contracts.Order;
+using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
-namespace Shopizy.Contracts.User;
+namespace Shopizy.Application.Users.Queries.GetUser;
 
-public record UserDetails(
-    Guid Id,
+public record UserDto(
+    UserId Id,
     string? FirstName,
     string? LastName,
     string Email,
