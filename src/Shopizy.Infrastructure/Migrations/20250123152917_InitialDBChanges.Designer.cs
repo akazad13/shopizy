@@ -9,18 +9,18 @@ using Shopizy.Infrastructure.Common.Persistence;
 
 #nullable disable
 
-namespace shopizy.Infrastructure.Migrations
+namespace Shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241213084430_UpdateCartItemsTable")]
-    partial class UpdateCartItemsTable
+    [Migration("20250123152917_InitialDBChanges")]
+    partial class InitialDBChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -97,8 +97,6 @@ namespace shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Orders", (string)null);
                 });
 
@@ -143,6 +141,21 @@ namespace shopizy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Payments", (string)null);
+                });
+
+            modelBuilder.Entity("Shopizy.Domain.Permissions.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Shopizy.Domain.ProductReviews.ProductReview", b =>
@@ -307,7 +320,9 @@ namespace shopizy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -326,7 +341,6 @@ namespace shopizy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -335,7 +349,7 @@ namespace shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Phone");
+                    b.HasIndex("Email");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -389,12 +403,6 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
                 {
-                    b.HasOne("Shopizy.Domain.Users.User", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsMany("Shopizy.Domain.Orders.Entities.OrderItem", "OrderItems", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -621,7 +629,7 @@ namespace shopizy.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Shopizy.Domain.Users.User", "User")
-                        .WithMany("ProductReviews")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -736,6 +744,81 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
                 {
+                    b.OwnsMany("Shopizy.Domain.Orders.ValueObjects.OrderId", "OrderIds", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("UseId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("OrderId");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UseId");
+
+                            b1.ToTable("OrderIds", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UseId");
+                        });
+
+                    b.OwnsMany("Shopizy.Domain.ProductReviews.ValueObjects.ProductReviewId", "ProductReviewIds", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("UseId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("ProductReviewId");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UseId");
+
+                            b1.ToTable("ProductReviewIds", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UseId");
+                        });
+
+                    b.OwnsMany("Shopizy.Domain.Permissions.ValueObjects.PermissionId", "PermissionIds", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("PermissionId");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UserId");
+
+                            b1.ToTable("UserPermissionIds", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -770,6 +853,12 @@ namespace shopizy.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address");
+
+                    b.Navigation("OrderIds");
+
+                    b.Navigation("PermissionIds");
+
+                    b.Navigation("ProductReviewIds");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>
@@ -779,13 +868,6 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Products.Product", b =>
                 {
-                    b.Navigation("ProductReviews");
-                });
-
-            modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
-                {
-                    b.Navigation("Orders");
-
                     b.Navigation("ProductReviews");
                 });
 #pragma warning restore 612, 618
