@@ -22,7 +22,12 @@ public class RedisCacheHelper : ICacheHelper
         _redisDbConnectionLazy = new Lazy<ConnectionMultiplexer>(
             () =>
                 ConnectionMultiplexer.Connect(
-                    string.Format(_redisSettings.ConnectionString, _redisSettings.Password)
+                    new ConfigurationOptions
+                    {
+                        EndPoints = { { _redisSettings.Endpoint, 16199 } },
+                        User = _redisSettings.Username,
+                        Password = _redisSettings.Password,
+                    }
                 ),
             LazyThreadSafetyMode.ExecutionAndPublication
         );
