@@ -7,7 +7,7 @@ using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
 
-namespace Shopizy.Application.Authentication.Commands.Register;
+namespace Shopizy.Application.Auth.Commands.Register;
 
 public class RegisterCommandHandler(
     IUserRepository userRepository,
@@ -24,7 +24,7 @@ public class RegisterCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        if ((await _userRepository.GetUserByEmailAsync(command.Email)) is not null)
+        if (await _userRepository.GetUserByEmailAsync(command.Email) is not null)
         {
             return CustomErrors.User.DuplicateEmail;
         }

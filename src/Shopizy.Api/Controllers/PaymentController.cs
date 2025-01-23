@@ -1,6 +1,8 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
 using Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 using Shopizy.Contracts.Common;
@@ -10,10 +12,12 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/payments")]
-public class PaymentController(ISender mediator, IMapper mapper) : ApiController
+public class PaymentController(ISender mediator, IMapper mapper, ILogger<PaymentController> logger)
+    : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
+    private readonly ILogger<PaymentController> _logger = logger;
 
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
@@ -21,27 +25,35 @@ public class PaymentController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateSaleAsync(CardNotPresentSaleRequest request)
+    public async Task<IActionResult> PayAsync(CardNotPresentSaleRequest request)
     {
-        if (request.PaymentMethod.ToLower() == "card")
+        try
         {
-            var command = _mapper.Map<CardNotPresentSaleCommand>(request);
-            var result = await _mediator.Send(command);
+            if (request.PaymentMethod.ToLower() == "card")
+            {
+                var command = _mapper.Map<CardNotPresentSaleCommand>(request);
+                var result = await _mediator.Send(command);
 
-            return result.Match(
-                success => Ok(SuccessResult.Success("Payment successfull collected.")),
-                Problem
-            );
+                return result.Match(
+                    success => Ok(SuccessResult.Success("Payment successfull collected.")),
+                    Problem
+                );
+            }
+            else
+            {
+                var command = _mapper.Map<CashOnDeliverySaleCommand>(request);
+                var result = await _mediator.Send(command);
+
+                return result.Match(
+                    success => Ok(SuccessResult.Success("Payment successfull collected.")),
+                    Problem
+                );
+            }
         }
-        else
+        catch (Exception ex)
         {
-            var command = _mapper.Map<CashOnDeliverySaleCommand>(request);
-            var result = await _mediator.Send(command);
-
-            return result.Match(
-                success => Ok(SuccessResult.Success("Payment successfull collected.")),
-                Problem
-            );
+            _logger.PaymentError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
         }
     }
 }

@@ -1,12 +1,12 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Authentication.Common;
+using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 
-namespace Shopizy.Application.Authentication.Queries.login;
+namespace Shopizy.Application.Auth.Queries.login;
 
 public class LoginQueryHandler(
     IUserRepository userRepository,

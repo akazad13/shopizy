@@ -1,6 +1,8 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.AddProductImage;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Commands.DeleteProduct;
@@ -16,10 +18,12 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/products")]
-public class ProductController(ISender mediator, IMapper mapper) : ApiController
+public class ProductController(ISender mediator, IMapper mapper, ILogger<ProductController> logger)
+    : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
+    private readonly ILogger<ProductController> _logger = logger;
 
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<ProductResponse>))]
@@ -28,10 +32,21 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> SearchAsync([FromQuery] ProductsCriteria criteria)
     {
-        var query = _mapper.Map<GetProductsQuery>(criteria);
-        var result = await _mediator.Send(query);
+        try
+        {
+            var query = _mapper.Map<GetProductsQuery>(criteria);
+            var result = await _mediator.Send(query);
 
-        return result.Match(products => Ok(_mapper.Map<List<ProductResponse>>(products)), Problem);
+            return result.Match(
+                products => Ok(_mapper.Map<List<ProductResponse>>(products)),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpGet("{productId:guid}")]
@@ -41,10 +56,21 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetProductAsync(Guid ProductId)
     {
-        var query = _mapper.Map<GetProductQuery>(ProductId);
-        var result = await _mediator.Send(query);
+        try
+        {
+            var query = _mapper.Map<GetProductQuery>(ProductId);
+            var result = await _mediator.Send(query);
 
-        return result.Match(product => Ok(_mapper.Map<ProductDetailResponse>(product)), Problem);
+            return result.Match(
+                product => Ok(_mapper.Map<ProductDetailResponse>(product)),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPost]
@@ -55,10 +81,18 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateProductAsync(CreateProductRequest request)
     {
-        var command = _mapper.Map<CreateProductCommand>(request);
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<CreateProductCommand>(request);
+            var result = await _mediator.Send(command);
 
-        return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
+            return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductCreationError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPatch("{productId:guid}")]
@@ -72,13 +106,21 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
         UpdateProductRequest request
     )
     {
-        var command = _mapper.Map<UpdateProductCommand>((productId, request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<UpdateProductCommand>((productId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully updated product.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully updated product.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductUpdateError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpDelete("{productId:guid}")]
@@ -89,13 +131,21 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> DeleteProductAsync(Guid productId)
     {
-        var command = _mapper.Map<DeleteProductCommand>(productId);
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<DeleteProductCommand>(productId);
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully deleted product.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully deleted product.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductDeleteError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPost("{productId:guid}/image")]
@@ -109,13 +159,21 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
         [FromForm] AddProductImageRequest request
     )
     {
-        var command = new AddProductImageCommand(productId, request.File);
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = new AddProductImageCommand(productId, request.File);
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            productImage => Ok(_mapper.Map<ProductImageResponse>(productImage)),
-            Problem
-        );
+            return result.Match(
+                productImage => Ok(_mapper.Map<ProductImageResponse>(productImage)),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductImageAdditionError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpDelete("{productId:guid}/image/{imageId:guid}")]
@@ -126,12 +184,20 @@ public class ProductController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> DeleteProductImageAsync(Guid productId, Guid imageId)
     {
-        var command = _mapper.Map<DeleteProductImageCommand>((productId, imageId));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<DeleteProductImageCommand>((productId, imageId));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully deleted product image.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully deleted product image.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ProductImageDeleteError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 }

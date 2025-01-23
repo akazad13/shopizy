@@ -1,6 +1,8 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
@@ -12,10 +14,12 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/carts")]
-public class CartController(ISender mediator, IMapper mapper) : ApiController
+public class CartController(ISender mediator, IMapper mapper, ILogger<CartController> logger)
+    : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
+    private readonly ILogger<CartController> _logger = logger;
 
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
@@ -24,10 +28,18 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetCartAsync(Guid userId)
     {
-        var query = _mapper.Map<GetCartQuery>(userId);
-        var result = await _mediator.Send(query);
+        try
+        {
+            var query = _mapper.Map<GetCartQuery>(userId);
+            var result = await _mediator.Send(query);
 
-        return result.Match(Product => Ok(_mapper.Map<CartResponse>(Product)), Problem);
+            return result.Match(Product => Ok(_mapper.Map<CartResponse>(Product)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.CartFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPatch("{cartId:guid}")]
@@ -41,10 +53,18 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         AddProductToCartRequest request
     )
     {
-        var command = _mapper.Map<AddProductToCartCommand>((cartId, request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<AddProductToCartCommand>((cartId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
+            return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.CartCreationError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPatch("{cartId:guid}/items/{itemId:guid}")]
@@ -59,13 +79,21 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
         UpdateProductQuantityRequest request
     )
     {
-        var command = _mapper.Map<UpdateProductQuantityCommand>((cartId, itemId, request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<UpdateProductQuantityCommand>((cartId, itemId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully updated cart.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully updated cart.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.CartUpdateError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpDelete("{cartId:guid}/items/{itemId:guid}")]
@@ -76,12 +104,20 @@ public class CartController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> RemoveItemFromCartAsync(Guid cartId, Guid itemId)
     {
-        var command = _mapper.Map<RemoveProductFromCartCommand>((cartId, itemId));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<RemoveProductFromCartCommand>((cartId, itemId));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully removed product from cart.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully removed product from cart.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.RemoveItemFromCartError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 }

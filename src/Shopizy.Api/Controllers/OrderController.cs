@@ -1,6 +1,8 @@
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Application.Orders.Queries.GetOrder;
@@ -12,10 +14,12 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/orders")]
-public class OrderController(ISender mediator, IMapper mapper) : ApiController
+public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderController> logger)
+    : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
+    private readonly ILogger<OrderController> _logger = logger;
 
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<OrderResponse>))]
@@ -24,10 +28,18 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetOrdersAsync([FromQuery] OrdersCriteria criteria)
     {
-        var query = _mapper.Map<GetOrdersQuery>(criteria);
-        var result = await _mediator.Send(query);
+        try
+        {
+            var query = _mapper.Map<GetOrdersQuery>(criteria);
+            var result = await _mediator.Send(query);
 
-        return result.Match(Product => Ok(_mapper.Map<List<OrderResponse>>(Product)), Problem);
+            return result.Match(Product => Ok(_mapper.Map<List<OrderResponse>>(Product)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.OrderFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpGet("{orderId:guid}")]
@@ -37,10 +49,18 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetOrderAsync(Guid orderId)
     {
-        var query = _mapper.Map<GetOrderQuery>(orderId);
-        var result = await _mediator.Send(query);
+        try
+        {
+            var query = _mapper.Map<GetOrderQuery>(orderId);
+            var result = await _mediator.Send(query);
 
-        return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
+            return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.OrderFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPost]
@@ -51,10 +71,18 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateOrderAsync(CreateOrderRequest request)
     {
-        var command = _mapper.Map<CreateOrderCommand>(request);
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<CreateOrderCommand>(request);
+            var result = await _mediator.Send(command);
 
-        return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
+            return result.Match(order => Ok(_mapper.Map<OrderDetailResponse>(order)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.OrderFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPatch("{orderId:guid}/cancel")]
@@ -65,12 +93,20 @@ public class OrderController(ISender mediator, IMapper mapper) : ApiController
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CancelOrderAsync(Guid orderId, CancelOrderRequest request)
     {
-        var command = _mapper.Map<CancelOrderCommand>((orderId, request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<CancelOrderCommand>((orderId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully canceled the order.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully canceled the order.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.OrderFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 }
