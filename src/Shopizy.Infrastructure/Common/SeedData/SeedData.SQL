@@ -26,18 +26,17 @@ INSERT INTO [Categories] ([id], [name], [parentId]) VALUES
 
 
 
-INSERT INTO [Products] ([id], [name], [description], [ShortDescription], [categoryId], [sku], [stockQuantity], [unitPrice_Amount], [unitPrice_Currency], [discount], [brand], [barcode], [tags], [averageRating_Value], [averageRating_NumRatings], [CreatedOn], [Colors], [Sizes]) VALUES
-	('571D3D66-18F2-4DA8-A57B-D06D4D1C9EEF', 'Black Rockstar', 'High quality black t-shirt', 'High quality black t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000000T', '10', '20', '0', '10', 'Zara', 'MC-10000000T', 't-shirt, zara, men, new', '4.8', '5', GETDATE(), 'Black,Gray,Orange,Pink', 'XS,S,M,L,XL,2XL'),
-	('096A127A-65AF-4C0C-A294-2E1990136711', 'Premium Purple', 'High quality purple t-shirt', 'High quality purple t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000002T', '5', '22', '0', '10', 'ck', 'MC-10000002T', 't-shirt, ck, men, new, premium', '4.9', '7', GETDATE(), 'Black,Orange,Pink,White', 'XS,S,M,L,XL,2XL'),
-	('8419FD69-61A5-4D9D-A289-1E377CC17082', 'Red Dragon', 'Premium quality red sweater', 'Premium quality red sweater', '632DFDA9-CC2E-487B-8C88-608005F124E2', 'MC-10000000S', '20', '40', '0', '10', 'h&m', 'MC-10000000S', 'sweater, h&m, men, hot, premium', '4.7', '15', GETDATE(), 'Red,Orange,Pink,White', 'XS,S,M,L,XL,2XL'),
-	('CBB8A3A9-03DB-40E4-A89B-9C91D21B3934', 'Ash life', 'High quality t-shirt', 'High quality t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000004T', '15', '25', '0', '10', 'ck', 'MC-10000004T', 't-shirt, ck, men, new, premium', '4.7', '5', GETDATE(), 'Black,Gray,Pink,White', 'XS,S,M,L,XL,2XL'),
-	('96A1503F-B7EA-4C12-8946-89035399F45E', 'Red Star', 'High quality t-shirt for men', 'High quality t-shirt for men', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000006T', '30', '20', '0', '10', 'Boss', 'MC-10000006T', 't-shirt, boss, men', '4.6', '10', GETDATE(), 'Red,Black,Orange', 'XS,S,M,L,XL,2XL'),
-	('E02500EA-2957-4601-A051-951CB9957CBE', 'Black Stone', 'Premium quality t-shirt for women', 'Premium quality t-shirt for women', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000000T', '30', '40', '0', '10', 'Adidas', 'FC-10000000T', 't-shirt, adidas, new, premium', '4.9', '15', GETDATE(), 'Black,Gray', 'XS,S,M,L,XL,2XL'),
-	('A34BA283-62A1-43C6-8FB0-748DBDE8BA7D', 'Elegant peach', 'High quality women top', 'High quality women top', 'BA5FE17F-8977-4034-BEC3-227AA99502CC', 'FC-10000002T', '10', '20', '0', '10', 'h&m', 'FC-10000002T', 'top, h&m, new', '4.7', '15', GETDATE(), ',Orange,Pink,Peach', 'XS,S,M,L,XL,2XL'),
-	('D7C96816-1656-4DBC-B709-0F626807347F', 'Pure White', 'High quality women t-shirt', 'High quality women t-shirt', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000004T', '20', '20', '0', '10', 'ck', 'FC-10000004T', 't-shirt, ck, new', '4.7', '5', GETDATE(), 'White', 'XS,S,M,L,XL,2XL'),
-	('DF22BA6B-A15B-4125-AF29-07E242AF6F2D', 'Natural Green', 'High quality t-shirt', 'High quality t-shirt', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000006T', '20', '25', '0', '5', 'Zara', 'FC-10000006T', 't-shirt, zara', '4.6', '5', GETDATE(), 'Green', 'XS,S,M,L,XL,2XL'),
-	('9EB9982F-E672-4184-8399-044277EEF754', 'New Way', 'Premium quality top', 'Premium quality top', 'BA5FE17F-8977-4034-BEC3-227AA99502CC', 'FC-10000008T', '30', '30', '0', '10', 'Nike', 'FC-10000008T', 'top, nike, new', '4.8', '20', GETDATE(), 'Black,Gray,Orange,Pink,White', 'XS,S,M,L,XL,2XL');
-
+INSERT INTO [Products] ([id], [name], [description], [ShortDescription], [categoryId], [sku], [stockQuantity], [unitPrice_Amount], [unitPrice_Currency], [discount], [brand], [barcode], [tags], [averageRating_Value], [averageRating_NumRatings], [CreatedOn], [Colors], [Sizes], [Favourites]) VALUES
+	('571D3D66-18F2-4DA8-A57B-D06D4D1C9EEF', 'Black Rockstar', 'High quality black t-shirt', 'High quality black t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000000T', '10', '20', '0', '10', 'Zara', 'MC-10000000T', 't-shirt, zara, men, new', '4.8', '5', GETDATE(), 'Black,Gray,Orange,Pink', 'XS,S,M,L,XL,2XL', 0),
+	('096A127A-65AF-4C0C-A294-2E1990136711', 'Premium Purple', 'High quality purple t-shirt', 'High quality purple t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000002T', '5', '22', '0', '10', 'ck', 'MC-10000002T', 't-shirt, ck, men, new, premium', '4.9', '7', GETDATE(), 'Black,Orange,Pink,White', 'XS,S,M,L,XL,2XL', 0),
+	('8419FD69-61A5-4D9D-A289-1E377CC17082', 'Red Dragon', 'Premium quality red sweater', 'Premium quality red sweater', '632DFDA9-CC2E-487B-8C88-608005F124E2', 'MC-10000000S', '20', '40', '0', '10', 'h&m', 'MC-10000000S', 'sweater, h&m, men, hot, premium', '4.7', '15', GETDATE(), 'Red,Orange,Pink,White', 'XS,S,M,L,XL,2XL', 0),
+	('CBB8A3A9-03DB-40E4-A89B-9C91D21B3934', 'Ash life', 'High quality t-shirt', 'High quality t-shirt', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000004T', '15', '25', '0', '10', 'ck', 'MC-10000004T', 't-shirt, ck, men, new, premium', '4.7', '5', GETDATE(), 'Black,Gray,Pink,White', 'XS,S,M,L,XL,2XL', 0),
+	('96A1503F-B7EA-4C12-8946-89035399F45E', 'Red Star', 'High quality t-shirt for men', 'High quality t-shirt for men', '106F4F94-5E70-4340-B23E-462AF5FC7BFC', 'MC-10000006T', '30', '20', '0', '10', 'Boss', 'MC-10000006T', 't-shirt, boss, men', '4.6', '10', GETDATE(), 'Red,Black,Orange', 'XS,S,M,L,XL,2XL', 0),
+	('E02500EA-2957-4601-A051-951CB9957CBE', 'Black Stone', 'Premium quality t-shirt for women', 'Premium quality t-shirt for women', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000000T', '30', '40', '0', '10', 'Adidas', 'FC-10000000T', 't-shirt, adidas, new, premium', '4.9', '15', GETDATE(), 'Black,Gray', 'XS,S,M,L,XL,2XL', 0),
+	('A34BA283-62A1-43C6-8FB0-748DBDE8BA7D', 'Elegant peach', 'High quality women top', 'High quality women top', 'BA5FE17F-8977-4034-BEC3-227AA99502CC', 'FC-10000002T', '10', '20', '0', '10', 'h&m', 'FC-10000002T', 'top, h&m, new', '4.7', '15', GETDATE(), ',Orange,Pink,Peach', 'XS,S,M,L,XL,2XL', 0),
+	('D7C96816-1656-4DBC-B709-0F626807347F', 'Pure White', 'High quality women t-shirt', 'High quality women t-shirt', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000004T', '20', '20', '0', '10', 'ck', 'FC-10000004T', 't-shirt, ck, new', '4.7', '5', GETDATE(), 'White', 'XS,S,M,L,XL,2XL', 0),
+	('DF22BA6B-A15B-4125-AF29-07E242AF6F2D', 'Natural Green', 'High quality t-shirt', 'High quality t-shirt', 'A805A418-2D53-4430-9968-D031C4F39FD4', 'FC-10000006T', '20', '25', '0', '5', 'Zara', 'FC-10000006T', 't-shirt, zara', '4.6', '5', GETDATE(), 'Green', 'XS,S,M,L,XL,2XL', 0),
+	('9EB9982F-E672-4184-8399-044277EEF754', 'New Way', 'Premium quality top', 'Premium quality top', 'BA5FE17F-8977-4034-BEC3-227AA99502CC', 'FC-10000008T', '30', '30', '0', '10', 'Nike', 'FC-10000008T', 'top, nike, new', '4.8', '20', GETDATE(), 'Black,Gray,Orange,Pink,White', 'XS,S,M,L,XL,2XL', 0);
 
 INSERT INTO [ProductImages] ([id], [productId], [imageUrl], [seq], [publicId]) VALUES
 	('4DBB9D7F-5B09-4ECF-AEB9-B1F5F6473379', '571D3D66-18F2-4DA8-A57B-D06D4D1C9EEF', 'https://res.cloudinary.com/akazad13/image/upload/v1729420812/shopizy/mpjks43jpxo9eagempgu.jpg', '0', 'mpjks43jpxo9eagempgu'),
@@ -53,11 +52,11 @@ INSERT INTO [ProductImages] ([id], [productId], [imageUrl], [seq], [publicId]) V
     ('A8A70F86-7987-4BB4-A344-1B2133DCC609', '096A127A-65AF-4C0C-A294-2E1990136711', 'https://res.cloudinary.com/akazad13/image/upload/v1733579506/shopizy/men2_2_d4dn3p.jpg', 1, 'men2_2_d4dn3p');
 
 INSERT INTO ProductReviews(Id, UserId, ProductId, Rating_Value, Comment, CreatedOn)
-VALUES('20AB2C8F-E880-45C3-8887-D0A0E2E0E763','E68D8E76-72A1-42ED-91D0-0ED0296D662E','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Looks Awesome!', GETDATE()),
-('C75B65D5-13D1-4FC9-A81E-19D7FB3B7784','67726B00-2647-4817-BFCB-3781EBD97E0F','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Looks Awesome!', GETDATE()),
-('41B53394-5014-45E6-9540-B7FA05782B6C','6EBA643C-D138-4D90-AA7C-6DBF935D8209','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',4, 'Good T-Shirt!', GETDATE()),
-('F9CA8F97-2B91-4EAD-88D7-78496A92616A','88D9AF82-BEF4-4042-8E55-B01B89F23E68','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Recommanded!', GETDATE()),
-('7ED64773-2ED6-4BFB-BBA0-E267BA4A8208','E68D8E76-72A1-42ED-91D0-0ED0296D662E','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',4, 'Looks good', GETDATE());
+VALUES('20AB2C8F-E880-45C3-8887-D0A0E2E0E763','E66D52FD-E2CE-4ABD-BBFB-C25CEE190E3D','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Looks Awesome!', GETDATE()),
+('C75B65D5-13D1-4FC9-A81E-19D7FB3B7784','E66D52FD-E2CE-4ABD-BBFB-C25CEE190E3D','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Looks Awesome!', GETDATE()),
+('41B53394-5014-45E6-9540-B7FA05782B6C','E66D52FD-E2CE-4ABD-BBFB-C25CEE190E3D','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',4, 'Good T-Shirt!', GETDATE()),
+('F9CA8F97-2B91-4EAD-88D7-78496A92616A','E66D52FD-E2CE-4ABD-BBFB-C25CEE190E3D','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',5, 'Recommanded!', GETDATE()),
+('7ED64773-2ED6-4BFB-BBA0-E267BA4A8208','E66D52FD-E2CE-4ABD-BBFB-C25CEE190E3D','DF22BA6B-A15B-4125-AF29-07E242AF6F2D',4, 'Looks good', GETDATE());
 
 
 
