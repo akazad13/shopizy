@@ -1,8 +1,8 @@
 using Ardalis.GuardClauses;
 using Mapster;
-using Shopizy.Application.Authentication.Commands.Register;
-using Shopizy.Application.Authentication.Common;
-using Shopizy.Application.Authentication.Queries.login;
+using Shopizy.Application.Auth.Commands.Register;
+using Shopizy.Application.Auth.Common;
+using Shopizy.Application.Auth.Queries.login;
 using Shopizy.Contracts.Authentication;
 
 namespace Shopizy.Api.Common.Mapping;

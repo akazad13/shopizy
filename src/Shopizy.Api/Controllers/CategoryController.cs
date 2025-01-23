@@ -2,6 +2,7 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
@@ -16,10 +17,15 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Shopizy.Api.Controllers;
 
 [Route("api/v1.0/categories")]
-public class CategoryController(ISender mediator, IMapper mapper) : ApiController
+public class CategoryController(
+    ISender mediator,
+    IMapper mapper,
+    ILogger<CategoryController> logger
+) : ApiController
 {
     private readonly ISender _mediator = mediator;
     private readonly IMapper _mapper = mapper;
+    private readonly ILogger<CategoryController> _logger = logger;
 
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<CategoryResponse>))]
@@ -28,12 +34,20 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetAsync()
     {
-        var result = await _mediator.Send(new ListCategoriesQuery());
+        try
+        {
+            var result = await _mediator.Send(new ListCategoriesQuery());
 
-        return result.Match(
-            categories => Ok(_mapper.Map<List<CategoryResponse>>(categories)),
-            Problem
-        );
+            return result.Match(
+                categories => Ok(_mapper.Map<List<CategoryResponse>>(categories)),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.CategoryFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpGet("tree")]
@@ -43,12 +57,20 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> GetCategoriesAsync()
     {
-        var result = await _mediator.Send(new CategoriesTreeQuery());
+        try
+        {
+            var result = await _mediator.Send(new CategoriesTreeQuery());
 
-        return result.Match(
-            categories => Ok(_mapper.Map<List<CategoryTreeResponse>>(categories)),
-            Problem
-        );
+            return result.Match(
+                categories => Ok(_mapper.Map<List<CategoryTreeResponse>>(categories)),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.CategoryFetchError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpGet("{categoryId:guid}")]
@@ -67,6 +89,7 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
         }
         catch (Exception ex)
         {
+            _logger.CategoryFetchError(ex);
             return Problem([Error.Unexpected(description: ex.Message)]);
         }
     }
@@ -79,10 +102,18 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> CreateCategoryAsync(CreateCategoryRequest request)
     {
-        var command = _mapper.Map<CreateCategoryCommand>((request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<CreateCategoryCommand>((request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
+            return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.CategoryCreationError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpPatch("{categoryId:guid}")]
@@ -96,13 +127,21 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
         UpdateCategoryRequest request
     )
     {
-        var command = _mapper.Map<UpdateCategoryCommand>((categoryId, request));
-        var result = await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<UpdateCategoryCommand>((categoryId, request));
+            var result = await _mediator.Send(command);
 
-        return result.Match(
-            success => Ok(SuccessResult.Success("Successfully updated category.")),
-            Problem
-        );
+            return result.Match(
+                success => Ok(SuccessResult.Success("Successfully updated category.")),
+                Problem
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.CategoryUpdateError(ex);
+            return Problem([Error.Unexpected(description: ex.Message)]);
+        }
     }
 
     [HttpDelete("{categoryId:guid}")]
@@ -125,6 +164,7 @@ public class CategoryController(ISender mediator, IMapper mapper) : ApiControlle
         }
         catch (Exception ex)
         {
+            _logger.CategoryDeleteError(ex);
             return Problem([Error.Unexpected(description: ex.Message)]);
         }
     }

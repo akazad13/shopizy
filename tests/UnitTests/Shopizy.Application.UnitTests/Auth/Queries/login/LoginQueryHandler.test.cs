@@ -1,17 +1,17 @@
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Authentication.Common;
-using Shopizy.Application.Authentication.Queries.login;
+using Shopizy.Application.Auth.Common;
+using Shopizy.Application.Auth.Queries.login;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.UnitTests.Authentication.TestUtils;
+using Shopizy.Application.UnitTests.Auth.TestUtils;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions;
 using Shopizy.Domain.Users;
 
-namespace Shopizy.Application.UnitTests.Authentication.Queries.login;
+namespace Shopizy.Application.UnitTests.Auth.Queries.login;
 
 public class LoginQueryHandlerTests
 {

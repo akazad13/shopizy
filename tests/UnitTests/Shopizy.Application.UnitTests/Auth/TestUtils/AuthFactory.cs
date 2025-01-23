@@ -1,7 +1,7 @@
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Permissions;
 
-namespace Shopizy.Application.UnitTests.Authentication.TestUtils;
+namespace Shopizy.Application.UnitTests.Auth.TestUtils;
 
 public static class AuthFactory
 {

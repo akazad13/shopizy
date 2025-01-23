@@ -1,7 +1,7 @@
 using ErrorOr;
 using FluentAssertions;
 using Moq;
-using Shopizy.Application.Authentication.Commands.Register;
+using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
@@ -9,7 +9,7 @@ using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
 
-namespace Shopizy.Application.UnitTests.Authentication.Commands.Register;
+namespace Shopizy.Application.UnitTests.Auth.Commands.Register;
 
 public class RegisterCommandHandlerTests
 {

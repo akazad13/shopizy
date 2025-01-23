@@ -1,7 +1,7 @@
-using Shopizy.Application.Authentication.Queries.login;
+using Shopizy.Application.Auth.Queries.login;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 
-namespace Shopizy.Application.UnitTests.Authentication.TestUtils;
+namespace Shopizy.Application.UnitTests.Auth.TestUtils;
 
 public static class LoginQueryUtils
 {
