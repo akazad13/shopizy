@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopizy.Infrastructure.Common.Persistence;
 
@@ -11,9 +12,11 @@ using Shopizy.Infrastructure.Common.Persistence;
 namespace shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241212165458_UpdateDatabase")]
+    partial class UpdateDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +97,8 @@ namespace shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Orders", (string)null);
                 });
 
@@ -138,21 +143,6 @@ namespace shopizy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Payments", (string)null);
-                });
-
-            modelBuilder.Entity("Shopizy.Domain.Permissions.Permission", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Shopizy.Domain.ProductReviews.ProductReview", b =>
@@ -317,9 +307,7 @@ namespace shopizy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -338,6 +326,7 @@ namespace shopizy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -346,7 +335,7 @@ namespace shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email");
+                    b.HasIndex("Phone");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -377,9 +366,10 @@ namespace shopizy.Infrastructure.Migrations
 
                             b1.HasKey("Id", "CartId");
 
-                            b1.HasIndex("CartId");
-
                             b1.HasIndex("ProductId");
+
+                            b1.HasIndex("CartId", "ProductId")
+                                .IsUnique();
 
                             b1.ToTable("CartItems", (string)null);
 
@@ -400,6 +390,12 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
                 {
+                    b.HasOne("Shopizy.Domain.Users.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsMany("Shopizy.Domain.Orders.Entities.OrderItem", "OrderItems", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -626,7 +622,7 @@ namespace shopizy.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Shopizy.Domain.Users.User", "User")
-                        .WithMany()
+                        .WithMany("ProductReviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -741,81 +737,6 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
                 {
-                    b.OwnsMany("Shopizy.Domain.Orders.ValueObjects.OrderId", "OrderIds", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("UseId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Value")
-                                .HasColumnType("uniqueidentifier")
-                                .HasColumnName("OrderId");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("UseId");
-
-                            b1.ToTable("OrderIds", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UseId");
-                        });
-
-                    b.OwnsMany("Shopizy.Domain.ProductReviews.ValueObjects.ProductReviewId", "ProductReviewIds", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("UseId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Value")
-                                .HasColumnType("uniqueidentifier")
-                                .HasColumnName("ProductReviewId");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("UseId");
-
-                            b1.ToTable("ProductReviewIds", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UseId");
-                        });
-
-                    b.OwnsMany("Shopizy.Domain.Permissions.ValueObjects.PermissionId", "PermissionIds", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Value")
-                                .HasColumnType("uniqueidentifier")
-                                .HasColumnName("PermissionId");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("UserId");
-
-                            b1.ToTable("UserPermissionIds", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
                     b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -850,12 +771,6 @@ namespace shopizy.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address");
-
-                    b.Navigation("OrderIds");
-
-                    b.Navigation("PermissionIds");
-
-                    b.Navigation("ProductReviewIds");
                 });
 
             modelBuilder.Entity("Shopizy.Domain.Categories.Category", b =>
@@ -865,6 +780,13 @@ namespace shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Products.Product", b =>
                 {
+                    b.Navigation("ProductReviews");
+                });
+
+            modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
+                {
+                    b.Navigation("Orders");
+
                     b.Navigation("ProductReviews");
                 });
 #pragma warning restore 612, 618

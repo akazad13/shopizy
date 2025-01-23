@@ -1,17 +1,16 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Commands.UpdateUser;
 
-public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
+public class UpdateUserCommandHandler(IUserRepository userRepository)
     : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly ICacheHelper _cacheHelper = cacheHelper;
 
     public async Task<ErrorOr<Success>> Handle(
         UpdateUserCommand request,
@@ -42,8 +41,6 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
         {
             return CustomErrors.User.UserNotUpdated;
         }
-
-        await _cacheHelper.RemoveAsync($"user-{user.Id.Value}");
 
         return Result.Success;
     }
