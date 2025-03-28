@@ -9,6 +9,7 @@ public static class GetOrdersQueryUtils
     {
         return new GetOrdersQuery(
             Constants.User.Id.Value,
+            Constants.User.Id.Value,
             DateTime.Now.AddDays(-90),
             DateTime.Now,
             null,

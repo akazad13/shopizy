@@ -34,6 +34,7 @@ public class DeleteProductImageCommandHandlerTests
         product.AddProductImage(productImage);
 
         var command = DeleteProductImageCommandUtils.CreateCommand(
+            Guid.NewGuid(),
             product.Id.Value,
             productImage.Id.Value
         );

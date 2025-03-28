@@ -91,7 +91,7 @@ public class AddProductToCartCommandHandlerTests
         cart.Value.CartItems[0].ProductId.Should().BeOfType(typeof(ProductId));
         cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.Value.CartItems[0].Quantity.Should().Be(1);
+        cart.Value.CartItems[0].Quantity.Should().Be(command.Quantity);
         _mockCartRepository.Verify(
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 1)),
             Times.Once

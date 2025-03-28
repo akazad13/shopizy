@@ -8,6 +8,7 @@ public static class CreateProductCommandUtils
     public static CreateProductCommand CreateCommand()
     {
         return new CreateProductCommand(
+            Constants.User.Id.Value,
             Constants.Product.Name,
             Constants.Product.ShortDescription,
             Constants.Product.Description,
@@ -28,6 +29,7 @@ public static class CreateProductCommandUtils
     public static CreateProductCommand CreateCommandWithEmptyProductName()
     {
         return new CreateProductCommand(
+            Constants.User.Id.Value,
             "",
             Constants.Product.ShortDescription,
             Constants.Product.Description,
