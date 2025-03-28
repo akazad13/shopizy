@@ -12,8 +12,12 @@ public class PaymentMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
-        config.NewConfig<CardNotPresentSaleRequest, CardNotPresentSaleCommand>();
+        config.NewConfig<(Guid UserId, CardNotPresentSaleRequest request), CardNotPresentSaleCommand>()
+            .Map(dest => dest.UserId, src=> src.UserId)
+            .Map(dest => dest, src=> src.request);
 
-        config.NewConfig<CardNotPresentSaleRequest, CashOnDeliverySaleCommand>();
+        config.NewConfig< (Guid UserId, CardNotPresentSaleRequest request), CashOnDeliverySaleCommand>()
+            .Map(dest => dest.UserId, src=> src.UserId)
+            .Map(dest => dest, src => src.request);
     }
 }

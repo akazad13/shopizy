@@ -6,6 +6,7 @@ namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 
 [Authorize(Permissions = Permissions.Order.Create)]
 public record CashOnDeliverySaleCommand(
+    Guid UserId,
     Guid OrderId,
     decimal Amount,
     string Currency,

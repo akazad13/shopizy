@@ -7,6 +7,7 @@ namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
 [Authorize(Permissions = Permissions.Cart.Modify)]
 public record AddProductToCartCommand(
+    Guid UserId,
     Guid CartId,
     Guid ProductId,
     string Color,

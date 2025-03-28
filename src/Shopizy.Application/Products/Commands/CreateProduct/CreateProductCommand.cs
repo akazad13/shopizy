@@ -9,6 +9,7 @@ namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 [Authorize(Permissions = Permissions.Product.Create, Policies = Policy.Admin)]
 public record CreateProductCommand(
+    Guid UserId,
     string Name,
     string ShortDescription,
     string Description,

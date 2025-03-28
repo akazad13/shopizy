@@ -6,4 +6,4 @@ using Shopizy.Application.Common.Security.Request;
 namespace Shopizy.Application.Products.Commands.DeleteProduct;
 
 [Authorize(Permissions = Permissions.Product.Delete, Policies = Policy.Admin)]
-public record DeleteProductCommand(Guid ProductId) : IAuthorizeableRequest<ErrorOr<Success>>;
+public record DeleteProductCommand(Guid UserId, Guid ProductId) : IAuthorizeableRequest<ErrorOr<Success>>;

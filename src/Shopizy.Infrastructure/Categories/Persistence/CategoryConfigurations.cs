@@ -9,6 +9,8 @@ public sealed class CategoryConfigurations : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         ConfigureCategoriesTable(builder);
     }
 

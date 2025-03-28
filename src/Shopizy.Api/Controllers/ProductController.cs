@@ -17,7 +17,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/v1.0/products")]
+[Route("api/v1.0")]
 public class ProductController(ISender mediator, IMapper mapper, ILogger<ProductController> logger)
     : ApiController
 {
@@ -25,7 +25,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<ProductController> _logger = logger;
 
-    [HttpGet]
+    [HttpGet("products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<ProductResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -49,7 +49,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpGet("{productId:guid}")]
+    [HttpGet("products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -73,17 +73,17 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpPost]
+    [HttpPost("users/{userId:guid}/products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateProductAsync(CreateProductRequest request)
+    public async Task<IActionResult> CreateProductAsync(Guid userId, CreateProductRequest request)
     {
         try
         {
-            var command = _mapper.Map<CreateProductCommand>(request);
+            var command = _mapper.Map<CreateProductCommand>((userId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
@@ -95,20 +95,21 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpPatch("{productId:guid}")]
+    [HttpPatch("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> UpdateProductAsync(
+        Guid userId,
         Guid productId,
         UpdateProductRequest request
     )
     {
         try
         {
-            var command = _mapper.Map<UpdateProductCommand>((productId, request));
+            var command = _mapper.Map<UpdateProductCommand>((userId, productId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -123,17 +124,17 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpDelete("{productId:guid}")]
+    [HttpDelete("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> DeleteProductAsync(Guid productId)
+    public async Task<IActionResult> DeleteProductAsync(Guid userId, Guid productId)
     {
         try
         {
-            var command = _mapper.Map<DeleteProductCommand>(productId);
+            var command = _mapper.Map<DeleteProductCommand>((userId, productId));
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -148,20 +149,21 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpPost("{productId:guid}/image")]
+    [HttpPost("users/{userId:guid}/products/{productId:guid}/image")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductImageResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> AddProductImageAsync(
+        Guid userId,
         Guid productId,
         [FromForm] AddProductImageRequest request
     )
     {
         try
         {
-            var command = new AddProductImageCommand(productId, request.File);
+            var command = new AddProductImageCommand(userId, productId, request.File);
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -176,17 +178,17 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
-    [HttpDelete("{productId:guid}/image/{imageId:guid}")]
+    [HttpDelete("users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> DeleteProductImageAsync(Guid productId, Guid imageId)
+    public async Task<IActionResult> DeleteProductImageAsync(Guid userId, Guid productId, Guid imageId)
     {
         try
         {
-            var command = _mapper.Map<DeleteProductImageCommand>((productId, imageId));
+            var command = _mapper.Map<DeleteProductImageCommand>((userId, productId, imageId));
             var result = await _mediator.Send(command);
 
             return result.Match(

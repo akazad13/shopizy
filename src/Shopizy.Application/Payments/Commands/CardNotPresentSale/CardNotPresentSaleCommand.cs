@@ -6,6 +6,7 @@ namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
 
 [Authorize(Permissions = Permissions.Order.Create)]
 public record CardNotPresentSaleCommand(
+    Guid UserId,
     Guid OrderId,
     decimal Amount,
     string Currency,

@@ -8,6 +8,7 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
 [Authorize(Permissions = Permissions.Order.Create)]
 public record CreateOrderCommand(
+    Guid UserId,
     string PromoCode,
     int DeliveryMethod,
     decimal DeliveryChargeAmount,
