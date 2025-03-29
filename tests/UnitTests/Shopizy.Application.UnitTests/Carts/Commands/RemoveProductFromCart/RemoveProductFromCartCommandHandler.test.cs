@@ -23,7 +23,7 @@ public class RemoveProductFromCartCommandHandlerTests
 
     // Should return cart not found when cart  is not found
     [Fact]
-    public async Task ShouldReturnsCartNotFoundWhenCartIsNotFound()
+    public async Task Should_ReturnsCartNotFound_WhenCartIsNotFound()
     {
         // Arrange
         var command = RemoveProductFromCartCommandUtils.CreateCommand();
@@ -49,7 +49,7 @@ public class RemoveProductFromCartCommandHandlerTests
 
     // Should remove last line item from cart and commit changes when cart is found
     [Fact]
-    public async Task ShouldRemoveLastLineItemFromCartWhenCartIsFound()
+    public async Task Should_RemoveLastLineItemFromCart_WhenCartIsFound()
     {
         // Arrange
         var existingCart = CartFactory.Create();

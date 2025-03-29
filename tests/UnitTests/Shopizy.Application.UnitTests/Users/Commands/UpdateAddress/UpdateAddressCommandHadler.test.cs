@@ -22,7 +22,7 @@ public class UpdateAddressCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorResponseWhenUserIsNotFound()
+    public async Task Should_ReturnErrorResponse_WhenUserIsNotFound()
     {
         // Arrange
         var command = UpdateAddressCommandUtils.CreateCommand();
@@ -46,7 +46,7 @@ public class UpdateAddressCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldUpdateUserAddressSuccessfullyWhenUserIsFound()
+    public async Task Should_UpdateUserAddressSuccessfully_WhenUserIsFound()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -75,7 +75,7 @@ public class UpdateAddressCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldHandleConcurrentUpdatesToTheSameUser()
+    public async Task Should_HandleConcurrentUpdatesToTheSameUser()
     {
         // Arrange
 
@@ -155,7 +155,7 @@ public class UpdateAddressCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldHandleCasesWhereDatabaseConnectionIsLostDuringCommit()
+    public async Task Should_HandleCases_WhereDatabaseConnectionIsLostDuringCommit()
     {
         // Arrange
 

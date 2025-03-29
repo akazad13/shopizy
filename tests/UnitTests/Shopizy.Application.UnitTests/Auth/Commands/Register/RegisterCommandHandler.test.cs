@@ -31,7 +31,7 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnDuplicateEmailErrorWhenUserWithSameEmailAlreadyExists()
+    public async Task Should_ReturnDuplicateEmailError_WhenUserWithSameEmailAlreadyExists()
     {
         // Arrange
         var command = new RegisterCommand("John", "Doe", "test@test.com", "password123");
@@ -52,7 +52,7 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldCreateNewUserWithHashedPasswordWhenValidInputIsProvided()
+    public async Task Should_CreateNewUserWithHashedPassword_WhenValidInputIsProvided()
     {
         // Arrange
         var command = new RegisterCommand("John", "Doe", "test@test.com", "password123");
@@ -114,10 +114,10 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnUserNotCreatedErrorWhenRepositoryCommitFails()
+    public async Task Should_ReturnUserNotCreatedError_WhenRepositoryCommitFails()
     {
         // Arrange
-        var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
+        var command = new RegisterCommand("John", "Doe", "test@gmail.com", "password123");
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
@@ -150,10 +150,10 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldAssignAllDefaultPermissionsWhenCreatingNewUser()
+    public async Task Should_AssignAllDefaultPermissions_WhenCreatingNewUser()
     {
         // Arrange
-        var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
+        var command = new RegisterCommand("John", "Doe", "test@gmail.com", "password123");
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
@@ -232,13 +232,13 @@ public class RegisterCommandHandlerTests
     [InlineData("John", "   ")]
     [InlineData("", "")]
     [InlineData("  ", "   ")]
-    public async Task ShouldReturnValidationErrorWhenFirstNameOrLastNameIsEmptyOrWhitespace(
+    public async Task Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(
         string firstName,
         string lastName
     )
     {
         // Arrange
-        var command = new RegisterCommand(firstName, lastName, "1234567890", "password123");
+        var command = new RegisterCommand(firstName, lastName, "test@gmail.com", "password123");
 
         _mockUserRepository
             .Setup(r => r.GetUserByEmailAsync(command.Email))
@@ -260,6 +260,9 @@ public class RegisterCommandHandlerTests
             Times.Never
         );
     }
+
+    // Should Return validation error when email format is invalid
+
 
     // [Theory]
     // [InlineData("123")]
@@ -293,10 +296,10 @@ public class RegisterCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldEnsurePasswordIsHashedBeforeStoringInDatabase()
+    public async Task Should_EnsurePasswordIsHashed_BeforeStoringInDatabase()
     {
         // Arrange
-        var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
+        var command = new RegisterCommand("John", "Doe", "test@gmail.com", "password123");
         var hashedPassword = "hashedPassword123";
 
         _mockUserRepository
@@ -327,7 +330,7 @@ public class RegisterCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldHandleConcurrentRegistrationAttemptsForSameEmail()
+    public async Task Should_HandleConcurrentRegistrationAttempts_ForSameEmail()
     {
         // Arrange
         var command = new RegisterCommand("John", "Doe", "test@test.com", "password123");
@@ -404,7 +407,7 @@ public class RegisterCommandHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldHandleExtremelyLongInputValuesForFirstNameLastNameAndEmail()
+    public async Task Should_HandleExtremelyLongInputValues_ForFirstNameLastNameAndEmail()
     {
         // Arrange
         var longFirstName = new string('A', 1000);
@@ -450,5 +453,36 @@ public class RegisterCommandHandlerTests
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
         _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Theory]
+    [InlineData("plainaddress")]
+    [InlineData("@missingusername.com")]
+    [InlineData("username@.com")]
+    [InlineData("username@.com.")]
+    public async Task Should_ReturnValidationError_WhenEmailFormatIsInvalid(string invalidEmail)
+    {
+        // Arrange
+        var command = new RegisterCommand("John", "Doe", invalidEmail, "password123");
+
+        _mockUserRepository
+            .Setup(r => r.GetUserByEmailAsync(command.Email))
+            .ReturnsAsync((User?)null);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().Contain(CustomErrors.User.InvalidEmailFormat);
+        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Never);
+        _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
+        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
+        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
+        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
+        _mockPasswordManager.Verify(
+            p => p.CreateHashString(It.IsAny<string>(), 10000),
+            Times.Never
+        );
     }
 }

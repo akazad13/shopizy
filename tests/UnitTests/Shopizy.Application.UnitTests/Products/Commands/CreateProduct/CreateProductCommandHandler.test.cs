@@ -25,7 +25,7 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldThrowExceptionWhenProductNameIsEmpty()
+    public async Task Should_ThrowException_WhenProductNameIsEmpty()
     {
         // Arrange
         var command = CreateProductCommandUtils.CreateCommandWithEmptyProductName();
@@ -43,14 +43,14 @@ public class CreateProductCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldCreateAndReturnProductWhenProductIsValid()
+    public async Task Should_CreateAndReturnProduct_WhenProductIsValid()
     {
         // Arrange
-
         var command = CreateProductCommandUtils.CreateCommand();
 
         _mockProductRepository.Setup(p => p.AddAsync(It.IsAny<Product>()));
         _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
+
         // Act
         var result = await _sut.Handle(command, default);
 
@@ -65,7 +65,7 @@ public class CreateProductCommandHandlerTests
     }
 
     // [Fact]
-    // public async Task ShouldThrowExceptionWhenProductDescriptionIsTooLong()
+    // public async Task Should_ThrowException_WhenProductDescriptionIsTooLong()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -100,7 +100,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenProductSKUAlreadyExists()
+    // public async Task Should_ReturnErrorResponse_WhenProductSKUAlreadyExists()
     // {
     //     // Arrange
     //     var existingProduct = Product.Create(
@@ -151,7 +151,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenProductPriceIsNegative()
+    // public async Task Should_ReturnErrorResponse_WhenProductPriceIsNegative()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -186,7 +186,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenProductDiscountIsGreaterThan100Percent()
+    // public async Task Should_ReturnErrorResponse_WhenProductDiscountIsGreaterThan100Percent()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -221,7 +221,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldHandleConcurrentRequestsWithoutDataCorruption()
+    // public async Task Should_HandleConcurrentRequestsWithoutDataCorruption()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -280,7 +280,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldValidateProductBarcodeFormat()
+    // public async Task Should_ValidateProductBarcodeFormat()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -314,7 +314,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldSupportAddingMultipleTagsToProduct()
+    // public async Task Should_SupportAddingMultipleTagsToProduct()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -352,7 +352,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldHandleProductRepositoryUnavailable()
+    // public async Task Should_HandleProductRepositoryUnavailable()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand
@@ -391,7 +391,7 @@ public class CreateProductCommandHandlerTests
     // }
 
     // [Fact]
-    // public async Task ShouldReturnSuccessResponseWhenAllValidationsPassAndProductIsCreated()
+    // public async Task Should_ReturnSuccessResponse_WhenAllValidationsPassAndProductIsCreated()
     // {
     //     // Arrange
     //     var createProductCommand = new CreateProductCommand

@@ -31,7 +31,7 @@ public class CreateOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldHandleValidOrderCreationRequest()
+    public async Task Should_HandleValidOrderCreationRequest()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();
@@ -63,7 +63,7 @@ public class CreateOrderCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorWhenProductIdNotFound()
+    public async Task Should_ReturnError_WhenProductIdNotFound()
     {
         // Arrange
         var command = CreateOrderCommandUtils.CreateCommand([]);

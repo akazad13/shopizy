@@ -21,7 +21,7 @@ public class GetCategoryQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnCategoryDetailsWhenCategoryIsFound()
+    public async Task Should_ReturnCategoryDetails_WhenCategoryIsFound()
     {
         // Arrange
         var category = CategoryFactory.Create();
