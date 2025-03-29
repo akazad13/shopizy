@@ -24,6 +24,12 @@ public class RegisterCommandHandler(
         CancellationToken cancellationToken
     )
     {
+        // check if command.Email is valid email address
+        if (string.IsNullOrEmpty(command.Email) || !IsValidEmail(command.Email))
+        {
+            return CustomErrors.User.InvalidEmailFormat;
+        }
+
         if (await _userRepository.GetUserByEmailAsync(command.Email) is not null)
         {
             return CustomErrors.User.DuplicateEmail;
@@ -75,5 +81,19 @@ public class RegisterCommandHandler(
         await _cartRepository.Commit(cancellationToken);
 
         return Result.Success;
+    }
+
+    // Helper method to validate email format
+    static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

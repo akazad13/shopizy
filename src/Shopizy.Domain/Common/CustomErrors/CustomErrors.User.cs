@@ -40,5 +40,7 @@ public static partial class CustomErrors
 
         public static Error InvalidPhoneFormat =>
             Error.Validation(code: "User.InvalidPhoneFormat", description: "Invalid phone format.");
+        public static Error InvalidEmailFormat =>
+            Error.Validation(code: "User.InvalidEmailFormat", description: "Invalid email format.");
     }
 }

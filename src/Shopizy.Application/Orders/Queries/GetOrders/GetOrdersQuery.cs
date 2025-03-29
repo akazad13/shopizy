@@ -7,6 +7,7 @@ namespace Shopizy.Application.Orders.Queries.GetOrders;
 
 [Authorize(Permissions = Permissions.Order.Get)]
 public record GetOrdersQuery(
+    Guid UserId,
     Guid? CustomerId,
     DateTime? StartDate,
     DateTime? EndDate,

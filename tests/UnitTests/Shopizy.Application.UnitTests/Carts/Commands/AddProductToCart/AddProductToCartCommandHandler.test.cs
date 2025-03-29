@@ -35,7 +35,7 @@ public class AddProductToCartCommandHandlerTests
 
     // Should return error when cart is not found
     [Fact]
-    public async Task ShouldReturnErrorWhenCartIdIsInvalid()
+    public async Task Should_ReturnError_WhenCartIdIsInvalid()
     {
         // Arrange
         var command = AddProductToCartCommandUtils.CreateCommand();
@@ -56,7 +56,7 @@ public class AddProductToCartCommandHandlerTests
 
     // Should add new line item to cart when product is not already present
     [Fact]
-    public async Task ShouldAddNewLineItemToCartWhenProductIsNotAlreadyPresent()
+    public async Task Should_AddNewLineItemToCart_WhenProductIsNotAlreadyPresent()
     {
         // Arrange
         var existingCart = CartFactory.Create();
@@ -79,7 +79,6 @@ public class AddProductToCartCommandHandlerTests
         _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
-
         var cart = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
@@ -91,7 +90,7 @@ public class AddProductToCartCommandHandlerTests
         cart.Value.CartItems[0].ProductId.Should().BeOfType(typeof(ProductId));
         cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId));
-        cart.Value.CartItems[0].Quantity.Should().Be(1);
+        cart.Value.CartItems[0].Quantity.Should().Be(command.Quantity);
         _mockCartRepository.Verify(
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 1)),
             Times.Once
@@ -101,7 +100,7 @@ public class AddProductToCartCommandHandlerTests
 
     // Should add new line item for another product
     [Fact]
-    public async Task ShouldAddNewLineItemForAnotherProduct()
+    public async Task Should_AddNewLineItem_ForAnotherProduct()
     {
         // Arrange
         var existingCart = CartFactory.Create();
@@ -164,6 +163,7 @@ public class AddProductToCartCommandHandlerTests
         cart.Value.CartItems.Should()
             .Contain(li => li.ProductId == ProductId.Create(command.ProductId) && li.Quantity == 1);
     }
+
 
     // [Fact]
     // public async Task ShouldReturnErrorResponseWhenProductIsOutOfStock()

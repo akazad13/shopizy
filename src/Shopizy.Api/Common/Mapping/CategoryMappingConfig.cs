@@ -22,13 +22,15 @@ public class CategoryMappingConfig : IRegister
             .Map(dest => dest, src => src.Request);
 
         config
-            .NewConfig<(Guid CategoryId, UpdateCategoryRequest Request), UpdateCategoryCommand>()
+            .NewConfig<(Guid UserId, Guid CategoryId, UpdateCategoryRequest Request), UpdateCategoryCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CategoryId, src => src.CategoryId)
             .Map(dest => dest, src => src.Request);
 
         config
-            .NewConfig<Guid, DeleteCategoryCommand>()
-            .MapWith(src => new DeleteCategoryCommand(src));
+            .NewConfig<(Guid UserId, Guid CategoryId), DeleteCategoryCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.CategoryId, src => src.CategoryId);
 
         config.NewConfig<Category, CategoryResponse>().Map(dest => dest.Id, src => src.Id.Value);
 

@@ -22,7 +22,7 @@ public class UpdateProductQuantityCommandHandlerTests
 
     // Should return cart not found when the cart is not found
     [Fact]
-    public async Task ShouldReturnsCartNotFoundWhenCartIsNoFound()
+    public async Task Should_ReturnsCartNotFound_WhenCartIsNoFound()
     {
         // Arrange
         var command = UpdateProductQuantityCommandUtils.CreateCommand(37);

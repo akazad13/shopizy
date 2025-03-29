@@ -4,6 +4,7 @@ using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Queries.GetUser;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
@@ -29,7 +30,7 @@ public class GetUserQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnUserObjectWhenValidUserIdIsProvided()
+    public async Task Should_ReturnUserObject_WhenValidUserIdIsProvided()
     {
         // Arrange
         var user = UserFactory.CreateUser();
@@ -51,201 +52,131 @@ public class GetUserQueryHandlerTests
         result.Should().NotBeNull();
     }
 
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenInvalidUserIdIsProvided()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var invalidUserId = UserId.Create(0); // Assuming UserId is not nullable
-    //     mockUserRepository.Setup(repo => repo.GetUserById(invalidUserId)).ReturnsAsync((User)null);
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = invalidUserId.Value };
+    [Fact]
+    public async Task Should_ReturnUserFromCache_WhenUserExistsInCache()
+    {
+        // Arrange
+        var query = GetUserQueryUtils.CreateQuery();
+        var cachedUserDto = new UserDto
+        (
+            Id: UserId.Create(query.UserId),
+            FirstName: "John",
+            LastName: "Doe",
+            Email: "john.doe@example.com",
+            ProfileImageUrl: null,
+            Phone: null,
+            Address: null,
+            TotalOrders: 0,
+            TotalReviewed: 0,
+            TotalFavorites: 0,
+            TotalReturns: 0,
+            CreatedOn: DateTime.UtcNow,
+            ModifiedOn: null
+        );
 
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{query.UserId}"))
+            .ReturnsAsync(cachedUserDto);
 
-    //     // Assert
-    //     Assert.False(result.IsSuccess);
-    //     Assert.Equal(CustomErrors.User.UserNotFound, result.Errors.First());
-    // }
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
 
-    // [Fact]
-    // public async Task ShouldHandleConcurrentRequestsWithoutDataCorruption()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId = UserId.Create(1);
-    //     var user = new User(userId, "John Doe", "john.doe@example.com");
-    //     mockUserRepository.Setup(repo => repo.GetUserById(userId)).ReturnsAsync(user);
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = userId.Value };
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeEquivalentTo(cachedUserDto);
+        _mockUserRepository.Verify(r => r.GetUserById(It.IsAny<UserId>()), Times.Never);
+    }
 
-    //     // Act
-    //     var tasks = Enumerable
-    //         .Range(0, 10)
-    //         .Select(_ => _sut.Handle(query, CancellationToken.None))
-    //         .ToList();
+    [Fact]
+    public async Task Should_ReturnError_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var query = GetUserQueryUtils.CreateQuery();
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{query.UserId}"))
+            .ReturnsAsync(() => null);
 
-    //     await Task.WhenAll(tasks);
+        _mockUserRepository
+            .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
+            .ReturnsAsync((User?)null);
 
-    //     // Assert
-    //     foreach (var task in tasks)
-    //     {
-    //         Assert.True(task.Result.IsSuccess);
-    //         Assert.Equal(user, task.Result.Value);
-    //     }
-    // }
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
 
-    // [Fact]
-    // public async Task ShouldReturnNullWhenUserIsNotFoundInDatabase()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId = UserId.Create(1);
-    //     mockUserRepository.Setup(repo => repo.GetUserById(userId)).ReturnsAsync((User)null);
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = userId.Value };
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(CustomErrors.User.UserNotFound);
+    }
 
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
+    [Fact]
+    public async Task Should_CacheUserData_WhenUserExistsInDatabase()
+    {
+        // Arrange
+        var user = UserFactory.CreateUser();
+        var query = GetUserQueryUtils.CreateQuery();
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{query.UserId}"))
+            .ReturnsAsync(() => null);
 
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Equal(CustomErrors.User.UserNotFound, result.Errors.Single());
-    // }
+        _mockUserRepository
+            .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
+            .ReturnsAsync(user);
 
-    // [Fact]
-    // public async Task ShouldReturnCorrectUserWhenMultipleUsersExistWithSameUserId()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId = UserId.Create(1);
-    //     var user1 = new User(userId, "John Doe", "john.doe@example.com");
-    //     var user2 = new User(userId, "Jane Doe", "jane.doe@example.com");
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(userId))
-    //         .ReturnsAsync(() =>
-    //         {
-    //             // Simulate multiple users with the same UserId
-    //             return new List<User> { user1, user2 }.AsQueryable();
-    //         });
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = userId.Value };
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
 
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
+        // Assert
+        result.IsError.Should().BeFalse();
+        _mockCacheHelper.Verify(
+            c => c.SetAsync(
+                $"user-{user.Id.Value}",
+                It.IsAny<UserDto>(),
+                It.IsAny<TimeSpan?>()),
+            Times.Once);
+    }
 
-    //     // Assert
-    //     Assert.True(result.IsSuccess);
-    //     Assert.Equal(user1, result.Value); // Assuming the first user is returned in case of multiple users
-    // }
+    [Fact]
+    public async Task Should_HandleRepositoryException_Gracefully()
+    {
+        // Arrange
+        var query = GetUserQueryUtils.CreateQuery();
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{query.UserId}"))
+            .ReturnsAsync(() => null);
 
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenDatabaseConnectionIsLost()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId = UserId.Create(1);
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(userId))
-    //         .ThrowsAsync(new DbConnectionException());
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = userId.Value };
+        _mockUserRepository
+            .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
+            .ThrowsAsync(new Exception("Database connection error"));
 
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
 
-    //     // Assert
-    //     Assert.False(result.IsSuccess);
-    //     Assert.Equal(CustomErrors.User.UserNotFound, result.Errors.First());
-    // }
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(CustomErrors.User.UserNotFound);
+    }
 
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenDatabaseQueryTimesOut()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId = UserId.Create(1);
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(userId))
-    //         .ThrowsAsync(new TimeoutException());
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { UserId = userId.Value };
+    [Fact]
+    public async Task Should_HandleCacheException_AndFallbackToRepository()
+    {
+        // Arrange
+        var user = UserFactory.CreateUser();
+        var query = GetUserQueryUtils.CreateQuery();
 
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
+        _mockCacheHelper
+            .Setup(c => c.GetAsync<UserDto>($"user-{query.UserId}"))
+            .ThrowsAsync(new Exception("Cache service unavailable"));
 
-    //     // Assert
-    //     Assert.False(result.IsSuccess);
-    //     Assert.Equal(CustomErrors.User.UserNotFound, result.Errors.Single());
-    // }
+        _mockUserRepository
+            .Setup(c => c.GetUserById(UserId.Create(query.UserId)))
+            .ReturnsAsync(user);
 
-    // [Fact]
-    // public async Task ShouldHandleALargeNumberOfUsersWithoutPerformanceDegradation()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var users = Enumerable
-    //         .Range(1, 1000)
-    //         .Select(i => new User(UserId.Create(i), $"User{i}", $"user{i}@example.com"))
-    //         .ToList();
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
 
-    //     mockUserRepository
-    //         .Setup(repo => repo.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync((UserId userId) => users.FirstOrDefault(u => u.Id == userId));
-
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-
-    //     // Act and Assert
-    //     // Test with a random user id within the range
-    //     var randomUserId = UserId.Create(new Random().Next(1, 1001));
-    //     var result = await _sut.Handle(
-    //         new GetUserQuery { UserId = randomUserId.Value },
-    //         CancellationToken.None
-    //     );
-
-    //     Assert.True(result.IsSuccess);
-    //     Assert.Equal(users.FirstOrDefault(u => u.Id == randomUserId), result.Value);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnPaginatedListWhenPaginationParametersAreProvided()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     var userId1 = UserId.Create(1);
-    //     var userId2 = UserId.Create(2);
-    //     var user1 = new User(userId1, "John Doe", "john.doe@example.com");
-    //     var user2 = new User(userId2, "Jane Smith", "jane.smith@example.com");
-    //     var users = new List<User> { user1, user2 };
-    //     var pagination = new Pagination { PageNumber = 1, PageSize = 10 };
-    //     mockUserRepository.Setup(repo => repo.GetUsers(It.IsAny<Pagination>())).ReturnsAsync(users);
-    //     var _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     var query = new GetUserQuery { Pagination = pagination };
-
-    //     // Act
-    //     var result = await _sut.Handle(query, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsSuccess);
-    //     Assert.Equal(users, result.Value);
-    // }
-
-    // [Fact]
-    // public void ShouldValidateInputUserId()
-    // {
-    //     // Arrange
-    //     var mockUserRepository = new Mock<IUserRepository>();
-    //     GetUserQueryHandler _sut = new GetUserQueryHandler(mockUserRepository.Object);
-    //     GetUserQuery queryWithNullUserId = new GetUserQuery { UserId = null };
-    //     GetUserQuery queryWithEmptyUserId = new GetUserQuery { UserId = "" };
-
-    //     // Act
-    //     var resultWithNullUserId = _sut.Handle(queryWithNullUserId, CancellationToken.None);
-    //     var resultWithEmptyUserId = _sut.Handle(queryWithEmptyUserId, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.ThrowsAsync<ArgumentNullException>(() => resultWithNullUserId);
-    //     Assert.ThrowsAsync<ArgumentException>(() => resultWithEmptyUserId);
-    // }
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        _mockUserRepository.Verify(r => r.GetUserById(It.IsAny<UserId>()), Times.Once);
+    }
 }

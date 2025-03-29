@@ -17,21 +17,24 @@ public class CartMappingConfig : IRegister
         Guard.Against.Null(config);
 
         config
-            .NewConfig<(Guid CartId, AddProductToCartRequest request), AddProductToCartCommand>()
+            .NewConfig<(Guid UserId, Guid CartId, AddProductToCartRequest request), AddProductToCartCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
         config
             .NewConfig<
-                (Guid CartId, Guid CartItemId, UpdateProductQuantityRequest request),
+                (Guid UserId, Guid CartId, Guid CartItemId, UpdateProductQuantityRequest request),
                 UpdateProductQuantityCommand
             >()
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest.CartItemId, src => src.CartItemId)
             .Map(dest => dest, src => src.request);
 
         config
-            .NewConfig<(Guid CartId, Guid ItemId), RemoveProductFromCartCommand>()
+            .NewConfig<(Guid UserId, Guid CartId, Guid ItemId), RemoveProductFromCartCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest.ItemId, src => src.ItemId);
 

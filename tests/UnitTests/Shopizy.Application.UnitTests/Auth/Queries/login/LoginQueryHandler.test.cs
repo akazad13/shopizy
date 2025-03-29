@@ -40,7 +40,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsUserNotFoundWhileLoginErrorWhenUserNotFound()
+    public async Task Should_ReturnsUserNotFoundWhileLoginError_WhenUserNotFound()
     {
         // Arrange
         var query = new LoginQuery("test@test.com", "password");
@@ -75,7 +75,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldGeneratesTokenWithCorrectDataWhenValidCredentials()
+    public async Task Should_GeneratesTokenWithCorrectData_WhenValidCredentials()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();
@@ -133,7 +133,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsAuthResultWithEmptyPermissionsWhenEmptyPermissionList()
+    public async Task Should_ReturnsAuthResultWithEmptyPermissions_WhenEmptyPermissionList()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();
@@ -176,7 +176,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsAuthResultWithCorrectDetailsWhenValidCredentials()
+    public async Task Should_ReturnsAuthResultWithCorrectDetails_WhenValidCredentials()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();
@@ -211,7 +211,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsAuthResultWithEmptyPermissionsWhenUserWithNoAssignedPermissions()
+    public async Task Should_ReturnsAuthResultWithEmptyPermissions_WhenUserWithNoAssignedPermissions()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();
@@ -251,7 +251,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnAuthResultWithAssignedPermissionsWhenCorrectlyFiltersAndSelectsAssignedPermissions()
+    public async Task Should_ReturnAuthResultWithAssignedPermissions_WhenCorrectlyFiltersAndSelectsAssignedPermissions()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();
@@ -294,7 +294,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldThrowsOperationCanceledExceptionWhenCancellationRequested()
+    public async Task Should_ThrowsOperationCanceledException_WhenCancellationRequested()
     {
         // Arrange
         var query = new LoginQuery("test@test.com", "password");
@@ -310,7 +310,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsInvalidCredentialsErrorWhenNullPassword()
+    public async Task Should_ReturnsInvalidCredentialsError_WhenNullPassword()
     {
         // Arrange
         var query = new LoginQuery("test@test.com", null!);
@@ -329,7 +329,7 @@ public class LoginQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnsCorrectAuthResultWithEmptyRolesWhenValidCredentials()
+    public async Task Should_ReturnsCorrectAuthResultWithEmptyRoles_WhenValidCredentials()
     {
         // Arrange
         var query = LoginQueryUtils.CreateQuery();

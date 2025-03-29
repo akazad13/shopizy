@@ -30,11 +30,10 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldThrowExceptionWhenFileIsNull()
+    public async Task Should_ThrowException_WhenFileIsNull()
     {
         // Arrange
-
-        var command = new AddProductImageCommand(Constants.Product.Id.Value, null);
+        var command = new AddProductImageCommand(Constants.User.Id.Value, Constants.Product.Id.Value, null);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -46,10 +45,10 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorResponseWhenProductIsNotFound()
+    public async Task Should_ReturnErrorResponse_WhenProductIsNotFound()
     {
         // Arrange
-        var command = AddProductImageCommandUtils.CreateCommand(Constants.Product.Id.Value);
+        var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, Constants.Product.Id.Value);
 
         _mockProductRepository
             .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
@@ -65,14 +64,14 @@ public class AddProductImageCommandHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnProductImageWhenProductIsFoundAndImageIsUploaded()
+    public async Task Should_ReturnProductImage_WhenProductIsFoundAndImageIsUploaded()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();
         var productImage = ProductFactory.CreateProductImage();
         product.AddProductImage(productImage);
 
-        var command = AddProductImageCommandUtils.CreateCommand(product.Id.Value);
+        var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, product.Id.Value);
 
         _mockProductRepository
             .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))

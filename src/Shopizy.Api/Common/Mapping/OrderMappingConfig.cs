@@ -17,26 +17,31 @@ public class OrderMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
-        config.NewConfig<OrdersCriteria, GetOrdersQuery>();
+        config
+            .NewConfig<(Guid UserId, OrdersCriteria criteria), GetOrdersQuery>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest, src => src.criteria);
 
         config
-            .NewConfig<CreateOrderRequest, CreateOrderCommand>()
-            .Map(dest => dest.DeliveryChargeAmount, src => src.DeliveryCharge.Amount)
+            .NewConfig<(Guid UserId, CreateOrderRequest OrderRequest), CreateOrderCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.DeliveryChargeAmount, src => src.OrderRequest.DeliveryCharge.Amount)
             .Map(
                 dest => dest.DeliveryChargeCurrency,
                 src =>
-                    src.DeliveryCharge.Currency == "usd" ? Currency.usd
-                    : src.DeliveryCharge.Currency == "bdt" ? Currency.bdt
-                    : src.DeliveryCharge.Currency == "euro" ? Currency.euro
+                    src.OrderRequest.DeliveryCharge.Currency == "usd" ? Currency.usd
+                    : src.OrderRequest.DeliveryCharge.Currency == "bdt" ? Currency.bdt
+                    : src.OrderRequest.DeliveryCharge.Currency == "euro" ? Currency.euro
                     : Currency.usd
             );
 
-        config.NewConfig<Guid, GetOrderQuery>().MapWith(orderId => new GetOrderQuery(orderId));
+        config.NewConfig<(Guid UserId, Guid OrderId) , GetOrderQuery>()
+            .Map(dest=> dest.UserId, src => src.UserId);
 
         config
             .NewConfig<Order, OrderDetailResponse>()
-            .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
+            .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest, src => src)
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString())
             .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString());
@@ -46,14 +51,15 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderItemId, src => src.Id.Value);
 
         config
-            .NewConfig<(Guid OrderId, CancelOrderRequest request), CancelOrderCommand>()
+            .NewConfig<(Guid UserId, Guid OrderId, CancelOrderRequest request), CancelOrderCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.OrderId, src => src.OrderId)
             .Map(dest => dest.Reason, src => src.request.Reason);
 
         config
             .NewConfig<OrderDto, OrderResponse>()
-            .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
+            .Map(dest => dest.OrderId, src => src.Id.Value)
             .Map(dest => dest, src => src)
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString());
     }

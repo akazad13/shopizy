@@ -6,7 +6,7 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class AddProductImageCommandUtils
 {
-    public static AddProductImageCommand CreateCommand(Guid productId)
+    public static AddProductImageCommand CreateCommand(Guid userId, Guid productId)
     {
         var fileMock = new Mock<IFormFile>();
 
@@ -24,6 +24,6 @@ public static class AddProductImageCommandUtils
 
         ms.Dispose();
 
-        return new AddProductImageCommand(productId, fileMock.Object);
+        return new AddProductImageCommand(userId, productId, fileMock.Object);
     }
 }

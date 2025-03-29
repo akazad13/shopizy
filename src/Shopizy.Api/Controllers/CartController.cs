@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/v1.0/carts")]
+[Route("api/v1.0/users/{userId:guid}/carts")]
 public class CartController(ISender mediator, IMapper mapper, ILogger<CartController> logger)
     : ApiController
 {
@@ -49,13 +49,14 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> AddProductToCartAsync(
+        Guid userId,
         Guid cartId,
         AddProductToCartRequest request
     )
     {
         try
         {
-            var command = _mapper.Map<AddProductToCartCommand>((cartId, request));
+            var command = _mapper.Map<AddProductToCartCommand>((userId, cartId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(product => Ok(_mapper.Map<CartResponse>(product)), Problem);
@@ -74,6 +75,7 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> UpdateProductQuantityAsync(
+        Guid userId,
         Guid cartId,
         Guid itemId,
         UpdateProductQuantityRequest request
@@ -81,7 +83,7 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     {
         try
         {
-            var command = _mapper.Map<UpdateProductQuantityCommand>((cartId, itemId, request));
+            var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, itemId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -102,11 +104,11 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> RemoveItemFromCartAsync(Guid cartId, Guid itemId)
+    public async Task<IActionResult> RemoveItemFromCartAsync(Guid userId, Guid cartId, Guid itemId)
     {
         try
         {
-            var command = _mapper.Map<RemoveProductFromCartCommand>((cartId, itemId));
+            var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, itemId));
             var result = await _mediator.Send(command);
 
             return result.Match(

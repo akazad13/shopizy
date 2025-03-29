@@ -21,7 +21,7 @@ public class GetOrderQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnErrorResponseWhenRequestedOrderDoesNotExist()
+    public async Task Should_ReturnErrorResponse_WhenRequestedOrderDoesNotExist()
     {
         // Arrange
         var orderId = OrderId.CreateUnique();
@@ -38,7 +38,7 @@ public class GetOrderQueryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnCorrectOrderWhenRequestedOrderExists()
+    public async Task Should_ReturnCorrectOrder_WhenRequestedOrderExists()
     {
         // Arrange
         var order = OrderFactory.CreateOrder();

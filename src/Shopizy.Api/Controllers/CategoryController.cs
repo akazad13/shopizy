@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
-[Route("api/v1.0/categories")]
+[Route("api/v1.0")]
 public class CategoryController(
     ISender mediator,
     IMapper mapper,
@@ -27,7 +27,7 @@ public class CategoryController(
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<CategoryController> _logger = logger;
 
-    [HttpGet]
+    [HttpGet("categories")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<CategoryResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -50,7 +50,7 @@ public class CategoryController(
         }
     }
 
-    [HttpGet("tree")]
+    [HttpGet("categories/tree")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<CategoryTreeResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -73,7 +73,7 @@ public class CategoryController(
         }
     }
 
-    [HttpGet("{categoryId:guid}")]
+    [HttpGet("categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CategoryResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
@@ -94,17 +94,17 @@ public class CategoryController(
         }
     }
 
-    [HttpPost]
+    [HttpPost("users/{userId:guid}/categories")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CategoryResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> CreateCategoryAsync(CreateCategoryRequest request)
+    public async Task<IActionResult> CreateCategoryAsync(Guid userId, CreateCategoryRequest request)
     {
         try
         {
-            var command = _mapper.Map<CreateCategoryCommand>((request));
+            var command = _mapper.Map<CreateCategoryCommand>((userId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(category => Ok(_mapper.Map<CategoryResponse>(category)), Problem);
@@ -116,20 +116,21 @@ public class CategoryController(
         }
     }
 
-    [HttpPatch("{categoryId:guid}")]
+    [HttpPatch("users/{userId:guid}/categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
     public async Task<IActionResult> UpdateCategoryAsync(
+        Guid userId,
         Guid categoryId,
         UpdateCategoryRequest request
     )
     {
         try
         {
-            var command = _mapper.Map<UpdateCategoryCommand>((categoryId, request));
+            var command = _mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
             var result = await _mediator.Send(command);
 
             return result.Match(
@@ -144,17 +145,17 @@ public class CategoryController(
         }
     }
 
-    [HttpDelete("{categoryId:guid}")]
+    [HttpDelete("users/{userId:guid}/categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status409Conflict, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> DeleteCategoryAsync(Guid categoryId)
+    public async Task<IActionResult> DeleteCategoryAsync(Guid userId, Guid categoryId)
     {
         try
         {
-            var command = _mapper.Map<DeleteCategoryCommand>((categoryId));
+            var command = _mapper.Map<DeleteCategoryCommand>((userId, categoryId));
             var result = await _mediator.Send(command);
 
             return result.Match(

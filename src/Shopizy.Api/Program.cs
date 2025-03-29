@@ -8,8 +8,8 @@ using Shopizy.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder
-    .Services.AddPresentation()
+builder.Services
+    .AddPresentation()
     .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration);
 

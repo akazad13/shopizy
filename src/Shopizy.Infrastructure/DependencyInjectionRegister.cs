@@ -37,6 +37,7 @@ public static class DependencyInjectionRegister
     )
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         services.AddCors(options =>
         {
@@ -97,11 +98,8 @@ public static class DependencyInjectionRegister
         services
             .AddScoped<IMediaUploader, CloudinaryMediaUploader>()
             .AddScoped<IPaymentService, StripeService>()
-            .AddScoped<TokenService>()
             .AddScoped<CustomerService>()
-            .AddScoped<ChargeService>()
-            .AddScoped<PaymentIntentService>()
-            .AddScoped<CardService>();
+            .AddScoped<PaymentIntentService>();
 
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
 
@@ -125,6 +123,8 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
 
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -167,6 +167,6 @@ public static class DependencyInjectionRegister
 
     private static string[] Origins()
     {
-        return ["http://localhost:4200"];
+        return ["http://localhost:4200", "https://shopizy.netlify.app/"];
     }
 }

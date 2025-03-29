@@ -26,38 +26,29 @@ public class AddProductToCartCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var cart = await _cartRepository.GetCartByIdAsync(
-            CartId.Create(cmd.CartId),
-            cancellationToken
-        );
+        ArgumentNullException.ThrowIfNull(cmd, nameof(cmd));
+
+        var cartId = CartId.Create(cmd.CartId);
+        var productId = ProductId.Create(cmd.ProductId);
+
+        var cart = await _cartRepository.GetCartByIdAsync(cartId, cancellationToken);
 
         if (cart is null)
         {
             return CustomErrors.Cart.CartNotFound;
         }
 
-        if (
-            cart.CartItems.Any(li =>
-                li.ProductId == ProductId.Create(cmd.ProductId)
-                && li.Color == cmd.Color
-                && li.Size == cmd.Size
-            )
-        )
+        if (cart.CartItems.Any(li => li.ProductId == productId && li.Color == cmd.Color && li.Size == cmd.Size))
         {
             return CustomErrors.Cart.ProductAlreadyExistInCart;
         }
 
-        var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
-
-        if (!product)
+        if (!await _productRepository.IsProductExistAsync(productId))
         {
             return CustomErrors.Product.ProductNotFound;
         }
 
-        cart.AddLineItem(
-            CartItem.Create(ProductId.Create(cmd.ProductId), cmd.Color, cmd.Size, cmd.Quantity)
-        );
-
+        cart.AddLineItem(CartItem.Create(productId, cmd.Color, cmd.Size, cmd.Quantity));
         _cartRepository.Update(cart);
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
@@ -65,8 +56,6 @@ public class AddProductToCartCommandHandler(
             return CustomErrors.Cart.CartPrductNotAdded;
         }
 
-        return await _cartRepository.GetCartByUserIdAsync(
-            UserId.Create(_currentUser.GetCurrentUserId())
-        );
+        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(_currentUser.GetCurrentUserId()));
     }
 }

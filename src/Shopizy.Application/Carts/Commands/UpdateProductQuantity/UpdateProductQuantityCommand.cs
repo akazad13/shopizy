@@ -6,6 +6,7 @@ namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
 [Authorize(Permissions = Permissions.Cart.Modify)]
 public record UpdateProductQuantityCommand(
+    Guid UserId,
     Guid CartId,
     Guid CartItemId,
     Guid ProductId,

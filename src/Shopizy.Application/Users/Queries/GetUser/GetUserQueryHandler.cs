@@ -23,46 +23,60 @@ public class GetUserQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        try
+        {
+            var cachedUser = await _cacheHelper.GetAsync<UserDto>($"user-{request.UserId}");
+            if (cachedUser is not null)
+            {
+                return cachedUser;
+            }
+        }
+        catch (Exception ex)
+        {
 
-        if (user is null)
+        }
+
+        try
+        {
+            var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+
+            if (user is null)
+            {
+                return CustomErrors.User.UserNotFound;
+            }
+
+            var userOrders = _orderRepository
+                .GetOrdersByUserId(user.Id)
+                .Select(o => new { o.Id, o.OrderStatus })
+                .ToList();
+
+            var totalOrders = userOrders.Count;
+            var totalRefundedOrders = userOrders.Count(o => o.OrderStatus == OrderStatus.Refunded);
+            var totalFavorites = 0;
+
+            var userDto = new UserDto(
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.ProfileImageUrl,
+                user.Phone,
+                user.Address,
+                totalOrders,
+                user.ProductReviewIds.Count,
+                totalFavorites,
+                totalRefundedOrders,
+                user.CreatedOn,
+                user.ModifiedOn
+            );
+
+            await _cacheHelper.SetAsync($"user-{user.Id.Value}", userDto, TimeSpan.FromMinutes(60));
+
+            return userDto;
+        }
+        catch (Exception ex)
         {
             return CustomErrors.User.UserNotFound;
         }
-
-        var cachedUser = await _cacheHelper.GetAsync<UserDto>($"user-{user.Id.Value}");
-        if (cachedUser is not null)
-        {
-            return cachedUser;
-        }
-
-        var userOrders = _orderRepository
-            .GetOrdersByUserId(user.Id)
-            .Select(o => new { o.Id, o.OrderStatus })
-            .ToList();
-
-        var totalOrders = userOrders.Count;
-        var totalRefundedOrders = userOrders.Count(o => o.OrderStatus == OrderStatus.Refunded);
-        var totalFavorites = 0;
-
-        var userDto = new UserDto(
-            user.Id,
-            user.FirstName,
-            user.LastName,
-            user.Email,
-            user.ProfileImageUrl,
-            user.Phone,
-            user.Address,
-            totalOrders,
-            user.ProductReviewIds.Count,
-            totalFavorites,
-            totalRefundedOrders,
-            user.CreatedOn,
-            user.ModifiedOn
-        );
-
-        await _cacheHelper.SetAsync($"user-{user.Id.Value}", userDto, TimeSpan.FromMinutes(60));
-
-        return userDto;
     }
 }

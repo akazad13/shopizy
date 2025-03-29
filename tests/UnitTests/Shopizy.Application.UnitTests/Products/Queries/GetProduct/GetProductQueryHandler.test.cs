@@ -58,7 +58,7 @@ public class GetProductQueryHandlerTests
     // }
 
     [Fact]
-    public async Task ShouldReturnCorrectProductWhenProductIdExistsInRepository()
+    public async Task Should_ReturnCorrectProduct_WhenProductIdExistsInRepository()
     {
         // Arrange
         var product = ProductFactory.CreateProduct();
