@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Commands.UpdateProduct;
@@ -38,8 +37,8 @@ public class UpdateProductCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
 
         _mockProductRepository.Verify(
             x => x.GetProductByIdAsync(It.IsAny<ProductId>()),

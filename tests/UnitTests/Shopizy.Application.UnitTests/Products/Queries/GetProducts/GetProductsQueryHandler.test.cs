@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.GetProducts;
@@ -39,9 +38,9 @@ public class GetProductsQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().NotBeNullOrEmpty();
-        result.Errors.Should().Contain(CustomErrors.Product.ProductNotFound);
+        Assert.True(result.IsError);
+        Assert.NotEmpty(result.Errors);
+        Assert.Contains(CustomErrors.Product.ProductNotFound, result.Errors);
     }
 
     // [Fact]

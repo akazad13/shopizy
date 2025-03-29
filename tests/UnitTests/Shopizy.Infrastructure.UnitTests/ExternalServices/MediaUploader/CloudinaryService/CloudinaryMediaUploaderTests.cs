@@ -2,7 +2,6 @@ using System.Text;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using ErrorOr;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Shopizy.Application.Products.Common;
@@ -48,11 +47,11 @@ public class CloudinaryMediaUploaderTests
         var result = await _cloudinaryMediaUploader.UploadPhotoAsync(file);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(PhotoUploadResult));
-        result.Value.Should().NotBeNull();
-        result.Value.Url.ToString().Should().Be(expectedUrl);
-        result.Value.PublicId.Should().Be(expectedPublicId);
+        Assert.False(result.IsError);
+        Assert.IsType<PhotoUploadResult>(result.Value);
+        Assert.NotNull(result.Value);
+        Assert.Equal(expectedUrl, result.Value.Url.ToString());
+        Assert.Equal(expectedPublicId, result.Value.PublicId);
         _cloudinary.Verify(
             c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()),
             Times.Once
@@ -72,8 +71,8 @@ public class CloudinaryMediaUploaderTests
         var result = await _cloudinaryMediaUploader.DeletePhotoAsync(publicId);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(Success));
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
         _cloudinary.Verify(c => c.DestroyAsync(It.IsAny<DeletionParams>()), Times.Once);
     }
 }

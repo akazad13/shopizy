@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using Shopizy.Domain.Categories;
@@ -10,14 +9,14 @@ public static partial class CategoryExtensions
 {
     public static void ValidateResult(this Category category, CreateCategoryCommand command)
     {
-        category.Id.Should().BeOfType(typeof(CategoryId));
-        category.Name.Should().Be(command.Name);
-        category.ParentId.Should().Be(command.ParentId);
+        Assert.IsType<CategoryId>(category.Id);
+        Assert.Equal(command.Name, category.Name);
+        Assert.Equal(command.ParentId, category.ParentId);
     }
 
     public static void ValidateResult(this Category category, GetCategoryQuery query)
     {
-        category.Id.Should().BeOfType(typeof(CategoryId));
-        category.Name.Should().BeOfType(typeof(string));
+        Assert.IsType<CategoryId>(category.Id);
+        Assert.IsType<string>(category.Name);
     }
 }

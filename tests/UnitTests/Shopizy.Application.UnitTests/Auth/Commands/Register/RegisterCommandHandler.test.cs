@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Application.Common.Interfaces.Authentication;
@@ -44,8 +43,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().Contain(CustomErrors.User.DuplicateEmail);
+        Assert.True(result.IsError);
+        Assert.Contains(CustomErrors.User.DuplicateEmail, result.Errors);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
@@ -90,8 +89,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
@@ -139,8 +138,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().Contain(CustomErrors.User.UserNotCreated);
+        Assert.True(result.IsError);
+        Assert.Contains(CustomErrors.User.UserNotCreated, result.Errors);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
@@ -175,8 +174,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
 
         _mockUserRepository.Verify(
             r =>
@@ -248,8 +247,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().Contain(CustomErrors.User.InvalidName);
+        Assert.True(result.IsError);
+        Assert.Contains(CustomErrors.User.InvalidName, result.Errors);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
@@ -260,40 +259,6 @@ public class RegisterCommandHandlerTests
             Times.Never
         );
     }
-
-    // Should Return validation error when email format is invalid
-
-
-    // [Theory]
-    // [InlineData("123")]
-    // [InlineData("12345678901234")]
-    // [InlineData("abcdefghij")]
-    // [InlineData("123-456-7890")]
-    // public async Task ShouldReturnValidationErrorWhenPhoneNumberFormatIsInvalid(
-    //     string invalidPhone
-    // )
-    // {
-    //     // Arrange
-    //     var command = new RegisterCommand("John", "Doe", invalidPhone, "password123");
-
-    //     _mockUserRepository
-    //         .Setup(r => r.GetUserByPhoneAsync(invalidPhone))
-    //         .ReturnsAsync((User?)null);
-
-    //     // Act
-    //     var result = await _handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsError.Should().BeTrue();
-    //     result.Errors.Should().Contain(CustomErrors.User.InvalidPhoneFormat);
-    //     _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(invalidPhone), Times.Never);
-    //     _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-    //     _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    //     _mockPasswordManager.Verify(
-    //         p => p.CreateHashString(It.IsAny<string>(), 10000),
-    //         Times.Never
-    //     );
-    // }
 
     [Fact]
     public async Task Should_EnsurePasswordIsHashed_BeforeStoringInDatabase()
@@ -318,8 +283,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
             r => r.AddAsync(It.Is<User>(u => u.Password == hashedPassword)),
@@ -358,11 +323,11 @@ public class RegisterCommandHandlerTests
         var results = await Task.WhenAll(task1, task2);
 
         // Assert
-        results.Should().HaveCount(2);
-        results[0].IsError.Should().BeFalse();
-        results[0].Value.Should().BeOfType<Success>();
-        results[1].IsError.Should().BeTrue();
-        results[1].Errors.Should().Contain(CustomErrors.User.DuplicateEmail);
+        Assert.Equal(2, results.Length);
+        Assert.False(results[0].IsError);
+        Assert.IsType<Success>(results[0].Value);
+        Assert.True(results[1].IsError);
+        Assert.Contains(CustomErrors.User.DuplicateEmail, results[1].Errors);
 
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Exactly(2));
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
@@ -371,40 +336,6 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
         _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
-
-    // [Fact]
-    // public async Task ShouldRespectCancellationToken()
-    // {
-    //     // Arrange
-    //     var command = new RegisterCommand("John", "Doe", "1234567890", "password123");
-    //     var cancellationTokenSource = new CancellationTokenSource();
-    //     var cancellationToken = cancellationTokenSource.Token;
-
-    //     _mockUserRepository
-    //         .Setup(r => r.GetUserByPhoneAsync(command.Phone))
-    //         .ReturnsAsync((User?)null);
-
-    //     _mockPasswordManager
-    //         .Setup(pm => pm.CreateHashString(command.Password, 10000))
-    //         .Returns("hashedPassword");
-
-    //     _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-
-    //     _mockUserRepository.Setup(r => r.Commit(cancellationToken)).ReturnsAsync(1);
-
-    //     // Act
-    //     var task = _handler.Handle(command, cancellationToken);
-    //     await cancellationTokenSource.CancelAsync();
-    //     cancellationTokenSource.Dispose();
-
-    //     // Assert
-    //     await Assert.ThrowsAsync<OperationCanceledException>(() => task);
-
-    //     _mockUserRepository.Verify(r => r.GetUserByPhoneAsync(command.Phone), Times.Once);
-    //     _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
-    //     _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
-    //     _mockUserRepository.Verify(r => r.Commit(cancellationToken), Times.Once);
-    // }
 
     [Fact]
     public async Task Should_HandleExtremelyLongInputValues_ForFirstNameLastNameAndEmail()
@@ -433,8 +364,8 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
@@ -473,8 +404,9 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().Contain(CustomErrors.User.InvalidEmailFormat);
+        Assert.True(result.IsError);
+        Assert.Contains(CustomErrors.User.InvalidEmailFormat, result.Errors);
+
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Never);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);

@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
@@ -10,7 +9,7 @@ namespace Shopizy.Infrastructure.UnitTests.Security.TokenGenerator;
 
 public class JwtTokenGeneratorTests
 {
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly JwtTokenGenerator _jwtTokenGenerator;
 
     public JwtTokenGeneratorTests()
     {
@@ -39,17 +38,19 @@ public class JwtTokenGeneratorTests
         // Assert
         var jwtToken = new JwtSecurityToken(token);
 
-        jwtToken.Claims.Should().HaveCount(10);
-        jwtToken.Claims.Should().Contain(c => c.Type == "id" && c.Value == userId.Value.ToString());
+        Assert.Equal(10, jwtToken.Claims.Count());
 
-        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Admin");
-        jwtToken.Claims.Should().Contain(c => c.Type == "role" && c.Value == "Moderator");
+        Assert.Contains(jwtToken.Claims, c =>
+            c.Type == "id" && c.Value == userId.Value.ToString());
 
-        jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == "permissions" && c.Value == "CanCreateProduct");
-        jwtToken
-            .Claims.Should()
-            .Contain(c => c.Type == "permissions" && c.Value == "CanEditProduct");
+        Assert.Contains(jwtToken.Claims, c =>
+            c.Type == "role" && c.Value == "Admin");
+        Assert.Contains(jwtToken.Claims, c =>
+            c.Type == "role" && c.Value == "Moderator");
+
+        Assert.Contains(jwtToken.Claims, c =>
+            c.Type == "permissions" && c.Value == "CanCreateProduct");
+        Assert.Contains(jwtToken.Claims, c =>
+            c.Type == "permissions" && c.Value == "CanEditProduct");
     }
 }

@@ -30,7 +30,7 @@ public class CreateOrderCommandHandler(
         var products = await _productRepository.GetProductsByIdsAsync(
             request.OrderItems.Select(x => ProductId.Create(x.ProductId)).ToList()
         );
-        if (products.Count == 0)
+        if (products == null || products.Count == 0)
         {
             return CustomErrors.Product.ProductNotFound;
         }

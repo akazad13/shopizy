@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -27,25 +26,6 @@ public class UpdatePasswordCommandHandlerTests
         );
     }
 
-    // [Fact]
-    // public async Task ShouldThrowExceptionWhenUserIdIsNotProvidedAsync()
-    // {
-    //     // Arrange
-    //     var command = UpdatePasswordCommandUtils.CreateCommandWithEmptyUserId();
-
-    //     _mockUserRepository
-    //         .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
-    //         .ReturnsAsync(() => null);
-
-    //     // Act
-    //     var result = await _sut.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsError.Should().BeTrue();
-    //     result.Errors.Should().NotBeNullOrEmpty();
-    //     result.Errors[0].Should().Be(CustomErrors.User.UserNotFound);
-    // }
-
     [Fact]
     public async Task Should_ReturnError_WhenUserIsNotFound()
     {
@@ -65,9 +45,9 @@ public class UpdatePasswordCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().NotBeNullOrEmpty();
-        result.Errors[0].Should().Be(CustomErrors.User.UserNotFound);
+        Assert.True(result.IsError);
+        Assert.NotEmpty(result.Errors);
+        Assert.Equal(CustomErrors.User.UserNotFound, result.Errors[0]);
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
@@ -88,9 +68,9 @@ public class UpdatePasswordCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().NotBeNullOrEmpty();
-        result.Errors[0].Should().Be(CustomErrors.User.PasswordNotCorrect);
+        Assert.True(result.IsError);
+        Assert.NotEmpty(result.Errors);
+        Assert.Equal(CustomErrors.User.PasswordNotCorrect, result.Errors[0]);
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockPasswordManager.Verify(
@@ -128,9 +108,9 @@ public class UpdatePasswordCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
-        result.Value.Should().NotBeNull();
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
+        Assert.NotNull(result.Value);
 
         _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
@@ -162,197 +142,13 @@ public class UpdatePasswordCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Should().BeOfType<ErrorOr<Success>>();
-        result.Errors.Should().NotBeNullOrEmpty();
-        result.Errors[0].Should().Be(CustomErrors.User.PasswordSameAsOld);
+        Assert.True(result.IsError);
+        Assert.IsType<ErrorOr<Success>>(result);
+        Assert.NotEmpty(result.Errors);
+        Assert.Equal(CustomErrors.User.PasswordSameAsOld, result.Errors[0]);
 
         _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Never);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
         _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordIsTooShort()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "userId",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "new", // New password is too short
-    //     };
-
-    //     userRepositoryMock
-    //         .Setup(x => x.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync(new Domain.Users.User("userId", "username", "email", "password"));
-
-    //     passwordManagerMock
-    //         .Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordTooShort, result.Errors);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordIsTooLong()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "123",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "newPassword".PadRight(101, 'a'), // Assuming a maximum length of 100 characters
-    //     };
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordTooLong, result.Errors);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordDoesNotContainUppercaseLetter()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     passwordManagerMock
-    //         .Setup(pm => pm.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
-    //     passwordManagerMock
-    //         .Setup(pm => pm.CreateHashString(It.IsAny<string>()))
-    //         .Returns("HashedNewPassword");
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "userId",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "newpassword",
-    //     };
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordNotValid, result.Errors);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordDoesNotContainLowercaseLetter()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     passwordManagerMock
-    //         .Setup(pm => pm.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
-    //     passwordManagerMock
-    //         .Setup(pm => pm.CreateHashString(It.IsAny<string>()))
-    //         .Returns("HashedPassword");
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "123",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "NEWPASSWORD",
-    //     };
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordNotValid, result.Errors);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordDoesNotContainNumericDigit()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     passwordManagerMock
-    //         .Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
-    //     passwordManagerMock
-    //         .Setup(x => x.CreateHashString(It.IsAny<string>()))
-    //         .Returns("hashedPassword");
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "userId",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "newPassword",
-    //     };
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordNotValid, result.Errors);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorWhenNewPasswordDoesNotContainSpecialCharacter()
-    // {
-    //     // Arrange
-    //     var userRepositoryMock = new Mock<IUserRepository>();
-    //     var passwordManagerMock = new Mock<IPasswordManager>();
-    //     var handler = new UpdatePasswordCommandHandler(
-    //         userRepositoryMock.Object,
-    //         passwordManagerMock.Object
-    //     );
-    //     var command = new UpdatePasswordCommand
-    //     {
-    //         UserId = "123",
-    //         OldPassword = "oldPassword",
-    //         NewPassword = "newPassword", // Invalid password, no special character
-    //     };
-
-    //     userRepositoryMock
-    //         .Setup(repo => repo.GetUserById(It.IsAny<UserId>()))
-    //         .ReturnsAsync(new Domain.Users.User("123", "username", "oldPasswordHash"));
-
-    //     passwordManagerMock
-    //         .Setup(pm => pm.Verify(It.IsAny<string>(), It.IsAny<string>()))
-    //         .Returns(true);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     Assert.True(result.IsFailure);
-    //     Assert.Contains(CustomErrors.User.PasswordNotValid, result.Errors);
-    // }
 }

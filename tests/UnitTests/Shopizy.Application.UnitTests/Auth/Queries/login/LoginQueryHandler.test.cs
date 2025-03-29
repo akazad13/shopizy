@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Xunit;
 using Moq;
 using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Auth.Queries.login;
@@ -52,8 +52,8 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(CustomErrors.User.UserNotFoundWhileLogin);
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.User.UserNotFoundWhileLogin, result.FirstError);
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(CustomErrors.Authentication.InvalidCredentials);
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.Authentication.InvalidCredentials, result.FirstError);
     }
 
     [Fact]
@@ -105,18 +105,17 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result
-            .Value.Should()
-            .BeEquivalentTo(
-                new AuthResult(
-                    user.Id.Value,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    expectedToken
-                )
-            );
+        Assert.False(result.IsError);
+        Assert.Equal(
+            new AuthResult(
+                user.Id.Value,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                expectedToken
+            ),
+            result.Value
+        );
         _mockJwtTokenGenerator.Verify(
             j =>
                 j.GenerateToken(
@@ -154,14 +153,14 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.Should().BeOfType<AuthResult>();
-        result.Value.Id.Should().Be(user.Id.Value);
-        result.Value.FirstName.Should().Be(user.FirstName);
-        result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Email.Should().Be(user.Email);
-        result.Value.Token.Should().Be("generatedToken");
+        Assert.False(result.IsError);
+        Assert.NotNull(result.Value);
+        Assert.IsType<AuthResult>(result.Value);
+        Assert.Equal(user.Id.Value, result.Value.Id);
+        Assert.Equal(user.FirstName, result.Value.FirstName);
+        Assert.Equal(user.LastName, result.Value.LastName);
+        Assert.Equal(user.Email, result.Value.Email);
+        Assert.Equal("generatedToken", result.Value.Token);
         _mockJwtTokenGenerator.Verify(
             j =>
                 j.GenerateToken(
@@ -201,13 +200,13 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<AuthResult>();
-        result.Value.Id.Should().Be(user.Id.Value);
-        result.Value.FirstName.Should().Be(user.FirstName);
-        result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Email.Should().Be(user.Email);
-        result.Value.Token.Should().Be(token);
+        Assert.False(result.IsError);
+        Assert.IsType<AuthResult>(result.Value);
+        Assert.Equal(user.Id.Value, result.Value.Id);
+        Assert.Equal(user.FirstName, result.Value.FirstName);
+        Assert.Equal(user.LastName, result.Value.LastName);
+        Assert.Equal(user.Email, result.Value.Email);
+        Assert.Equal(token, result.Value.Token);
     }
 
     [Fact]
@@ -234,9 +233,9 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<AuthResult>();
-        result.Value.Token.Should().Be("generatedToken");
+        Assert.False(result.IsError);
+        Assert.IsType<AuthResult>(result.Value);
+        Assert.Equal("generatedToken", result.Value.Token);
         _mockJwtTokenGenerator.Verify(
             j =>
                 j.GenerateToken(
@@ -274,8 +273,8 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
+        Assert.False(result.IsError);
+        Assert.NotNull(result.Value);
         _mockJwtTokenGenerator.Verify(
             j =>
                 j.GenerateToken(
@@ -324,8 +323,8 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(CustomErrors.Authentication.InvalidCredentials);
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.Authentication.InvalidCredentials, result.FirstError);
     }
 
     [Fact]
@@ -354,13 +353,13 @@ public class LoginQueryHandlerTests
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<AuthResult>();
-        result.Value.Id.Should().Be(user.Id.Value);
-        result.Value.FirstName.Should().Be(user.FirstName);
-        result.Value.LastName.Should().Be(user.LastName);
-        result.Value.Email.Should().Be(user.Email);
-        result.Value.Token.Should().Be(expectedToken);
+        Assert.False(result.IsError);
+        Assert.IsType<AuthResult>(result.Value);
+        Assert.Equal(user.Id.Value, result.Value.Id);
+        Assert.Equal(user.FirstName, result.Value.FirstName);
+        Assert.Equal(user.LastName, result.Value.LastName);
+        Assert.Equal(user.Email, result.Value.Email);
+        Assert.Equal(expectedToken, result.Value.Token);
 
         _mockJwtTokenGenerator.Verify(
             j =>

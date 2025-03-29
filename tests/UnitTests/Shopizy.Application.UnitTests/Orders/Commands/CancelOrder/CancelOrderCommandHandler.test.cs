@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Orders.Commands.CancelOrder;
@@ -31,9 +30,9 @@ public class CancelOrderCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().NotBeNullOrEmpty();
-        result.Errors[0].Should().Be(CustomErrors.Order.OrderNotFound);
+        Assert.True(result.IsError);
+        Assert.NotNull(result.Errors);
+        Assert.Equal(CustomErrors.Order.OrderNotFound, result.Errors[0]);
 
         _mockOrderRepository.Verify(
             x => x.GetOrderByIdAsync(OrderId.Create(command.OrderId)),
@@ -58,8 +57,8 @@ public class CancelOrderCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType(typeof(Success));
+        Assert.False(result.IsError);
+        Assert.IsType<Success>(result.Value);
 
         _mockOrderRepository.Verify(
             x => x.GetOrderByIdAsync(OrderId.Create(command.OrderId)),
@@ -68,201 +67,4 @@ public class CancelOrderCommandHandlerTests
         _mockOrderRepository.Verify(x => x.Update(order), Times.Once);
         _mockOrderRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
-
-    // [Fact]
-    // public async Task ShouldNotCancelTheOrderWhenOrderDoesNotExist()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync((Order)null);
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsFailure.ShouldBeTrue();
-    //     result.Errors.ShouldContain(CustomErrors.Order.OrderNotFound);
-    //     _orderRepositoryMock.Verify(x => x.Update(It.IsAny<Order>()), Times.Never);
-    //     _orderRepositoryMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    // }
-
-    // [Fact]
-    // public async Task ShouldNotCancelTheOrderWhenCancellationReasonIsEmpty()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Update(order));
-    //     _orderRepositoryMock.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsSuccess.ShouldBeFalse();
-    //     result.Errors.ShouldContain(CustomErrors.Order.InvalidCancellationReason);
-    //     _orderRepositoryMock.Verify(x => x.Update(order), Times.Never);
-    //     _orderRepositoryMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    // }
-
-    // [Fact]
-    // public async Task ShouldNotCancelOrderWhenCancellationReasonExceedsMaxLength()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = new string('a', 256) }; // Cancellation reason exceeds maximum length
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Update(order));
-    //     _orderRepositoryMock.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsFailure.ShouldBeTrue();
-    //     result.Errors.ShouldContain(CustomErrors.Order.InvalidCancellationReason);
-    //     _orderRepositoryMock.Verify(x => x.Update(order), Times.Never);
-    //     _orderRepositoryMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    // }
-
-    // [Fact]
-    // public async Task ShouldNotUpdateOrderWhenCancellationFails()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsFailure.ShouldBeTrue();
-    //     result.Errors.ShouldContain(CustomErrors.Order.OrderNotCancelled);
-    //     _orderRepositoryMock.Verify(x => x.Update(order), Times.Never);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnErrorResponseWhenCancellationFails()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Update(order));
-    //     _orderRepositoryMock.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0); // Simulate cancellation failure
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsFailure.ShouldBeTrue();
-    //     result.Errors.ShouldContain(CustomErrors.Order.OrderNotCancelled);
-    // }
-
-    // [Fact]
-    // public async Task ShouldReturnSuccessResponseWhenCancellationIsSuccessful()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Update(order));
-    //     _orderRepositoryMock.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsSuccess.ShouldBeTrue();
-    //     result.Value.Message.ShouldBe("Successfully canceled the order.");
-    // }
-
-    // [Fact]
-    // public async Task ShouldHandleConcurrentRequestsByEnsuringDataConsistency()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     var orderRepositoryMock = new Mock<IOrderRepository>();
-    //     orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     orderRepositoryMock.Setup(x => x.Update(order));
-    //     orderRepositoryMock
-    //         .Setup(x => x.Commit(It.IsAny<CancellationToken>()))
-    //         .ReturnsAsync(1)
-    //         .Callback(() =>
-    //         {
-    //             // Simulate concurrent request
-    //             var concurrentOrder = new Order(OrderId.Create(orderId), "Concurrent User");
-    //             orderRepositoryMock
-    //                 .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //                 .ReturnsAsync(concurrentOrder);
-    //         });
-    //     var handler = new CancelOrderCommandHandler(orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result1 = await handler.Handle(command, CancellationToken.None);
-    //     var result2 = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result1.IsSuccess.ShouldBeTrue();
-    //     result1.Value.Message.ShouldBe("Successfully canceled the order.");
-    //     result2.IsFailure.ShouldBeTrue();
-    //     result2.Errors.ShouldContain(CustomErrors.Order.OrderNotCancelled);
-    //     orderRepositoryMock.Verify(x => x.Update(order), Times.Once);
-    //     orderRepositoryMock.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Exactly(2));
-    // }
-
-    // [Fact]
-    // public async Task ShouldHandleDatabaseConnectionFailures()
-    // {
-    //     // Arrange
-    //     var orderId = Guid.NewGuid();
-    //     var order = new Order(OrderId.Create(orderId), "Test User"); // Assuming Order class with constructor and CancelOrder method
-    //     var command = new CancelOrderCommand { OrderId = orderId, Reason = "Test Reason" };
-    //     _orderRepositoryMock
-    //         .Setup(x => x.GetOrderByIdAsync(OrderId.Create(orderId)))
-    //         .ReturnsAsync(order);
-    //     _orderRepositoryMock.Setup(x => x.Update(order));
-    //     _orderRepositoryMock
-    //         .Setup(x => x.Commit(It.IsAny<CancellationToken>()))
-    //         .ThrowsAsync(new Exception("Database connection failed"));
-    //     var handler = new CancelOrderCommandHandler(_orderRepositoryMock.Object);
-
-    //     // Act
-    //     var result = await handler.Handle(command, CancellationToken.None);
-
-    //     // Assert
-    //     result.IsFailure.ShouldBeTrue();
-    //     result.Errors.ShouldContain(CustomErrors.Order.DatabaseConnectionFailed);
-    // }
 }

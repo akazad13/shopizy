@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -48,8 +47,8 @@ public class GetUserQueryHandlerTests
         var result = (await _sut.Handle(query, CancellationToken.None)).Match(x => x, x => null);
 
         // Assert
-        result.Should().BeOfType<UserDto>();
-        result.Should().NotBeNull();
+        Assert.IsType<UserDto>(result);
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -82,8 +81,8 @@ public class GetUserQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().BeEquivalentTo(cachedUserDto);
+        Assert.False(result.IsError);
+        Assert.Equal(cachedUserDto, result.Value);
         _mockUserRepository.Verify(r => r.GetUserById(It.IsAny<UserId>()), Times.Never);
     }
 
@@ -104,8 +103,8 @@ public class GetUserQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(CustomErrors.User.UserNotFound);
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.User.UserNotFound, result.FirstError);
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public class GetUserQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
+        Assert.False(result.IsError);
         _mockCacheHelper.Verify(
             c => c.SetAsync(
                 $"user-{user.Id.Value}",
@@ -152,8 +151,8 @@ public class GetUserQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(CustomErrors.User.UserNotFound);
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.User.UserNotFound, result.FirstError);
     }
 
     [Fact]
@@ -175,8 +174,8 @@ public class GetUserQueryHandlerTests
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
+        Assert.False(result.IsError);
+        Assert.NotNull(result.Value);
         _mockUserRepository.Verify(r => r.GetUserById(It.IsAny<UserId>()), Times.Once);
     }
 }
