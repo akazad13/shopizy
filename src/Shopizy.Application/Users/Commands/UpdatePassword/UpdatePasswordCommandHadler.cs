@@ -7,6 +7,9 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Commands.UpdatePassword;
 
+/// <summary>
+/// Handles the <see cref="UpdatePasswordCommand"/> to update user passwords.
+/// </summary>
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager
@@ -15,6 +18,12 @@ public class UpdatePasswordCommandHandler(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordManager _passwordManager = passwordManager;
 
+    /// <summary>
+    /// Handles updating a user's password with validation and hashing.
+    /// </summary>
+    /// <param name="request">The update password command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdatePasswordCommand request,
         CancellationToken cancellationToken

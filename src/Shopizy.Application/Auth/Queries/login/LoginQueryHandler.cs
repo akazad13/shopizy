@@ -8,6 +8,9 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Auth.Queries.login;
 
+/// <summary>
+/// Handles the <see cref="LoginQuery"/> to authenticate users and generate JWT tokens.
+/// </summary>
 public class LoginQueryHandler(
     IUserRepository userRepository,
     IPermissionRepository permissionRepository,
@@ -22,6 +25,12 @@ public class LoginQueryHandler(
     private readonly IPasswordManager _passwordManager = passwordManager;
     private readonly ICartRepository _cartRepository = cartRepository;
 
+    /// <summary>
+    /// Handles the login process including credential validation, permission loading, and token generation.
+    /// </summary>
+    /// <param name="query">The login query.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>An authentication result containing user information and JWT token, or an error.</returns>
     public async Task<ErrorOr<AuthResult>> Handle(
         LoginQuery query,
         CancellationToken cancellationToken

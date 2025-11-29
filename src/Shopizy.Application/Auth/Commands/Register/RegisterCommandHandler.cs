@@ -9,6 +9,9 @@ using Shopizy.Domain.Users;
 
 namespace Shopizy.Application.Auth.Commands.Register;
 
+/// <summary>
+/// Handles the <see cref="RegisterCommand"/> to create a new user account.
+/// </summary>
 public class RegisterCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager,
@@ -19,6 +22,12 @@ public class RegisterCommandHandler(
     private readonly IPasswordManager _passwordManager = passwordManager;
     private readonly ICartRepository _cartRepository = cartRepository;
 
+    /// <summary>
+    /// Handles the user registration process including validation, password hashing, and cart creation.
+    /// </summary>
+    /// <param name="command">The registration command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         RegisterCommand command,
         CancellationToken cancellationToken

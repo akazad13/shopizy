@@ -7,6 +7,24 @@ using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
+/// <summary>
+/// Represents a command to create a new product.
+/// </summary>
+/// <param name="UserId">The user's unique identifier.</param>
+/// <param name="Name">The product name.</param>
+/// <param name="ShortDescription">A brief description of the product.</param>
+/// <param name="Description">The full product description.</param>
+/// <param name="CategoryId">The category's unique identifier.</param>
+/// <param name="UnitPrice">The unit price.</param>
+/// <param name="Currency">The currency.</param>
+/// <param name="Discount">The discount percentage.</param>
+/// <param name="Sku">The stock keeping unit.</param>
+/// <param name="Brand">The brand name.</param>
+/// <param name="Colors">Available colors (comma-separated).</param>
+/// <param name="Sizes">Available sizes (comma-separated).</param>
+/// <param name="Tags">Product tags (comma-separated).</param>
+/// <param name="Barcode">The product barcode.</param>
+/// <param name="SpecificationIds">Optional list of specification IDs.</param>
 [Authorize(Permissions = Permissions.Product.Create, Policies = Policy.Admin)]
 public record CreateProductCommand(
     Guid UserId,

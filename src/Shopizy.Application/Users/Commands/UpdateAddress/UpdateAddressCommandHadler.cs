@@ -6,11 +6,20 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Commands.UpdateAddress;
 
+/// <summary>
+/// Handles the <see cref="UpdateAddressCommand"/> to update user addresses.
+/// </summary>
 public class UpdateAddressCommandHandler(IUserRepository userRepository)
     : IRequestHandler<UpdateAddressCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
 
+    /// <summary>
+    /// Handles updating a user's address information.
+    /// </summary>
+    /// <param name="request">The update address command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdateAddressCommand request,
         CancellationToken cancellationToken

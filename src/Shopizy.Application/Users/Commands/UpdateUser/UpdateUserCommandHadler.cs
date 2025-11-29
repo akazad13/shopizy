@@ -8,11 +8,21 @@ using Shopizy.Domain.Users.ValueObjects;
 namespace Shopizy.Application.Users.Commands.UpdateUser;
 
 public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
+/// <summary>
+/// Handles the <see cref="UpdateUserCommand"/> to update user information.
+/// </summary>
+public class UpdateUserCommandHandler(IUserRepository userRepository)
     : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ICacheHelper _cacheHelper = cacheHelper;
 
+    /// <summary>
+    /// Handles the update user command.
+    /// </summary>
+    /// <param name="request">The update user command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdateUserCommand request,
         CancellationToken cancellationToken

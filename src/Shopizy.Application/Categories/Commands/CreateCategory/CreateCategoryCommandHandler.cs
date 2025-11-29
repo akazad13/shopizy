@@ -6,11 +6,20 @@ using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.Categories.Commands.CreateCategory;
 
+/// <summary>
+/// Handles the <see cref="CreateCategoryCommand"/> to create new categories.
+/// </summary>
 public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
     : IRequestHandler<CreateCategoryCommand, ErrorOr<Category>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
+    /// <summary>
+    /// Handles creating a new category with duplicate name validation.
+    /// </summary>
+    /// <param name="cmd">The create category command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The created category or an error.</returns>
     public async Task<ErrorOr<Category>> Handle(
         CreateCategoryCommand cmd,
         CancellationToken cancellationToken

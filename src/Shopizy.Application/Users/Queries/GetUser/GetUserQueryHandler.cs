@@ -8,6 +8,9 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Queries.GetUser;
 
+/// <summary>
+/// Handles the <see cref="GetUserQuery"/> to retrieve user information.
+/// </summary>
 public class GetUserQueryHandler(
     IUserRepository userRepository,
     IOrderRepository orderRepository,
@@ -18,6 +21,12 @@ public class GetUserQueryHandler(
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly ICacheHelper _cacheHelper = cacheHelper;
 
+    /// <summary>
+    /// Handles the query to retrieve user information including order statistics.
+    /// </summary>
+    /// <param name="request">The get user query.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The user data transfer object or an error if the user is not found.</returns>
     public async Task<ErrorOr<UserDto>> Handle(
         GetUserQuery request,
         CancellationToken cancellationToken

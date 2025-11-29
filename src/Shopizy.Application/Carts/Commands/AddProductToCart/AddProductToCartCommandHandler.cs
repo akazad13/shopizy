@@ -11,6 +11,9 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
+/// <summary>
+/// Handles the <see cref="AddProductToCartCommand"/> to add products to a cart.
+/// </summary>
 public class AddProductToCartCommandHandler(
     ICartRepository cartRepository,
     IProductRepository productRepository,
@@ -21,6 +24,12 @@ public class AddProductToCartCommandHandler(
     private readonly ICartRepository _cartRepository = cartRepository;
     private readonly ICurrentUser _currentUser = currentUser;
 
+    /// <summary>
+    /// Handles adding a product to the cart with validation.
+    /// </summary>
+    /// <param name="cmd">The add product to cart command.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated cart or an error.</returns>
     public async Task<ErrorOr<Cart>> Handle(
         AddProductToCartCommand cmd,
         CancellationToken cancellationToken
