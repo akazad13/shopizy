@@ -44,7 +44,7 @@ public class RedisCacheHelper : ICacheHelper
         var db = _redisDbConnectionLazy.Value.GetDatabase();
         var data = await db.StringGetAsync(key);
 
-        return data.HasValue ? JsonSerializer.Deserialize<T>(data) : default;
+        return data.HasValue ? JsonSerializer.Deserialize<T>(data.ToString()) : default;
     }
 
     /// <summary>
