@@ -44,7 +44,7 @@ app.UseExceptionHandler(errorApp =>
 });
 
 app.UseCors("_myAllowSpecificOrigins");
-app.UseHttpsRedirection().UseAuthorization();
+app.UseHttpsRedirection().UseAuthentication();
 
 app.MapControllers();
 

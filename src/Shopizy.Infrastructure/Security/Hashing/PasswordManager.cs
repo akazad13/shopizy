@@ -4,6 +4,9 @@ using Shopizy.Application.Common.Interfaces.Authentication;
 
 namespace Shopizy.Infrastructure.Security.Hashing;
 
+/// <summary>
+/// Manages password hashing and verification using PBKDF2.
+/// </summary>
 public class PasswordManager : IPasswordManager
 {
     private sealed class HashVersion
@@ -31,6 +34,12 @@ public class PasswordManager : IPasswordManager
 
     private HashVersion DefaultVersion => _versions[1];
 
+    /// <summary>
+    /// Verifies a clear text password against a hashed password.
+    /// </summary>
+    /// <param name="clearText">The clear text password.</param>
+    /// <param name="data">The base64-encoded hashed password.</param>
+    /// <returns>True if the password matches; otherwise, false.</returns>
     public bool Verify(string clearText, string data)
     {
         try
@@ -44,18 +53,34 @@ public class PasswordManager : IPasswordManager
         }
     }
 
+    /// <summary>
+    /// Creates a hashed password string from clear text.
+    /// </summary>
+    /// <param name="clearText">The clear text password.</param>
+    /// <param name="iterations">The number of iterations for PBKDF2.</param>
+    /// <returns>A base64-encoded hashed password.</returns>
     public string CreateHashString(string clearText, int iterations = default)
     {
         byte[] data = Hash(clearText, iterations);
         return Convert.ToBase64String(data);
     }
 
+    /// <summary>
+    /// Checks if the hash is using the latest version.
+    /// </summary>
+    /// <param name="data">The hash data as byte array.</param>
+    /// <returns>True if using the latest version; otherwise, false.</returns>
     public bool IsLatestHastversion(byte[] data)
     {
         short version = BitConverter.ToInt16(data, 0);
         return version == DefaultVersion.Version;
     }
 
+    /// <summary>
+    /// Checks if the hash is using the latest version.
+    /// </summary>
+    /// <param name="data">The base64-encoded hash data.</param>
+    /// <returns>True if using the latest version; otherwise, false.</returns>
     public bool IsLatestHastversion(string data)
     {
         byte[] dataBytes = Convert.FromBase64String(data);

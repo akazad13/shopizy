@@ -16,22 +16,67 @@ using Shopizy.Infrastructure.Common.Middleware;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
 
+/// <summary>
+/// The application's database context for Entity Framework Core.
+/// Handles domain events and eventual consistency.
+/// </summary>
 public class AppDbContext(
     DbContextOptions options,
     IHttpContextAccessor _httpContextAccessor,
     IPublisher _publisher
 ) : DbContext(options), IAppDbContext
 {
+    /// <summary>
+    /// Gets or sets the categories DbSet.
+    /// </summary>
     public DbSet<Category> Categories { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the carts DbSet.
+    /// </summary>
     public DbSet<Cart> Carts { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the orders DbSet.
+    /// </summary>
     public DbSet<Order> Orders { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the payments DbSet.
+    /// </summary>
     public DbSet<Payment> Payments { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the products DbSet.
+    /// </summary>
     public DbSet<Product> Products { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the product reviews DbSet.
+    /// </summary>
     public DbSet<ProductReview> ProductReviews { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the promo codes DbSet.
+    /// </summary>
     public DbSet<PromoCode> PromoCodes { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the users DbSet.
+    /// </summary>
     public DbSet<User> Users { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the permissions DbSet.
+    /// </summary>
     public DbSet<Permission> Permissions { get; set; }
 
+    /// <summary>
+    /// Saves all changes made in this context to the database.
+    /// Handles domain event publishing with eventual consistency support.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The number of state entries written to the database.</returns>
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         // Get the domain events from the entity framework change tracker

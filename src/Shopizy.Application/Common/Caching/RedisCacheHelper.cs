@@ -24,7 +24,7 @@ public class RedisCacheHelper : ICacheHelper
                 ConnectionMultiplexer.Connect(
                     new ConfigurationOptions
                     {
-                        EndPoints = { { _redisSettings.Endpoint, 16199 } },
+                        EndPoints = { { _redisSettings.Endpoint, _redisSettings.Port } },
                         User = _redisSettings.Username,
                         Password = _redisSettings.Password,
                     }

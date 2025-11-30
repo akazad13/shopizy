@@ -5,6 +5,9 @@ using Stripe;
 
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
+/// <summary>
+/// Service for integrating with Stripe payment gateway.
+/// </summary>
 public class StripeService(
     CustomerService customerService,
     PaymentIntentService paymentIntentService
@@ -13,6 +16,13 @@ public class StripeService(
     private readonly CustomerService _customerService = customerService;
     private readonly PaymentIntentService _paymentIntentService = paymentIntentService;
 
+    /// <summary>
+    /// Creates a new customer in Stripe.
+    /// </summary>
+    /// <param name="email">The customer's email address.</param>
+    /// <param name="name">The customer's name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A customer resource if successful; otherwise, an error.</returns>
     public async Task<ErrorOr<CustomerResource>> CreateCustomer(
         string email,
         string name,
@@ -36,6 +46,11 @@ public class StripeService(
         }
     }
 
+    /// <summary>
+    /// Creates a payment sale (payment intent) in Stripe.
+    /// </summary>
+    /// <param name="request">The sale creation request.</param>
+    /// <returns>A sale response if successful; otherwise, an error.</returns>
     public async Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
     {
         var intentCreateOptions = new PaymentIntentCreateOptions

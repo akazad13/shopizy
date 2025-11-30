@@ -2,6 +2,7 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using shopizy.Contracts.Product;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.AddProductImage;
 using Shopizy.Application.Products.Commands.CreateProduct;
@@ -10,13 +11,16 @@ using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.GetProducts;
+using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
-using shopizy.Contracts.Product;
 using Shopizy.Contracts.Product;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Controller for managing product operations.
+/// </summary>
 [Route("api/v1.0")]
 public class ProductController(ISender mediator, IMapper mapper, ILogger<ProductController> logger)
     : ApiController
@@ -25,6 +29,15 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<ProductController> _logger = logger;
 
+    /// <summary>
+    /// Searches for products based on criteria.
+    /// </summary>
+    /// <param name="criteria">The search criteria including filters and pagination.</param>
+    /// <returns>A list of products matching the criteria.</returns>
+    /// <response code="200">Returns the list of products.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpGet("products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<ProductResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -54,11 +67,11 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, null, typeof(ErrorResult))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, null, typeof(ErrorResult))]
-    public async Task<IActionResult> GetProductAsync(Guid ProductId)
+    public async Task<IActionResult> GetProductAsync(Guid productId)
     {
         try
         {
-            var query = _mapper.Map<GetProductQuery>(ProductId);
+            var query = _mapper.Map<GetProductQuery>(productId);
             var result = await _mediator.Send(query);
 
             return result.Match(

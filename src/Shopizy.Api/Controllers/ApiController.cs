@@ -5,9 +5,17 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Base controller for all API controllers, providing common error handling.
+/// </summary>
 [ApiController]
 public class ApiController : ControllerBase
 {
+    /// <summary>
+    /// Creates an action result based on a list of errors.
+    /// </summary>
+    /// <param name="errors">The list of errors.</param>
+    /// <returns>An appropriate action result (BadRequest, ValidationProblem, or Problem).</returns>
     protected IActionResult Problem(IList<Error> errors)
     {
         if (errors == null || errors.Count is 0)

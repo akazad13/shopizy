@@ -11,6 +11,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Controller for handling user authentication and registration.
+/// </summary>
 [Route("api/v1.0/auth")]
 public class AuthController(ISender mediator, IMapper mapper, ILogger<AuthController> logger)
     : ApiController
@@ -19,6 +22,15 @@ public class AuthController(ISender mediator, IMapper mapper, ILogger<AuthContro
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<AuthController> _logger = logger;
 
+    /// <summary>
+    /// Registers a new user.
+    /// </summary>
+    /// <param name="request">The registration request containing user details.</param>
+    /// <returns>A success result if registration is successful.</returns>
+    /// <response code="200">If registration is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="409">If the user already exists.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost("register")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -44,6 +56,15 @@ public class AuthController(ISender mediator, IMapper mapper, ILogger<AuthContro
         }
     }
 
+    /// <summary>
+    /// Logs in a user.
+    /// </summary>
+    /// <param name="request">The login request containing credentials.</param>
+    /// <returns>Authentication response with token.</returns>
+    /// <response code="200">If login is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If credentials are invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost("login")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(AuthResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

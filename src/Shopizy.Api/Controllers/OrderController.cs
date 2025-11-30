@@ -13,6 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Controller for managing user orders.
+/// </summary>
 [Route("api/v1.0/users/{userId:guid}/orders")] 
 public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderController> logger)
     : ApiController
@@ -21,6 +24,15 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<OrderController> _logger = logger;
 
+    /// <summary>
+    /// Retrieves a list of orders for a user based on criteria.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="criteria">The order search criteria.</param>
+    /// <returns>A list of orders.</returns>
+    /// <response code="200">Returns the list of orders.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<OrderResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -42,6 +54,15 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
         }
     }
 
+    /// <summary>
+    /// Retrieves a specific order by its identifier.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="orderId">The order identifier.</param>
+    /// <returns>The requested order details.</returns>
+    /// <response code="200">Returns the order details.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpGet("{orderId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -63,6 +84,16 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
         }
     }
 
+    /// <summary>
+    /// Creates a new order.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="request">The order creation request.</param>
+    /// <returns>The created order details.</returns>
+    /// <response code="200">Returns the created order.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="409">If there is a conflict.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(OrderDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -85,6 +116,16 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
         }
     }
 
+    /// <summary>
+    /// Cancels an existing order.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="orderId">The order identifier.</param>
+    /// <param name="request">The cancel order request.</param>
+    /// <returns>Success result.</returns>
+    /// <response code="200">If cancellation is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPatch("{orderId:guid}/cancel")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

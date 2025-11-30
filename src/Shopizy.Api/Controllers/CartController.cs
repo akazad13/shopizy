@@ -13,6 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Controller for managing user shopping carts.
+/// </summary>
 [Route("api/v1.0/users/{userId:guid}/carts")]
 public class CartController(ISender mediator, IMapper mapper, ILogger<CartController> logger)
     : ApiController
@@ -21,6 +24,14 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<CartController> _logger = logger;
 
+    /// <summary>
+    /// Retrieves the shopping cart for a user.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <returns>The user's shopping cart.</returns>
+    /// <response code="200">Returns the cart.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -42,6 +53,17 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
         }
     }
 
+    /// <summary>
+    /// Adds a product to the user's cart.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="cartId">The cart identifier.</param>
+    /// <param name="request">The request containing product details.</param>
+    /// <returns>The updated cart.</returns>
+    /// <response code="200">Returns the updated cart.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="409">If there is a conflict.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPatch("{cartId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CartResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -68,6 +90,17 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
         }
     }
 
+    /// <summary>
+    /// Updates the quantity of a product in the cart.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="cartId">The cart identifier.</param>
+    /// <param name="itemId">The cart item identifier.</param>
+    /// <param name="request">The request containing the new quantity.</param>
+    /// <returns>Success result.</returns>
+    /// <response code="200">If update is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPatch("{cartId:guid}/items/{itemId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -98,6 +131,16 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
         }
     }
 
+    /// <summary>
+    /// Removes an item from the cart.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="cartId">The cart identifier.</param>
+    /// <param name="itemId">The cart item identifier.</param>
+    /// <returns>Success result.</returns>
+    /// <response code="200">If removal is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpDelete("{cartId:guid}/items/{itemId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

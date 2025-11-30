@@ -11,6 +11,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopizy.Api.Controllers;
 
+/// <summary>
+/// Controller for processing payments.
+/// </summary>
 [Route("api/v1.0/users/{userId:guid}/payments")]
 public class PaymentController(ISender mediator, IMapper mapper, ILogger<PaymentController> logger)
     : ApiController
@@ -19,6 +22,15 @@ public class PaymentController(ISender mediator, IMapper mapper, ILogger<Payment
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<PaymentController> _logger = logger;
 
+    /// <summary>
+    /// Processes a payment for a user.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="request">The payment request details.</param>
+    /// <returns>Success result if payment is collected.</returns>
+    /// <response code="200">If payment is successful.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

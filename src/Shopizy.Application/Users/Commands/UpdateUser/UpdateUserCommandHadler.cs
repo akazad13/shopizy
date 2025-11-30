@@ -7,11 +7,10 @@ using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Commands.UpdateUser;
 
-public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
 /// <summary>
 /// Handles the <see cref="UpdateUserCommand"/> to update user information.
 /// </summary>
-public class UpdateUserCommandHandler(IUserRepository userRepository)
+public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
     : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
