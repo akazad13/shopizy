@@ -1,4 +1,4 @@
-namespace shopizy.Contracts.Product;
+namespace Shopizy.Contracts.Product;
 
 /// <summary>
 /// Represents criteria for searching and filtering products.

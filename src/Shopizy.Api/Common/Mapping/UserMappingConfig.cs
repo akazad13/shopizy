@@ -8,6 +8,9 @@ using Shopizy.Contracts.User;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for user-related models.
+/// </summary>
 public class UserMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

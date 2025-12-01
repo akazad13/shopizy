@@ -7,6 +7,9 @@ using Shopizy.Contracts.Authentication;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for authentication-related models.
+/// </summary>
 public class AuthenticationMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

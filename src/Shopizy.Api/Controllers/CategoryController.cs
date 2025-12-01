@@ -9,7 +9,6 @@ using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Categories.Queries.GetCategory;
 using Shopizy.Application.Categories.Queries.ListCategories;
-using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 using Swashbuckle.AspNetCore.Annotations;

@@ -2,7 +2,6 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using shopizy.Contracts.Product;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.AddProductImage;
 using Shopizy.Application.Products.Commands.CreateProduct;
@@ -62,6 +61,15 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Retrieves a specific product by its unique identifier.
+    /// </summary>
+    /// <param name="productId">The unique identifier of the product.</param>
+    /// <returns>The details of the requested product.</returns>
+    /// <response code="200">Returns the product details.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpGet("products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -86,6 +94,17 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Creates a new product for a specific user.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user creating the product.</param>
+    /// <param name="request">The product creation details.</param>
+    /// <returns>The created product.</returns>
+    /// <response code="200">Returns the created product.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="409">If a conflict occurs (e.g., duplicate product).</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost("users/{userId:guid}/products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -108,6 +127,18 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Updates an existing product.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user updating the product.</param>
+    /// <param name="productId">The unique identifier of the product to update.</param>
+    /// <param name="request">The product update details.</param>
+    /// <returns>A success result indicating the product was updated.</returns>
+    /// <response code="200">Returns a success message.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="409">If a conflict occurs.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPatch("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -137,6 +168,17 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Deletes a product.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user deleting the product.</param>
+    /// <param name="productId">The unique identifier of the product to delete.</param>
+    /// <returns>A success result indicating the product was deleted.</returns>
+    /// <response code="200">Returns a success message.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="409">If a conflict occurs.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpDelete("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -162,6 +204,18 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Adds an image to a product.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user adding the image.</param>
+    /// <param name="productId">The unique identifier of the product.</param>
+    /// <param name="request">The image file to add.</param>
+    /// <returns>The added product image details.</returns>
+    /// <response code="200">Returns the added product image details.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="409">If a conflict occurs.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpPost("users/{userId:guid}/products/{productId:guid}/image")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductImageResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -191,6 +245,18 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
         }
     }
 
+    /// <summary>
+    /// Deletes an image from a product.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user deleting the image.</param>
+    /// <param name="productId">The unique identifier of the product.</param>
+    /// <param name="imageId">The unique identifier of the image to delete.</param>
+    /// <returns>A success result indicating the image was deleted.</returns>
+    /// <response code="200">Returns a success message.</response>
+    /// <response code="400">If the request is invalid.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="409">If a conflict occurs.</response>
+    /// <response code="500">If an internal server error occurs.</response>
     [HttpDelete("users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

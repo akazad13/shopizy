@@ -1,4 +1,4 @@
-namespace shopizy.Contracts.Category;
+namespace Shopizy.Contracts.Category;
 
 /// <summary>
 /// Represents a hierarchical category tree response.

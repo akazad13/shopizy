@@ -11,6 +11,9 @@ using Shopizy.Domain.Orders.Entities;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for order-related models.
+/// </summary>
 public class OrderMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

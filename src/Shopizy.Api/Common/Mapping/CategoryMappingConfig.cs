@@ -3,14 +3,16 @@ using Mapster;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
-using shopizy.Application.Categories.Queries.CategoriesTree;
+using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Categories.Queries.GetCategory;
-using shopizy.Contracts.Category;
 using Shopizy.Contracts.Category;
 using Shopizy.Domain.Categories;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for category-related models.
+/// </summary>
 public class CategoryMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

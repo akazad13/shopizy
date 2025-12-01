@@ -10,6 +10,9 @@ using Shopizy.Domain.Carts.Entities;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for cart-related models.
+/// </summary>
 public class CartMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

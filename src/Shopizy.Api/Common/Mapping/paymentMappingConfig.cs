@@ -6,6 +6,9 @@ using Shopizy.Contracts.Payment;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for payment-related models.
+/// </summary>
 public class PaymentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

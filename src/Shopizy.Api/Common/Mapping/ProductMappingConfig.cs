@@ -6,7 +6,6 @@ using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.GetProducts;
-using shopizy.Contracts.Product;
 using Shopizy.Contracts.Product;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
@@ -14,6 +13,9 @@ using Shopizy.Domain.Products.Entities;
 
 namespace Shopizy.Api.Common.Mapping;
 
+/// <summary>
+/// Configures mapping for product-related models.
+/// </summary>
 public class ProductMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
