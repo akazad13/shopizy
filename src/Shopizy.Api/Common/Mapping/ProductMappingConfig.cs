@@ -18,6 +18,10 @@ namespace Shopizy.Api.Common.Mapping;
 /// </summary>
 public class ProductMappingConfig : IRegister
 {
+    /// <summary>
+    /// Registers the mapping configurations.
+    /// </summary>
+    /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
         Guard.Against.Null(config);

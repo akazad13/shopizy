@@ -39,14 +39,7 @@ public class GetUserQueryHandler(
             {
                 return cachedUser;
             }
-        }
-        catch (Exception ex)
-        {
 
-        }
-
-        try
-        {
             var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
 
             if (user is null)

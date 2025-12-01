@@ -41,10 +41,15 @@ public class RedisCacheHelper : ICacheHelper
     /// <returns>The cached value, or default if the key does not exist.</returns>
     public async Task<T> GetAsync<T>(string key)
     {
-        var db = _redisDbConnectionLazy.Value.GetDatabase();
-        var data = await db.StringGetAsync(key);
-
-        return data.HasValue ? JsonSerializer.Deserialize<T>(data.ToString()) : default;
+        try {
+            var db = _redisDbConnectionLazy.Value.GetDatabase();
+            var data = await db.StringGetAsync(key);
+            return data.HasValue ? JsonSerializer.Deserialize<T>(data.ToString()) : default;
+        }
+        catch (Exception ex)
+        {
+            return default;
+        }
     }
 
     /// <summary>
@@ -56,8 +61,14 @@ public class RedisCacheHelper : ICacheHelper
     /// <param name="expiration">The expiration time for the cached value. If null, the value does not expire.</param>
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
     {
-        var db = _redisDbConnectionLazy.Value.GetDatabase();
-        await db.StringSetAsync(key, JsonSerializer.Serialize(value), expiration);
+        try {
+            var db = _redisDbConnectionLazy.Value.GetDatabase();
+            await db.StringSetAsync(key, JsonSerializer.Serialize(value), expiration);
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
     /// <summary>
@@ -66,7 +77,13 @@ public class RedisCacheHelper : ICacheHelper
     /// <param name="key">The cache key.</param>
     public async Task RemoveAsync(string key)
     {
-        var db = _redisDbConnectionLazy.Value.GetDatabase();
-        await db.KeyDeleteAsync(key);
+        try {
+            var db = _redisDbConnectionLazy.Value.GetDatabase();
+            await db.KeyDeleteAsync(key);
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 }
