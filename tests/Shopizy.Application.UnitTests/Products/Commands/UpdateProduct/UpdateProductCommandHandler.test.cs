@@ -48,57 +48,57 @@ public class UpdateProductCommandHandlerTests
         _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenUpdatingProductWithInvalidProductId()
-    // {
-    //     // Implementation
-    // }
+    [Fact]
+    public async Task Should_ReturnProductNotFound_When_ProductDoesNotExist()
+    {
+        // Arrange
+        var command = UpdateProductCommandUtils.CreateCommand();
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenUpdatingProductWithNonExistingCategoryId()
-    // {
-    //     // Implementation
-    // }
+        _mockProductRepository
+            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
+            .ReturnsAsync((Product?)null);
 
-    // [Fact]
-    // public async Task Should_HandleConcurrentUpdates_ToTheSameProductWithoutDataCorruption()
-    // {
-    //     // Implementation
-    // }
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenUpdatingProductWithNegativeUnitPrice()
-    // {
-    //     // Implementation
-    // }
+        // Assert
+        Assert.True(result.IsError);
+        Assert.Equal(Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotFound, result.FirstError);
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenUpdatingProductWithInvalidCurrencyCode()
-    // {
-    //     // Implementation
-    // }
+        _mockProductRepository.Verify(
+            x => x.GetProductByIdAsync(It.IsAny<ProductId>()),
+            Times.Once
+        );
+        _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Never);
+        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
+    }
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenUpdatingProductWithDiscountGreaterThan100Percent()
-    // {
-    //     // Implementation
-    // }
+    [Fact]
+    public async Task Should_ReturnProductNotUpdated_When_RepositoryCommitFails()
+    {
+        // Arrange
+        var command = UpdateProductCommandUtils.CreateCommand();
+        var product = ProductFactory.CreateProduct();
 
-    // [Fact]
-    // public async Task Should_ReturnError_WhenProductRepositoryFailsToCommitChanges()
-    // {
-    //     // Implementation
-    // }
+        _mockProductRepository
+            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
+            .ReturnsAsync(product);
 
-    // [Fact]
-    // public async Task Should_ReturnTheUpdatedProduct_WhenTheUpdateIsSuccessful()
-    // {
-    //     // Implementation
-    // }
+        _mockProductRepository.Setup(x => x.Update(It.IsAny<Product>()));
+        _mockProductRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
 
-    // [Fact]
-    // public void Should_ValidateAndSanitizeInput_ToPreventSecurityVulnerabilities()
-    // {
-    //     // Implementation
-    // }
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsError);
+        Assert.Equal(Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotUpdated, result.FirstError);
+
+        _mockProductRepository.Verify(
+            x => x.GetProductByIdAsync(It.IsAny<ProductId>()),
+            Times.Once
+        );
+        _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Once);
+        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

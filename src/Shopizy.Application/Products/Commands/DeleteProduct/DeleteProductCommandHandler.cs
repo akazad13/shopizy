@@ -35,7 +35,7 @@ public class DeleteProductCommandHandler(
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return CustomErrors.Product.ProductNotDeleted;
         }
         return Result.Success;
     }

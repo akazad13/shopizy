@@ -1,6 +1,7 @@
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.GetProducts;
+using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
@@ -25,11 +26,11 @@ public class GetProductsQueryHandlerTests
         _mockProductRepository
             .Setup(x =>
                 x.GetProductsAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<IList<CategoryId>>(),
-                    It.IsAny<decimal>(),
-                    It.IsAny<int>(),
-                    It.IsAny<int>()
+                    query.Name,
+                    null,
+                    query.AverageRating,
+                    query.PageNumber,
+                    query.PageSize
                 )
             )
             .ReturnsAsync(() => null);
@@ -41,6 +42,36 @@ public class GetProductsQueryHandlerTests
         Assert.True(result.IsError);
         Assert.NotEmpty(result.Errors);
         Assert.Contains(CustomErrors.Product.ProductNotFound, result.Errors);
+    }
+
+    [Fact]
+    public async Task Should_ReturnProducts_When_ProductsExist()
+    {
+        // Arrange
+        var query = new GetProductsQuery(null, null, null, 1, 10);
+        var product1 = ProductFactory.CreateProduct();
+        var product2 = ProductFactory.CreateProduct();
+        var products = new List<Shopizy.Domain.Products.Product> { product1, product2 };
+
+        _mockProductRepository
+            .Setup(x =>
+                x.GetProductsAsync(
+                    query.Name,
+                    null,
+                    query.AverageRating,
+                    query.PageNumber,
+                    query.PageSize
+                )
+            )
+            .ReturnsAsync(products);
+
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.False(result.IsError);
+        Assert.NotNull(result.Value);
+        Assert.Equal(2, result.Value.Count);
     }
 
     // [Fact]

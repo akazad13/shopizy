@@ -66,7 +66,6 @@ public class UpdateAddressCommandHandlerTests
         // Assert
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
-        Assert.NotNull(result.Value);
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
@@ -93,22 +92,18 @@ public class UpdateAddressCommandHandlerTests
         var task1 = _sut.Handle(command, CancellationToken.None);
         var task2 = _sut.Handle(command, CancellationToken.None);
 
-        await Task.WhenAll(task1, task2);
+        var result1 = await task1;
+        var result2 = await task2;
 
         // Assert
-        var result1 = task1.Result;
-        var result2 = task2.Result;
-
         Assert.IsType<ErrorOr<Success>>(result1);
         Assert.IsType<ErrorOr<Success>>(result2);
         Assert.False(result1.IsError);
         Assert.False(result2.IsError);
 
         Assert.IsType<Success>(result1.Value);
-        Assert.NotNull(result1.Value);
 
         Assert.IsType<Success>(result2.Value);
-        Assert.NotNull(result2.Value);
     }
 
     [Fact]

@@ -110,7 +110,6 @@ public class UpdatePasswordCommandHandlerTests
         // Assert
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
-        Assert.NotNull(result.Value);
 
         _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);

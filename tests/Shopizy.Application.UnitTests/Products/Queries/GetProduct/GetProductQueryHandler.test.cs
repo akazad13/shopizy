@@ -3,6 +3,7 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Extensions;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -37,5 +38,22 @@ public class GetProductQueryHandlerTests
         Assert.NotNull(result.Value);
         Assert.IsType<Product>(result.Value);
         result.Value.ValidateResult(query);
+    }
+
+    [Fact]
+    public async Task Should_ReturnProductNotFound_When_ProductDoesNotExist()
+    {
+        // Arrange
+        var query = GetProductQueryUtils.CreateQuery();
+        _mockProductRepository
+            .Setup(c => c.GetProductByIdAsync(ProductId.Create(query.ProductId)))
+            .ReturnsAsync((Product?)null);
+
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.Product.ProductNotFound, result.FirstError);
     }
 }
