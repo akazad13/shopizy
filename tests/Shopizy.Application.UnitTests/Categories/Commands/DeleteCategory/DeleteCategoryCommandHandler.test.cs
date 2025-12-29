@@ -29,7 +29,6 @@ public class DeleteCategoryCommandHandlerTests
         _mockCategoryRepository
             .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(command.CategoryId)))
             .ReturnsAsync(category);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, default);
@@ -41,6 +40,5 @@ public class DeleteCategoryCommandHandlerTests
         Assert.Equal(Result.Success, result.Value);
 
         _mockCategoryRepository.Verify(x => x.Remove(category), Times.Once);
-        _mockCategoryRepository.Verify(m => m.Commit(default), Times.Once);
     }
 }

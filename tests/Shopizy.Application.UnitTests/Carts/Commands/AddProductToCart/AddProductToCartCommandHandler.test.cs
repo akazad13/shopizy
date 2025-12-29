@@ -70,7 +70,6 @@ public class AddProductToCartCommandHandlerTests
             .ReturnsAsync(true);
 
         _mockCartRepository.Setup(cr => cr.Update(existingCart));
-        _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(existingCart.UserId))
@@ -94,7 +93,6 @@ public class AddProductToCartCommandHandlerTests
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 1)),
             Times.Once
         );
-        _mockCartRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
     }
 
     // Should add new line item for another product
@@ -134,7 +132,6 @@ public class AddProductToCartCommandHandlerTests
             .ReturnsAsync(true);
 
         _mockCartRepository.Setup(cr => cr.Update(updatedCart));
-        _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(updatedCart.UserId))
             .ReturnsAsync(updatedCart);
@@ -157,7 +154,6 @@ public class AddProductToCartCommandHandlerTests
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 2)),
             Times.Once
         );
-        _mockCartRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
         Assert.Contains(cart.Value.CartItems, li => li.ProductId == ProductId.Create(command.ProductId) && li.Quantity == 1);
     }
 }

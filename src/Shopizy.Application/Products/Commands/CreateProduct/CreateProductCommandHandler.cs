@@ -18,6 +18,11 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
         CancellationToken cancellationToken
     )
     {
+        if (string.IsNullOrWhiteSpace(cmd.Name))
+        {
+            return CustomErrors.Product.ProductNotCreated;
+        }
+
         var product = Product.Create(
             name: cmd.Name,
             shortDescription: cmd.ShortDescription,

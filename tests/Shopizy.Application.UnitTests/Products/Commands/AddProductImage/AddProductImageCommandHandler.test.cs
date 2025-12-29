@@ -87,7 +87,6 @@ public class AddProductImageCommandHandlerTests
             );
 
         _mockProductRepository.Setup(p => p.Update(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -98,6 +97,5 @@ public class AddProductImageCommandHandlerTests
         Assert.Equal(productImage.ImageUrl, result.Value.ImageUrl);
         Assert.Equal(productImage.PublicId, result.Value.PublicId);
 
-        _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }
 }

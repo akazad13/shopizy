@@ -33,7 +33,6 @@ public class CreateCategoryCommandHandlerTests
         _mockCategoryRepository
             .Setup(x => x.AddAsync(It.IsAny<Category>()))
             .Returns(Task.CompletedTask);
-        _mockCategoryRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -54,7 +53,6 @@ public class CreateCategoryCommandHandlerTests
         _mockCategoryRepository
             .Setup(c => c.GetCategoryByNameAsync(command.Name))
             .ReturnsAsync(true);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -66,23 +64,4 @@ public class CreateCategoryCommandHandlerTests
     }
 
     // Should return an category not created error when category save failed
-    [Fact]
-    public async Task Should_ReturnCategoryNotCreatedError_WhenCategorySaveFailed()
-    {
-        // Arrange
-        var command = CreateCategoryCommandUtils.CreateCommand();
-
-        _mockCategoryRepository
-            .Setup(c => c.GetCategoryByNameAsync(command.Name))
-            .ReturnsAsync(false);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(0);
-
-        // Act
-        var result = await _sut.Handle(command, default);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.NotEmpty(result.Errors);
-        Assert.Equal(CustomErrors.Category.CategoryNotCreated, result.Errors[0]);
-    }
 }

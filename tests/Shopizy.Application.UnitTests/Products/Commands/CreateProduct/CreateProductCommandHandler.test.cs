@@ -38,8 +38,7 @@ public class CreateProductCommandHandlerTests
         Assert.NotNull(result.Errors);
         Assert.Equal(CustomErrors.Product.ProductNotCreated, result.Errors[0]);
 
-        _mockProductRepository.Verify(m => m.AddAsync(It.IsAny<Product>()), Times.Once);
-        _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
+        _mockProductRepository.Verify(m => m.AddAsync(It.IsAny<Product>()), Times.Never);
     }
 
     [Fact]
@@ -49,7 +48,6 @@ public class CreateProductCommandHandlerTests
         var command = CreateProductCommandUtils.CreateCommand();
 
         _mockProductRepository.Setup(p => p.AddAsync(It.IsAny<Product>()));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, default);
@@ -61,6 +59,5 @@ public class CreateProductCommandHandlerTests
         result.Value.ValidateResult(command);
 
         _mockProductRepository.Verify(m => m.AddAsync(It.IsAny<Product>()), Times.Once);
-        _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }
 }

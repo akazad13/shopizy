@@ -39,7 +39,6 @@ public class CancelOrderCommandHandlerTests
             Times.Once
         );
         _mockOrderRepository.Verify(x => x.Update(It.IsAny<Order>()), Times.Never);
-        _mockOrderRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -51,7 +50,6 @@ public class CancelOrderCommandHandlerTests
 
         _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(order.Id)).ReturnsAsync(order);
         _mockOrderRepository.Setup(x => x.Update(order));
-        _mockOrderRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -65,6 +63,5 @@ public class CancelOrderCommandHandlerTests
             Times.Once
         );
         _mockOrderRepository.Verify(x => x.Update(order), Times.Once);
-        _mockOrderRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

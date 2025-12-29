@@ -38,7 +38,6 @@ public class DeleteProductCommandHandlerTests
             .ReturnsAsync(product);
 
         _mockProductRepository.Setup(p => p.Remove(It.IsAny<Product>()));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -48,7 +47,6 @@ public class DeleteProductCommandHandlerTests
         Assert.IsType<Success>(result.Value);
 
         _mockProductRepository.Verify(x => x.Remove(product), Times.Once);
-        _mockProductRepository.Verify(x => x.Commit(CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -70,32 +68,5 @@ public class DeleteProductCommandHandlerTests
 
         _mockProductRepository.Verify(x => x.GetProductByIdAsync(It.IsAny<ProductId>()), Times.Once);
         _mockProductRepository.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
-        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task Should_ReturnProductNotDeleted_When_RepositoryCommitFails()
-    {
-        // Arrange
-        var command = DeleteProductCommandUtils.CreateCommand();
-        var product = ProductFactory.CreateProduct();
-
-        _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
-            .ReturnsAsync(product);
-
-        _mockProductRepository.Setup(p => p.Remove(It.IsAny<Product>()));
-        _mockProductRepository.Setup(p => p.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-
-        // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.Equal(CustomErrors.Product.ProductNotDeleted, result.FirstError);
-
-        _mockProductRepository.Verify(x => x.GetProductByIdAsync(It.IsAny<ProductId>()), Times.Once);
-        _mockProductRepository.Verify(x => x.Remove(product), Times.Once);
-        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

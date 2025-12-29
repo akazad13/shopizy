@@ -47,14 +47,11 @@ public class DeleteProductImageCommandHandlerTests
             .ReturnsAsync(Result.Success);
 
         _mockProductRepository.Setup(p => p.Update(product));
-        _mockProductRepository.Setup(p => p.Commit(default)).ReturnsAsync(1);
         // Act
         var result = await _sut.Handle(command, default);
 
         // Assert
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
-
-        _mockProductRepository.Verify(m => m.Commit(default), Times.Once);
     }
 }

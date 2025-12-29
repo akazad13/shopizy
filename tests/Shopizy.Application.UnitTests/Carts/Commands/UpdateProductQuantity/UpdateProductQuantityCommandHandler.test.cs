@@ -43,6 +43,5 @@ public class UpdateProductQuantityCommandHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
-        _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 }

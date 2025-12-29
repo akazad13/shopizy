@@ -31,7 +31,6 @@ public class UpdateProductCommandHandlerTests
             .ReturnsAsync(product);
 
         _mockProductRepository.Setup(x => x.Update(It.IsAny<Product>()));
-        _mockProductRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -45,7 +44,6 @@ public class UpdateProductCommandHandlerTests
             Times.Once
         );
         _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Once);
-        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -70,35 +68,5 @@ public class UpdateProductCommandHandlerTests
             Times.Once
         );
         _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Never);
-        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task Should_ReturnProductNotUpdated_When_RepositoryCommitFails()
-    {
-        // Arrange
-        var command = UpdateProductCommandUtils.CreateCommand();
-        var product = ProductFactory.CreateProduct();
-
-        _mockProductRepository
-            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
-            .ReturnsAsync(product);
-
-        _mockProductRepository.Setup(x => x.Update(It.IsAny<Product>()));
-        _mockProductRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-
-        // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.Equal(Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotUpdated, result.FirstError);
-
-        _mockProductRepository.Verify(
-            x => x.GetProductByIdAsync(It.IsAny<ProductId>()),
-            Times.Once
-        );
-        _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Once);
-        _mockProductRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

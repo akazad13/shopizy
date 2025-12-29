@@ -80,8 +80,6 @@ public class RegisterCommandHandler(
 
         await _userRepository.AddAsync(user);
 
-        await _userRepository.AddAsync(user);
-
         var cart = Cart.Create(user.Id);
         await _cartRepository.AddAsync(cart);
 

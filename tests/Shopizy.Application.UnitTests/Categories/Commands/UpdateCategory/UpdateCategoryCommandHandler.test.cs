@@ -28,7 +28,6 @@ public class UpdateCategoryCommandHandlerTests
         _mockCategoryRepository
             .Setup(c => c.GetCategoryByIdAsync(CategoryId.Create(command.CategoryId)))
             .ReturnsAsync(category);
-        _mockCategoryRepository.Setup(c => c.Commit(default)).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, default);

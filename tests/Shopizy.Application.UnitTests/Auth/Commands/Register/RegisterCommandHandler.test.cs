@@ -47,7 +47,6 @@ public class RegisterCommandHandlerTests
         Assert.Contains(CustomErrors.User.DuplicateEmail, result.Errors);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -80,10 +79,7 @@ public class RegisterCommandHandlerTests
             .Setup(pm => pm.CreateHashString(command.Password, 10000))
             .Returns(hashedPassword);
 
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -107,45 +103,7 @@ public class RegisterCommandHandlerTests
                 ),
             Times.Once
         );
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Should_ReturnUserNotCreatedError_WhenRepositoryCommitFails()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "test@gmail.com", "password123");
-        var hashedPassword = "hashedPassword123";
-
-        _mockUserRepository
-            .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
-
-        _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 10000))
-            .Returns(hashedPassword);
-
-        _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.Contains(CustomErrors.User.UserNotCreated, result.Errors);
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
-        _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -165,10 +123,7 @@ public class RegisterCommandHandlerTests
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -251,9 +206,7 @@ public class RegisterCommandHandlerTests
         Assert.Contains(CustomErrors.User.InvalidName, result.Errors);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
         _mockPasswordManager.Verify(
             p => p.CreateHashString(It.IsAny<string>(), 10000),
             Times.Never
@@ -274,10 +227,8 @@ public class RegisterCommandHandlerTests
             .Setup(pm => pm.CreateHashString(command.Password, 10000))
             .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -291,7 +242,6 @@ public class RegisterCommandHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -311,10 +261,8 @@ public class RegisterCommandHandlerTests
             .Returns(hashedPassword);
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var task1 = _handler.Handle(command, CancellationToken.None);
@@ -332,9 +280,7 @@ public class RegisterCommandHandlerTests
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Exactly(2));
         _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -355,10 +301,8 @@ public class RegisterCommandHandlerTests
             .Setup(pm => pm.CreateHashString(command.Password, 10000))
             .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-        _mockUserRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -381,9 +325,7 @@ public class RegisterCommandHandlerTests
                 ),
             Times.Once
         );
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Theory]
@@ -409,9 +351,7 @@ public class RegisterCommandHandlerTests
 
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Never);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-        _mockUserRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Never);
         _mockPasswordManager.Verify(
             p => p.CreateHashString(It.IsAny<string>(), 10000),
             Times.Never

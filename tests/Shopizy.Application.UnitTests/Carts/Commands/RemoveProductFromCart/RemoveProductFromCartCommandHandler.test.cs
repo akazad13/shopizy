@@ -44,7 +44,6 @@ public class RemoveProductFromCartCommandHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
-        _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     // Should remove last line item from cart and commit changes when cart is found
@@ -60,7 +59,6 @@ public class RemoveProductFromCartCommandHandlerTests
             .ReturnsAsync(() => existingCart);
 
         _mockCartRepository.Setup(cr => cr.Update(existingCart));
-        _mockCartRepository.Setup(cr => cr.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -77,6 +75,5 @@ public class RemoveProductFromCartCommandHandlerTests
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 0)),
             Times.Once
         );
-        _mockCartRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

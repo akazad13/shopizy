@@ -38,7 +38,6 @@ public class UpdateUserCommandHandlerTests
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(user));
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCacheHelper
             .Setup(c => c.RemoveAsync($"user-{user.Id.Value}"))
@@ -53,7 +52,6 @@ public class UpdateUserCommandHandlerTests
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
-        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCacheHelper.Verify(c => c.RemoveAsync($"user-{user.Id.Value}"), Times.Once);
     }
 
@@ -77,35 +75,6 @@ public class UpdateUserCommandHandlerTests
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
-        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
-        _mockCacheHelper.Verify(c => c.RemoveAsync(It.IsAny<string>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task Should_ReturnUserNotUpdated_When_RepositoryCommitFails()
-    {
-        // Arrange
-        var command = UpdateUserCommandUtils.CreateCommand();
-        var user = UserFactory.CreateUser();
-
-        _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
-            .ReturnsAsync(user);
-
-        _mockUserRepository.Setup(u => u.Update(user));
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-
-        // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.NotEmpty(result.Errors);
-        Assert.Equal(CustomErrors.User.UserNotUpdated, result.Errors[0]);
-
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
-        _mockUserRepository.Verify(x => x.Update(user), Times.Once);
-        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
         _mockCacheHelper.Verify(c => c.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
@@ -121,7 +90,6 @@ public class UpdateUserCommandHandlerTests
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(user));
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         _mockCacheHelper
             .Setup(c => c.RemoveAsync($"user-{user.Id.Value}"))

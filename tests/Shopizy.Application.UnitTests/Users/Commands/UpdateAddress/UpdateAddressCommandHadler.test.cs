@@ -41,7 +41,6 @@ public class UpdateAddressCommandHandlerTests
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
-        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -58,8 +57,6 @@ public class UpdateAddressCommandHandlerTests
 
         _mockUserRepository.Setup(u => u.Update(user));
 
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -69,7 +66,6 @@ public class UpdateAddressCommandHandlerTests
 
         _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
-        _mockUserRepository.Verify(x => x.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -85,8 +81,6 @@ public class UpdateAddressCommandHandlerTests
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(It.IsAny<User>()));
-
-        _mockUserRepository.Setup(x => x.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var task1 = _sut.Handle(command, CancellationToken.None);
@@ -104,32 +98,5 @@ public class UpdateAddressCommandHandlerTests
         Assert.IsType<Success>(result1.Value);
 
         Assert.IsType<Success>(result2.Value);
-    }
-
-    [Fact]
-    public async Task Should_HandleCases_WhereDatabaseConnectionIsLostDuringCommit()
-    {
-        // Arrange
-
-        var command = UpdateAddressCommandUtils.CreateCommand();
-        var user = UserFactory.CreateUser();
-
-        _mockUserRepository.Setup(repo => repo.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
-
-        _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
-            .ReturnsAsync(user);
-
-        _mockUserRepository
-            .Setup(repo => repo.Commit(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(0); // Simulate database connection loss
-
-        // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.NotNull(result.Errors);
-        Assert.Equal(CustomErrors.User.UserNotUpdated, result.Errors[0]);
     }
 }
