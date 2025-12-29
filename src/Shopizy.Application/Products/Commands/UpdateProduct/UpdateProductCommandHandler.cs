@@ -42,11 +42,6 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
         _productRepository.Update(product);
 
-        if (await _productRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Product.ProductNotUpdated;
-        }
-
         return Result.Success;
     }
 }

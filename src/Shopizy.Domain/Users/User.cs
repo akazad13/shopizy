@@ -97,7 +97,10 @@ public sealed class User : AggregateRoot<UserId, Guid>
         IList<PermissionId> permissionIds
     )
     {
-        return new(UserId.CreateUnique(), firstName, lastName, email, password, permissionIds);
+        var user = new User(UserId.CreateUnique(), firstName, lastName, email, password, permissionIds);
+        user.AddDomainEvent(new Events.UserRegisteredDomainEvent(user));
+        
+        return user;
     }
 
     private User() { }

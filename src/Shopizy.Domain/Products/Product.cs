@@ -141,7 +141,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         string tags
     )
     {
-        return new Product(
+        var product = new Product(
             ProductId.CreateUnique(),
             name,
             shortDescription,
@@ -158,6 +158,10 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
             tags,
             AverageRating.CreateNew(0)
         );
+
+        product.AddDomainEvent(new Events.ProductCreatedDomainEvent(product));
+
+        return product;
     }
 
     /// <summary>

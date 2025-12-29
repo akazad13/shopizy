@@ -19,14 +19,12 @@ public static class DependencyInjectionRegister
             msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
             msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            msc.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
         // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        services.Configure<RedisSettings>(configuration.GetSection(RedisSettings.Section));
-
         services.AddScoped<ICurrentUser, CurrentUser>();
-        services.AddSingleton<ICacheHelper, RedisCacheHelper>();
 
         return services;
     }

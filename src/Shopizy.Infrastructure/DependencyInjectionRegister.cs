@@ -6,8 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Common.Caching;
+using StackExchange.Redis;
+using Microsoft.Extensions.Options;
 using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
+using Shopizy.Infrastructure.Common.Caching;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Customers.Persistence;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
@@ -104,6 +108,23 @@ public static class DependencyInjectionRegister
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
 
         StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
+
+        services.Configure<RedisSettings>(configuration.GetSection(RedisSettings.Section));
+
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
+            var configurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { { settings.Endpoint, settings.Port } },
+                User = settings.Username,
+                Password = settings.Password,
+                AbortOnConnectFail = false
+            };
+            return ConnectionMultiplexer.Connect(configurationOptions);
+        });
+
+        services.AddSingleton<ICacheHelper, RedisCacheHelper>();
 
         return services;
     }

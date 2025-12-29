@@ -1,4 +1,4 @@
-namespace Shopizy.Application.Common.Caching;
+namespace Shopizy.Infrastructure.Common.Caching;
 
 public class RedisSettings
 {

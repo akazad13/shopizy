@@ -49,11 +49,6 @@ public class UpdatePasswordCommandHandler(
 
         _userRepository.Update(user);
 
-        if (await _userRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.User.PasswordNotUpdated;
-        }
-
         return Result.Success;
     }
 }

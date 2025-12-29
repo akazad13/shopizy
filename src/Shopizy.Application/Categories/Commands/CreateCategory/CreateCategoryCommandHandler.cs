@@ -33,10 +33,6 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
         var category = Category.Create(cmd.Name, cmd.ParentId);
         await _categoryRepository.AddAsync(category);
 
-        if (await _categoryRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Category.CategoryNotCreated;
-        }
         return category;
     }
 }

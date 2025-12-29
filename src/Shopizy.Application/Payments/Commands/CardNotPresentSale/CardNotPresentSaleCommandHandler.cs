@@ -60,10 +60,7 @@ public class CardNotPresentSaleCommandHandler(
 
             await _paymentRepository.AddAsync(payment);
 
-            if (await _paymentRepository.Commit(cancellationToken) <= 0)
-            {
-                return CustomErrors.Payment.PaymentNotCreated;
-            }
+            await _paymentRepository.AddAsync(payment);
 
             // Create customer id if not present already
             if (user.CustomerId == null)
@@ -82,7 +79,6 @@ public class CardNotPresentSaleCommandHandler(
                 user.UpdateCustomerId(customer.Value.CustomerId);
 
                 _userRepository.Update(user);
-                await _userRepository.Commit(cancellationToken);
             }
 
             var req = new CreateSaleRequest()
@@ -113,7 +109,6 @@ public class CardNotPresentSaleCommandHandler(
 
             _orderRepository.Update(order);
             _paymentRepository.Update(payment);
-            await _orderRepository.Commit(cancellationToken);
 
             return Result.Success;
         }

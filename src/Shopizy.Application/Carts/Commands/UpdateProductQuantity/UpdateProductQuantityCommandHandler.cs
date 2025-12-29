@@ -39,11 +39,6 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
 
         _cartRepository.Update(cart);
 
-        if (await _cartRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Cart.CartPrductNotAdded;
-        }
-
         return Result.Success;
     }
 }

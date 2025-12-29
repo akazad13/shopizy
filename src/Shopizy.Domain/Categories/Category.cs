@@ -34,7 +34,10 @@ public class Category : AggregateRoot<CategoryId, Guid>
     /// <returns>A new <see cref="Category"/> instance.</returns>
     public static Category Create(string name, Guid? parentId)
     {
-        return new Category(CategoryId.CreateUnique(), name, parentId);
+        var category = new Category(CategoryId.CreateUnique(), name, parentId);
+        category.AddDomainEvent(new Events.CategoryCreatedDomainEvent(category));
+        
+        return category;
     }
 
     /// <summary>
@@ -46,6 +49,8 @@ public class Category : AggregateRoot<CategoryId, Guid>
     {
         Name = name;
         ParentId = parentId;
+        
+        this.AddDomainEvent(new Events.CategoryUpdatedDomainEvent(this));
     }
 
     private Category(CategoryId categoryId, string name, Guid? parentId) : base(categoryId)

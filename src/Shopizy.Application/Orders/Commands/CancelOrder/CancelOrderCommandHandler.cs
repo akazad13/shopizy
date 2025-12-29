@@ -26,10 +26,6 @@ public class CancelOrderCommandHandler(IOrderRepository orderRepository)
 
         _orderRepository.Update(order);
 
-        if (await _orderRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Order.OrderNotCancelled;
-        }
         return Result.Success;
     }
 }

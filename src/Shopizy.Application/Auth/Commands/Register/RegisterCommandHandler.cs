@@ -80,14 +80,10 @@ public class RegisterCommandHandler(
 
         await _userRepository.AddAsync(user);
 
-        if (await _userRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.User.UserNotCreated;
-        }
+        await _userRepository.AddAsync(user);
 
         var cart = Cart.Create(user.Id);
         await _cartRepository.AddAsync(cart);
-        await _cartRepository.Commit(cancellationToken);
 
         return Result.Success;
     }

@@ -60,11 +60,6 @@ public class AddProductToCartCommandHandler(
         cart.AddLineItem(CartItem.Create(productId, cmd.Color, cmd.Size, cmd.Quantity));
         _cartRepository.Update(cart);
 
-        if (await _cartRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Cart.CartPrductNotAdded;
-        }
-
         return await _cartRepository.GetCartByUserIdAsync(UserId.Create(_currentUser.GetCurrentUserId()));
     }
 }

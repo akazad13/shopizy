@@ -44,11 +44,6 @@ public class DeleteProductImageCommandHandler(
 
             _productRepository.Update(product);
 
-            if (await _productRepository.Commit(cancellationToken) <= 0)
-            {
-                return CustomErrors.Product.ProductImageNotAdded;
-            }
-
             return Result.Success;
         }
         return res.Errors;

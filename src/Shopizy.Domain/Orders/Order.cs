@@ -89,7 +89,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         IList<OrderItem> orderItems
     )
     {
-        return new Order(
+        var order = new Order(
             OrderId.CreateUnique(),
             userId,
             promoCode,
@@ -98,6 +98,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
             shippingAddress,
             orderItems
         );
+
+        order.AddDomainEvent(new Events.OrderCreatedDomainEvent(order));
+
+        return order;
     }
 
     private Order(
@@ -133,6 +137,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
         ModifiedOn = DateTime.UtcNow;
+
+        this.AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
     }
 
     /// <summary>

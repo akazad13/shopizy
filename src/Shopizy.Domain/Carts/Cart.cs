@@ -49,6 +49,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     public void AddLineItem(CartItem lineItem)
     {
         _cartItems.Add(lineItem);
+        this.AddDomainEvent(new Events.CartItemAddedDomainEvent(this, lineItem));
     }
 
     /// <summary>
@@ -59,6 +60,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     {
         _cartItems.Remove(lineItem);
         ModifiedOn = DateTime.UtcNow;
+        this.AddDomainEvent(new Events.CartItemRemovedDomainEvent(this, lineItem));
     }
 
     /// <summary>

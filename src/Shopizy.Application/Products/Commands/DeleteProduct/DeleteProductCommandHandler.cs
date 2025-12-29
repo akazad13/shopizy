@@ -33,10 +33,6 @@ public class DeleteProductCommandHandler(
 
         _productRepository.Remove(product);
 
-        if (await _productRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Product.ProductNotDeleted;
-        }
         return Result.Success;
     }
 }

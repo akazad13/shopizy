@@ -13,33 +13,31 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
     {
         Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction =
             await dbContext.Database.BeginTransactionAsync();
-        context.Response.OnCompleted(async () =>
-        {
-            try
-            {
-                if (
-                    context.Items.TryGetValue(DomainEventsKey, out object? value)
-                    && value is Queue<IDomainEvent> domainEvent
-                )
-                {
-                    while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
-                    {
-                        await publisher.Publish(nextEvent);
-                    }
-                }
-
-                await transaction.CommitAsync();
-            }
-            catch (Exception)
-            {
-                // Ignore for now
-            }
-            finally
-            {
-                await transaction.DisposeAsync();
-            }
-        });
-
         await _next(context);
+
+        await transaction.CommitAsync();
+
+        try
+        {
+            if (
+                context.Items.TryGetValue(DomainEventsKey, out object? value)
+                && value is Queue<IDomainEvent> domainEvent
+            )
+            {
+                while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
+                {
+                    await publisher.Publish(nextEvent);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // If publishing fails, data is already committed.
+            // This is "Best Effort" consistency.
+        }
+        finally
+        {
+            await transaction.DisposeAsync();
+        }
     }
 }

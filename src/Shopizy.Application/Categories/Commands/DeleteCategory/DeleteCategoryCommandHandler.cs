@@ -26,11 +26,6 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
 
         _categoryRepository.Remove(category);
 
-        if (await _categoryRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Category.CategoryNotDeleted;
-        }
-
         return Result.Success;
     }
 }

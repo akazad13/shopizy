@@ -123,7 +123,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## ✍️ Authors
 
-*   **Ak Azad** - *Initial work* - [akazad13](https://github.com/akazad13)
+*   **Md Abul Kalam** - *Initial work* - [akazad13](https://github.com/akazad13)
 
 ## 🙏 Acknowledgments
 

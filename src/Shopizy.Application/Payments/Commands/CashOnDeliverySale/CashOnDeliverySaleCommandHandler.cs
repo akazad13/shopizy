@@ -50,14 +50,11 @@ public class CashOnDeliverySaleCommandHandler(
 
             await _paymentRepository.AddAsync(payment);
 
-            if (await _paymentRepository.Commit(cancellationToken) <= 0)
-            {
-                return CustomErrors.Payment.PaymentNotCreated;
-            }
+            await _paymentRepository.AddAsync(payment);
+
             order.UpdateOrderStatus(OrderStatus.Processing);
 
             _orderRepository.Update(order);
-            await _orderRepository.Commit(cancellationToken);
 
             return Result.Success;
         }

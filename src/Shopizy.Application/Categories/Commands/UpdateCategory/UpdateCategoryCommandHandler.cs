@@ -28,10 +28,6 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
 
         _categoryRepository.Update(category);
 
-        if (await _categoryRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.Category.CategoryNotUpdated;
-        }
         return Result.Success;
     }
 }

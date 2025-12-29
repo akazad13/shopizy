@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
@@ -24,7 +25,7 @@ public class AppDbContext(
     DbContextOptions options,
     IHttpContextAccessor _httpContextAccessor,
     IPublisher _publisher
-) : DbContext(options), IAppDbContext
+) : DbContext(options), IAppDbContext, IUnitOfWork
 {
     /// <summary>
     /// Gets or sets the categories DbSet.
@@ -73,7 +74,7 @@ public class AppDbContext(
 
     /// <summary>
     /// Saves all changes made in this context to the database.
-    /// Handles domain event publishing with eventual consistency support.
+    /// Handles domain event publishing with eventual consistency support via Best Effort (Offline Queue).
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The number of state entries written to the database.</returns>
@@ -88,11 +89,8 @@ public class AppDbContext(
         if (IsUserWaitingOnline())
         {
             AddDomainEventsToOfflineProcessingQueue(domainEvents);
-            return await base.SaveChangesAsync(cancellationToken);
         }
 
-        // Publish all the domain event
-        await publishDomainEventsAsync(domainEvents);
         return await base.SaveChangesAsync(cancellationToken);
     }
 
@@ -101,18 +99,11 @@ public class AppDbContext(
         modelBuilder
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        
         base.OnModelCreating(modelBuilder);
     }
 
     private bool IsUserWaitingOnline() => _httpContextAccessor.HttpContext is not null;
-
-    private async Task publishDomainEventsAsync(List<IDomainEvent> domainEvents)
-    {
-        foreach (IDomainEvent domainEvent in domainEvents)
-        {
-            await _publisher.Publish(domainEvent);
-        }
-    }
 
     private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
     {

@@ -41,11 +41,6 @@ public class UpdateAddressCommandHandler(IUserRepository userRepository)
 
         _userRepository.Update(user);
 
-        if (await _userRepository.Commit(cancellationToken) <= 0)
-        {
-            return CustomErrors.User.UserNotUpdated;
-        }
-
         return Result.Success;
     }
 }

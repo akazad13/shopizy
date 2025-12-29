@@ -52,11 +52,6 @@ public class AddProductImageCommandHandler(
 
             _productRepository.Update(product);
 
-            if (await _productRepository.Commit(cancellationToken) <= 0)
-            {
-                return CustomErrors.Product.ProductImageNotAdded;
-            }
-
             return productImage;
         }
         return res.Errors;
