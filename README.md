@@ -80,6 +80,13 @@ Once the API is running, you can explore the endpoints using Swagger UI.
 *   `POST /api/v1.0/users/{userId}/cart`: Add items to cart.
 *   `POST /api/v1.0/users/{userId}/orders`: Place an order.
 
+## 📚 Documentation
+
+For more detailed information, please refer to:
+
+*   **[API Documentation](docs/Api.md)**: Comprehensive details on all API endpoints, requests, and responses.
+*   **[Domain Models](docs/Domain.md)**: In-depth explanation of the domain aggregates and entities.
+
 ## 🏗️ Architecture
 
 The solution follows **Clean Architecture** principles:
