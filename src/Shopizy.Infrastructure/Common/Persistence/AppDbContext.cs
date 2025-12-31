@@ -100,6 +100,21 @@ public class AppDbContext(
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         
+        // Hack for integration tests: remove SQL Server specific column types when using PostgreSQL
+        if (Database.ProviderName != "Microsoft.EntityFrameworkCore.SqlServer")
+        {
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entity.GetProperties())
+                {
+                    if (property.GetColumnType() == "smalldatetime")
+                    {
+                        property.SetColumnType(null);
+                    }
+                }
+            }
+        }
+
         base.OnModelCreating(modelBuilder);
     }
 

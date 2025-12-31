@@ -82,6 +82,7 @@ public static class DependencyInjectionRegister
         services
             .AddSingleton<IDateTimeProvider, SystemDateTimeProvider>()
             .AddScoped<IAppDbContext, AppDbContext>()
+            .AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>())
             .AddScoped<DbMigrationsHelper>();
 
         services.Configure<CloudinarySettings>(

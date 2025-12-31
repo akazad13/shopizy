@@ -48,10 +48,13 @@ app.UseHttpsRedirection().UseAuthentication();
 
 app.MapControllers();
 
-using (IServiceScope scope = app.Services.CreateScope())
+if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
 {
-    var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
-    await initialiser.MigrateAsync();
+    using (IServiceScope scope = app.Services.CreateScope())
+    {
+        var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
+        await initialiser.MigrateAsync();
+    }
 }
 
 await app.RunAsync();

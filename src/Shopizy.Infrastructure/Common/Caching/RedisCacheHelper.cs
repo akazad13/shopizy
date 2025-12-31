@@ -60,11 +60,11 @@ public class RedisCacheHelper(
             var serializedValue = JsonSerializer.Serialize(value);
             if (expiration.HasValue)
             {
-                await db.StringSetAsync(key, serializedValue, expiry: expiration.Value);
+                await db.StringSetAsync(key, serializedValue, expiry: expiration.Value, when: When.Always, flags: CommandFlags.None);
             }
             else
             {
-                await db.StringSetAsync(key, serializedValue);
+                await db.StringSetAsync(key, serializedValue, expiry: null, when: When.Always, flags: CommandFlags.None);
             }
         }
         catch (Exception ex)
