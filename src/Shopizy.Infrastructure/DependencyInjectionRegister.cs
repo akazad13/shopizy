@@ -164,6 +164,11 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
+        if (configuration.GetValue<bool>("UsePostgreSql"))
+        {
+            return services;
+        }
+
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );

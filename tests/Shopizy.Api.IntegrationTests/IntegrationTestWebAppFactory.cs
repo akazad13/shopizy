@@ -21,9 +21,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("UsePostgreSql", "true");
+
         builder.ConfigureTestServices(services =>
         {
-            // Remove the existing DbContext registration
+            // Remove the existing DbContext registration (if any)
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
 
             // Add the new DbContext registration using the Testcontainer
@@ -41,7 +43,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await dbContext.Database.MigrateAsync();
+
+        // We use EnsureCreatedAsync instead of MigrateAsync for tests because the migrations are SQL Server specific.
+        // EnsureCreatedAsync will create the schema based on the current EF Core model, 
+        // which Npgsql can translate to PostgreSQL.
+        await dbContext.Database.EnsureCreatedAsync();
     }
 
     public new async Task DisposeAsync()
