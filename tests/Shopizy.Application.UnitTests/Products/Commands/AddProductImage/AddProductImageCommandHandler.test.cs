@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Shouldly;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.AddProductImage;
@@ -9,6 +10,7 @@ using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
+using Xunit;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.AddProductImage;
 
@@ -38,9 +40,9 @@ public class AddProductImageCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsError);
-        Assert.NotNull(result.Errors);
-        Assert.Equal(CustomErrors.Product.ProductImageNotUploaded, result.Errors[0]);
+        result.IsError.ShouldBeTrue();
+        result.Errors.ShouldNotBeNull();
+        result.Errors[0].ShouldBe(CustomErrors.Product.ProductImageNotUploaded);
     }
 
     [Fact]
@@ -57,9 +59,9 @@ public class AddProductImageCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsError);
-        Assert.NotNull(result.Errors);
-        Assert.Equal(CustomErrors.Product.ProductNotFound, result.Errors[0]);
+        result.IsError.ShouldBeTrue();
+        result.Errors.ShouldNotBeNull();
+        result.Errors[0].ShouldBe(CustomErrors.Product.ProductNotFound);
     }
 
     [Fact]
@@ -91,11 +93,10 @@ public class AddProductImageCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsError);
-        Assert.NotNull(result.Value);
-        Assert.IsType<ProductImage>(result.Value);
-        Assert.Equal(productImage.ImageUrl, result.Value.ImageUrl);
-        Assert.Equal(productImage.PublicId, result.Value.PublicId);
-
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldNotBeNull();
+        result.Value.ShouldBeOfType<ProductImage>();
+        result.Value.ImageUrl.ShouldBe(productImage.ImageUrl);
+        result.Value.PublicId.ShouldBe(productImage.PublicId);
     }
 }

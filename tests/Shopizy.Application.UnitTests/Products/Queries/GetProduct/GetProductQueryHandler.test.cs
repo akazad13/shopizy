@@ -1,59 +1,64 @@
+using Xunit;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistence;
+using Shouldly;
 using Shopizy.Application.Products.Queries.GetProduct;
-using Shopizy.Application.UnitTests.Products.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Extensions;
-using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Common.Enums;
+using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProduct;
 
-public class GetProductQueryHandlerTests
+public class GetProductQueryHandlerTestsRefactored
 {
-    private readonly GetProductQueryHandler _sut;
     private readonly Mock<IProductRepository> _mockProductRepository;
+    private readonly GetProductQueryHandler _handler;
 
-    public GetProductQueryHandlerTests()
+    public GetProductQueryHandlerTestsRefactored()
     {
         _mockProductRepository = new Mock<IProductRepository>();
-        _sut = new GetProductQueryHandler(_mockProductRepository.Object);
+        _handler = new GetProductQueryHandler(_mockProductRepository.Object);
     }
 
     [Fact]
-    public async Task Should_ReturnCorrectProduct_WhenProductIdExistsInRepository()
+    public async Task Handle_WhenProductExists_ShouldReturnProduct()
     {
         // Arrange
-        var product = ProductFactory.CreateProduct();
-        var query = GetProductQueryUtils.CreateQuery();
-        _mockProductRepository
-            .Setup(c => c.GetProductByIdAsync(ProductId.Create(query.ProductId)))
+        var productId = Guid.NewGuid();
+        var product = Product.Create(
+            "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 
+            Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
+        var query = new GetProductQuery(productId);
+
+        _mockProductRepository.Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(product);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsError);
-        Assert.NotNull(result.Value);
-        Assert.IsType<Product>(result.Value);
-        result.Value.ValidateResult(query);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldBe(product);
     }
 
     [Fact]
-    public async Task Should_ReturnProductNotFound_When_ProductDoesNotExist()
+    public async Task Handle_WhenProductDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        var query = GetProductQueryUtils.CreateQuery();
-        _mockProductRepository
-            .Setup(c => c.GetProductByIdAsync(ProductId.Create(query.ProductId)))
+        var query = new GetProductQuery(Guid.NewGuid());
+
+        _mockProductRepository.Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
             .ReturnsAsync((Product?)null);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsError);
-        Assert.Equal(CustomErrors.Product.ProductNotFound, result.FirstError);
+        result.IsError.ShouldBeTrue();
+        result.FirstError.ShouldBe(CustomErrors.Product.ProductNotFound);
     }
 }

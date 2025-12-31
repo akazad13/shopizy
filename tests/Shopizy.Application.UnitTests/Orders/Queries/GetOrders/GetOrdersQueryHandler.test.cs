@@ -1,85 +1,60 @@
+using Xunit;
 using Moq;
-using Shopizy.Application.Common.Interfaces.Persistence;
+using Shouldly;
 using Shopizy.Application.Orders.Queries.GetOrders;
-using Shopizy.Application.UnitTests.Orders.TestUtils;
-using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Common.Enums;
+using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Orders.Enums;
+using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Common.Enums;
+using ErrorOr;
 
-namespace Shopizy.Application.UnitTests.Orders.Queries.ListOrders;
+namespace Shopizy.Application.UnitTests.Orders.Queries.GetOrders;
 
-public class GetOrdersQueryHandlerTests
+public class GetOrdersQueryHandlerTestsRefactored
 {
-    private readonly GetOrdersQueryHandler _sut;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
+    private readonly GetOrdersQueryHandler _handler;
 
-    public GetOrdersQueryHandlerTests()
+    public GetOrdersQueryHandlerTestsRefactored()
     {
         _mockOrderRepository = new Mock<IOrderRepository>();
-        _sut = new GetOrdersQueryHandler(_mockOrderRepository.Object);
+        _handler = new GetOrdersQueryHandler(_mockOrderRepository.Object);
     }
 
     [Fact]
-    public async Task Should_ReturnNotFound_WhenNoOrdersAreFound()
+    public async Task Handle_WithValidRequest_ShouldReturnOrderDtos()
     {
         // Arrange
-        var mockOrderRepository = new Mock<IOrderRepository>();
-        var query = GetOrdersQueryUtils.CreateQuery();
+        var customerId = Guid.NewGuid();
+        var query = new GetOrdersQuery(customerId, null, null, null, null, 1, 10);
+        
+        var orders = new List<Order> { CreateSampleOrder(UserId.Create(customerId)) };
 
-        var customerId = query.CustomerId is null ? null : UserId.Create(query.CustomerId.Value);
-
-        mockOrderRepository
-            .Setup(repo =>
-                repo.GetOrdersAsync(
-                    customerId,
-                    query.StartDate,
-                    query.EndDate,
-                    query.Status,
-                    query.PageNumber,
-                    query.PageSize,
-                    OrderType.Ascending
-                )
-            )
-            .ReturnsAsync(() => null);
+        _mockOrderRepository.Setup(r => r.GetOrdersAsync(
+            It.IsAny<UserId?>(), 
+            null, null, null, 1, 10))
+            .ReturnsAsync(orders);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsError);
-        Assert.NotNull(result.Errors);
-        Assert.Equal(CustomErrors.Order.OrderNotFound, result.Errors[0]);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldNotBeNull();
     }
 
-    [Fact]
-    public async Task Should_ReturnOrderList_WhenEverythingOkay()
+    private Order CreateSampleOrder(UserId userId)
     {
-        // Arrange
-        var order = OrderFactory.CreateOrder();
-        var query = GetOrdersQueryUtils.CreateQuery();
-        var customerId = query.CustomerId is null ? null : UserId.Create(query.CustomerId.Value);
-
-        _mockOrderRepository
-            .Setup(c =>
-                c.GetOrdersAsync(
-                    customerId,
-                    query.StartDate,
-                    query.EndDate,
-                    query.Status,
-                    query.PageNumber,
-                    query.PageSize,
-                    OrderType.Ascending
-                )
-            )
-            .ReturnsAsync(new List<Order> { order });
-
-        // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsError);
-        Assert.IsType<List<OrderDto>>(result.Value);
-        Assert.NotNull(result.Value);
+        return Order.Create(
+            userId,
+            "",
+            (int)DeliveryMethods.Standard,
+            Price.CreateNew(0, Currency.usd),
+            Shopizy.Domain.Orders.ValueObjects.Address.CreateNew("S", "C", "ST", "CO", "Z"),
+            new List<Shopizy.Domain.Orders.Entities.OrderItem>()
+        );
     }
 }

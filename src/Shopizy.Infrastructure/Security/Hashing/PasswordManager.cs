@@ -59,7 +59,7 @@ public class PasswordManager : IPasswordManager
     /// <param name="clearText">The clear text password.</param>
     /// <param name="iterations">The number of iterations for PBKDF2.</param>
     /// <returns>A base64-encoded hashed password.</returns>
-    public string CreateHashString(string clearText, int iterations = default)
+    public string CreateHashString(string clearText, int iterations = 10000)
     {
         byte[] data = Hash(clearText, iterations);
         return Convert.ToBase64String(data);

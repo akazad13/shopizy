@@ -1,4 +1,5 @@
 using Moq;
+using Shouldly;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
@@ -21,7 +22,6 @@ public class CreateCategoryCommandHandlerTests
         _sut = new CreateCategoryCommandHandler(_mockCategoryRepository.Object);
     }
 
-    // Should create a new category successfully
     [Fact]
     public async Task Should_CreateANewCategory_Successfully()
     {
@@ -38,12 +38,11 @@ public class CreateCategoryCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsError);
-        Assert.NotNull(result.Value);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldNotBeNull();
         result.Value.ValidateResult(command);
     }
 
-    // Should return an error when trying to create a category with a duplicate name
     [Fact]
     public async Task Should_ReturnError_WhenCreatingCategoryWithDuplicateName()
     {
@@ -58,10 +57,8 @@ public class CreateCategoryCommandHandlerTests
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsError);
-        Assert.NotEmpty(result.Errors);
-        Assert.Equal(CustomErrors.Category.DuplicateName, result.Errors[0]);
+        result.IsError.ShouldBeTrue();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors[0].ShouldBe(CustomErrors.Category.DuplicateName);
     }
-
-    // Should return an category not created error when category save failed
 }

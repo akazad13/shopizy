@@ -1,5 +1,6 @@
 using ErrorOr;
 using Moq;
+using Shouldly;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
@@ -33,10 +34,7 @@ public class UpdateCategoryCommandHandlerTests
         var result = await _sut.Handle(command, default);
 
         // Assert
-        Assert.IsType<ErrorOr<Success>>(result);
-        Assert.False(result.IsError);
-        Assert.NotNull(result.Value);
-        Assert.IsType<Success>(result.Value);
-        Assert.Equal(Result.Success, result.Value);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldBe(Result.Success);
     }
 }

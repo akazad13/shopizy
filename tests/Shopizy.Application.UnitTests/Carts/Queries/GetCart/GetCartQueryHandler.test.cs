@@ -1,43 +1,58 @@
+using Xunit;
 using Moq;
+using Shouldly;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.UnitTests.Carts.TestUtils;
-using Shopizy.Application.UnitTests.TestUtils.Extensions;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Users.ValueObjects;
+using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Carts.Queries.GetCart;
 
-public class GetCartQueryHandlerTests
+public class GetCartQueryHandlerTestsRefactored
 {
-    private readonly GetCartQueryHandler _sut;
     private readonly Mock<ICartRepository> _mockCartRepository;
+    private readonly GetCartQueryHandler _handler;
 
-    public GetCartQueryHandlerTests()
+    public GetCartQueryHandlerTestsRefactored()
     {
         _mockCartRepository = new Mock<ICartRepository>();
-        _sut = new GetCartQueryHandler(_mockCartRepository.Object);
+        _handler = new GetCartQueryHandler(_mockCartRepository.Object);
     }
 
     [Fact]
-    public async Task Should_ReturnValidCart_WhenUserHasItemsInCart()
+    public async Task Handle_WhenCartExists_ShouldReturnCart()
     {
         // Arrange
-        var cart = CartFactory.Create();
-        cart.AddLineItem(CartFactory.CreateCartItem());
-        var query = GetCartQueryUtils.CreateQuery();
+        var userId = Guid.NewGuid();
+        var cart = Cart.Create(UserId.Create(userId));
+        var query = new GetCartQuery(userId);
 
-        _mockCartRepository
-            .Setup(repo => repo.GetCartByUserIdAsync(It.IsAny<UserId>()))
+        _mockCartRepository.Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
             .ReturnsAsync(cart);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsError);
-        Assert.NotNull(result.Value);
-        Assert.IsType<Cart>(result.Value);
-        result.Value.ValidateResult(query);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldBe(cart);
+    }
+
+    [Fact]
+    public async Task Handle_WhenCartDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var query = new GetCartQuery(userId);
+
+        _mockCartRepository.Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
+            .ReturnsAsync((Cart?)null);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsError.ShouldBeTrue();
     }
 }

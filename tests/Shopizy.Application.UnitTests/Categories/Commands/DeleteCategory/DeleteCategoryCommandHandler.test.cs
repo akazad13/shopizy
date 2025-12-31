@@ -1,5 +1,6 @@
 using ErrorOr;
 using Moq;
+using Shouldly;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
@@ -18,7 +19,6 @@ public class DeleteCategoryCommandHandlerTests
         _sut = new DeleteCategoryCommandHandler(_mockCategoryRepository.Object);
     }
 
-    // Should delete the category and return a success response when the category exists
     [Fact]
     public async Task Should_DeleteCategoryAndReturnSuccessResponse_WhenCategoryExists()
     {
@@ -34,10 +34,8 @@ public class DeleteCategoryCommandHandlerTests
         var result = await _sut.Handle(command, default);
 
         // Assert
-        Assert.IsType<ErrorOr<Success>>(result);
-        Assert.False(result.IsError);
-        Assert.IsType<Success>(result.Value);
-        Assert.Equal(Result.Success, result.Value);
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldBe(Result.Success);
 
         _mockCategoryRepository.Verify(x => x.Remove(category), Times.Once);
     }

@@ -25,6 +25,10 @@ Key features include:
 *   [Redis](https://redis.io/) - In-memory data structure store, used for caching.
 *   [Swagger](https://swagger.io/) - API Documentation.
 *   [ErrorOr](https://github.com/amantinband/error-or) - A simple, fluent discrimination union for error handling.
+*   [xUnit](https://xunit.net/) - Testing framework.
+*   [Shouldly](https://shouldly.io/) - Assertion library with a focus on readability.
+*   [Moq](https://github.com/devlooped/moq) - Mocking library for .NET.
+*   [Testcontainers](https://testcontainers.com/) - Spin up real databases in Docker for integration testing.
 
 ## 🏁 Getting Started
 
@@ -99,13 +103,15 @@ The solution follows **Clean Architecture** principles:
 
 ## 🧪 Running Tests
 
-To run the automated tests for this system, execute the following command in the root directory:
+To run the automated tests, execute the following command in the root directory:
 
 ```sh
 dotnet test
 ```
 
-This will run all unit tests across the Application, Domain, and Infrastructure layers.
+The solution includes:
+-   **Unit Tests**: Logic verification for Domain, Application, and Infrastructure layers.
+-   **Integration Tests**: End-to-end API and Database verification using **Testcontainers** (PostgreSQL).
 
 ## 🤝 Contributing
 
