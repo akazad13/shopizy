@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shopizy.Api\Shopizy.Api.csproj" />
+    <ProjectReference Include="..\Shopizy.Application.UnitTests\Shopizy.Application.UnitTests.csproj" />
   </ItemGroup>
 
 </Project>

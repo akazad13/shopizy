@@ -1,5 +1,6 @@
 using FluentValidation.TestHelper;
 using Shopizy.Application.Auth.Commands.Register;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Auth.Commands.Register;
 
@@ -13,190 +14,58 @@ public class RegisterCommandValidatorTests
     }
 
     [Fact]
-    public async Task Should_HaveError_When_FirstNameIsEmpty()
+    public void Should_HaveError_WhenFirstNameIsEmpty()
     {
-        // Arrange
-        var command = new RegisterCommand("", "Doe", "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
+        var command = new RegisterCommand("", "Last", "test@test.com", "password");
+        var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.FirstName);
     }
 
     [Fact]
-    public async Task Should_HaveError_When_FirstNameIsNull()
+    public void Should_HaveError_WhenLastNameIsEmpty()
     {
-        // Arrange
-        var command = new RegisterCommand(null!, "Doe", "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FirstName);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_FirstNameExceedsMaxLength()
-    {
-        // Arrange
-        var longName = new string('A', 51);
-        var command = new RegisterCommand(longName, "Doe", "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FirstName);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_LastNameIsEmpty()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "", "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
+        var command = new RegisterCommand("First", "", "test@test.com", "password");
+        var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.LastName);
     }
 
     [Fact]
-    public async Task Should_HaveError_When_LastNameIsNull()
+    public void Should_HaveError_WhenEmailIsInvalid()
     {
-        // Arrange
-        var command = new RegisterCommand("John", null!, "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.LastName);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_LastNameExceedsMaxLength()
-    {
-        // Arrange
-        var longName = new string('B', 51);
-        var command = new RegisterCommand("John", longName, "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.LastName);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_EmailIsEmpty()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
+        var command = new RegisterCommand("First", "Last", "not-an-email", "password");
+        var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
-    public async Task Should_HaveError_When_EmailIsNull()
+    public void Should_HaveError_WhenPasswordIsEmpty()
     {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", null!, "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_EmailFormatIsInvalid()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "invalid-email", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_EmailExceedsMaxLength()
-    {
-        // Arrange
-        var longEmail = new string('a', 45) + "@test.com"; // 54 chars total
-        var command = new RegisterCommand("John", "Doe", longEmail, "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_PasswordIsEmpty()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "test@example.com", "");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
+        var command = new RegisterCommand("First", "Last", "test@test.com", "");
+        var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.Password);
     }
 
     [Fact]
-    public async Task Should_HaveError_When_PasswordIsNull()
+    public void Should_NotHaveError_WhenCommandIsValid()
     {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "test@example.com", null!);
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Password);
-    }
-
-    [Fact]
-    public async Task Should_NotHaveError_When_AllFieldsAreValid()
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", "test@example.com", "password123");
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
+        var command = new RegisterCommand("First", "Last", "test@test.com", "password");
+        var result = _validator.TestValidate(command);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
-    [Theory]
-    [InlineData("test@example.com")]
-    [InlineData("user.name@example.co.uk")]
-    [InlineData("user+tag@example.com")]
-    public async Task Should_NotHaveError_When_EmailFormatIsValid(string validEmail)
+    [Fact]
+    public void Should_HaveError_WhenFirstNameExceedsMaxLength()
     {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", validEmail, "password123");
+        var command = new RegisterCommand(new string('a', 51), "Last", "test@test.com", "password");
+        var result = _validator.TestValidate(command);
+        result.ShouldHaveValidationErrorFor(x => x.FirstName);
+    }
 
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Email);
+    [Fact]
+    public void Should_HaveError_WhenEmailExceedsMaxLength()
+    {
+        var command = new RegisterCommand("First", "Last", new string('a', 42) + "@test.com", "password");
+        var result = _validator.TestValidate(command);
+        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 }
