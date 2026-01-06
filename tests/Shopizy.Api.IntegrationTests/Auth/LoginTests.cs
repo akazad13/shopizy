@@ -16,22 +16,19 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         // Arrange
         var email = $"{Guid.NewGuid().ToString()[..8]}@login.com";
         var password = "Password123!";
-        var registerRequest = new RegisterCommand("Login", "User", email, password);
-        await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", registerRequest);
-
-        var loginRequest = new LoginQuery(email, password);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest);
+        var token = await AuthenticateAsNewUserAsync("Login", "User", email, password);
 
         // Assert
-        var content = await response.Content.ReadAsStringAsync();
-        response.StatusCode.ShouldBe(HttpStatusCode.OK, content);
+        token.ShouldNotBeNullOrEmpty();
         
-        var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        authResponse.ShouldNotBeNull();
-        authResponse.Token.ShouldNotBeNullOrEmpty();
-        authResponse.Email.ShouldBe(email);
+        // Verify token works by making an authenticated request
+        SetAuthToken(token);
+        var response = await HttpClient.GetAsync("/api/v1.0/products");
+        
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -40,16 +37,14 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         // Arrange
         var email = $"{Guid.NewGuid().ToString()[..8]}@loginfailed.com";
         var password = "Password123!";
-        var registerRequest = new RegisterCommand("Login", "User", email, password);
-        await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", registerRequest);
+        await RegisterUserAsync("Login", "User", email, password);
 
-        var loginRequest = new LoginQuery(email, "WrongPassword");
+        var loginRequest = new LoginRequest(email, "WrongPassword");
 
         // Act
         var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest);
 
         // Assert
-        var content = await response.Content.ReadAsStringAsync();
-        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized, content);
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
 }

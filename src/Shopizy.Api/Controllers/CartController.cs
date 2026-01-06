@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
@@ -16,6 +17,7 @@ namespace Shopizy.Api.Controllers;
 /// <summary>
 /// Controller for managing user shopping carts.
 /// </summary>
+[Authorize]
 [Route("api/v1.0/users/{userId:guid}/carts")]
 public class CartController(ISender mediator, IMapper mapper, ILogger<CartController> logger)
     : ApiController

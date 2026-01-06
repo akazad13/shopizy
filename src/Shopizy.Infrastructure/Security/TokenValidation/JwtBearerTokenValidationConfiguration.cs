@@ -6,7 +6,7 @@ using Shopizy.Infrastructure.Security.TokenGenerator;
 
 namespace Shopizy.Infrastructure.Security.TokenValidation;
 
-public sealed class JwtBearerToeknValidationConfiguration(IOptions<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions>
+public sealed class JwtBearerTokenValidationConfiguration(IOptions<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 

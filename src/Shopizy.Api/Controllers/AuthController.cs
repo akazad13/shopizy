@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Auth.Commands.Register;
@@ -31,6 +32,7 @@ public class AuthController(ISender mediator, IMapper mapper, ILogger<AuthContro
     /// <response code="400">If the request is invalid.</response>
     /// <response code="409">If the user already exists.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpPost("register")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -65,6 +67,7 @@ public class AuthController(ISender mediator, IMapper mapper, ILogger<AuthContro
     /// <response code="400">If the request is invalid.</response>
     /// <response code="401">If credentials are invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpPost("login")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(AuthResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

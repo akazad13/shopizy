@@ -34,7 +34,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 ["JwtSettings:Secret"] = "super-secret-key-that-is-at-least-32-chars-long",
                 ["JwtSettings:Issuer"] = "Shopizy",
                 ["JwtSettings:Audience"] = "Shopizy",
-                ["JwtSettings:ExpiryMinutes"] = "60",
+                ["JwtSettings:TokenExpirationMinutes"] = "60",
                 ["RedisSettings:Endpoint"] = "localhost",
                 ["RedisSettings:Port"] = "6379"
             });
@@ -51,6 +51,17 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             {
                 options.UseNpgsql(_dbContainer.GetConnectionString());
             });
+
+            // Override JWT validation for testing
+            services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(
+                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, 
+                options =>
+                {
+                    options.TokenValidationParameters.ValidateIssuer = false;
+                    options.TokenValidationParameters.ValidateAudience = false;
+                    options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+                    options.RequireHttpsMetadata = false;
+                });
         });
     }
 

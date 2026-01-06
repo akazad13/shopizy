@@ -32,12 +32,10 @@ public class RegisterTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     {
         // Arrange
         var email = $"{Guid.NewGuid().ToString()[..8]}@dup.com";
-        var request = new RegisterCommand("First", "User", email, "Password123!");
-        
-        await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request);
+        await RegisterUserAsync("First", "User", email, "Password123!");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request);
+        var response = await RegisterUserAsync("Second", "User", email, "Password123!");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);

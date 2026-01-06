@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.CreateCategory;
@@ -37,6 +38,7 @@ public class CategoryController(
     /// <response code="400">If the request is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpGet("categories")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<CategoryResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -67,6 +69,7 @@ public class CategoryController(
     /// <response code="200">Returns the category tree.</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpGet("categories/tree")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<CategoryTreeResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -98,6 +101,7 @@ public class CategoryController(
     /// <response code="200">Returns the category.</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpGet("categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CategoryResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -129,6 +133,7 @@ public class CategoryController(
     /// <response code="400">If the request is invalid.</response>
     /// <response code="409">If the category already exists.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost("users/{userId:guid}/categories")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(CategoryResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -161,6 +166,7 @@ public class CategoryController(
     /// <response code="200">If update is successful.</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "AdminOnly")]
     [HttpPatch("users/{userId:guid}/categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -199,6 +205,7 @@ public class CategoryController(
     /// <response code="200">If deletion is successful.</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("users/{userId:guid}/categories/{categoryId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

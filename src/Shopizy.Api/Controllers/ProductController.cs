@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.AddProductImage;
@@ -37,6 +38,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="400">If the request is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpGet("products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(List<ProductResponse>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -70,6 +72,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="400">If the request is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [AllowAnonymous]
     [HttpGet("products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductDetailResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -105,6 +108,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="409">If a conflict occurs (e.g., duplicate product).</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "SellerOrAdmin")]
     [HttpPost("users/{userId:guid}/products")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -139,6 +143,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="409">If a conflict occurs.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "SellerOrAdmin")]
     [HttpPatch("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -179,6 +184,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="409">If a conflict occurs.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "SellerOrAdmin")]
     [HttpDelete("users/{userId:guid}/products/{productId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -216,6 +222,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="409">If a conflict occurs.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "SellerOrAdmin")]
     [HttpPost("users/{userId:guid}/products/{productId:guid}/image")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(ProductImageResponse))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]
@@ -257,6 +264,7 @@ public class ProductController(ISender mediator, IMapper mapper, ILogger<Product
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="409">If a conflict occurs.</response>
     /// <response code="500">If an internal server error occurs.</response>
+    [Authorize(Policy = "SellerOrAdmin")]
     [HttpDelete("users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}")]
     [SwaggerResponse(StatusCodes.Status200OK, null, typeof(SuccessResult))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, null, typeof(ErrorResult))]

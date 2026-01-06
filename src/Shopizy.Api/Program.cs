@@ -44,7 +44,13 @@ app.UseExceptionHandler(errorApp =>
 });
 
 app.UseCors("_myAllowSpecificOrigins");
-app.UseHttpsRedirection().UseAuthentication();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseAuthentication()
+   .UseAuthorization();
 
 app.MapControllers();
 

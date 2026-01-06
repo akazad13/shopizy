@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
@@ -14,6 +15,7 @@ namespace Shopizy.Api.Controllers;
 /// <summary>
 /// Controller for processing payments.
 /// </summary>
+[Authorize]
 [Route("api/v1.0/users/{userId:guid}/payments")]
 public class PaymentController(ISender mediator, IMapper mapper, ILogger<PaymentController> logger)
     : ApiController

@@ -1,3 +1,4 @@
+using System.Text;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -137,6 +138,21 @@ public static class DependencyInjectionRegister
             .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
             .AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
 
+        services.AddAuthorization(options =>
+        {
+            // Role-based policies
+            options.AddPolicy("AdminOnly", policy => 
+                policy.RequireRole("Admin"));
+            
+            options.AddPolicy("SellerOrAdmin", policy => 
+                policy.RequireRole("Seller", "Admin"));
+            
+            // Fallback policy - require authentication by default
+            options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
+
         return services;
     }
 
@@ -153,7 +169,7 @@ public static class DependencyInjectionRegister
         services.AddScoped<IPasswordManager, PasswordManager>();
 
         services
-            .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
+            .ConfigureOptions<JwtBearerTokenValidationConfiguration>()
             .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
 
