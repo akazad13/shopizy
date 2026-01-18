@@ -10,7 +10,7 @@ namespace Shopizy.Domain.Products;
 /// <summary>
 /// Represents a product in the catalog.
 /// </summary>
-public sealed class Product : AggregateRoot<ProductId, Guid>
+public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
 {
     private readonly List<ProductImage> _productImages = [];
     private readonly List<ProductReview> _productReviews = [];
@@ -206,7 +206,6 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Colors = colors;
         Sizes = sizes;
         Tags = tags;
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -277,7 +276,6 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         Sizes = sizes;
         Tags = tags;
         AverageRating = averageRating;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private Product() { }

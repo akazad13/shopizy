@@ -15,9 +15,9 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
         return _dbContext.Permissions.ToListAsync();
     }
 
-    public Task<Permission?> GetById(PermissionId id)
+    public Task<Permission?> GetByIdAsync(PermissionId id)
     {
-        return _dbContext.Permissions.SingleOrDefaultAsync(u => u.Id == id);
+        return _dbContext.Permissions.SingleOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task AddAsync(Permission user)
@@ -30,7 +30,7 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
         _dbContext.Permissions.Update(user);
     }
 
-    public Task<int> Commit(CancellationToken cancellationToken)
+    public Task<int> CommitAsync(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }

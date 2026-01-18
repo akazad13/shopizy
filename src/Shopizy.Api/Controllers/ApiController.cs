@@ -31,6 +31,14 @@ public class ApiController : ControllerBase
         return Problem(errors[0]);
     }
 
+    protected bool IsAuthorized(Guid userId)
+    {
+        var currentUserIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserIdClaim == null) return false;
+        
+        return currentUserIdClaim == userId.ToString() || User.IsInRole("Admin");
+    }
+
     private ObjectResult Problem(Error error)
     {
         int statusCode = error.Type switch
@@ -39,6 +47,7 @@ public class ApiController : ControllerBase
             ErrorType.Validation => StatusCodes.Status400BadRequest,
             ErrorType.NotFound => StatusCodes.Status404NotFound,
             ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
             ErrorType.Unexpected => StatusCodes.Status500InternalServerError,
             _ => StatusCodes.Status500InternalServerError,
         };

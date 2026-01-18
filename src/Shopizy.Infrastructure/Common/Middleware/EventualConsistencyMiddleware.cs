@@ -11,8 +11,15 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
 
     public async Task InvokeAsync(HttpContext context, IPublisher publisher, AppDbContext dbContext)
     {
+        if (HttpMethods.IsGet(context.Request.Method))
+        {
+            await _next(context);
+            return;
+        }
+
         Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction =
             await dbContext.Database.BeginTransactionAsync();
+        
         await _next(context);
 
         await transaction.CommitAsync();

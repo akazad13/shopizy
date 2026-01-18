@@ -1,7 +1,6 @@
 using Xunit;
 using Shouldly;
 using Shopizy.Domain.Carts.Entities;
-using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 

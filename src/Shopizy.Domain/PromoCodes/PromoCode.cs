@@ -6,7 +6,7 @@ namespace Shopizy.Domain.PromoCodes;
 /// <summary>
 /// Represents a promotional code for discounts.
 /// </summary>
-public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
+public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
 {
     /// <summary>
     /// Gets or sets the promo code string.
@@ -90,7 +90,6 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>
         IsPerchantage = isPerchantage;
         IsActive = isActive;
         NumOfTimeUsed = 0;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private PromoCode() { }

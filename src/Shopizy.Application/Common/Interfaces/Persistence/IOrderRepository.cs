@@ -21,5 +21,5 @@ public interface IOrderRepository
     IQueryable<Order> GetOrdersByUserId(UserId userId);
     Task AddAsync(Order order);
     void Update(Order order);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

@@ -17,6 +17,7 @@ public static class CreateProductCommandUtils
             Constants.Product.Currency,
             Constants.Product.Discount,
             Constants.Product.Sku,
+            Constants.Product.StockQuantity,
             Constants.Product.Brand,
             Constants.Product.Colors,
             Constants.Product.Sizes,
@@ -38,10 +39,11 @@ public static class CreateProductCommandUtils
             Constants.Product.Currency,
             Constants.Product.Discount,
             Constants.Product.Sku,
+            Constants.Product.StockQuantity,
             Constants.Product.Brand,
-            Constants.Product.Tags,
             Constants.Product.Colors,
             Constants.Product.Sizes,
+            Constants.Product.Tags,
             Constants.Product.Barcode,
             []
         );

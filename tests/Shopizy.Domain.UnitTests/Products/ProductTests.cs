@@ -2,9 +2,7 @@ using Xunit;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
-using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Events;
-using Shopizy.Domain.Products.ValueObjects;
 using Shouldly;
 
 namespace Shopizy.Domain.UnitTests.Products;

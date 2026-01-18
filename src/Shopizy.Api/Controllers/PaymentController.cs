@@ -43,6 +43,8 @@ public class PaymentController(ISender mediator, IMapper mapper, ILogger<Payment
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to process payments for this user.")]);
+
             if (request.PaymentMethod.ToLower() == "card")
             {
                 var command = _mapper.Map<CardNotPresentSaleCommand>((userId, request));

@@ -9,5 +9,5 @@ public interface IPromoCodeRepository
     Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id);
     Task AddAsync(PromoCode promoCode);
     void Update(PromoCode promoCode);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

@@ -34,7 +34,7 @@ public class UpdateUserCommandHandlerTests
         var user = UserFactory.CreateUser();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(user));
@@ -50,7 +50,7 @@ public class UpdateUserCommandHandlerTests
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
         _mockCacheHelper.Verify(c => c.RemoveAsync($"user-{user.Id.Value}"), Times.Once);
     }
@@ -62,7 +62,7 @@ public class UpdateUserCommandHandlerTests
         var command = UpdateUserCommandUtils.CreateCommand();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync((User?)null);
 
         // Act
@@ -73,7 +73,7 @@ public class UpdateUserCommandHandlerTests
         Assert.NotEmpty(result.Errors);
         Assert.Equal(CustomErrors.User.UserNotFound, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         _mockCacheHelper.Verify(c => c.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
@@ -86,7 +86,7 @@ public class UpdateUserCommandHandlerTests
         var user = UserFactory.CreateUser();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(user));

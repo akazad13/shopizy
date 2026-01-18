@@ -1,11 +1,9 @@
-using Xunit;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Users.ValueObjects;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Carts.Queries.GetCart;
 

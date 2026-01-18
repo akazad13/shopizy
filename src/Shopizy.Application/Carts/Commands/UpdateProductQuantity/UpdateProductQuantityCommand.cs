@@ -1,6 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
@@ -12,11 +10,10 @@ namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 /// <param name="CartItemId">The cart item's unique identifier.</param>
 /// <param name="ProductId">The product's unique identifier.</param>
 /// <param name="Quantity">The new quantity.</param>
-[Authorize(Permissions = Permissions.Cart.Modify)]
 public record UpdateProductQuantityCommand(
     Guid UserId,
     Guid CartId,
     Guid CartItemId,
     Guid ProductId,
     int Quantity
-) : IAuthorizeableRequest<ErrorOr<Success>>;
+) : MediatR.IRequest<ErrorOr<Success>>;

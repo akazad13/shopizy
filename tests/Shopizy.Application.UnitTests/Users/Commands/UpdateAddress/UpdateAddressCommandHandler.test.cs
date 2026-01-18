@@ -27,7 +27,7 @@ public class UpdateAddressCommandHandlerTests
         var command = UpdateAddressCommandUtils.CreateCommand();
 
         _mockUserRepository
-            .Setup(repo => repo.GetUserById(UserId.Create(command.UserId)))
+            .Setup(repo => repo.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         // Act
@@ -39,7 +39,7 @@ public class UpdateAddressCommandHandlerTests
         Assert.Single(result.Errors);
         Assert.Equal(CustomErrors.User.UserNotFound, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
     }
 
@@ -52,7 +52,7 @@ public class UpdateAddressCommandHandlerTests
         var command = UpdateAddressCommandUtils.CreateCommand();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(user));
@@ -64,7 +64,7 @@ public class UpdateAddressCommandHandlerTests
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
     }
 
@@ -77,7 +77,7 @@ public class UpdateAddressCommandHandlerTests
         var user = UserFactory.CreateUser();
 
         _mockUserRepository
-            .Setup(repo => repo.GetUserById(UserId.Create(command.UserId)))
+            .Setup(repo => repo.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
         _mockUserRepository.Setup(u => u.Update(It.IsAny<User>()));

@@ -1,7 +1,6 @@
 using Xunit;
 using Shouldly;
 using Shopizy.Domain.Users;
-using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
 
 namespace Shopizy.Domain.UnitTests.Users;

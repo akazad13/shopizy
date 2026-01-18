@@ -1,6 +1,5 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.Enums;
@@ -13,13 +12,11 @@ namespace Shopizy.Application.Users.Queries.GetUser;
 /// </summary>
 public class GetUserQueryHandler(
     IUserRepository userRepository,
-    IOrderRepository orderRepository,
-    ICacheHelper cacheHelper
+    IOrderRepository orderRepository
 ) : IRequestHandler<GetUserQuery, ErrorOr<UserDto>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
-    private readonly ICacheHelper _cacheHelper = cacheHelper;
 
     /// <summary>
     /// Handles the query to retrieve user information including order statistics.
@@ -34,13 +31,7 @@ public class GetUserQueryHandler(
     {
         try
         {
-            var cachedUser = await _cacheHelper.GetAsync<UserDto>($"user-{request.UserId}");
-            if (cachedUser is not null)
-            {
-                return cachedUser;
-            }
-
-            var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+            var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
 
             if (user is null)
             {
@@ -72,11 +63,9 @@ public class GetUserQueryHandler(
                 user.ModifiedOn
             );
 
-            await _cacheHelper.SetAsync($"user-{user.Id.Value}", userDto, TimeSpan.FromMinutes(60));
-
             return userDto;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return CustomErrors.User.UserNotFound;
         }

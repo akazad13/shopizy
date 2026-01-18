@@ -34,7 +34,7 @@ public class UpdatePasswordCommandHandler(
             return CustomErrors.User.PasswordSameAsOld;
         }
 
-        var user = await _userRepository.GetUserById(UserId.Create(request.UserId));
+        var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
             return CustomErrors.User.UserNotFound;

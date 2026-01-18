@@ -34,7 +34,7 @@ public class UpdatePasswordCommandHandlerTests
         var command = UpdatePasswordCommandUtils.CreateCommand();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         _mockUserRepository.Setup(u => u.Update(user));
@@ -47,7 +47,7 @@ public class UpdatePasswordCommandHandlerTests
         Assert.NotEmpty(result.Errors);
         Assert.Equal(CustomErrors.User.UserNotFound, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
     }
 
@@ -58,7 +58,7 @@ public class UpdatePasswordCommandHandlerTests
         var user = UserFactory.CreateUser();
         var command = UpdatePasswordCommandUtils.CreateCommand();
 
-        _mockUserRepository.Setup(x => x.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockUserRepository.Setup(x => x.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
         _mockPasswordManager.Setup(x => x.Verify("oldPassword", "password")).Returns(false);
 
         // Act
@@ -69,7 +69,7 @@ public class UpdatePasswordCommandHandlerTests
         Assert.NotEmpty(result.Errors);
         Assert.Equal(CustomErrors.User.PasswordNotCorrect, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserById(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
         _mockPasswordManager.Verify(
             x => x.Verify(It.IsAny<string>(), It.IsAny<string>()),
             Times.Once
@@ -85,7 +85,7 @@ public class UpdatePasswordCommandHandlerTests
         var command = UpdatePasswordCommandUtils.CreateCommand();
 
         _mockUserRepository
-            .Setup(u => u.GetUserById(UserId.Create(command.UserId)))
+            .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
         _mockPasswordManager
@@ -105,7 +105,7 @@ public class UpdatePasswordCommandHandlerTests
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
 
-        _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Once);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(It.IsAny<UserId>()), Times.Once);
         _mockUserRepository.Verify(x => x.Update(user), Times.Once);
     }
 
@@ -116,7 +116,7 @@ public class UpdatePasswordCommandHandlerTests
         var command = UpdatePasswordCommandUtils.CreateCommandWithSameOldAndNewPassword();
         var user = UserFactory.CreateUser();
 
-        _mockUserRepository.Setup(x => x.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockUserRepository.Setup(x => x.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
 
         _mockPasswordManager
             .Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
@@ -137,7 +137,7 @@ public class UpdatePasswordCommandHandlerTests
         Assert.NotEmpty(result.Errors);
         Assert.Equal(CustomErrors.User.PasswordSameAsOld, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserById(It.IsAny<UserId>()), Times.Never);
+        _mockUserRepository.Verify(x => x.GetUserByIdAsync(It.IsAny<UserId>()), Times.Never);
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
     }
 }

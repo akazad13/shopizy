@@ -30,7 +30,7 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
         _dbContext.Update(productReview);
     }
 
-    public Task<int> Commit(CancellationToken cancellationToken)
+    public Task<int> CommitAsync(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }

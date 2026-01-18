@@ -2,7 +2,6 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Behaviors;
-using Shopizy.Application.Common.Caching;
 using Shopizy.Application.Common.Security.CurrentUser;
 
 namespace Shopizy.Application;
@@ -17,7 +16,7 @@ public static class DependencyInjectionRegister
         services.AddMediatR(msc =>
         {
             msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
-            msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            msc.AddOpenBehavior(typeof(CachingBehavior<,>));
             msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
             msc.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });

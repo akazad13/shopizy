@@ -43,7 +43,7 @@ public class CardNotPresentSaleCommandHandler(
 
             var total = order.GetTotal();
 
-            var user = await _userRepository.GetUserById(
+            var user = await _userRepository.GetUserByIdAsync(
                 UserId.Create(_currentUser.GetCurrentUserId())
             );
 
@@ -57,8 +57,6 @@ public class CardNotPresentSaleCommandHandler(
                 total,
                 order.ShippingAddress
             );
-
-            await _paymentRepository.AddAsync(payment);
 
             await _paymentRepository.AddAsync(payment);
 

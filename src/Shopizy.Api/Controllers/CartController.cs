@@ -43,6 +43,8 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to access this cart.")]);
+
             var query = _mapper.Map<GetCartQuery>(userId);
             var result = await _mediator.Send(query);
 
@@ -80,6 +82,8 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to modify this cart.")]);
+
             var command = _mapper.Map<AddProductToCartCommand>((userId, cartId, request));
             var result = await _mediator.Send(command);
 
@@ -118,6 +122,8 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to update this cart.")]);
+
             var command = _mapper.Map<UpdateProductQuantityCommand>((userId, cartId, itemId, request));
             var result = await _mediator.Send(command);
 
@@ -153,6 +159,8 @@ public class CartController(ISender mediator, IMapper mapper, ILogger<CartContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to remove items from this cart.")]);
+
             var command = _mapper.Map<RemoveProductFromCartCommand>((userId, cartId, itemId));
             var result = await _mediator.Send(command);
 

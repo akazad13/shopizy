@@ -20,44 +20,36 @@ public static class SpecificationEvaluator
         if (specification.OrderByExpression is not null)
         {
             var orderedQuery = queryable.OrderBy(specification.OrderByExpression);
+            
             if (specification.ThenOrderByExpression is not null)
             {
                 queryable = orderedQuery.ThenBy(specification.ThenOrderByExpression);
             }
             else if (specification.ThenOrderByDescendingExpression is not null)
             {
-                queryable = orderedQuery.ThenByDescending(
-                    specification.ThenOrderByDescendingExpression
-                );
+                queryable = orderedQuery.ThenByDescending(specification.ThenOrderByDescendingExpression);
             }
             else
             {
                 queryable = orderedQuery;
             }
         }
-
-        if (specification.OrderByDescendingExpression is not null)
+        else if (specification.OrderByDescendingExpression is not null)
         {
-            var orderedQuery = queryable.OrderBy(specification.OrderByDescendingExpression);
+            var orderedQuery = queryable.OrderByDescending(specification.OrderByDescendingExpression);
+            
             if (specification.ThenOrderByExpression is not null)
             {
                 queryable = orderedQuery.ThenBy(specification.ThenOrderByExpression);
             }
             else if (specification.ThenOrderByDescendingExpression is not null)
             {
-                queryable = orderedQuery.ThenByDescending(
-                    specification.ThenOrderByDescendingExpression
-                );
+                queryable = orderedQuery.ThenByDescending(specification.ThenOrderByDescendingExpression);
             }
             else
             {
                 queryable = orderedQuery;
             }
-        }
-
-        if (specification.OrderByDescendingExpression is not null)
-        {
-            queryable = queryable.OrderByDescending(specification.OrderByDescendingExpression);
         }
 
         if (specification.IncludeExpressions.Count != 0)

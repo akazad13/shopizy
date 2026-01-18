@@ -1,7 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Policies;
-using Shopizy.Application.Common.Security.Request;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Products;
 
@@ -19,13 +16,13 @@ namespace Shopizy.Application.Products.Commands.CreateProduct;
 /// <param name="Currency">The currency.</param>
 /// <param name="Discount">The discount percentage.</param>
 /// <param name="Sku">The stock keeping unit.</param>
+/// <param name="StockQuantity">The initial stock quantity.</param>
 /// <param name="Brand">The brand name.</param>
 /// <param name="Colors">Available colors (comma-separated).</param>
 /// <param name="Sizes">Available sizes (comma-separated).</param>
 /// <param name="Tags">Product tags (comma-separated).</param>
 /// <param name="Barcode">The product barcode.</param>
 /// <param name="SpecificationIds">Optional list of specification IDs.</param>
-[Authorize(Permissions = Permissions.Product.Create, Policies = Policy.Admin)]
 public record CreateProductCommand(
     Guid UserId,
     string Name,
@@ -36,10 +33,11 @@ public record CreateProductCommand(
     Currency Currency,
     decimal Discount,
     string Sku,
+    int StockQuantity,
     string Brand,
     string Colors,
     string Sizes,
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds
-) : IAuthorizeableRequest<ErrorOr<Product>>;
+) : MediatR.IRequest<ErrorOr<Product>>;

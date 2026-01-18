@@ -6,8 +6,8 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 public interface IPermissionRepository
 {
     Task<List<Permission>> GetAsync();
-    Task<Permission?> GetById(PermissionId id);
+    Task<Permission?> GetByIdAsync(PermissionId id);
     Task AddAsync(Permission user);
     void Update(Permission user);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

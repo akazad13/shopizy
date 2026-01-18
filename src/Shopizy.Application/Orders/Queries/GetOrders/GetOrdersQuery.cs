@@ -1,6 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Request;
 using Shopizy.Domain.Orders.Enums;
 
 namespace Shopizy.Application.Orders.Queries.GetOrders;
@@ -15,7 +13,6 @@ namespace Shopizy.Application.Orders.Queries.GetOrders;
 /// <param name="Status">Optional order status filter.</param>
 /// <param name="PageNumber">The page number (default: 1).</param>
 /// <param name="PageSize">The page size (default: 10).</param>
-[Authorize(Permissions = Permissions.Order.Get)]
 public record GetOrdersQuery(
     Guid UserId,
     Guid? CustomerId,
@@ -24,4 +21,4 @@ public record GetOrdersQuery(
     OrderStatus? Status,
     int PageNumber = 1,
     int PageSize = 10
-) : IAuthorizeableRequest<ErrorOr<List<OrderDto>?>>;
+) : MediatR.IRequest<ErrorOr<List<OrderDto>?>>;

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
-using Shopizy.Application.Products.Common;
 
 namespace Shopizy.Infrastructure.UnitTests.ExternalServices.MediaUploader;
 

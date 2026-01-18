@@ -1,4 +1,3 @@
-using System.Text;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -22,15 +21,14 @@ using Shopizy.Infrastructure.Permissions.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
 using shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
-using Shopizy.Infrastructure.Security;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
-using Shopizy.Infrastructure.Security.PolicyEnforcer;
 using Shopizy.Infrastructure.Security.TokenGenerator;
 using Shopizy.Infrastructure.Security.TokenValidation;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Stripe;
+using Shopizy.Infrastructure.Common.Persistence.Interceptors;
 
 namespace Shopizy.Infrastructure;
 
@@ -84,7 +82,8 @@ public static class DependencyInjectionRegister
             .AddSingleton<IDateTimeProvider, SystemDateTimeProvider>()
             .AddScoped<IAppDbContext, AppDbContext>()
             .AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>())
-            .AddScoped<DbMigrationsHelper>();
+            .AddScoped<DbMigrationsHelper>()
+            .AddScoped<UpdateAuditableEntitiesInterceptor>();
 
         services.Configure<CloudinarySettings>(
             configuration.GetSection(CloudinarySettings.Section)
@@ -134,9 +133,7 @@ public static class DependencyInjectionRegister
     public static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
         services
-            .AddScoped<IAuthorizationService, AuthorizationService>()
-            .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
-            .AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
+            .AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
         services.AddAuthorization(options =>
         {
@@ -186,9 +183,12 @@ public static class DependencyInjectionRegister
             return services;
         }
 
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<AppDbContext>((sp, options) =>
+        {
+            var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-        );
+                .AddInterceptors(interceptor);
+        });
         return services;
     }
 

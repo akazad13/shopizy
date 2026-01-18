@@ -13,5 +13,5 @@ public interface ICategoryRepository
 
     void Remove(Category category);
 
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

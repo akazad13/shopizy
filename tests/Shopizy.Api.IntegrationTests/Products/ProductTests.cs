@@ -1,6 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
-using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Contracts.Product;
 using Shopizy.Domain.Common.ValueObjects;

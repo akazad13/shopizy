@@ -1,8 +1,6 @@
 using Xunit;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Infrastructure.Common.Persistence;
-using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using Shopizy.Contracts.Authentication;
 

@@ -1,6 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
 
@@ -17,7 +15,6 @@ namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
 /// <param name="CardExpiryMonth">The card expiry month.</param>
 /// <param name="CardExpiryYear">The card expiry year.</param>
 /// <param name="LastDigits">The last digits of the card.</param>
-[Authorize(Permissions = Permissions.Order.Create)]
 public record CardNotPresentSaleCommand(
     Guid UserId,
     Guid OrderId,
@@ -29,4 +26,4 @@ public record CardNotPresentSaleCommand(
     int CardExpiryMonth,
     int CardExpiryYear,
     string LastDigits
-) : IAuthorizeableRequest<ErrorOr<Success>>;
+) : MediatR.IRequest<ErrorOr<Success>>;

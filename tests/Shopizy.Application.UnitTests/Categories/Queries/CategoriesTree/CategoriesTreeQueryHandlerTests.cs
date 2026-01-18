@@ -1,10 +1,8 @@
-using ErrorOr;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
-using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Categories.Queries.CategoriesTree;
 

@@ -1,6 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Request;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
 
@@ -16,7 +14,6 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 /// <param name="DeliveryChargeCurrency">The delivery charge currency.</param>
 /// <param name="OrderItems">The collection of order items.</param>
 /// <param name="ShippingAddress">The shipping address.</param>
-[Authorize(Permissions = Permissions.Order.Create)]
 public record CreateOrderCommand(
     Guid UserId,
     string PromoCode,
@@ -25,7 +22,7 @@ public record CreateOrderCommand(
     Currency DeliveryChargeCurrency,
     IEnumerable<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
-) : IAuthorizeableRequest<ErrorOr<Order>>;
+) : MediatR.IRequest<ErrorOr<Order>>;
 
 /// <summary>
 /// Represents an order item within a create order command.

@@ -1,6 +1,5 @@
 using FluentValidation.TestHelper;
 using Shopizy.Application.Auth.Commands.Register;
-using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Auth.Commands.Register;
 

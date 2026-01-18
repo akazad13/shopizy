@@ -11,7 +11,6 @@ using Shopizy.Application.Products.Commands.DeleteProductImage;
 using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.GetProducts;
-using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 using Swashbuckle.AspNetCore.Annotations;

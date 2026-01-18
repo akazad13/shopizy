@@ -10,7 +10,6 @@ using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
-using Xunit;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.AddProductImage;
 

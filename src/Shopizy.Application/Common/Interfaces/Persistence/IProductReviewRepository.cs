@@ -9,5 +9,5 @@ public interface IProductReviewRepository
     Task<ProductReview?> GetProductReviewByIdAsync(ProductReviewId id);
     Task AddAsync(ProductReview productReview);
     void Update(ProductReview productReview);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

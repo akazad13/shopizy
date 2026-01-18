@@ -69,7 +69,7 @@ public class CardNotPresentSaleCommandHandlerTests
 
         _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
         _mockCurrentUser.Setup(u => u.GetCurrentUserId()).Returns(Constants.User.Id.Value);
-        _mockUserRepository.Setup(r => r.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
         _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(Error.Failure("payment.failed", "Failed to collect the payment."));
 
@@ -92,7 +92,7 @@ public class CardNotPresentSaleCommandHandlerTests
 
         _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
         _mockCurrentUser.Setup(u => u.GetCurrentUserId()).Returns(Constants.User.Id.Value);
-        _mockUserRepository.Setup(r => r.GetUserById(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
         _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(new CreateSaleResponse { ChargeId = "ch_123" });
 

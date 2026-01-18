@@ -1,6 +1,5 @@
 using Xunit;
 using System.Net;
-using System.Net.Http.Json;
 using Shouldly;
 using Shopizy.Application.Auth.Commands.Register;
 

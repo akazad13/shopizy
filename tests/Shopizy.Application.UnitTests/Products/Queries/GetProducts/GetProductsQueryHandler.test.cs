@@ -1,11 +1,9 @@
-using Xunit;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;

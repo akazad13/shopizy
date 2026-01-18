@@ -9,7 +9,7 @@ namespace Shopizy.Domain.Users;
 /// <summary>
 /// Represents a user in the system.
 /// </summary>
-public sealed class User : AggregateRoot<UserId, Guid>
+public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
 {
     private readonly List<OrderId> _orderIds = [];
     private readonly List<ProductReviewId> _productReviewIds = [];
@@ -120,7 +120,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
         Email = email;
         Password = password;
         _permissionIds = permissionIds.ToList();
-        CreatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -140,7 +139,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
     )
     {
         Address = Address.CreateNew(street, city, state, country, zipCode);
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -150,7 +148,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public void UpdatePassword(string password)
     {
         Password = password;
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -182,7 +179,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
         Email = email;
         Phone = phone ?? string.Empty;
         Address = Address.CreateNew(street, city, state, country, zipCode);
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -192,6 +188,5 @@ public sealed class User : AggregateRoot<UserId, Guid>
     public void UpdateCustomerId(string customerId)
     {
         CustomerId = customerId;
-        ModifiedOn = DateTime.UtcNow;
     }
 }

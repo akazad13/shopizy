@@ -30,7 +30,7 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
         _dbContext.Update(promoCode);
     }
 
-    public Task<int> Commit(CancellationToken cancellationToken)
+    public Task<int> CommitAsync(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }

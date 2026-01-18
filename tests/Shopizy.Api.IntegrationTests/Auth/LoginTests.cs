@@ -1,7 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
-using Shopizy.Application.Auth.Commands.Register;
-using Shopizy.Application.Auth.Queries.login;
 using Shopizy.Contracts.Authentication;
 using Shouldly;
 using Xunit;

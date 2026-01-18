@@ -43,6 +43,8 @@ public class UserController(ISender mediator, IMapper mapper, ILogger<UserContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to access this user's information.")]);
+
             var query = _mapper.Map<GetUserQuery>(userId);
             var result = await _mediator.Send(query);
 
@@ -74,6 +76,8 @@ public class UserController(ISender mediator, IMapper mapper, ILogger<UserContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to update this user's information.")]);
+
             var command = _mapper.Map<UpdateUserCommand>((userId, request));
             var result = await _mediator.Send(command);
 
@@ -111,6 +115,8 @@ public class UserController(ISender mediator, IMapper mapper, ILogger<UserContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to update this user's address.")]);
+
             var command = _mapper.Map<UpdateAddressCommand>((userId, request));
             var result = await _mediator.Send(command);
 
@@ -145,6 +151,8 @@ public class UserController(ISender mediator, IMapper mapper, ILogger<UserContro
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to update this user's password.")]);
+
             var command = _mapper.Map<UpdatePasswordCommand>((userId, request));
             var result = await _mediator.Send(command);
 

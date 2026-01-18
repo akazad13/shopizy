@@ -104,7 +104,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> Commit(CancellationToken cancellationToken)
+    public Task<int> CommitAsync(CancellationToken cancellationToken)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
     }

@@ -19,7 +19,7 @@ public static partial class ProductExtensions
         Assert.Equal(command.Sku, product.SKU);
         Assert.Equal(command.Brand, product.Brand);
         Assert.Equal(command.Barcode, product.Barcode);
-        Assert.Equal(0, product.StockQuantity);
+        Assert.Equal(command.StockQuantity, product.StockQuantity);
         Assert.Equal(command.Tags, product.Tags);
         Assert.IsType<CategoryId>(product.CategoryId);
         Assert.Null(product.ModifiedOn);

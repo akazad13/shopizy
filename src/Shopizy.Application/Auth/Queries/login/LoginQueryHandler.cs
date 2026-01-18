@@ -70,7 +70,7 @@ public class LoginQueryHandler(
         {
             cart = Cart.Create(user.Id);
             await _cartRepository.AddAsync(cart);
-            await _cartRepository.Commit(cancellationToken);
+            await _cartRepository.CommitAsync(cancellationToken);
         }
 
         return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);

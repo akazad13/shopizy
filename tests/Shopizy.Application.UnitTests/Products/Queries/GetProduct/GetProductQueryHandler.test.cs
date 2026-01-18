@@ -1,4 +1,3 @@
-using Xunit;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Products.Queries.GetProduct;
@@ -9,7 +8,6 @@ using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProduct;
 

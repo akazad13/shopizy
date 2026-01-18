@@ -44,6 +44,8 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to view these orders.")]);
+
             var query = _mapper.Map<GetOrdersQuery>((userId, criteria));
             var result = await _mediator.Send(query);
 
@@ -74,6 +76,8 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to view this order.")]);
+
             var query = _mapper.Map<GetOrderQuery>((userId, orderId));
             var result = await _mediator.Send(query);
 
@@ -106,6 +110,8 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to create an order for this user.")]);
+
             var command = _mapper.Map<CreateOrderCommand>((userId, request));
             var result = await _mediator.Send(command);
 
@@ -138,6 +144,8 @@ public class OrderController(ISender mediator, IMapper mapper, ILogger<OrderCont
     {
         try
         {
+            if (!IsAuthorized(userId)) return Problem([Error.Forbidden(description: "You are not authorized to cancel this order.")]);
+
             var command = _mapper.Map<CancelOrderCommand>((userId, orderId, request));
             var result = await _mediator.Send(command);
 

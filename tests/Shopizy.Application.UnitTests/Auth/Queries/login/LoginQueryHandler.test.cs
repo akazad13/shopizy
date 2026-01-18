@@ -1,4 +1,3 @@
-using Xunit;
 using Moq;
 using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Auth.Queries.login;
@@ -99,7 +98,7 @@ public class LoginQueryHandlerTests
             )
             .Returns(expectedToken);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -128,7 +127,7 @@ public class LoginQueryHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(r => r.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -147,7 +146,7 @@ public class LoginQueryHandlerTests
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -171,7 +170,7 @@ public class LoginQueryHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(r => r.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -194,7 +193,7 @@ public class LoginQueryHandlerTests
             )
             .Returns(token);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -227,7 +226,7 @@ public class LoginQueryHandlerTests
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -246,7 +245,7 @@ public class LoginQueryHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(r => r.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -267,7 +266,7 @@ public class LoginQueryHandlerTests
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -289,7 +288,7 @@ public class LoginQueryHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(r => r.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -347,7 +346,7 @@ public class LoginQueryHandlerTests
             )
             .Returns(expectedToken);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.Commit(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -373,6 +372,6 @@ public class LoginQueryHandlerTests
             Times.Once
         );
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-        _mockCartRepository.Verify(r => r.Commit(It.IsAny<CancellationToken>()), Times.Once);
+        _mockCartRepository.Verify(r => r.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

@@ -10,7 +10,7 @@ namespace Shopizy.Domain.ProductReviews;
 /// <summary>
 /// Represents a product review submitted by a user.
 /// </summary>
-public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
+public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAuditable
 {
     /// <summary>
     /// Gets or sets the user identifier who wrote the review.
@@ -84,7 +84,6 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>
         ProductId = productId;
         Rating = rating;
         Comment = comment;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private ProductReview() { }

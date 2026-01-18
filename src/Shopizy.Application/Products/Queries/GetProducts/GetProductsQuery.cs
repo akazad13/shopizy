@@ -1,5 +1,6 @@
 using ErrorOr;
 using MediatR;
+using Shopizy.Application.Common.Caching;
 using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
@@ -18,4 +19,16 @@ public record GetProductsQuery(
     decimal? AverageRating,
     int PageNumber,
     int PageSize
-) : IRequest<ErrorOr<List<Product>>>;
+) : IRequest<ErrorOr<List<Product>>>, ICachableRequest
+{
+    public string CacheKey
+    {
+        get
+        {
+            var categoryIdsStr = CategoryIds != null ? string.Join(",", CategoryIds) : "none";
+            return $"products-name:{Name}-categories:{categoryIdsStr}-rating:{AverageRating}-page:{PageNumber}-size:{PageSize}";
+        }
+    }
+
+    public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
+}

@@ -1,6 +1,4 @@
 using ErrorOr;
-using Shopizy.Application.Common.Security.Permissions;
-using Shopizy.Application.Common.Security.Request;
 
 namespace Shopizy.Application.Users.Commands.UpdateAddress;
 
@@ -13,7 +11,6 @@ namespace Shopizy.Application.Users.Commands.UpdateAddress;
 /// <param name="State">The state or province.</param>
 /// <param name="Country">The country.</param>
 /// <param name="ZipCode">The postal/ZIP code.</param>
-[Authorize(Permissions = Permissions.User.Modify)]
 public record UpdateAddressCommand(
     Guid UserId,
     string Street,
@@ -21,4 +18,4 @@ public record UpdateAddressCommand(
     string State,
     string Country,
     string ZipCode
-) : IAuthorizeableRequest<ErrorOr<Success>>;
+) : MediatR.IRequest<ErrorOr<Success>>;

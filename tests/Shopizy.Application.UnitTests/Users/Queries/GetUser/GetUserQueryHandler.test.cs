@@ -1,13 +1,9 @@
-using Xunit;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Caching;
-using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Permissions.ValueObjects;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Users.Queries.GetUser;
 
@@ -25,8 +21,7 @@ public class GetUserQueryHandlerTestsRefactored
         _mockCacheHelper = new Mock<ICacheHelper>();
         _handler = new GetUserQueryHandler(
             _mockUserRepository.Object,
-            _mockOrderRepository.Object,
-            _mockCacheHelper.Object);
+            _mockOrderRepository.Object);
     }
 
     [Fact]

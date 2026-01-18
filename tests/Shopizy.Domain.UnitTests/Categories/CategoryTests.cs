@@ -1,7 +1,6 @@
 using Xunit;
 using Shouldly;
 using Shopizy.Domain.Categories;
-using Shopizy.Domain.Categories.ValueObjects;
 
 namespace Shopizy.Domain.UnitTests.Categories;
 

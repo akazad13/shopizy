@@ -1,4 +1,3 @@
-using ErrorOr;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Products.Commands.CreateProduct;

@@ -9,5 +9,5 @@ public interface IPaymentRepository
     Task<Payment?> GetPaymentByIdAsync(PaymentId id);
     Task AddAsync(Payment payment);
     void Update(Payment payment);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

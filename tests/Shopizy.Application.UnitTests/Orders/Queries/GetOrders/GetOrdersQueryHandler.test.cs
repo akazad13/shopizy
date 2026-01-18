@@ -1,15 +1,12 @@
-using Xunit;
 using Moq;
 using Shouldly;
 using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
-using ErrorOr;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.GetOrders;
 

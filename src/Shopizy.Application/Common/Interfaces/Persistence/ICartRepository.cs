@@ -12,5 +12,5 @@ public interface ICartRepository
     Task AddAsync(Cart cart);
     void Update(Cart cart);
     void Remove(Cart cart);
-    Task<int> Commit(CancellationToken cancellationToken);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 }
