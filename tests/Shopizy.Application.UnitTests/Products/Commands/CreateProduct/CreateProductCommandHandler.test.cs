@@ -49,7 +49,7 @@ public class CreateProductCommandHandlerTests
         _mockProductRepository.Setup(p => p.AddAsync(It.IsAny<Product>()));
 
         // Act
-        var result = await _sut.Handle(command, default);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);

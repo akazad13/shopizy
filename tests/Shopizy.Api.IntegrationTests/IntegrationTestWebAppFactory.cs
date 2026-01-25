@@ -91,7 +91,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         }
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _dbContainer.StartAsync();
 
@@ -111,7 +111,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         }
     }
 
-    public new async Task DisposeAsync()
+    public new async ValueTask DisposeAsync()
     {
         await _dbContainer.StopAsync();
     }
