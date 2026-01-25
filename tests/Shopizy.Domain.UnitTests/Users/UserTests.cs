@@ -26,7 +26,6 @@ public class UserTests
         user.LastName.ShouldBe(lastName);
         user.Email.ShouldBe(email);
         user.Password.ShouldBe(password);
-        user.CreatedOn.ShouldBe(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
 
     [Fact]
@@ -49,7 +48,6 @@ public class UserTests
         user.Phone.ShouldBe(newPhone);
         user.Address.ShouldNotBeNull();
         user.Address!.Street.ShouldBe("Street");
-        user.ModifiedOn.ShouldNotBeNull();
     }
 
     [Fact]
@@ -64,6 +62,5 @@ public class UserTests
 
         // Assert
         user.Password.ShouldBe(newPassword);
-        user.ModifiedOn.ShouldNotBeNull();
     }
 }

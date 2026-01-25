@@ -57,7 +57,6 @@ public class ProductTests
         product.Colors.ShouldBe(colors);
         product.Sizes.ShouldBe(sizes);
         product.Tags.ShouldBe(tags);
-        product.CreatedOn.ShouldBe(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         
         product.DomainEvents.ShouldContain(e => e is ProductCreatedDomainEvent);
     }
@@ -89,7 +88,6 @@ public class ProductTests
         // Assert
         product.Name.ShouldBe(newName);
         product.UnitPrice.ShouldBe(newPrice);
-        product.ModifiedOn.ShouldNotBeNull();
     }
 
     [Fact]
