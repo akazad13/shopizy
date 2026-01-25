@@ -10,9 +10,9 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<List<Permission>> GetAsync()
+    public async Task<IReadOnlyList<Permission>> GetAsync()
     {
-        return _dbContext.Permissions.ToListAsync();
+        return await _dbContext.Permissions.ToListAsync();
     }
 
     public Task<Permission?> GetByIdAsync(PermissionId id)

@@ -5,7 +5,7 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IPermissionRepository
 {
-    Task<List<Permission>> GetAsync();
+    Task<IReadOnlyList<Permission>> GetAsync();
     Task<Permission?> GetByIdAsync(PermissionId id);
     Task AddAsync(Permission user);
     void Update(Permission user);

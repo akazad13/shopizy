@@ -5,9 +5,9 @@ namespace Shopizy.Domain.Products.Entities;
 
 public sealed class ProductImage : Entity<ProductImageId>
 {
-    public string ImageUrl { get; set; }
+    public string ImageUrl { get; set; } = null!;
     public int Seq { get; set; }
-    public string PublicId { get; set; }
+    public string PublicId { get; set; } = null!;
 
     public static ProductImage Create(string productUrl, int seq, string publicId)
     {

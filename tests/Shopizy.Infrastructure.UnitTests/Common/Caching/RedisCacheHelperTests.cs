@@ -41,8 +41,9 @@ public class RedisCacheHelperTests
         var result = await _cacheHelper.GetAsync<TestDto>(key);
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Name.ShouldBe("Test");
+        result.Success.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Value.Name.ShouldBe("Test");
     }
 
     [Fact]
@@ -56,7 +57,8 @@ public class RedisCacheHelperTests
         var result = await _cacheHelper.GetAsync<TestDto>("missing");
 
         // Assert
-        result.ShouldBeNull();
+        result.Success.ShouldBeFalse();
+        result.Value.ShouldBeNull();
     }
 
     [Fact]

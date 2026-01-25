@@ -139,7 +139,7 @@ public class LoginQueryHandlerTests
 
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
-        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync([]);
+        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(new List<Permission>().AsReadOnly());
         _mockJwtTokenGenerator
             .Setup(j =>
                 j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
@@ -215,7 +215,7 @@ public class LoginQueryHandlerTests
         var query = LoginQueryUtils.CreateQuery();
         var user = UserFactory.CreateUser();
 
-        var allPermissions = new List<Permission> { Permission.Create("SomePermission") };
+        var allPermissions = new List<Permission> { Permission.Create("SomePermission") }.AsReadOnly();
 
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);

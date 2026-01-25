@@ -19,14 +19,18 @@ public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? valid
     {
         if (_validator is null)
         {
+#pragma warning disable CA2016
             return await next();
+#pragma warning restore CA2016
         }
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (validationResult.IsValid)
         {
+#pragma warning disable CA2016
             return await next();
+#pragma warning restore CA2016
         }
 
         var errors = validationResult.Errors.ConvertAll(error =>

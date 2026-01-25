@@ -9,7 +9,7 @@ namespace Shopizy.Application.Common.Behaviors;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
-public class CachingBehavior<TRequest, TResponse>(
+public partial class CachingBehavior<TRequest, TResponse>(
     ICacheHelper cacheHelper,
     ILogger<CachingBehavior<TRequest, TResponse>> logger
 ) : IPipelineBehavior<TRequest, TResponse>
@@ -18,23 +18,34 @@ public class CachingBehavior<TRequest, TResponse>(
     private readonly ICacheHelper _cacheHelper = cacheHelper;
     private readonly ILogger<CachingBehavior<TRequest, TResponse>> _logger = logger;
 
+    [LoggerMessage(Level = LogLevel.Information, Message = "Checking cache for {RequestName} with key {CacheKey}")]
+    static partial void LogCheckingCache(ILogger logger, string requestName, string cacheKey);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Cache hit for {RequestName} with key {CacheKey}")]
+    static partial void LogCacheHit(ILogger logger, string requestName, string cacheKey);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Cache miss for {RequestName} with key {CacheKey}. Fetching from source.")]
+    static partial void LogCacheMiss(ILogger logger, string requestName, string cacheKey);
+
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken
     )
     {
-        _logger.LogInformation("Checking cache for {RequestName} with key {CacheKey}", typeof(TRequest).Name, request.CacheKey);
+        LogCheckingCache(_logger, typeof(TRequest).Name, request.CacheKey);
         
         var cacheResult = await _cacheHelper.GetAsync<TResponse>(request.CacheKey);
         if (cacheResult.Success)
         {
-            _logger.LogInformation("Cache hit for {RequestName} with key {CacheKey}", typeof(TRequest).Name, request.CacheKey);
+            LogCacheHit(_logger, typeof(TRequest).Name, request.CacheKey);
             return cacheResult.Value!;
         }
 
-        _logger.LogInformation("Cache miss for {RequestName} with key {CacheKey}. Fetching from source.", typeof(TRequest).Name, request.CacheKey);
+        LogCacheMiss(_logger, typeof(TRequest).Name, request.CacheKey);
+#pragma warning disable CA2016
         var response = await next();
+#pragma warning restore CA2016
 
         await _cacheHelper.SetAsync(request.CacheKey, response, request.Expiration);
 

@@ -15,27 +15,27 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
     /// <summary>
     /// Gets or sets the user identifier who wrote the review.
     /// </summary>
-    public UserId UserId { get; set; }
+    public UserId UserId { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the user who wrote the review.
     /// </summary>
-    public User User { get; set; }
+    public User User { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the product identifier being reviewed.
     /// </summary>
-    public ProductId ProductId { get; set; }
+    public ProductId ProductId { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the rating given to the product.
     /// </summary>
-    public Rating Rating { get; set; }
+    public Rating Rating { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the review comment.
     /// </summary>
-    public string Comment { get; set; }
+    public string Comment { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the date and time when the review was created.

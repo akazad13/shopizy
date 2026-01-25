@@ -22,8 +22,7 @@ namespace Shopizy.Infrastructure.Common.Persistence;
 /// </summary>
 public class AppDbContext(
     DbContextOptions options,
-    IHttpContextAccessor _httpContextAccessor,
-    IPublisher _publisher
+    IHttpContextAccessor _httpContextAccessor
 ) : DbContext(options), IAppDbContext, IUnitOfWork
 {
     /// <summary>

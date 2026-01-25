@@ -5,7 +5,7 @@ namespace Shopizy.Application.UnitTests.Auth.TestUtils;
 
 public static class AuthFactory
 {
-    public static List<Permission> GetPermissions()
+    public static IReadOnlyList<Permission> GetPermissions()
     {
         return
         [

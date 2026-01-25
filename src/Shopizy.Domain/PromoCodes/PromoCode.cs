@@ -11,12 +11,12 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
     /// <summary>
     /// Gets or sets the promo code string.
     /// </summary>
-    public string Code { get; set; }
+    public string Code { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the description of the promo code.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the discount value.

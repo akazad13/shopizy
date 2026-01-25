@@ -11,5 +11,5 @@ public record CategoryTreeResponse(
     Guid Id,
     string Name,
     Guid? ParentId,
-    List<CategoryTreeResponse>? Children
+    IReadOnlyList<CategoryTreeResponse>? Children
 );

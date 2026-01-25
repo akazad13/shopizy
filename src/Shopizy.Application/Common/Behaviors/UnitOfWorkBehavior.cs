@@ -15,7 +15,9 @@ public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork _unitOfWork)
         CancellationToken cancellationToken
     )
     {
+#pragma warning disable CA2016
         var response = await next();
+#pragma warning restore CA2016
 
         if (response.IsError)
         {

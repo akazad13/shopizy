@@ -5,12 +5,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 
-public class CurrentUserProvider(
+public partial class CurrentUserProvider(
     IHttpContextAccessor httpContextAccessor,
     ILogger<CurrentUserProvider> logger) : ICurrentUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly ILogger<CurrentUserProvider> _logger = logger;
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "No claims found in HttpContext")]
+    static partial void LogNoClaimsFound(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Invalid or missing 'id' claim")]
+    static partial void LogInvalidIdClaim(ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error extracting current user from HttpContext")]
+    static partial void LogUserExtractionError(ILogger logger, Exception ex);
 
     public CurrentUser? GetCurrentUser()
     {
@@ -21,14 +30,14 @@ public class CurrentUserProvider(
             if (_httpContextAccessor.HttpContext?.User?.Claims == null || 
                 !_httpContextAccessor.HttpContext.User.Claims.Any())
             {
-                _logger.LogDebug("No claims found in HttpContext");
+                LogNoClaimsFound(_logger);
                 return null;
             }
 
             var idClaim = GetSingleClaimValue("id");
             if (idClaim == null || !Guid.TryParse(idClaim, out var id))
             {
-                _logger.LogWarning("Invalid or missing 'id' claim");
+                LogInvalidIdClaim(_logger);
                 return null;
             }
 
@@ -39,7 +48,7 @@ public class CurrentUserProvider(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error extracting current user from HttpContext");
+            LogUserExtractionError(_logger, ex);
             return null;
         }
     }

@@ -25,7 +25,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <param name="pageNumber">The page number.</param>
     /// <param name="pageSize">The page size.</param>
     /// <returns>A list of products matching the criteria.</returns>
-    public Task<List<Product>> GetProductsAsync(
+    public async Task<List<Product>?> GetProductsAsync(
         string? name,
         IList<CategoryId>? categoryIds,
         decimal? averageRating,
@@ -33,7 +33,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         int pageSize
     )
     {
-        return ApplySpec(new ProductsByCriteriaSpec(name, categoryIds, averageRating))
+        return await ApplySpec(new ProductsByCriteriaSpec(name, categoryIds, averageRating))
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

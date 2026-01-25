@@ -2,11 +2,11 @@ namespace Shopizy.Application.Common.models;
 
 public class CreateSaleRequest
 {
-    public string CustomerId { get; set; }
-    public string PaymentMethodId { get; set; }
-    public string Currency { get; set; }
+    public string CustomerId { get; set; } = null!;
+    public string PaymentMethodId { get; set; } = null!;
+    public string Currency { get; set; } = null!;
     public long Amount { get; set; }
-    public List<string>? PaymentMethodTypes { get; set; }
+    public IReadOnlyList<string>? PaymentMethodTypes { get; set; }
     public bool CapturePayment { get; set; } = true;
     public string? SetupFutureUsage { get; set; }
     public Dictionary<string, string>? Metadata { get; set; }

@@ -50,15 +50,13 @@ public class CashOnDeliverySaleCommandHandler(
 
             await _paymentRepository.AddAsync(payment);
 
-            await _paymentRepository.AddAsync(payment);
-
             order.UpdateOrderStatus(OrderStatus.Processing);
 
             _orderRepository.Update(order);
 
             return Result.Success;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Error.Failure(
                 code: "payment.failed",

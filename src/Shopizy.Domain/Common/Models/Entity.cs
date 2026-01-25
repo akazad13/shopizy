@@ -71,7 +71,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
     /// Retrieves and clears all domain events from the entity.
     /// </summary>
     /// <returns>A list of all domain events that were raised by this entity.</returns>
-    public List<IDomainEvent> PopDomainEvents()
+    public IReadOnlyList<IDomainEvent> PopDomainEvents()
     {
         var copy = _domainEvents.ToList();
         _domainEvents.Clear();

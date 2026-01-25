@@ -110,7 +110,7 @@ public class CardNotPresentSaleCommandHandler(
 
             return Result.Success;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Error.Failure(
                 code: "payment.failed",

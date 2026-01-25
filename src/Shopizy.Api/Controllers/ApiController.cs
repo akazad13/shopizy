@@ -31,6 +31,11 @@ public class ApiController : ControllerBase
         return Problem(errors[0]);
     }
 
+    /// <summary>
+    /// Checks if the current user is authorized to access a resource.
+    /// </summary>
+    /// <param name="userId">The user identifier of the resource owner.</param>
+    /// <returns>True if authorized; otherwise, false.</returns>
     protected bool IsAuthorized(Guid userId)
     {
         var currentUserIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
