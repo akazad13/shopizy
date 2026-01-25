@@ -14,6 +14,7 @@ public static class ProductFactory
             Constants.Product.Description,
             Constants.Category.Id,
             Constants.Product.Sku,
+            50, // Default stock quantity for tests
             Constants.Product.Price,
             Constants.Product.Discount,
             Constants.Product.Brand,

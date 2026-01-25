@@ -20,6 +20,9 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
     {
         Guard.Against.Null(query);
 
+        if (query.PageNumber <= 0) query = query with { PageNumber = 1 };
+        if (query.PageSize <= 0) query = query with { PageSize = 10 };
+
         var products = await _productRepository.GetProductsAsync(
             query.Name,
             query

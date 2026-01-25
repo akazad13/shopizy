@@ -29,6 +29,7 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
             description: cmd.Description,
             categoryId: CategoryId.Create(cmd.CategoryId),
             sku: cmd.Sku,
+            stockQuantity: cmd.StockQuantity,
             unitPrice: Price.CreateNew(cmd.UnitPrice, cmd.Currency),
             discount: cmd.Discount,
             brand: cmd.Brand,

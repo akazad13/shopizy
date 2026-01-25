@@ -118,6 +118,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <param name="description">The full product description.</param>
     /// <param name="categoryId">The category identifier.</param>
     /// <param name="sku">The stock keeping unit.</param>
+    /// <param name="stockQuantity">The initial stock quantity.</param>
     /// <param name="unitPrice">The unit price.</param>
     /// <param name="discount">The discount percentage.</param>
     /// <param name="brand">The brand name.</param>
@@ -132,6 +133,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         string description,
         CategoryId categoryId,
         string sku,
+        int stockQuantity,
         Price unitPrice,
         decimal? discount,
         string brand,
@@ -148,7 +150,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
             description,
             categoryId,
             sku,
-            0,
+            stockQuantity,
             unitPrice,
             discount,
             brand,

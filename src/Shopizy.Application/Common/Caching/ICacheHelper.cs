@@ -10,8 +10,8 @@ public interface ICacheHelper
     /// </summary>
     /// <typeparam name="T">The type of the cached item.</typeparam>
     /// <param name="key">The key of the cached item.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the cached item.</returns>
-    Task<T> GetAsync<T>(string key);
+    /// <returns>A task that represents the asynchronous operation. The task result contains the cached item or null if not found.</returns>
+    Task<CacheResult<T>> GetAsync<T>(string key);
 
     /// <summary>
     /// Adds or updates a cached item with the specified key and value.

@@ -21,10 +21,8 @@ public class RedisCacheHelper(
     /// <summary>
     /// Gets the cached value for the specified key.
     /// </summary>
-    /// <typeparam name="T">The type of the cached value.</typeparam>
-    /// <param name="key">The cache key.</param>
-    /// <returns>The cached value, or default if the key does not exist.</returns>
-    public async Task<T> GetAsync<T>(string key)
+    /// <returns>The cache result containing the value if found; otherwise, a miss result.</returns>
+    public async Task<CacheResult<T>> GetAsync<T>(string key)
     {
         try
         {
@@ -33,15 +31,16 @@ public class RedisCacheHelper(
             
             if (!data.HasValue)
             {
-                return default!;
+                return CacheResult<T>.Miss();
             }
 
-            return JsonSerializer.Deserialize<T>(data.ToString())!;
+            var value = JsonSerializer.Deserialize<T>(data.ToString())!;
+            return CacheResult<T>.Hit(value);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving key {Key} from Redis", key);
-            return default;
+            return CacheResult<T>.Miss();
         }
     }
 

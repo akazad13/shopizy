@@ -26,7 +26,13 @@ public class ProductMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
-        config.NewConfig<ProductsCriteria, GetProductsQuery>();
+        config.NewConfig<ProductsCriteria, GetProductsQuery>()
+            .MapWith(src => new GetProductsQuery(
+                src.Name,
+                src.CategoryIds,
+                src.AverageRating,
+                src.PageNumber,
+                src.PageSize));
 
         config.NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
             .Map(dest=> dest.UserId, src=> src.UserId)

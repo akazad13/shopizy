@@ -2,6 +2,7 @@ using System.Net;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Contracts.Product;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Common.Enums;
 using Shouldly;
 using Xunit;
 
@@ -23,7 +24,8 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
             Constants.Product.Description,
             category.Id,
             Constants.Product.Sku,
-            Price.CreateNew(100, 0),
+            100, // StockQuantity
+            Price.CreateNew(100, Currency.usd),
             null,
             Constants.Product.Brand,
             Constants.Product.Barcode,
@@ -59,7 +61,8 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
             "Desc A",
             category.Id,
             "SKU-A",
-            Price.CreateNew(50, 0),
+            100, // StockQuantity
+            Price.CreateNew(50, Currency.usd),
             null,
             "BrandA",
             "BarcodeA",
@@ -73,7 +76,8 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
             "Desc B",
             category.Id,
             "SKU-B",
-            Price.CreateNew(150, 0),
+            100, // StockQuantity
+            Price.CreateNew(150, Currency.usd),
             null,
             "BrandB",
             "BarcodeB",

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Common.Persistence.Interceptors;
 using Testcontainers.PostgreSql;
 
 namespace Shopizy.Api.IntegrationTests;
@@ -32,8 +33,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 ["JwtSettings:Issuer"] = "Shopizy",
                 ["JwtSettings:Audience"] = "Shopizy",
                 ["JwtSettings:TokenExpirationMinutes"] = "60",
-                ["RedisSettings:Endpoint"] = "localhost",
-                ["RedisSettings:Port"] = "6379"
+                ["RedisCacheSettings:Endpoint"] = "localhost",
+                ["RedisCacheSettings:Port"] = "6379"
             });
         });
 
@@ -44,9 +45,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             // Add the new DbContext registration using the Testcontainer
             // We use Npgsql here to match the PostgreSqlContainer
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>((sp, options) =>
             {
-                options.UseNpgsql(_dbContainer.GetConnectionString());
+                var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
+                options.UseNpgsql(_dbContainer.GetConnectionString())
+                    .AddInterceptors(interceptor);
             });
 
             // Override JWT validation for testing
@@ -59,7 +62,34 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                     options.TokenValidationParameters.ValidateIssuerSigningKey = false;
                     options.RequireHttpsMetadata = false;
                 });
+
+            // Replace Redis cache with In-Memory stub
+            services.RemoveAll(typeof(Shopizy.Application.Common.Caching.ICacheHelper));
+            services.AddSingleton<Shopizy.Application.Common.Caching.ICacheHelper, InMemoryCacheHelper>();
         });
+    }
+
+    public class InMemoryCacheHelper : Shopizy.Application.Common.Caching.ICacheHelper
+    {
+        // No-op cache for integration tests - always returns cache miss
+        // This ensures tests always get fresh data from the database
+        
+        public Task<Shopizy.Application.Common.Caching.CacheResult<T>> GetAsync<T>(string key)
+        {
+            // Always return cache miss
+            return Task.FromResult(Shopizy.Application.Common.Caching.CacheResult<T>.Miss());
+        }
+
+        public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
+        {
+            // Don't actually cache anything in tests
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveAsync(string key)
+        {
+            return Task.CompletedTask;
+        }
     }
 
     public async Task InitializeAsync()

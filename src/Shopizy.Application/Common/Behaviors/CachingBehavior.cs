@@ -26,11 +26,11 @@ public class CachingBehavior<TRequest, TResponse>(
     {
         _logger.LogInformation("Checking cache for {RequestName} with key {CacheKey}", typeof(TRequest).Name, request.CacheKey);
         
-        var cachedResponse = await _cacheHelper.GetAsync<TResponse>(request.CacheKey);
-        if (cachedResponse is not null)
+        var cacheResult = await _cacheHelper.GetAsync<TResponse>(request.CacheKey);
+        if (cacheResult.Success)
         {
             _logger.LogInformation("Cache hit for {RequestName} with key {CacheKey}", typeof(TRequest).Name, request.CacheKey);
-            return cachedResponse;
+            return cacheResult.Value!;
         }
 
         _logger.LogInformation("Cache miss for {RequestName} with key {CacheKey}. Fetching from source.", typeof(TRequest).Name, request.CacheKey);

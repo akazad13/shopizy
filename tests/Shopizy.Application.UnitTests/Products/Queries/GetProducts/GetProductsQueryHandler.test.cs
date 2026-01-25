@@ -27,7 +27,7 @@ public class GetProductsQueryHandlerTestsRefactored
         // Arrange
         var query = new GetProductsQuery(null, null, null, 1, 10);
         var product = Product.Create(
-            "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 
+            "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
             Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
         var products = new List<Product> { product };
 

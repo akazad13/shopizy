@@ -33,6 +33,7 @@ public class ProductTests
             description,
             categoryId,
             sku,
+            100, // stockQuantity
             price,
             discount,
             brand,
@@ -113,6 +114,7 @@ public class ProductTests
             "Long",
             CategoryId.CreateUnique(),
             "SKU",
+            100, // Default stock
             Price.CreateNew(10, Currency.usd),
             null,
             "Brand",

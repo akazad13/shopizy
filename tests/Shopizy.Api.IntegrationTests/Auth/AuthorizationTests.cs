@@ -74,6 +74,12 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         var response = await HttpClient.GetAsync("/api/v1.0/products");
 
         // Assert
+        // Assert
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Expected OK but got {response.StatusCode}. Content: {content}");
+        }
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
