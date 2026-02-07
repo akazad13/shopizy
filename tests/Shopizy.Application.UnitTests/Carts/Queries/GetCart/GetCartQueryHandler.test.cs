@@ -30,7 +30,7 @@ public class GetCartQueryHandlerTestsRefactored
             .ReturnsAsync(cart);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -48,7 +48,7 @@ public class GetCartQueryHandlerTestsRefactored
             .ReturnsAsync((Cart?)null);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();

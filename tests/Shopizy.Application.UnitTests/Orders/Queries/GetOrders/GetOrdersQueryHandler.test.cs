@@ -36,7 +36,7 @@ public class GetOrdersQueryHandlerTestsRefactored
             .ReturnsAsync(orders);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();

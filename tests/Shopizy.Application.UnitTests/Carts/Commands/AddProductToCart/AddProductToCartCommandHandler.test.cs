@@ -40,11 +40,11 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), CancellationToken.None))
+            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
             .ReturnsAsync(() => null);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -62,7 +62,7 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), CancellationToken.None))
+            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
             .ReturnsAsync(existingCart);
         _mockProductRepository
             .Setup(x => x.IsProductExistAsync(It.IsAny<ProductId>()))
@@ -77,7 +77,7 @@ public class AddProductToCartCommandHandlerTests
         _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
-        var cart = await _sut.Handle(command, CancellationToken.None);
+        var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(cart.IsError);
@@ -123,7 +123,7 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), CancellationToken.None))
+            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
             .ReturnsAsync(existingCart);
 
         _mockProductRepository
@@ -138,7 +138,7 @@ public class AddProductToCartCommandHandlerTests
         _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
-        var cart = await _sut.Handle(command, CancellationToken.None);
+        var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(cart.IsError);

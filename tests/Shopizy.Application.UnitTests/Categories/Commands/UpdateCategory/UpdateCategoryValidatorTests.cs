@@ -24,7 +24,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -42,7 +42,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -61,7 +61,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -79,7 +79,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -98,7 +98,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -116,7 +116,7 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();

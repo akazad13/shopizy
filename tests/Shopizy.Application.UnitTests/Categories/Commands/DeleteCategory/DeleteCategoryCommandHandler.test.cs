@@ -31,7 +31,7 @@ public class DeleteCategoryCommandHandlerTests
             .ReturnsAsync(category);
 
         // Act
-        var result = await _sut.Handle(command, default);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();

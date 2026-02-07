@@ -25,7 +25,7 @@ public class AddProductImageCommandValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.File);
@@ -46,7 +46,7 @@ public class AddProductImageCommandValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.File);
@@ -68,7 +68,7 @@ public class AddProductImageCommandValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();

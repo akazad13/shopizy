@@ -28,7 +28,7 @@ public class CategoriesTreeQueryHandlerTests
         var query = new CategoriesTreeQuery();
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -50,7 +50,7 @@ public class CategoriesTreeQueryHandlerTests
         var query = new CategoriesTreeQuery();
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -79,7 +79,7 @@ public class CategoriesTreeQueryHandlerTests
         var query = new CategoriesTreeQuery();
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();

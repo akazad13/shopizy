@@ -40,7 +40,7 @@ public class RegisterCommandHandlerTests
             .ReturnsAsync(User.Create("Existing", "User", command.Email, "hashedPassword", []));
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -82,7 +82,7 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -126,7 +126,7 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -199,7 +199,7 @@ public class RegisterCommandHandlerTests
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -231,7 +231,7 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -265,8 +265,8 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
-        var task1 = _handler.Handle(command, CancellationToken.None);
-        var task2 = _handler.Handle(command, CancellationToken.None);
+        var task1 = _handler.Handle(command, TestContext.Current.CancellationToken);
+        var task2 = _handler.Handle(command, TestContext.Current.CancellationToken);
 
         var results = await Task.WhenAll(task1, task2);
 
@@ -305,7 +305,7 @@ public class RegisterCommandHandlerTests
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -343,7 +343,7 @@ public class RegisterCommandHandlerTests
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);

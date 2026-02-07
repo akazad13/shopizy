@@ -48,7 +48,7 @@ public class LoginQueryHandlerTests
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -66,7 +66,7 @@ public class LoginQueryHandlerTests
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password)).Returns(false);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -101,7 +101,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -149,7 +149,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -196,7 +196,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -229,7 +229,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -269,7 +269,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -319,7 +319,7 @@ public class LoginQueryHandlerTests
             .Returns(false);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -349,7 +349,7 @@ public class LoginQueryHandlerTests
         _mockCartRepository.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);

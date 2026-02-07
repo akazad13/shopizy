@@ -29,7 +29,7 @@ public class ValidationBehaviorTests
         _mockNext.Setup(x => x()).ReturnsAsync(expectedResponse);
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, CancellationToken.None);
+        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBe(expectedResponse);
@@ -49,7 +49,7 @@ public class ValidationBehaviorTests
         _mockNext.Setup(x => x()).ReturnsAsync(expectedResponse);
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, CancellationToken.None);
+        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBe(expectedResponse);
@@ -71,7 +71,7 @@ public class ValidationBehaviorTests
             .ReturnsAsync(new ValidationResult(validationFailures));
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, CancellationToken.None);
+        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();

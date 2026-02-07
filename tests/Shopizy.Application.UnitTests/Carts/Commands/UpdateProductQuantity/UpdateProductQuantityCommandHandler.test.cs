@@ -27,11 +27,11 @@ public class UpdateProductQuantityCommandHandlerTests
         var command = UpdateProductQuantityCommandUtils.CreateCommand(37);
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), CancellationToken.None))
+            .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken))
             .ReturnsAsync(() => null);
 
         // Act
-        var result = await _sut.Handle(command, default);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -39,7 +39,7 @@ public class UpdateProductQuantityCommandHandlerTests
         Assert.Equal(CustomErrors.Cart.CartNotFound, result.Errors[0]);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), CancellationToken.None),
+            cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);

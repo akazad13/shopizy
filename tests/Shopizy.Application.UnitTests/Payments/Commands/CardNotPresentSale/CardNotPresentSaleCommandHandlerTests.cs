@@ -51,7 +51,7 @@ public class CardNotPresentSaleCommandHandlerTests
             .ReturnsAsync((Shopizy.Domain.Orders.Order?)null);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();
@@ -74,7 +74,7 @@ public class CardNotPresentSaleCommandHandlerTests
             .ReturnsAsync(Error.Failure("payment.failed", "Failed to collect the payment."));
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();
@@ -97,7 +97,7 @@ public class CardNotPresentSaleCommandHandlerTests
             .ReturnsAsync(new CreateSaleResponse { ChargeId = "ch_123" });
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();

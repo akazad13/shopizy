@@ -47,7 +47,7 @@ public class CloudinaryMediaUploaderTests
             .ReturnsAsync(uploadResult);
 
         // Act
-        var result = await _uploader.UploadPhotoAsync(fileMock.Object);
+        var result = await _uploader.UploadPhotoAsync(fileMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();

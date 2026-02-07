@@ -44,7 +44,7 @@ public class UpdateUserCommandHandlerTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -66,7 +66,7 @@ public class UpdateUserCommandHandlerTests
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -96,7 +96,7 @@ public class UpdateUserCommandHandlerTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);

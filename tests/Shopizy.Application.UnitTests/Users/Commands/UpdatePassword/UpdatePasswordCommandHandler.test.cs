@@ -40,7 +40,7 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Setup(u => u.Update(user));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -62,7 +62,7 @@ public class UpdatePasswordCommandHandlerTests
         _mockPasswordManager.Setup(x => x.Verify("oldPassword", "password")).Returns(false);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -99,7 +99,7 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Setup(u => u.Update(user));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -129,7 +129,7 @@ public class UpdatePasswordCommandHandlerTests
         _mockUserRepository.Setup(u => u.Update(user));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);

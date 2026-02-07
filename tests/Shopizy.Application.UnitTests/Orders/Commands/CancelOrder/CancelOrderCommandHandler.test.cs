@@ -27,7 +27,7 @@ public class CancelOrderCommandHandlerTests
         var command = CancelOrderCommandUtils.CreateCommand(Guid.Empty);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -52,7 +52,7 @@ public class CancelOrderCommandHandlerTests
         _mockOrderRepository.Setup(x => x.Update(order));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);

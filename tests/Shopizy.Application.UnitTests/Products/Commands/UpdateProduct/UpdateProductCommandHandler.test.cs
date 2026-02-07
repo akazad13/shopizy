@@ -33,7 +33,7 @@ public class UpdateProductCommandHandlerTests
         _mockProductRepository.Setup(x => x.Update(It.IsAny<Product>()));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -57,7 +57,7 @@ public class UpdateProductCommandHandlerTests
             .ReturnsAsync((Product?)null);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);

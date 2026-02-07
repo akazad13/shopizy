@@ -30,7 +30,7 @@ public class GetCategoryQueryHandlerTests
             .ReturnsAsync(category);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -50,7 +50,7 @@ public class GetCategoryQueryHandlerTests
             .ReturnsAsync(() => null);
 
         // Act
-        var result = await _handler.Handle(query, default);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);

@@ -30,7 +30,7 @@ public class CreateProductCommandHandlerTests
         var command = CreateProductCommandUtils.CreateCommandWithEmptyProductName();
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);

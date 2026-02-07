@@ -33,7 +33,7 @@ public class CreateCategoryCommandHandlerTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -52,7 +52,7 @@ public class CreateCategoryCommandHandlerTests
             .ReturnsAsync(true);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();

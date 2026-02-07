@@ -28,7 +28,7 @@ public class GetOrderQueryHandlerTests
         _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(orderId)).ReturnsAsync(() => null);
 
         // Act
-        var result = await _sut.Handle(query, default);
+        var result = await _sut.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -48,7 +48,7 @@ public class GetOrderQueryHandlerTests
             .ReturnsAsync(order);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);

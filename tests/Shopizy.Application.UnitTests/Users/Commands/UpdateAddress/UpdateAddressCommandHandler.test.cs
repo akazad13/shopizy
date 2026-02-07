@@ -31,7 +31,7 @@ public class UpdateAddressCommandHandlerTests
             .ReturnsAsync(() => null);
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsError);
@@ -58,7 +58,7 @@ public class UpdateAddressCommandHandlerTests
         _mockUserRepository.Setup(u => u.Update(user));
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsError);
@@ -83,8 +83,8 @@ public class UpdateAddressCommandHandlerTests
         _mockUserRepository.Setup(u => u.Update(It.IsAny<User>()));
 
         // Act
-        var task1 = _sut.Handle(command, CancellationToken.None);
-        var task2 = _sut.Handle(command, CancellationToken.None);
+        var task1 = _sut.Handle(command, TestContext.Current.CancellationToken);
+        var task2 = _sut.Handle(command, TestContext.Current.CancellationToken);
 
         var result1 = await task1;
         var result2 = await task2;

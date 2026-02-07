@@ -36,7 +36,7 @@ public class GetProductsQueryHandlerTestsRefactored
             .ReturnsAsync(products);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -54,7 +54,7 @@ public class GetProductsQueryHandlerTestsRefactored
             .ReturnsAsync((List<Product>?)null);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();
