@@ -1,3 +1,4 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Shouldly;
@@ -78,13 +79,12 @@ public class AddProductImageCommandHandlerTests
             .ReturnsAsync(product);
 
         _mockMediaUploader
-            .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), default))
+            .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
-                () =>
-                    new PhotoUploadResult(
-                        Constants.ProductImage.ImageUrl,
-                        Constants.ProductImage.PublicId
-                    )
+                (ErrorOr<PhotoUploadResult>)new PhotoUploadResult(
+                    Constants.ProductImage.ImageUrl,
+                    Constants.ProductImage.PublicId
+                )
             );
 
         _mockProductRepository.Setup(p => p.Update(product));

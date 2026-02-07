@@ -19,10 +19,10 @@ public class RegisterTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         );
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request, TestContext.Current.CancellationToken);
 
         // Assert
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK, $"Response content: {content}");
     }
 
@@ -47,9 +47,10 @@ public class RegisterTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var request = new RegisterCommand("Invalid", "Email", "not-an-email", "Password123!");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", request, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }
+

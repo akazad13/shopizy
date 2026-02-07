@@ -38,11 +38,11 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/products/{product.Id.Value}");
+        var response = await HttpClient.GetAsync($"/api/v1.0/products/{product.Id.Value}", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var productResponse = await response.Content.ReadFromJsonAsync<ProductDetailResponse>();
+        var productResponse = await response.Content.ReadFromJsonAsync<ProductDetailResponse>(TestContext.Current.CancellationToken);
         productResponse.ShouldNotBeNull();
         productResponse.ProductId.ShouldBe(product.Id.Value);
         productResponse.Name.ShouldBe(Constants.Product.Name);
@@ -90,7 +90,7 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await HttpClient.GetAsync("/api/v1.0/products");
+        var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -101,3 +101,4 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         products.ShouldContain(p => p.ProductId == product2.Id.Value);
     }
 }
+

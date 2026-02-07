@@ -14,7 +14,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken(); // Ensure no auth token
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}");
+        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -28,7 +28,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken();
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/carts");
+        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/carts", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -43,7 +43,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken();
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/orders", orderRequest);
+        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/orders", orderRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -58,7 +58,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken();
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/payments", paymentRequest);
+        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/payments", paymentRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -71,13 +71,13 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken(); // Ensure no auth - public endpoint
 
         // Act
-        var response = await HttpClient.GetAsync("/api/v1.0/products");
+        var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
 
         // Assert
         // Assert
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
             throw new Exception($"Expected OK but got {response.StatusCode}. Content: {content}");
         }
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -90,7 +90,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken(); // Public endpoint
 
         // Act
-        var response = await HttpClient.GetAsync("/api/v1.0/categories");
+        var response = await HttpClient.GetAsync("/api/v1.0/categories", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -103,7 +103,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         await AuthenticateAsNewUserAsync("Auth", "User", email, "Password123!");
 
         // Act
-        var response = await HttpClient.GetAsync("/api/v1.0/products");
+        var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -120,9 +120,10 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         var productRequest = new { Name = "New Product", Price = 10.0 };
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/products", productRequest);
+        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/products", productRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
     }
 }
+
