@@ -35,7 +35,7 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         );
 
         DbContext.Products.Add(product);
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
         var response = await HttpClient.GetAsync($"/api/v1.0/products/{product.Id.Value}", TestContext.Current.CancellationToken);
@@ -87,14 +87,14 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         );
 
         DbContext.Products.AddRange(product1, product2);
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
         var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var products = await response.Content.ReadFromJsonAsync<List<ProductResponse>>();
+        var products = await response.Content.ReadFromJsonAsync<List<ProductResponse>>(TestContext.Current.CancellationToken);
         products.ShouldNotBeNull();
         products.Count.ShouldBeGreaterThanOrEqualTo(2);
         products.ShouldContain(p => p.ProductId == product1.Id.Value);
