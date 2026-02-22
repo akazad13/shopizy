@@ -29,7 +29,7 @@ jobs:
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
-      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html -assemblyfilters:-*.UnitTests;-*.IntegrationTests
+      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html "-assemblyfilters:-*.UnitTests;-*.IntegrationTests"
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
