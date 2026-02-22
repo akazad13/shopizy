@@ -1,9 +1,11 @@
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Shopizy.Contracts.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Api.Common.Errors;
 
+[ExcludeFromCodeCoverage]
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger = logger;

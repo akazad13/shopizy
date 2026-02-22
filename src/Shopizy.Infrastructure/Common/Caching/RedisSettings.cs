@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Shopizy.Infrastructure.Common.Caching;
 
+[ExcludeFromCodeCoverage]
 public class RedisSettings
 {
     public const string Section = "RedisCacheSettings";

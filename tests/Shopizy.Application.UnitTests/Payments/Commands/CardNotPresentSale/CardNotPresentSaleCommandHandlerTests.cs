@@ -3,14 +3,12 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Models;
-using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
-using Shopizy.Domain.Payments;
 using Shopizy.Domain.Users.ValueObjects;
 using Shouldly;
 

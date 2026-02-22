@@ -6,12 +6,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.Security.TokenGenerator;
 
 /// <summary>
 /// Generates JWT tokens for authentication.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;

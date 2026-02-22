@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
@@ -46,4 +47,8 @@ if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
     }
 }
 
+
 await app.RunAsync();
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }

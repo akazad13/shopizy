@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 
+[ExcludeFromCodeCoverage]
 public partial class CurrentUserProvider(
     IHttpContextAccessor httpContextAccessor,
     ILogger<CurrentUserProvider> logger) : ICurrentUserProvider

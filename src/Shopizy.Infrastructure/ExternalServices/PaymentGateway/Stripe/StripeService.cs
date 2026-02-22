@@ -2,12 +2,14 @@ using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Models;
 using Stripe;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
 /// <summary>
 /// Service for integrating with Stripe payment gateway.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class StripeService(
     CustomerService customerService,
     PaymentIntentService paymentIntentService

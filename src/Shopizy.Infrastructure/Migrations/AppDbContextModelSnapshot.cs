@@ -6,11 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopizy.Infrastructure.Common.Persistence;
 
+using System.Diagnostics.CodeAnalysis;
+
 #nullable disable
 
 namespace Shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
+    [ExcludeFromCodeCoverage]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

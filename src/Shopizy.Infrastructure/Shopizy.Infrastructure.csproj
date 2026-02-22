@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <InternalsVisibleTo>Shopizy.Infrastructure.UnitTests</InternalsVisibleTo>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shopizy.Application\Shopizy.Application.csproj" />

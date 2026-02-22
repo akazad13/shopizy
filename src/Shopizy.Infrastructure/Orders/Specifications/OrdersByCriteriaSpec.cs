@@ -6,7 +6,7 @@ using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Orders.Specifications;
 
-internal class OrdersByCriteriaSpec : Specification<Order>
+public class OrdersByCriteriaSpec : Specification<Order>
 {
     public OrdersByCriteriaSpec(
         UserId? customerId,

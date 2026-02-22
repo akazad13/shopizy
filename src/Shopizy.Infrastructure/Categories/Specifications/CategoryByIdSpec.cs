@@ -4,6 +4,6 @@ using Shopizy.Infrastructure.Common.Specifications;
 
 namespace Shopizy.Infrastructure.Categories.Specifications;
 
-internal class CategoryByIdSpec(CategoryId id) : Specification<Category>(category => category.Id == id)
+public class CategoryByIdSpec(CategoryId id) : Specification<Category>(category => category.Id == id)
 {
 }

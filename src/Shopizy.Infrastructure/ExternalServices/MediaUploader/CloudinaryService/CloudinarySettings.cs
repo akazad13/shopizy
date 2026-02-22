@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 
+[ExcludeFromCodeCoverage]
 public class CloudinarySettings
 {
     public const string Section = "CloudinarySettings";

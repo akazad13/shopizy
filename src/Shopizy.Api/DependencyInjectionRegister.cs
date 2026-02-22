@@ -1,10 +1,12 @@
 using Shopizy.Api.Common.Mapping;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Api;
 
 /// <summary>
 /// Dependency injection register for presentation layer.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class DependencyInjectionRegister
 {
     /// <summary>

@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Shopizy.Infrastructure.Security.TokenGenerator;
 
+[ExcludeFromCodeCoverage]
 public class JwtSettings
 {
     public const string Section = "JwtSettings";

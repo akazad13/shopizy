@@ -31,9 +31,11 @@ using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Stripe;
 using Shopizy.Infrastructure.Common.Persistence.Interceptors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjectionRegister
 {
     public static IServiceCollection AddInfrastructure(

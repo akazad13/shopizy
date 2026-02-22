@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
+[ExcludeFromCodeCoverage]
 public class StripeSettings
 {
     public const string Section = "StripeSettings";

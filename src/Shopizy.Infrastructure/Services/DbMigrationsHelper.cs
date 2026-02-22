@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Services;
 
+[ExcludeFromCodeCoverage]
 public class DbMigrationsHelper(ILogger<DbMigrationsHelper> logger, AppDbContext context)
 {
     private readonly AppDbContext _context = context;

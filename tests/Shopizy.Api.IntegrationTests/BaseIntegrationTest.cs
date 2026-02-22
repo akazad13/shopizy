@@ -37,7 +37,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         string password)
     {
         var registerRequest = new RegisterRequest(firstName, lastName, email, password);
-        return await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", registerRequest);
+        return await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", registerRequest, TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task<string> LoginAndGetTokenAsync(string email, string password)
     {
         var loginRequest = new LoginRequest(email, password);
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
@@ -84,8 +84,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var passwordManager = scope.ServiceProvider.GetRequiredService<Shopizy.Application.Common.Interfaces.Authentication.IPasswordManager>();
 
-            var existingUser = await dbContext.Users.FindAsync(UserId.Create(adminId));
-            if (existingUser == null)
+            var existingUser = (await dbContext.Users.FindAsync([UserId.Create(adminId)], TestContext.Current.CancellationToken));
+            if (existingUser is null)
             {
                 var hashedPassword = passwordManager.CreateHashString(password);
                 var constructor = typeof(User).GetConstructor(
@@ -102,7 +102,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         }
 
         var loginRequest = new LoginRequest(email, password);
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
@@ -298,7 +298,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<Guid> PlaceOrderAsync(
         Guid userId,
-        List<object> orderItems,
+        IEnumerable<object> orderItems,
         object? shippingAddress = null)
     {
         shippingAddress ??= new
