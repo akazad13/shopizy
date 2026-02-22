@@ -1,5 +1,5 @@
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products.Entities;

@@ -1,4 +1,4 @@
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.ValueObjects;

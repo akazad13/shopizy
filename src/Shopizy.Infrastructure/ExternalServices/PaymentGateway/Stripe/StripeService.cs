@@ -1,6 +1,6 @@
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.models;
+using Shopizy.SharedKernel.Application.Models;
 using Stripe;
 
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;

@@ -14,7 +14,6 @@ public static class DependencyInjectionRegister
     /// <returns>The service collection with presentation layer services added.</returns>
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers().AddNewtonsoftJson();
         services.AddEndpointsApiExplorer().AddSwaggerGen(options =>
         {
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -26,6 +25,9 @@ public static class DependencyInjectionRegister
             options.IncludeXmlComments(contractsXmlPath);
         });
         services.AddMappings();
+
+        services.AddExceptionHandler<Shopizy.Api.Common.Errors.GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }

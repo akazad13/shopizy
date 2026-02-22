@@ -1,5 +1,5 @@
 using ErrorOr;
-using Shopizy.Application.Common.models;
+using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Common.Interfaces.Services;
 

@@ -24,34 +24,46 @@ public class OrderMappingConfig : IRegister
     {
         Guard.Against.Null(config);
 
+        config.NewConfig<Shopizy.Domain.Common.ValueObjects.Price, Shopizy.Contracts.Order.Price>()
+            .Map(dest => dest.Amount, src => src.Amount)
+            .Map(dest => dest.Currency, src => src.Currency.ToString());
+
+        config.NewConfig<Shopizy.Domain.Orders.ValueObjects.Address, Shopizy.Contracts.Order.Address>()
+            .Map(dest => dest, src => src);
+
         config
             .NewConfig<(Guid UserId, OrdersCriteria criteria), GetOrdersQuery>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.criteria);
 
         config
-            .NewConfig<(Guid UserId, CreateOrderRequest OrderRequest), CreateOrderCommand>()
+            .NewConfig<(Guid UserId, CreateOrderRequest request), CreateOrderCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.DeliveryChargeAmount, src => src.OrderRequest.DeliveryCharge.Amount)
+            .Map(dest => dest.DeliveryChargeAmount, src => src.request.DeliveryCharge.Amount)
             .Map(
                 dest => dest.DeliveryChargeCurrency,
                 src =>
-                    src.OrderRequest.DeliveryCharge.Currency == "usd" ? Currency.usd
-                    : src.OrderRequest.DeliveryCharge.Currency == "bdt" ? Currency.bdt
-                    : src.OrderRequest.DeliveryCharge.Currency == "euro" ? Currency.euro
+                    src.request.DeliveryCharge.Currency.ToLower() == "usd" ? Currency.usd
+                    : src.request.DeliveryCharge.Currency.ToLower() == "bdt" ? Currency.bdt
+                    : src.request.DeliveryCharge.Currency.ToLower() == "euro" ? Currency.euro
                     : Currency.usd
-            );
+            )
+            .Map(dest => dest.OrderItems, src => src.request.OrderItems)
+            .Map(dest => dest.ShippingAddress, src => src.request.ShippingAddress);
 
         config.NewConfig<(Guid UserId, Guid OrderId) , GetOrderQuery>()
-            .Map(dest=> dest.UserId, src => src.UserId);
+            .Map(dest=> dest.UserId, src => src.UserId)
+            .Map(dest=> dest.OrderId, src => src.OrderId);
 
         config
             .NewConfig<Order, OrderDetailResponse>()
             .Map(dest => dest.UserId, src => src.UserId.Value)
             .Map(dest => dest.OrderId, src => src.Id.Value)
-            .Map(dest => dest, src => src)
+            .Map(dest => dest.DeliveryCharge, src => src.DeliveryCharge)
+            .Map(dest => dest.ShippingAddress, src => src.ShippingAddress)
             .Map(dest => dest.OrderStatus, src => src.OrderStatus.ToString())
-            .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString());
+            .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString())
+            .Map(dest => dest.ModifiedOn, src => src.ModifiedOn ?? src.CreatedOn);
 
         config
             .NewConfig<OrderItem, OrderItemResponse>()

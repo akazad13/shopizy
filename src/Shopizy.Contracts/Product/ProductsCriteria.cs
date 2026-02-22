@@ -10,7 +10,7 @@ namespace Shopizy.Contracts.Product;
 /// <param name="PageSize">The number of items per page.</param>
 public record ProductsCriteria(
     string? Name,
-    IList<Guid>? CategoryIds,
+    Guid[]? CategoryIds,
     decimal? AverageRating,
     int PageNumber = 1,
     int PageSize = 10

@@ -1,4 +1,4 @@
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Domain.Products.Entities;

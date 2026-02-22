@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Shopizy.Application.Common.Caching;
+using Microsoft.Extensions.Options;
+using Shopizy.SharedKernel.Application.Caching;
 using StackExchange.Redis;
 
 #pragma warning disable CA1848 // Use the LoggerMessage delegates

@@ -2,7 +2,7 @@ using Moq;
 using Shouldly;
 using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Caching;
+using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Users.Queries.GetUser;

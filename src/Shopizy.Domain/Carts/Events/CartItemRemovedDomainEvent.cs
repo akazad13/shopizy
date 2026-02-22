@@ -1,5 +1,5 @@
 using Shopizy.Domain.Carts.Entities;
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Carts.Events;
 

@@ -1,6 +1,6 @@
 using ErrorOr;
 using Moq;
-using Shopizy.Application.Common.Caching;
+using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdateUser;

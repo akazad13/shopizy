@@ -1,13 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.5.0" />
-    <PackageReference Include="ErrorOr" Version="2.1.0" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="ErrorOr" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj" />
   </ItemGroup>
 </Project>

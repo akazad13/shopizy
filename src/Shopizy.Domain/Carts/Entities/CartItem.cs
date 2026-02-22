@@ -1,5 +1,5 @@
 using Shopizy.Domain.Carts.ValueObjects;
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 

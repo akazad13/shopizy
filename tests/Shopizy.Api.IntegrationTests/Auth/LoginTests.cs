@@ -15,7 +15,7 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         var password = "Password123!";
 
         // Act
-        var token = await AuthenticateAsNewUserAsync("Login", "User", email, password);
+        var (token, _) = await AuthenticateAsNewUserAsync("Login", "User", email, password);
 
         // Assert
         token.ShouldNotBeNullOrEmpty();
@@ -45,4 +45,3 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
 }
-

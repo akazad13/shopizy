@@ -1,3 +1,4 @@
+using System.Linq;
 using Ardalis.GuardClauses;
 using ErrorOr;
 using MediatR;
@@ -23,12 +24,15 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
         if (query.PageNumber <= 0) query = query with { PageNumber = 1 };
         if (query.PageSize <= 0) query = query with { PageSize = 10 };
 
+        var categoryIds = query.CategoryIds?.Any() == true
+            ? query.CategoryIds
+                .Select(categoryId => CategoryId.Create(categoryId))
+                .ToList()
+            : null;
+
         var products = await _productRepository.GetProductsAsync(
             query.Name,
-            query
-                .CategoryIds?.AsQueryable()
-                .Select(categoryId => CategoryId.Create(categoryId))
-                .ToList(),
+            categoryIds,
             query.AverageRating,
             query.PageNumber,
             query.PageSize

@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Common.Persistence.Interceptors;
 using Testcontainers.PostgreSql;
+using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Models;
+using Shopizy.Application.Common.Interfaces.Services;
 
 namespace Shopizy.Api.IntegrationTests;
 
@@ -63,20 +66,24 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 });
 
             // Replace Redis cache with In-Memory stub
-            services.RemoveAll(typeof(Shopizy.Application.Common.Caching.ICacheHelper));
-            services.AddSingleton<Shopizy.Application.Common.Caching.ICacheHelper, InMemoryCacheHelper>();
+            services.RemoveAll(typeof(ICacheHelper));
+            services.AddSingleton<ICacheHelper, InMemoryCacheHelper>();
+
+            // Mock IPaymentService
+            services.RemoveAll(typeof(IPaymentService));
+            services.AddScoped<IPaymentService, MockPaymentService>();
         });
     }
 
-    public class InMemoryCacheHelper : Shopizy.Application.Common.Caching.ICacheHelper
+    public class InMemoryCacheHelper : ICacheHelper
     {
         // No-op cache for integration tests - always returns cache miss
         // This ensures tests always get fresh data from the database
         
-        public Task<Shopizy.Application.Common.Caching.CacheResult<T>> GetAsync<T>(string key)
+        public Task<CacheResult<T>> GetAsync<T>(string key)
         {
             // Always return cache miss
-            return Task.FromResult(Shopizy.Application.Common.Caching.CacheResult<T>.Miss());
+            return Task.FromResult(CacheResult<T>.Miss());
         }
 
         public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
@@ -88,6 +95,37 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         public Task RemoveAsync(string key)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    public class MockPaymentService : IPaymentService
+    {
+        public Task<ErrorOr.ErrorOr<CustomerResource>> CreateCustomer(string email, string name, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<CustomerResource>>(
+                new CustomerResource("cus_mock_123", email, name)
+            );
+        }
+
+        public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<CreateSaleResponse>>(
+                new CreateSaleResponse
+                {
+                    ResponseStatusCode = 200,
+                    CustomerId = request.CustomerId,
+                    Amount = request.Amount,
+                    Currency = request.Currency,
+                    PaymentIntentId = "pi_mock_123",
+                    ObjectType = "payment_intent",
+                    CaptureMethod = "automatic",
+                    ChargeId = "ch_mock_123",
+                    PaymentMethodId = request.PaymentMethodId,
+                    PaymentMethodTypes = request.PaymentMethodTypes,
+                    Status = "succeeded",
+                    Metadata = new Dictionary<string, string>()
+                }
+            );
         }
     }
 

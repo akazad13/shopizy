@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Users.ValueObjects;
 

@@ -2,8 +2,7 @@ using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.models;
-using Shopizy.Application.Common.Security.CurrentUser;
+using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -17,15 +16,13 @@ public class CardNotPresentSaleCommandHandler(
     IPaymentRepository paymentRepository,
     IOrderRepository orderRepository,
     IUserRepository userRepository,
-    IPaymentService paymentService,
-    ICurrentUser currentUser
+    IPaymentService paymentService
 ) : IRequestHandler<CardNotPresentSaleCommand, ErrorOr<Success>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPaymentService _paymentService = paymentService;
-    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<ErrorOr<Success>> Handle(
         CardNotPresentSaleCommand request,
@@ -44,11 +41,11 @@ public class CardNotPresentSaleCommandHandler(
             var total = order.GetTotal();
 
             var user = await _userRepository.GetUserByIdAsync(
-                UserId.Create(_currentUser.GetCurrentUserId())
+                UserId.Create(request.UserId)
             );
 
             var payment = Payment.Create(
-                UserId.Create(_currentUser.GetCurrentUserId()),
+                UserId.Create(request.UserId),
                 OrderId.Create(request.OrderId),
                 request.PaymentMethod,
                 request.PaymentMethodId,
@@ -75,7 +72,6 @@ public class CardNotPresentSaleCommandHandler(
                 }
 
                 user.UpdateCustomerId(customer.Value.CustomerId);
-
                 _userRepository.Update(user);
             }
 
@@ -106,7 +102,7 @@ public class CardNotPresentSaleCommandHandler(
             payment.UpdateTransactionId(response.Value.ChargeId);
 
             _orderRepository.Update(order);
-            _paymentRepository.Update(payment);
+            // _paymentRepository.Update(payment);
 
             return Result.Success;
         }

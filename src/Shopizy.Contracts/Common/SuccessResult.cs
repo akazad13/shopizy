@@ -10,6 +10,8 @@ public class SuccessResult
     /// </summary>
     public string Message { get; set; }
 
+    public SuccessResult() { }
+
     internal SuccessResult(string message)
     {
         Message = message;

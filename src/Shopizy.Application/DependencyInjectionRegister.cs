@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shopizy.Application.Common.Behaviors;
+using Shopizy.SharedKernel.Application.Behaviors;
 using Shopizy.Application.Common.Security.CurrentUser;
 
 namespace Shopizy.Application;

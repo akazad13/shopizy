@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Domain.Common.Models;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Infrastructure.Common.Persistence.Interceptors;
 

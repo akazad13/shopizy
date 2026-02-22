@@ -86,7 +86,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             {
                 reviewBuilder.ToTable("ProductReviewIds");
 
-                reviewBuilder.WithOwner().HasForeignKey("UseId");
+                reviewBuilder.WithOwner().HasForeignKey("UserId");
 
                 reviewBuilder.HasKey("Id");
 
@@ -110,7 +110,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             {
                 reviewBuilder.ToTable("OrderIds");
 
-                reviewBuilder.WithOwner().HasForeignKey("UseId");
+                reviewBuilder.WithOwner().HasForeignKey("UserId");
 
                 reviewBuilder.HasKey("Id");
 

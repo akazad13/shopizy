@@ -2,8 +2,8 @@ using ErrorOr;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Application.Common.models;
-using Shopizy.Application.Common.Security.CurrentUser;
+using Shopizy.SharedKernel.Application.Models;
+using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
@@ -22,7 +22,6 @@ public class CardNotPresentSaleCommandHandlerTests
     private readonly Mock<IOrderRepository> _mockOrderRepository;
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IPaymentService> _mockPaymentService;
-    private readonly Mock<ICurrentUser> _mockCurrentUser;
     private readonly CardNotPresentSaleCommandHandler _handler;
 
     public CardNotPresentSaleCommandHandlerTests()
@@ -31,14 +30,12 @@ public class CardNotPresentSaleCommandHandlerTests
         _mockOrderRepository = new Mock<IOrderRepository>();
         _mockUserRepository = new Mock<IUserRepository>();
         _mockPaymentService = new Mock<IPaymentService>();
-        _mockCurrentUser = new Mock<ICurrentUser>();
 
         _handler = new CardNotPresentSaleCommandHandler(
             _mockPaymentRepository.Object,
             _mockOrderRepository.Object,
             _mockUserRepository.Object,
-            _mockPaymentService.Object,
-            _mockCurrentUser.Object
+            _mockPaymentService.Object
         );
     }
 
@@ -68,7 +65,6 @@ public class CardNotPresentSaleCommandHandlerTests
         user.UpdateCustomerId("cus_123");
 
         _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
-        _mockCurrentUser.Setup(u => u.GetCurrentUserId()).Returns(Constants.User.Id.Value);
         _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
         _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(Error.Failure("payment.failed", "Failed to collect the payment."));
@@ -91,7 +87,6 @@ public class CardNotPresentSaleCommandHandlerTests
         user.UpdateCustomerId("cus_123");
 
         _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
-        _mockCurrentUser.Setup(u => u.GetCurrentUserId()).Returns(Constants.User.Id.Value);
         _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
         _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(new CreateSaleResponse { ChargeId = "ch_123" });
@@ -102,7 +97,6 @@ public class CardNotPresentSaleCommandHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         _mockOrderRepository.Verify(r => r.Update(order), Times.Once);
-        _mockPaymentRepository.Verify(r => r.Update(It.IsAny<Payment>()), Times.Once);
     }
 
     private static CardNotPresentSaleCommand CreateCommand()

@@ -1,5 +1,5 @@
 using ErrorOr;
-using Shopizy.Application.Common.Caching;
+using Shopizy.SharedKernel.Application.Caching;
 
 namespace Shopizy.Application.Users.Queries.GetUser;
 

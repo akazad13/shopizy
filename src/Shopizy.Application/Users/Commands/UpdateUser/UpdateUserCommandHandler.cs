@@ -1,6 +1,6 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Common.Caching;
+using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users.ValueObjects;

@@ -2,7 +2,7 @@ using ErrorOr;
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;
-using Shopizy.Application.Common.Behaviors;
+using Shopizy.SharedKernel.Application.Behaviors;
 using Shouldly;
 using MediatR;
 

@@ -5,17 +5,20 @@ using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
 using Shopizy.Infrastructure.Services;
+using Shopizy.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddPresentation()
     .AddApplication(builder.Configuration)
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddEndpoints(typeof(Program).Assembly);
 
 var app = builder.Build();
 
 app.UseInfrastructure();
+app.MapEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -23,25 +26,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger().UseSwaggerUI();
 }
 
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-        if (errorFeature != null)
-        {
-            var exception = errorFeature.Error;
-
-            await context.Response.WriteAsync(
-                JsonConvert.SerializeObject(
-                    new { message = "Error occured!", errors = new string[] { exception.Message } }
-                ),
-                Encoding.UTF8
-            );
-        }
-    });
-});
+app.UseExceptionHandler();
 
 app.UseCors("_myAllowSpecificOrigins");
 if (!app.Environment.IsEnvironment("Testing"))
@@ -51,8 +36,6 @@ if (!app.Environment.IsEnvironment("Testing"))
 
 app.UseAuthentication()
    .UseAuthorization();
-
-app.MapControllers();
 
 if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
 {

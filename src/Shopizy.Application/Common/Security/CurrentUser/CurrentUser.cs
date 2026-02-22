@@ -11,9 +11,14 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
     {
         Guard.Against.Null(_httpContextAccessor.HttpContext);
 
-        var id = _httpContextAccessor
-            .HttpContext!.User.Claims.Single(claim => claim.Type == "id")
-            .Value;
-        return Guid.Parse(id);
+        var idClaim = _httpContextAccessor.HttpContext!.User.FindFirst("id")?.Value 
+            ?? _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+        if (idClaim == null)
+        {
+            throw new InvalidOperationException("User ID claim not found in current context.");
+        }
+
+        return Guid.Parse(idClaim);
     }
 }

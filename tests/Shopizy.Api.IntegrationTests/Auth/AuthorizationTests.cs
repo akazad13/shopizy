@@ -100,7 +100,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
     {
         // Arrange
         var email = $"{Guid.NewGuid().ToString()[..8]}@auth.com";
-        await AuthenticateAsNewUserAsync("Auth", "User", email, "Password123!");
+        var (token, _) = await AuthenticateAsNewUserAsync("Auth", "User", email, "Password123!");
 
         // Act
         var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
@@ -115,7 +115,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         // Arrange
         var userId = Guid.NewGuid();
         var email = $"{Guid.NewGuid().ToString()[..8]}@regular.com";
-        await AuthenticateAsNewUserAsync("Regular", "User", email, "Password123!");
+        var (_, _) = await AuthenticateAsNewUserAsync("Regular", "User", email, "Password123!");
         
         var productRequest = new { Name = "New Product", Price = 10.0 };
 

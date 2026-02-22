@@ -1,6 +1,6 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Application.Common.Caching;
+using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Domain.Categories;
 
 namespace Shopizy.Application.Categories.Queries.GetCategory;

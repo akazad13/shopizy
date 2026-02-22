@@ -1,7 +1,6 @@
 using Moq;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Carts;
@@ -16,19 +15,16 @@ public class AddProductToCartCommandHandlerTests
 {
     private readonly Mock<ICartRepository> _mockCartRepository;
     private readonly Mock<IProductRepository> _mockProductRepository;
-    private readonly Mock<ICurrentUser> _mockCurrentUser;
     private readonly AddProductToCartCommandHandler _sut;
 
     public AddProductToCartCommandHandlerTests()
     {
         _mockCartRepository = new Mock<ICartRepository>();
         _mockProductRepository = new Mock<IProductRepository>();
-        _mockCurrentUser = new Mock<ICurrentUser>();
 
         _sut = new AddProductToCartCommandHandler(
             _mockCartRepository.Object,
-            _mockProductRepository.Object,
-            _mockCurrentUser.Object
+            _mockProductRepository.Object
         );
     }
 
@@ -73,8 +69,6 @@ public class AddProductToCartCommandHandlerTests
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(existingCart.UserId))
             .ReturnsAsync(existingCart);
-
-        _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
         var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -134,8 +128,6 @@ public class AddProductToCartCommandHandlerTests
         _mockCartRepository
             .Setup(cr => cr.GetCartByUserIdAsync(updatedCart.UserId))
             .ReturnsAsync(updatedCart);
-
-        _mockCurrentUser.Setup(cu => cu.GetCurrentUserId()).Returns(Constants.User.Id.Value);
 
         // Act
         var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);
