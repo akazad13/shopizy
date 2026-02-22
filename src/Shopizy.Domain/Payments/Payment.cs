@@ -12,7 +12,7 @@ namespace Shopizy.Domain.Payments;
 /// <summary>
 /// Represents a payment transaction in the system.
 /// </summary>
-public sealed class Payment : Entity<PaymentId>
+public sealed class Payment : Entity<PaymentId>, IAuditable
 {
     /// <summary>
     /// Gets or sets the order associated with this payment.
@@ -131,7 +131,6 @@ public sealed class Payment : Entity<PaymentId>
         PaymentStatus = paymentStatus;
         Total = total;
         BillingAddress = billingAddress;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private Payment() { }
@@ -143,7 +142,6 @@ public sealed class Payment : Entity<PaymentId>
     public void UpdatePaymentStatus(PaymentStatus status)
     {
         PaymentStatus = status;
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -153,6 +151,5 @@ public sealed class Payment : Entity<PaymentId>
     public void UpdateTransactionId(string transactionId)
     {
         TransactionId = transactionId;
-        ModifiedOn = DateTime.UtcNow;
     }
 }

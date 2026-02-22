@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;

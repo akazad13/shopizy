@@ -9,5 +9,4 @@ public interface IUserRepository
     Task<User?> GetUserByIdAsync(UserId id);
     Task AddAsync(User user);
     void Update(User user);
-    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

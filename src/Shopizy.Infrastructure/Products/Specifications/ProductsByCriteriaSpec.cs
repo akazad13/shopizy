@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Infrastructure.Common.Specifications;
@@ -8,7 +9,7 @@ internal class ProductsByCriteriaSpec : Specification<Product>
 {
     public ProductsByCriteriaSpec(
         string? name,
-        IList<CategoryId>? categoryIds,
+        IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating
     )
         : base(product =>

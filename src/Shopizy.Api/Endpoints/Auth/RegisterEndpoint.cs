@@ -8,27 +8,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Auth;
 
-public class RegisterEndpoint : IEndpoint
+public class RegisterEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/v1.0/auth/register", async (RegisterRequest request, ISender mediator, IMapper mapper, ILogger<RegisterEndpoint> logger) =>
         {
-            try
-            {
-                var command = mapper.Map<RegisterCommand>(request);
-                var result = await mediator.Send(command);
+            var command = mapper.Map<RegisterCommand>(request);
 
-                return result.Match(
-                    success => Results.Ok(SuccessResult.Success("Your account has been added. Please log in.")),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.UserRegisterError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                success => Results.Ok(SuccessResult.Success("Your account has been added. Please log in.")),
+                ex => logger.UserRegisterError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Auth")

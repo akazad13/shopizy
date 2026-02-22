@@ -8,7 +8,7 @@ namespace Shopizy.Domain.Carts;
 /// <summary>
 /// Represents a shopping cart in the system.
 /// </summary>
-public sealed class Cart : AggregateRoot<CartId, Guid>
+public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
 {
     private readonly List<CartItem> _cartItems = [];
     
@@ -59,7 +59,6 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     public void RemoveLineItem(CartItem lineItem)
     {
         _cartItems.Remove(lineItem);
-        ModifiedOn = DateTime.UtcNow;
         this.AddDomainEvent(new Events.CartItemRemovedDomainEvent(this, lineItem));
     }
 
@@ -71,14 +70,12 @@ public sealed class Cart : AggregateRoot<CartId, Guid>
     public void UpdateLineItem(CartItemId cartItemId, int quantity)
     {
         _cartItems.Find(li => li.Id == cartItemId)?.UpdateQuantity(quantity);
-        ModifiedOn = DateTime.UtcNow;
     }
 
     private Cart(CartId cartId, UserId userId)
         : base(cartId)
     {
         UserId = userId;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private Cart() { }

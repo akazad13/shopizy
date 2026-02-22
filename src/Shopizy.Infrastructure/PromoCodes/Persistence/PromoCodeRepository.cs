@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.PromoCodes;
@@ -10,9 +12,9 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<List<PromoCode>> GetPromoCodesAsync()
+    public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync()
     {
-        return _dbContext.PromoCodes.AsNoTracking().ToListAsync();
+        return await _dbContext.PromoCodes.AsNoTracking().ToListAsync();
     }
 
     public Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id)
@@ -27,11 +29,6 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 
     public void Update(PromoCode promoCode)
     {
-        _dbContext.Update(promoCode);
-    }
-
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        _dbContext.PromoCodes.Update(promoCode);
     }
 }

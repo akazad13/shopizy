@@ -7,31 +7,24 @@ using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Endpoints.Products;
 
-public class SearchProductsEndpoint : IEndpoint
+public class SearchProductsEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/products", async ([AsParameters] ProductsCriteria criteria, ISender mediator, IMapper mapper, ILogger<SearchProductsEndpoint> logger) =>
         {
-            try
-            {
-                var query = mapper.Map<GetProductsQuery>(criteria);
-                var result = await mediator.Send(query);
+            var query = mapper.Map<GetProductsQuery>(criteria);
 
-                return result.Match(
-                    products => Results.Ok(mapper.Map<List<ProductResponse>>(products)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.ProductFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                query,
+                products => Results.Ok(mapper.Map<IReadOnlyList<ProductResponse>>(products)),
+                ex => logger.ProductFetchError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Products")
-        .Produces<List<ProductResponse>>(StatusCodes.Status200OK)
+        .Produces<IReadOnlyList<ProductResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);

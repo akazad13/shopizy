@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
@@ -18,9 +20,9 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     /// Retrieves all carts from the database.
     /// </summary>
     /// <returns>A list of all carts.</returns>
-    public Task<List<Cart>> GetCartsAsync()
+    public async Task<IReadOnlyList<Cart>> GetCartsAsync()
     {
-        return _dbContext.Carts.AsNoTracking().ToListAsync();
+        return await _dbContext.Carts.AsNoTracking().ToListAsync();
     }
 
     /// <summary>
@@ -72,15 +74,5 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     public void Remove(Cart cart)
     {
         _dbContext.Remove(cart);
-    }
-
-    /// <summary>
-    /// Commits all pending changes to the database.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -214,7 +214,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// Adds multiple product images.
     /// </summary>
     /// <param name="productImages">The list of product images to add.</param>
-    public void AddProductImages(IList<ProductImage> productImages)
+    public void AddProductImages(IReadOnlyList<ProductImage> productImages)
     {
         _productImages.AddRange(productImages);
     }

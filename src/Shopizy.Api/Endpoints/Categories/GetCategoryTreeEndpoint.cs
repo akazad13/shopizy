@@ -7,26 +7,18 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Categories;
 
-public class GetCategoryTreeEndpoint : IEndpoint
+public class GetCategoryTreeEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/categories/tree", async (ISender mediator, IMapper mapper, ILogger<GetCategoryTreeEndpoint> logger) =>
         {
-            try
-            {
-                var result = await mediator.Send(new CategoriesTreeQuery());
-
-                return result.Match(
-                    categories => Results.Ok(mapper.Map<List<CategoryTreeResponse>>(categories)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.CategoryFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                new CategoriesTreeQuery(),
+                categories => Results.Ok(mapper.Map<List<CategoryTreeResponse>>(categories)),
+                ex => logger.CategoryFetchError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Categories")

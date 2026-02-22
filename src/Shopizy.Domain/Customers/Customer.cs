@@ -7,7 +7,7 @@ namespace Shopizy.Domain.Customers;
 /// <summary>
 /// Represents a customer in the system.
 /// </summary>
-public sealed class Customer : AggregateRoot<CustomerId, Guid>
+public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
 {
     /// <summary>
     /// Gets the customer's profile image URL.
@@ -27,7 +27,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
     /// <summary>
     /// Gets the date and time when the customer was last modified.
     /// </summary>
-    public DateTime ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; private set; }
 
     /// <summary>
     /// Creates a new customer.
@@ -40,27 +40,18 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>
         return new Customer(
             CustomerId.CreateUnique(),
             profileImageUrl,
-            // userId,
-            address,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            address
         );
     }
 
     private Customer(
         CustomerId customerId,
         string? profileImageUrl,
-        // UserId userId,
-        Address address,
-        DateTime createdOn,
-        DateTime modifiedOn
+        Address address
     ) : base(customerId)
     {
         ProfileImageUrl = profileImageUrl;
-        // UserId = userId;
         Address = address;
-        CreatedOn = createdOn;
-        ModifiedOn = modifiedOn;
     }
 
     private Customer() { }

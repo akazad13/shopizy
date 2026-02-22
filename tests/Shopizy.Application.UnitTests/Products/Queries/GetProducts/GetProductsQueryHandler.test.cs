@@ -32,7 +32,7 @@ public class GetProductsQueryHandlerTestsRefactored
         var products = new List<Product> { product };
 
         _mockProductRepository.Setup(r => r.GetProductsAsync(
-            It.IsAny<string>(), It.IsAny<IList<CategoryId>?>(), It.IsAny<decimal?>(), It.IsAny<int>(), It.IsAny<int>()))
+            It.IsAny<string>(), It.IsAny<IReadOnlyList<CategoryId>?>(), It.IsAny<decimal?>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(products);
 
         // Act
@@ -50,8 +50,8 @@ public class GetProductsQueryHandlerTestsRefactored
         var query = new GetProductsQuery(null, null, null, 1, 10);
 
         _mockProductRepository.Setup(r => r.GetProductsAsync(
-            It.IsAny<string>(), It.IsAny<IList<CategoryId>?>(), It.IsAny<decimal?>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((List<Product>?)null);
+            It.IsAny<string>(), It.IsAny<IReadOnlyList<CategoryId>?>(), It.IsAny<decimal?>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync((IReadOnlyList<Product>?)null);
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);

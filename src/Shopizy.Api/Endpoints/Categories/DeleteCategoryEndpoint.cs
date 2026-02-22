@@ -6,27 +6,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Categories;
 
-public class DeleteCategoryEndpoint : IEndpoint
+public class DeleteCategoryEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete("api/v1.0/users/{userId:guid}/categories/{categoryId:guid}", async (Guid userId, Guid categoryId, ISender mediator, IMapper mapper, ILogger<DeleteCategoryEndpoint> logger) =>
         {
-            try
-            {
-                var command = mapper.Map<DeleteCategoryCommand>((userId, categoryId));
-                var result = await mediator.Send(command);
+            var command = mapper.Map<DeleteCategoryCommand>((userId, categoryId));
 
-                return result.Match(
-                    success => Results.Ok(SuccessResult.Success("Successfully deleted category.")),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.CategoryDeleteError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                success => Results.Ok(SuccessResult.Success("Successfully deleted category.")),
+                ex => logger.CategoryDeleteError(ex)
+            );
         })
         .RequireAuthorization("AdminOnly")
         .WithTags("Categories")

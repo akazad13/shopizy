@@ -189,8 +189,14 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         int pageSize = 10)
     {
         var queryParams = new List<string> { $"pageNumber={pageNumber}", $"pageSize={pageSize}" };
-        if (!string.IsNullOrEmpty(name)) queryParams.Add($"name={name}");
-        if (categoryId.HasValue) queryParams.Add($"categoryId={categoryId}");
+        if (!string.IsNullOrEmpty(name))
+        {
+            queryParams.Add($"name={name}");
+        }
+        if (categoryId.HasValue)
+        {
+            queryParams.Add($"categoryId={categoryId}");
+        }
 
         var query = string.Join("&", queryParams);
         var response = await HttpClient.GetAsync($"/api/v1.0/products?{query}", TestContext.Current.CancellationToken);
@@ -347,7 +353,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task<List<Shopizy.Contracts.Order.OrderResponse>> ListOrdersAsync(Guid userId, string? status = null)
     {
         var url = $"/api/v1.0/users/{userId}/orders";
-        if (!string.IsNullOrEmpty(status)) url += $"?status={status}";
+        if (!string.IsNullOrEmpty(status))
+        {
+            url += $"?status={status}";
+        }
 
         var response = await HttpClient.GetAsync(url, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();

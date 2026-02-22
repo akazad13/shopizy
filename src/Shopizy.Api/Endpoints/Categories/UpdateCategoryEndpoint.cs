@@ -7,27 +7,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Categories;
 
-public class UpdateCategoryEndpoint : IEndpoint
+public class UpdateCategoryEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPatch("api/v1.0/users/{userId:guid}/categories/{categoryId:guid}", async (Guid userId, Guid categoryId, UpdateCategoryRequest request, ISender mediator, IMapper mapper, ILogger<UpdateCategoryEndpoint> logger) =>
         {
-            try
-            {
-                var command = mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
-                var result = await mediator.Send(command);
+            var command = mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
 
-                return result.Match(
-                    success => Results.Ok(SuccessResult.Success("Successfully updated category.")),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.CategoryUpdateError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                success => Results.Ok(SuccessResult.Success("Successfully updated category.")),
+                ex => logger.CategoryUpdateError(ex)
+            );
         })
         .RequireAuthorization("AdminOnly")
         .WithTags("Categories")

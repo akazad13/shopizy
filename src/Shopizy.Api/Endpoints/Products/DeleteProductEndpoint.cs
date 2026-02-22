@@ -6,27 +6,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Products;
 
-public class DeleteProductEndpoint : IEndpoint
+public class DeleteProductEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete("api/v1.0/users/{userId:guid}/products/{productId:guid}", async (Guid userId, Guid productId, ISender mediator, IMapper mapper, ILogger<DeleteProductEndpoint> logger) =>
         {
-            try
-            {
-                var command = mapper.Map<DeleteProductCommand>((userId, productId));
-                var result = await mediator.Send(command);
+            var command = mapper.Map<DeleteProductCommand>((userId, productId));
 
-                return result.Match(
-                    success => Results.Ok(SuccessResult.Success("Successfully deleted product.")),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.ProductDeleteError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                success => Results.Ok(SuccessResult.Success("Successfully deleted product.")),
+                ex => logger.ProductDeleteError(ex)
+            );
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")

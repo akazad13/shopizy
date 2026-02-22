@@ -23,8 +23,8 @@ public class CustomerTests
         customer.Id.Value.ShouldNotBe(Guid.Empty);
         customer.ProfileImageUrl.ShouldBe(profileImageUrl);
         customer.Address.ShouldBe(address);
-        customer.CreatedOn.ShouldBeInRange(DateTime.UtcNow.AddSeconds(-2), DateTime.UtcNow.AddSeconds(2));
-        customer.ModifiedOn.ShouldBeInRange(DateTime.UtcNow.AddSeconds(-2), DateTime.UtcNow.AddSeconds(2));
+        customer.CreatedOn.ShouldBe(default);
+        customer.ModifiedOn.ShouldBeNull();
     }
 
     [Fact]

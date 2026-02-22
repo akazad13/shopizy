@@ -9,32 +9,25 @@ using Shopizy.Contracts.Order;
 
 namespace Shopizy.Api.Endpoints.Orders;
 
-public class GetOrderEndpoint : IEndpoint
+public class GetOrderEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/users/{userId:guid}/orders/{orderId:guid}", async (Guid userId, Guid orderId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<GetOrderEndpoint> logger) =>
         {
-            try
+            if (!user.IsAuthorized(userId))
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this order.")]);
-                }
-
-                var query = mapper.Map<GetOrderQuery>((userId, orderId));
-                var result = await mediator.Send(query);
-
-                return result.Match(
-                    order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
-                    CustomResults.Problem
-                );
+                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this order.")]);
             }
-            catch (Exception ex)
-            {
-                logger.OrderFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+
+            var query = mapper.Map<GetOrderQuery>((userId, orderId));
+
+            return await HandleAsync(
+                mediator,
+                query,
+                order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
+                ex => logger.OrderFetchError(ex)
+            );
         })
         .RequireAuthorization()
         .WithTags("Orders")

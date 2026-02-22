@@ -9,32 +9,25 @@ using Shopizy.Contracts.User;
 
 namespace Shopizy.Api.Endpoints.Users;
 
-public class GetUserEndpoint : IEndpoint
+public class GetUserEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/users/{userId:guid}", async (Guid userId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<GetUserEndpoint> logger) =>
         {
-            try
+            if (!user.IsAuthorized(userId)) 
             {
-                if (!user.IsAuthorized(userId)) 
-                {
-                    return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this user's information.")]);
-                }
-
-                var query = mapper.Map<GetUserQuery>(userId);
-                var result = await mediator.Send(query);
-
-                return result.Match(
-                    userResult => Results.Ok(mapper.Map<UserDetails>(userResult)),
-                    CustomResults.Problem
-                );
+                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this user's information.")]);
             }
-            catch (Exception ex)
-            {
-                logger.UserFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+
+            var query = mapper.Map<GetUserQuery>(userId);
+
+            return await HandleAsync(
+                mediator,
+                query,
+                userResult => Results.Ok(mapper.Map<UserDetails>(userResult)),
+                ex => logger.UserFetchError(ex)
+            );
         })
         .RequireAuthorization()
         .WithTags("Users")

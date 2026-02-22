@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.ProductReviews;
@@ -10,9 +12,9 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<List<ProductReview>> GetProductReviewsAsync()
+    public async Task<IReadOnlyList<ProductReview>> GetProductReviewsAsync()
     {
-        return _dbContext.ProductReviews.AsNoTracking().ToListAsync();
+        return await _dbContext.ProductReviews.AsNoTracking().ToListAsync();
     }
 
     public Task<ProductReview?> GetProductReviewByIdAsync(ProductReviewId id)
@@ -27,11 +29,6 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
 
     public void Update(ProductReview productReview)
     {
-        _dbContext.Update(productReview);
-    }
-
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        _dbContext.ProductReviews.Update(productReview);
     }
 }

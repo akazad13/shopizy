@@ -9,32 +9,25 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Carts;
 
-public class GetCartEndpoint : IEndpoint
+public class GetCartEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/users/{userId:guid}/carts", async (Guid userId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<GetCartEndpoint> logger) =>
         {
-            try
+            if (!user.IsAuthorized(userId))
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this cart.")]);
-                }
-
-                var query = mapper.Map<GetCartQuery>(userId);
-                var result = await mediator.Send(query);
-
-                return result.Match(
-                    cart => Results.Ok(mapper.Map<CartResponse>(cart)),
-                    CustomResults.Problem
-                );
+                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this cart.")]);
             }
-            catch (Exception ex)
-            {
-                logger.CartFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+
+            var query = mapper.Map<GetCartQuery>(userId);
+
+            return await HandleAsync(
+                mediator,
+                query,
+                cart => Results.Ok(mapper.Map<CartResponse>(cart)),
+                ex => logger.CartFetchError(ex)
+            );
         })
         .RequireAuthorization()
         .WithTags("Cart")

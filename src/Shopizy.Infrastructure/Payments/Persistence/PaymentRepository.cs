@@ -1,10 +1,12 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
 
-namespace Shopizy.Infrastructure.Customers.Persistence;
+namespace Shopizy.Infrastructure.Payments.Persistence;
 
 /// <summary>
 /// Repository for managing payment data persistence.
@@ -17,9 +19,9 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
     /// Retrieves all payments from the database.
     /// </summary>
     /// <returns>A list of all payments.</returns>
-    public Task<List<Payment>> GetPaymentsAsync()
+    public async Task<IReadOnlyList<Payment>> GetPaymentsAsync()
     {
-        return _dbContext.Payments.AsNoTracking().ToListAsync();
+        return await _dbContext.Payments.AsNoTracking().ToListAsync();
     }
 
     /// <summary>
@@ -48,15 +50,5 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
     public void Update(Payment payment)
     {
         _dbContext.Update(payment);
-    }
-
-    /// <summary>
-    /// Commits all pending changes to the database.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
