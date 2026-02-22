@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: dotnet build Shopizy.sln --no-restore --configuration Release
     - name: Test with Coverage
-      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage;Format=cobertura;Exclude=[*.UnitTests]*,[*.IntegrationTests]*" --results-directory ./coverage
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
