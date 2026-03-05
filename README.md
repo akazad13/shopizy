@@ -22,7 +22,8 @@ Key features include:
 ## 🛠️ Built With
 
 *   [ASP.NET Core 10](https://dotnet.microsoft.com/en-us/apps/aspnet) - The web framework used.
-*   [MediatR](https://github.com/jbogard/MediatR) - Simple, unambitious mediator implementation in .NET.
+*   **Custom Messaging System** - Handrolled implementation for Commands, Queries, and Domain Events.
+*   [Scrutor](https://github.com/khellang/Scrutor) - Assembly scanning and decorator support for Microsoft.Extensions.DependencyInjection.
 *   [Mapster](https://github.com/MapsterMapper/Mapster) - A fast, fun and stimulating object to object mapper.
 *   [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) - Object-Relational Mapper (ORM).
 *   [Redis](https://redis.io/) - In-memory data structure store, used for caching.
@@ -100,7 +101,9 @@ For more detailed information, please refer to:
 The solution follows **Clean Architecture** principles:
 
 *   **Shopizy.Domain**: Contains enterprise logic and types (Entities, Value Objects, Enums). No dependencies.
-*   **Shopizy.Application**: Contains business logic and use cases. Depends on Domain.
+*   **Shopizy.Application**: Contains business logic and use cases. Implements a custom CQRS pattern with Commands and Queries.
+    *   **Custom Dispatcher**: A custom `IDispatcher` resolves and executes handlers using dependency injection.
+    *   **Decorator Pattern**: Uses Scrutor to apply cross-cutting concerns like Validation and Unit of Work via decorators, avoiding library-heavy pipeline behaviors.
 *   **Shopizy.Infrastructure**: Implements interfaces defined in Application (Data access, External services). Depends on Application.
     *   **Multi-Database Support**: Dynamically configure between PostgreSQL (via Npgsql) and SQL Server using the `UsePostgreSql` flag in `appsettings.json`.
 *   **Shopizy.Api**: The entry point (Controllers, Middleware). Depends on Application and Infrastructure.
