@@ -281,11 +281,19 @@ public static partial class LoggerMessages
     )]
     public static partial void UserRegisterError(this ILogger logger, Exception ex);
 
+    [LoggerMessage(EventId = 1023, Level = LogLevel.Error, Message = "An error occur while login.")]
+    public static partial void UserLoginError(this ILogger logger, Exception ex);
+
     /// <summary>
-    /// Logs an error when user login fails.
+    /// Logs an unhandled exception.
     /// </summary>
     /// <param name="logger">The logger instance.</param>
     /// <param name="ex">The exception that occurred.</param>
-    [LoggerMessage(EventId = 1023, Level = LogLevel.Error, Message = "An error occur while login.")]
-    public static partial void UserLoginError(this ILogger logger, Exception ex);
+    /// <param name="message">The exception message.</param>
+    [LoggerMessage(
+        EventId = 1024,
+        Level = LogLevel.Error,
+        Message = "An unhandled exception has occurred: {Message}"
+    )]
+    public static partial void UnhandledExceptionError(this ILogger logger, Exception ex, string message);
 }

@@ -1,7 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
-using Shopizy.Contracts.Common;
 using System.Diagnostics.CodeAnalysis;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Common.Errors;
 
@@ -15,7 +15,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "An unhandled exception has occurred: {Message}", exception.Message);
+        _logger.UnhandledExceptionError(exception, exception.Message);
 
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = "application/json";

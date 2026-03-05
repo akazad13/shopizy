@@ -16,6 +16,7 @@ namespace Shopizy.Contracts.Product;
 /// <param name="Sizes">Comma-separated list of sizes.</param>
 /// <param name="Tags">Comma-separated list of tags.</param>
 /// <param name="Barcode">The barcode.</param>
+/// <param name="StockQuantity">The initial stock quantity.</param>
 /// <param name="SpecificationIds">List of specification identifiers.</param>
 public record CreateProductRequest(
     string Name,

@@ -33,6 +33,8 @@ public class RegisterCommandHandler(
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         // check if command.Email is valid email address
         if (string.IsNullOrEmpty(command.Email) || !IsValidEmail(command.Email))
         {
