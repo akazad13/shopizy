@@ -38,6 +38,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             Sizes: "256GB",
             Tags: "phone,electronics",
             Barcode: "987654321",
+            StockQuantity: 100,
             SpecificationIds: null
         );
         var productResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{adminUserId}/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);

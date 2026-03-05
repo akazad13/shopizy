@@ -157,7 +157,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             colors = "Red,Blue",
             sizes = "S,M,L",
             tags = "Test",
-            barcode = Guid.NewGuid().ToString()[..8]
+            barcode = Guid.NewGuid().ToString()[..8],
+            stockQuantity
         };
 
         var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/products", createRequest, TestContext.Current.CancellationToken);
