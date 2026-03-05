@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ErrorOr;
 using MediatR;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -16,6 +17,6 @@ public class ListCategoriesQueryHandler(ICategoryRepository categoryRepository)
     )
     {
         var categories = await _categoryRepository.GetCategoriesAsync();
-        return categories;
+        return categories.ToList();
     }
 }

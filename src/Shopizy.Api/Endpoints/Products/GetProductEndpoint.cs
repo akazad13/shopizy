@@ -7,27 +7,20 @@ using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Endpoints.Products;
 
-public class GetProductEndpoint : IEndpoint
+public class GetProductEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/products/{productId:guid}", async (Guid productId, ISender mediator, IMapper mapper, ILogger<GetProductEndpoint> logger) =>
         {
-            try
-            {
-                var query = mapper.Map<GetProductQuery>(productId);
-                var result = await mediator.Send(query);
+            var query = mapper.Map<GetProductQuery>(productId);
 
-                return result.Match(
-                    product => Results.Ok(mapper.Map<ProductDetailResponse>(product)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.ProductFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                query,
+                product => Results.Ok(mapper.Map<ProductDetailResponse>(product)),
+                ex => logger.ProductFetchError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Products")

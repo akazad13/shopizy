@@ -11,7 +11,7 @@ namespace Shopizy.Domain.Orders;
 /// <summary>
 /// Represents an order in the system.
 /// </summary>
-public sealed class Order : AggregateRoot<OrderId, Guid>
+public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
 {
     private readonly IList<OrderItem> _orderItems = [];
     
@@ -86,7 +86,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         int deliveryMethod,
         Price deliveryCharge,
         Address shippingAddress,
-        IList<OrderItem> orderItems
+        IReadOnlyList<OrderItem> orderItems
     )
     {
         var order = new Order(
@@ -111,7 +111,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         int deliveryMethod,
         Price deliveryCharge,
         Address shippingAddress,
-        IList<OrderItem> orderItems
+        IReadOnlyList<OrderItem> orderItems
     )
         : base(orderId)
     {
@@ -121,9 +121,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         DeliveryMethod = (DeliveryMethods)deliveryMethod;
         DeliveryCharge = deliveryCharge;
         ShippingAddress = shippingAddress;
-        _orderItems = orderItems;
+        _orderItems = orderItems.ToList();
         PaymentStatus = PaymentStatus.Pending;
-        CreatedOn = DateTime.UtcNow;
     }
 
     private Order() { }
@@ -136,7 +135,6 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     {
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
-        ModifiedOn = DateTime.UtcNow;
 
         this.AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
     }
@@ -162,7 +160,6 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public void UpdatePaymentStatus(PaymentStatus status)
     {
         PaymentStatus = status;
-        ModifiedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -172,6 +169,5 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
     public void UpdateOrderStatus(OrderStatus status)
     {
         OrderStatus = status;
-        ModifiedOn = DateTime.UtcNow;
     }
 }

@@ -8,32 +8,25 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Carts;
 
-public class RemoveItemFromCartEndpoint : IEndpoint
+public class RemoveItemFromCartEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete("api/v1.0/users/{userId:guid}/carts/{cartId:guid}/items/{itemId:guid}", async (Guid userId, Guid cartId, Guid itemId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<RemoveItemFromCartEndpoint> logger) =>
         {
-            try
+            if (!user.IsAuthorized(userId))
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to remove items from this cart.")]);
-                }
-
-                var command = mapper.Map<RemoveProductFromCartCommand>((userId, cartId, itemId));
-                var result = await mediator.Send(command);
-
-                return result.Match(
-                    success => Results.Ok(SuccessResult.Success("Successfully removed product from cart.")),
-                    CustomResults.Problem
-                );
+                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to remove items from this cart.")]);
             }
-            catch (Exception ex)
-            {
-                logger.RemoveItemFromCartError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+
+            var command = mapper.Map<RemoveProductFromCartCommand>((userId, cartId, itemId));
+
+            return await HandleAsync(
+                mediator,
+                command,
+                success => Results.Ok(SuccessResult.Success("Successfully removed product from cart.")),
+                ex => logger.RemoveItemFromCartError(ex)
+            );
         })
         .RequireAuthorization()
         .WithTags("Cart")

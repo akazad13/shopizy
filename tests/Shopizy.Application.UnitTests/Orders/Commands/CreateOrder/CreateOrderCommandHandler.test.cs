@@ -33,7 +33,7 @@ public class CreateOrderCommandHandlerTests
         var command = CreateOrderCommandUtils.CreateCommand(new List<Guid> { product.Id.Value });
 
         _mockProductRepository
-            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<List<ProductId>>()))
+            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IReadOnlyList<ProductId>>()))
             .ReturnsAsync(() => [product]);
 
         _mockOrderRepository.Setup(x => x.AddAsync(It.IsAny<Order>())).Returns(Task.CompletedTask);
@@ -49,7 +49,7 @@ public class CreateOrderCommandHandlerTests
         Assert.Equal(command.OrderItems.First().Quantity, result.Value.OrderItems[0].Quantity);
 
         _mockProductRepository.Verify(
-            x => x.GetProductsByIdsAsync(It.IsAny<List<ProductId>>()),
+            x => x.GetProductsByIdsAsync(It.IsAny<IReadOnlyList<ProductId>>()),
             Times.Once
         );
         _mockOrderRepository.Verify(x => x.AddAsync(It.IsAny<Order>()), Times.Once);
@@ -62,7 +62,7 @@ public class CreateOrderCommandHandlerTests
         var command = CreateOrderCommandUtils.CreateCommand(new List<Guid>());
 
         _mockProductRepository
-            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<List<ProductId>>()))
+            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IReadOnlyList<ProductId>>()))
             .ReturnsAsync(() => null);
 
         // Act

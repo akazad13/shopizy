@@ -1,12 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Common.Middleware;
 
-public class EventualConsistencyMiddleware(RequestDelegate _next)
+public class EventualConsistencyMiddleware(RequestDelegate _next, ILogger<EventualConsistencyMiddleware> logger)
 {
+    private readonly ILogger<EventualConsistencyMiddleware> _logger = logger;
     public const string DomainEventsKey = "DomainEventsKey";
 
     public async Task InvokeAsync(HttpContext context, IPublisher publisher, AppDbContext dbContext)
@@ -37,8 +43,9 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred while publishing domain events.");
             // If publishing fails, data is already committed.
             // This is "Best Effort" consistency.
         }

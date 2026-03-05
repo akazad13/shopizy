@@ -396,3 +396,25 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Coverage reports
+coveragereport/
+coverage/
+coverage_local/
+coverage_*.txt
+
+# Stale build/debug output
+build_*.txt
+build_*.log
+*_output*.log
+*_output*.txt
+out.txt
+errors.txt
+warnings.txt
+test_files.txt
+all_errors.txt
+errors_utf8.txt
+full_build.log
+infra_build.txt
+infra_errors.txt
+msbuild.log

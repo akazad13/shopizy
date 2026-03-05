@@ -9,32 +9,25 @@ using Shopizy.Contracts.Order;
 
 namespace Shopizy.Api.Endpoints.Orders;
 
-public class CreateOrderEndpoint : IEndpoint
+public class CreateOrderEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/v1.0/users/{userId:guid}/orders", async (Guid userId, CreateOrderRequest request, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<CreateOrderEndpoint> logger) =>
         {
-            try
+            if (!user.IsAuthorized(userId))
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to create an order for this user.")]);
-                }
-
-                var command = mapper.Map<CreateOrderCommand>((userId, request));
-                var result = await mediator.Send(command);
-
-                return result.Match(
-                    order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
-                    CustomResults.Problem
-                );
+                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to create an order for this user.")]);
             }
-            catch (Exception ex)
-            {
-                logger.OrderCreationError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+
+            var command = mapper.Map<CreateOrderCommand>((userId, request));
+
+            return await HandleAsync(
+                mediator,
+                command,
+                order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
+                ex => logger.OrderCreationError(ex)
+            );
         })
         .RequireAuthorization()
         .WithTags("Orders")

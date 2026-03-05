@@ -38,8 +38,9 @@ public class GetUserQueryHandler(
                 return CustomErrors.User.UserNotFound;
             }
 
-            var userOrders = _orderRepository
-                .GetOrdersByUserId(user.Id)
+            var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(user.Id, cancellationToken);
+            
+            var userOrders = userOrdersList
                 .Select(o => new { o.Id, o.OrderStatus })
                 .ToList();
 

@@ -7,27 +7,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Categories;
 
-public class GetCategoryEndpoint : IEndpoint
+public class GetCategoryEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/v1.0/categories/{categoryId:guid}", async (Guid categoryId, ISender mediator, IMapper mapper, ILogger<GetCategoryEndpoint> logger) =>
         {
-            try
-            {
-                var query = mapper.Map<GetCategoryQuery>(categoryId);
-                var result = await mediator.Send(query);
+            var query = mapper.Map<GetCategoryQuery>(categoryId);
 
-                return result.Match(
-                    category => Results.Ok(mapper.Map<CategoryResponse>(category)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.CategoryFetchError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                query,
+                category => Results.Ok(mapper.Map<CategoryResponse>(category)),
+                ex => logger.CategoryFetchError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Categories")

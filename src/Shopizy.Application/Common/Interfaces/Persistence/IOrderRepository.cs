@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Enums;
@@ -8,7 +10,7 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IOrderRepository
 {
-    Task<List<Order>> GetOrdersAsync(
+    Task<IReadOnlyList<Order>> GetOrdersAsync(
         UserId? customerId,
         DateTime? startDate,
         DateTime? endDate,
@@ -18,8 +20,7 @@ public interface IOrderRepository
         OrderType orderType = OrderType.Ascending
     );
     Task<Order?> GetOrderByIdAsync(OrderId id);
-    IQueryable<Order> GetOrdersByUserId(UserId userId);
+    Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(UserId userId, CancellationToken cancellationToken = default);
     Task AddAsync(Order order);
     void Update(Order order);
-    Task<int> CommitAsync(CancellationToken cancellationToken);
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
@@ -7,7 +9,7 @@ using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Common.Specifications;
 using Shopizy.Infrastructure.Products.Specifications;
 
-namespace shopizy.Infrastructure.Products.Persistence;
+namespace Shopizy.Infrastructure.Products.Persistence;
 
 /// <summary>
 /// Repository for managing product data persistence.
@@ -25,9 +27,9 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <param name="pageNumber">The page number.</param>
     /// <param name="pageSize">The page size.</param>
     /// <returns>A list of products matching the criteria.</returns>
-    public async Task<List<Product>?> GetProductsAsync(
+    public async Task<IReadOnlyList<Product>?> GetProductsAsync(
         string? name,
-        IList<CategoryId>? categoryIds,
+        IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
         int pageNumber,
         int pageSize
@@ -57,9 +59,12 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// </summary>
     /// <param name="ids">The list of product identifiers.</param>
     /// <returns>A list of products.</returns>
-    public Task<List<Product>> GetProductsByIdsAsync(IList<ProductId> ids)
+    public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids)
     {
-        return ApplySpec(new ProductsByIdsSpec(ids)).ToListAsync();
+        return await _dbContext.Products
+            .Where(p => ids.Contains(p.Id))
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     /// <summary>
@@ -97,16 +102,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public void Remove(Product product)
     {
         _dbContext.Remove(product);
-    }
-
-    /// <summary>
-    /// Commits all pending changes to the database.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

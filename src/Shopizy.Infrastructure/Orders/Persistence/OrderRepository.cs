@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.Enums;
@@ -29,7 +31,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <param name="pageSize">The page size.</param>
     /// <param name="orderType">The sort order (ascending or descending).</param>
     /// <returns>A list of orders matching the criteria.</returns>
-    public Task<List<Order>> GetOrdersAsync(
+    public async Task<IReadOnlyList<Order>> GetOrdersAsync(
         UserId? customerId,
         DateTime? startDate,
         DateTime? endDate,
@@ -39,7 +41,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         OrderType orderType = OrderType.Ascending
     )
     {
-        return ApplySpec(
+        return await ApplySpec(
                 new OrdersByCriteriaSpec(
                     customerId,
                     startDate,
@@ -65,13 +67,17 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     }
 
     /// <summary>
-    /// Retrieves all orders for a specific user.
+    /// Retrieves all orders for a specific user asynchronously.
     /// </summary>
     /// <param name="userId">The user identifier.</param>
-    /// <returns>A queryable of orders for the user.</returns>
-    public IQueryable<Order> GetOrdersByUserId(UserId userId)
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A read-only list of orders for the user.</returns>
+    public async Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(UserId userId, CancellationToken cancellationToken = default)
     {
-        return _dbContext.Orders.Where(o => o.UserId == userId);
+        return await _dbContext.Orders
+            .Where(o => o.UserId == userId)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -90,16 +96,6 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     public void Update(Order order)
     {
         _dbContext.Update(order);
-    }
-
-    /// <summary>
-    /// Commits all pending changes to the database.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

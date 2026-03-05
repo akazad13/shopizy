@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
@@ -39,9 +41,10 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
     /// Retrieves all categories from the database.
     /// </summary>
     /// <returns>A list of all categories.</returns>
-    public Task<List<Category>> GetCategoriesAsync()
+    public async Task<IReadOnlyList<Category>> GetCategoriesAsync()
     {
-        return _dbContext.Categories.AsNoTracking().ToListAsync();
+        var categoryList = await _dbContext.Categories.AsNoTracking().ToListAsync();
+        return categoryList;
     }
 
     /// <summary>
@@ -69,16 +72,6 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
     public void Remove(Category category)
     {
         _dbContext.Remove(category);
-    }
-
-    /// <summary>
-    /// Commits all pending changes to the database.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The number of state entries written to the database.</returns>
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

@@ -7,27 +7,20 @@ using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Endpoints.Products;
 
-public class CreateProductEndpoint : IEndpoint
+public class CreateProductEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/v1.0/users/{userId:guid}/products", async (Guid userId, CreateProductRequest request, ISender mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
         {
-            try
-            {
-                var command = mapper.Map<CreateProductCommand>((userId, request));
-                var result = await mediator.Send(command);
+            var command = mapper.Map<CreateProductCommand>((userId, request));
 
-                return result.Match(
-                    product => Results.Ok(mapper.Map<ProductResponse>(product)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.ProductCreationError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                product => Results.Ok(mapper.Map<ProductResponse>(product)),
+                ex => logger.ProductCreationError(ex)
+            );
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")

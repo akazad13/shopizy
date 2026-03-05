@@ -43,5 +43,10 @@ public static partial class CustomErrors
                 code: "User.ProductImageNotFound",
                 description: "Product image is not found."
             );
+        public static Error InsufficientStock =>
+            Error.Validation(
+                code: "Product.InsufficientStock",
+                description: "Insufficient stock for the requested product quantity."
+            );
     }
 }

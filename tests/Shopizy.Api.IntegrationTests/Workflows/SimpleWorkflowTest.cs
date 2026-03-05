@@ -58,6 +58,7 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
             Sizes: "15-inch,17-inch",
             Tags: "laptop,computer",
             Barcode: "123456789",
+            StockQuantity: 100,
             SpecificationIds: null
         );
 

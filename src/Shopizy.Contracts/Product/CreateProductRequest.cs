@@ -31,5 +31,6 @@ public record CreateProductRequest(
     string Sizes,
     string Tags,
     string Barcode,
+    int StockQuantity,
     IList<Guid>? SpecificationIds
 );

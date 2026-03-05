@@ -32,13 +32,14 @@ public class CreateOrderCommandHandler(
             return CustomErrors.Product.ProductNotFound;
         }
 
-        // foreach( var product in products)
-        // {
-        //     if(product.StockQuantity < request.OrderItems.First(p => p.ProductId == items.Id.Value).Quantity)
-        //     {
-        //         return "Prduct is not available";
-        //     }
-        // }
+        foreach (var product in products)
+        {
+            var requestedItem = request.OrderItems.FirstOrDefault(i => i.ProductId == product.Id.Value);
+            if (requestedItem != null && product.StockQuantity < requestedItem.Quantity)
+            {
+                return CustomErrors.Product.InsufficientStock;
+            }
+        }
 
 
 

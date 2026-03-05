@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Permissions;
@@ -12,7 +14,7 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
 
     public async Task<IReadOnlyList<Permission>> GetAsync()
     {
-        return await _dbContext.Permissions.ToListAsync();
+        return await _dbContext.Permissions.AsNoTracking().ToListAsync();
     }
 
     public Task<Permission?> GetByIdAsync(PermissionId id)
@@ -25,13 +27,8 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
         await _dbContext.Permissions.AddAsync(user);
     }
 
-    public void Update(Permission user)
+    public void Update(Permission permission)
     {
-        _dbContext.Permissions.Update(user);
-    }
-
-    public Task<int> CommitAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        _dbContext.Permissions.Update(permission);
     }
 }

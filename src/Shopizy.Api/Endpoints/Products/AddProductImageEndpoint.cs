@@ -7,31 +7,24 @@ using Shopizy.Contracts.Product;
 
 namespace Shopizy.Api.Endpoints.Products;
 
-public class AddProductImageEndpoint : IEndpoint
+public class AddProductImageEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/v1.0/users/{userId:guid}/products/{productId:guid}/image", async (Guid userId, Guid productId, IFormFile file, ISender mediator, IMapper mapper, ILogger<AddProductImageEndpoint> logger) =>
         {
-            try
-            {
-                var command = new AddProductImageCommand(userId, productId, file);
-                var result = await mediator.Send(command);
+            var command = new AddProductImageCommand(userId, productId, file);
 
-                return result.Match(
-                    productImage => Results.Ok(mapper.Map<ProductImageResponse>(productImage)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.ProductImageAdditionError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                command,
+                productImage => Results.Ok(mapper.Map<ProductImageResponse>(productImage)),
+                ex => logger.ProductImageAdditionError(ex)
+            );
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")
-        .DisableAntiforgery() // Need this for IFormFile in Minimal APIs if not configured
+        .DisableAntiforgery()
         .Produces<ProductImageResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

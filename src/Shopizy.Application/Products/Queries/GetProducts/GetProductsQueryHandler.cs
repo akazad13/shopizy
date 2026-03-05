@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Ardalis.GuardClauses;
 using ErrorOr;
@@ -41,6 +42,6 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
         {
             return CustomErrors.Product.ProductNotFound;
         }
-        return products;
+        return products.ToList();
     }
 }

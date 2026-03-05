@@ -8,27 +8,20 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints.Auth;
 
-public class LoginEndpoint : IEndpoint
+public class LoginEndpoint : ApiEndpoint
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/v1.0/auth/login", async (LoginRequest request, ISender mediator, IMapper mapper, ILogger<LoginEndpoint> logger) =>
         {
-            try
-            {
-                var query = mapper.Map<LoginQuery>(request);
-                var authResult = await mediator.Send(query);
+            var query = mapper.Map<LoginQuery>(request);
 
-                return authResult.Match(
-                    result => Results.Ok(mapper.Map<AuthResponse>(result)),
-                    CustomResults.Problem
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.UserLoginError(ex);
-                return CustomResults.Problem([ErrorOr.Error.Unexpected(description: ex.Message)]);
-            }
+            return await HandleAsync(
+                mediator,
+                query,
+                result => Results.Ok(mapper.Map<AuthResponse>(result)),
+                ex => logger.UserLoginError(ex)
+            );
         })
         .AllowAnonymous()
         .WithTags("Auth")

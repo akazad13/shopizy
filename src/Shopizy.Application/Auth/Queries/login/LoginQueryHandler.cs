@@ -5,6 +5,7 @@ using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
 namespace Shopizy.Application.Auth.Queries.login;
 
@@ -16,7 +17,8 @@ public class LoginQueryHandler(
     IPermissionRepository permissionRepository,
     IJwtTokenGenerator jwtTokenGenerator,
     IPasswordManager passwordManager,
-    ICartRepository cartRepository
+    ICartRepository cartRepository,
+    IUnitOfWork unitOfWork
 ) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
@@ -24,6 +26,7 @@ public class LoginQueryHandler(
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IPasswordManager _passwordManager = passwordManager;
     private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     /// <summary>
     /// Handles the login process including credential validation, permission loading, and token generation.
@@ -70,7 +73,7 @@ public class LoginQueryHandler(
         {
             cart = Cart.Create(user.Id);
             await _cartRepository.AddAsync(cart);
-            await _cartRepository.CommitAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);

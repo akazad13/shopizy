@@ -52,7 +52,6 @@ public class OrderTests
         // Assert
         order.OrderStatus.ShouldBe(OrderStatus.Cancelled);
         order.CancellationReason.ShouldBe(reason);
-        order.ModifiedOn.ShouldNotBeNull();
         order.DomainEvents.ShouldContain(e => e is OrderCancelledDomainEvent);
     }
 
@@ -90,7 +89,6 @@ public class OrderTests
 
         // Assert
         order.PaymentStatus.ShouldBe(PaymentStatus.Payed);
-        order.ModifiedOn.ShouldNotBeNull();
     }
 
     private Order CreateSampleOrder()
