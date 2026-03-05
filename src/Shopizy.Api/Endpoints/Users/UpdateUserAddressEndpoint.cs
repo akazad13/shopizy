@@ -1,19 +1,20 @@
 using System.Security.Claims;
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Users.Commands.UpdateAddress;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.User;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Users;
 
 public class UpdateUserAddressEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/users/{userId:guid}/address", async (Guid userId, UpdateAddressRequest request, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<UpdateUserAddressEndpoint> logger) =>
+        app.MapPatch("api/v1.0/users/{userId:guid}/address", async (Guid userId, UpdateAddressRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateUserAddressEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

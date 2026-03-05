@@ -391,5 +391,17 @@ public enum PaymentStatus
     },
     "createdOn": "2024-01-01T00:00:00.000Z",
     "modifiedOn": "2024-01-01T00:00:00.000Z",
+    "modifiedOn": "2024-01-01T00:00:00.000Z",
 }
 ```
+
+## Eventual Consistency & Domain Events
+
+The domain layer defines Domain Events (implementing `IDomainEvent`) to represent significant occurrences within the domain.
+These events are emitted by aggregates during business operations (e.g., `Order.AddOrderStartedDomainEvent`).
+
+The API handles these events using an **Eventual Consistency** approach:
+1.  During an HTTP request (mutations), domain events are collected in a queue stored in `HttpContext.Items`.
+2.  The `EventualConsistencyMiddleware` wraps the request execution in a database transaction.
+3.  If the transaction commits successfully, the middleware dequeues and dispatches the collected domain events using MediatR.
+4.  If event dispatching fails, the transaction is already committed, providing "best-effort" eventual consistency without rolling back the primary operation.

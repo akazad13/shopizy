@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Common.Enums;
 
@@ -20,4 +21,5 @@ public record UpdateProductCommand(
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds
-) : MediatR.IRequest<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>;
+

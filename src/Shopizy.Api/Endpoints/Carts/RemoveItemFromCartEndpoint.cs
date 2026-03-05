@@ -1,18 +1,19 @@
 using System.Security.Claims;
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Carts;
 
 public class RemoveItemFromCartEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/v1.0/users/{userId:guid}/carts/{cartId:guid}/items/{itemId:guid}", async (Guid userId, Guid cartId, Guid itemId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<RemoveItemFromCartEndpoint> logger) =>
+        app.MapDelete("api/v1.0/users/{userId:guid}/carts/{cartId:guid}/items/{itemId:guid}", async (Guid userId, Guid cartId, Guid itemId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<RemoveItemFromCartEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

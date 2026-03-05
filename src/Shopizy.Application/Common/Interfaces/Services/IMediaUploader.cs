@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Shopizy.Application.Products.Common;
@@ -12,3 +13,4 @@ public interface IMediaUploader
     );
     Task<ErrorOr<Success>> DeletePhotoAsync(string publicId);
 }
+

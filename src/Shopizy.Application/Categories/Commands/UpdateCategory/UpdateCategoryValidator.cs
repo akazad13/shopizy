@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using FluentValidation;
 
 namespace Shopizy.Application.Categories.Commands.UpdateCategory;
@@ -9,3 +10,4 @@ public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryCommand>
         RuleFor(category => category.Name).NotEmpty().MaximumLength(100);
     }
 }
+

@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
@@ -16,4 +17,5 @@ public record UpdateProductQuantityCommand(
     Guid CartItemId,
     Guid ProductId,
     int Quantity
-) : MediatR.IRequest<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>;
+

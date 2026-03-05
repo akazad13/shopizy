@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Categories;
@@ -15,3 +16,4 @@ public interface ICategoryRepository
 
     void Remove(Category category);
 }
+

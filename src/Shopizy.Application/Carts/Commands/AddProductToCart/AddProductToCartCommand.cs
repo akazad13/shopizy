@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Carts;
 
@@ -19,4 +20,5 @@ public record AddProductToCartCommand(
     string Color,
     string Size,
     int Quantity
-) : MediatR.IRequest<ErrorOr<Cart>>;
+) : ICommand<ErrorOr<Cart>>;
+

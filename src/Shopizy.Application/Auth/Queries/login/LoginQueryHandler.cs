@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -19,7 +19,7 @@ public class LoginQueryHandler(
     IPasswordManager passwordManager,
     ICartRepository cartRepository,
     IUnitOfWork unitOfWork
-) : IRequestHandler<LoginQuery, ErrorOr<AuthResult>>
+) : IQueryHandler<LoginQuery, ErrorOr<AuthResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPermissionRepository _permissionRepository = permissionRepository;

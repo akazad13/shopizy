@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users.ValueObjects;
@@ -10,7 +10,7 @@ namespace Shopizy.Application.Users.Commands.UpdateAddress;
 /// Handles the <see cref="UpdateAddressCommand"/> to update user addresses.
 /// </summary>
 public class UpdateAddressCommandHandler(IUserRepository userRepository)
-    : IRequestHandler<UpdateAddressCommand, ErrorOr<Success>>
+    : ICommandHandler<UpdateAddressCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
 

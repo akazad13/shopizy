@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using FluentValidation;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
@@ -46,3 +47,4 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .MaximumLength(200);
     }
 }
+

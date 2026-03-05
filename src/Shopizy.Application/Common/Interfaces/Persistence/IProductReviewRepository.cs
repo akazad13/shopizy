@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.ProductReviews;
@@ -12,3 +13,4 @@ public interface IProductReviewRepository
     Task AddAsync(ProductReview productReview);
     void Update(ProductReview productReview);
 }
+

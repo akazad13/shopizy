@@ -1,36 +1,63 @@
 using ErrorOr;
 using FluentValidation;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.SharedKernel.Application.Behaviors;
 
-public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? validator = null)
-    : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class ValidationCommandHandlerDecorator<TCommand, TResponse>(
+    ICommandHandler<TCommand, TResponse> innerHandler,
+    IValidator<TCommand>? validator = null)
+    : ICommandHandler<TCommand, TResponse>
+    where TCommand : ICommand<TResponse>
     where TResponse : IErrorOr
 {
-    private readonly IValidator<TRequest>? _validator = validator;
+    private readonly ICommandHandler<TCommand, TResponse> _innerHandler = innerHandler;
+    private readonly IValidator<TCommand>? _validator = validator;
 
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken
-    )
+    public async Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken = default)
     {
         if (_validator is null)
         {
-#pragma warning disable CA2016
-            return await next();
-#pragma warning restore CA2016
+            return await _innerHandler.Handle(command, cancellationToken);
         }
 
-        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid)
         {
-#pragma warning disable CA2016
-            return await next();
-#pragma warning restore CA2016
+            return await _innerHandler.Handle(command, cancellationToken);
+        }
+
+        var errors = validationResult.Errors.ConvertAll(error =>
+            Error.Validation(code: error.PropertyName, description: error.ErrorMessage)
+        );
+
+        return (dynamic)errors;
+    }
+}
+
+public class ValidationQueryHandlerDecorator<TQuery, TResponse>(
+    IQueryHandler<TQuery, TResponse> innerHandler,
+    IValidator<TQuery>? validator = null)
+    : IQueryHandler<TQuery, TResponse>
+    where TQuery : IQuery<TResponse>
+    where TResponse : IErrorOr
+{
+    private readonly IQueryHandler<TQuery, TResponse> _innerHandler = innerHandler;
+    private readonly IValidator<TQuery>? _validator = validator;
+
+    public async Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken = default)
+    {
+        if (_validator is null)
+        {
+            return await _innerHandler.Handle(query, cancellationToken);
+        }
+
+        var validationResult = await _validator.ValidateAsync(query, cancellationToken);
+
+        if (validationResult.IsValid)
+        {
+            return await _innerHandler.Handle(query, cancellationToken);
         }
 
         var errors = validationResult.Errors.ConvertAll(error =>

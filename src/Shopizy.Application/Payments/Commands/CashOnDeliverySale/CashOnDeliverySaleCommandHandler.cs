@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.Enums;
@@ -15,7 +15,7 @@ namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 public class CashOnDeliverySaleCommandHandler(
     IPaymentRepository paymentRepository,
     IOrderRepository orderRepository
-) : IRequestHandler<CashOnDeliverySaleCommand, ErrorOr<Success>>
+) : ICommandHandler<CashOnDeliverySaleCommand, ErrorOr<Success>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
@@ -8,13 +8,14 @@ using Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Payment;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Payments;
 
 public class PayEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/users/{userId:guid}/payments", async (Guid userId, CardNotPresentSaleRequest request, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<PayEndpoint> logger) =>
+        app.MapPost("api/v1.0/users/{userId:guid}/payments", async (Guid userId, CardNotPresentSaleRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<PayEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

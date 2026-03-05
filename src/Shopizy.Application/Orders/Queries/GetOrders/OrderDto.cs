@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -12,3 +13,4 @@ public record OrderDto(
     OrderStatus OrderStatus,
     DateTime CreatedOn
 );
+

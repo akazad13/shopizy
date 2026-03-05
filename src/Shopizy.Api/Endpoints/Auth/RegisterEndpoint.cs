@@ -1,18 +1,19 @@
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Microsoft.AspNetCore.Authorization;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Contracts.Authentication;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Auth;
 
 public class RegisterEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/auth/register", async (RegisterRequest request, ISender mediator, IMapper mapper, ILogger<RegisterEndpoint> logger) =>
+        app.MapPost("api/v1.0/auth/register", async (RegisterRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<RegisterEndpoint> logger) =>
         {
             var command = mapper.Map<RegisterCommand>(request);
 

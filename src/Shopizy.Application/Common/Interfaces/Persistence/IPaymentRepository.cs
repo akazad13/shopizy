@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Payments;
@@ -12,3 +13,4 @@ public interface IPaymentRepository
     Task AddAsync(Payment payment);
     void Update(Payment payment);
 }
+

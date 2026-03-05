@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Categories.ValueObjects;
@@ -22,3 +23,4 @@ public interface IProductRepository
     void Update(Product product);
     void Remove(Product product);
 }
+

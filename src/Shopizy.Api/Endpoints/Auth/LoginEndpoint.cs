@@ -1,18 +1,19 @@
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Microsoft.AspNetCore.Authorization;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Auth.Queries.login;
 using Shopizy.Contracts.Authentication;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Auth;
 
 public class LoginEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/auth/login", async (LoginRequest request, ISender mediator, IMapper mapper, ILogger<LoginEndpoint> logger) =>
+        app.MapPost("api/v1.0/auth/login", async (LoginRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<LoginEndpoint> logger) =>
         {
             var query = mapper.Map<LoginQuery>(request);
 

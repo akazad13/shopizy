@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Orders.Enums;
 
@@ -21,4 +22,5 @@ public record GetOrdersQuery(
     OrderStatus? Status,
     int PageNumber = 1,
     int PageSize = 10
-) : MediatR.IRequest<ErrorOr<List<OrderDto>?>>;
+) : IQuery<ErrorOr<List<OrderDto>?>>;
+

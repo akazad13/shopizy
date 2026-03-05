@@ -1,17 +1,18 @@
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Queries.ListCategories;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Categories;
 
 public class ListCategoriesEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/categories", async (ISender mediator, IMapper mapper, ILogger<ListCategoriesEndpoint> logger) =>
+        app.MapGet("api/v1.0/categories", async ([FromServices] IDispatcher mediator, IMapper mapper, ILogger<ListCategoriesEndpoint> logger) =>
         {
             return await HandleAsync(
                 mediator,

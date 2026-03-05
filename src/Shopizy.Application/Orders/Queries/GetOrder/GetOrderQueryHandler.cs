@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
@@ -8,7 +8,7 @@ using Shopizy.Domain.Orders.ValueObjects;
 namespace Shopizy.Application.Orders.Queries.GetOrder;
 
 public class GetOrderQueryHandler(IOrderRepository orderRepository)
-    : IRequestHandler<GetOrderQuery, ErrorOr<Order>>
+    : IQueryHandler<GetOrderQuery, ErrorOr<Order>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 

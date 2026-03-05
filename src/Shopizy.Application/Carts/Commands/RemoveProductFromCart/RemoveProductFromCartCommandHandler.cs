@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
@@ -10,7 +10,7 @@ namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 /// Handles the <see cref="RemoveProductFromCartCommand"/> to remove items from a cart.
 /// </summary>
 public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
-    : IRequestHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
+    : ICommandHandler<RemoveProductFromCartCommand, ErrorOr<Success>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
 

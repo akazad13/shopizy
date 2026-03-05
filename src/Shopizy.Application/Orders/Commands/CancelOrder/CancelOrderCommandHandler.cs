@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -7,7 +7,7 @@ using Shopizy.Domain.Orders.ValueObjects;
 namespace Shopizy.Application.Orders.Commands.CancelOrder;
 
 public class CancelOrderCommandHandler(IOrderRepository orderRepository)
-    : IRequestHandler<CancelOrderCommand, ErrorOr<Success>>
+    : ICommandHandler<CancelOrderCommand, ErrorOr<Success>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 

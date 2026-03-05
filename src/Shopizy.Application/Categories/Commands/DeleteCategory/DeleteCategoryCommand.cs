@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
@@ -7,4 +8,5 @@ namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 /// </summary>
 /// <param name="UserId">The user's unique identifier.</param>
 /// <param name="CategoryId">The category's unique identifier to delete.</param>
-public record DeleteCategoryCommand(Guid UserId, Guid CategoryId) : MediatR.IRequest<ErrorOr<Success>>;
+public record DeleteCategoryCommand(Guid UserId, Guid CategoryId) : ICommand<ErrorOr<Success>>;
+

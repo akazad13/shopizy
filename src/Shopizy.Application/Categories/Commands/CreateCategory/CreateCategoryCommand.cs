@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Categories;
 
@@ -10,4 +11,5 @@ namespace Shopizy.Application.Categories.Commands.CreateCategory;
 /// <param name="Name">The category name.</param>
 /// <param name="ParentId">The parent category ID (null for root categories).</param>
 public record CreateCategoryCommand(Guid UserId, string Name, Guid? ParentId)
-    : MediatR.IRequest<ErrorOr<Category>>;
+    : ICommand<ErrorOr<Category>>;
+

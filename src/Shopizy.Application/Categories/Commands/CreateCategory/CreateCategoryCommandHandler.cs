@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
 using Shopizy.Domain.Common.CustomErrors;
@@ -10,7 +10,7 @@ namespace Shopizy.Application.Categories.Commands.CreateCategory;
 /// Handles the <see cref="CreateCategoryCommand"/> to create new categories.
 /// </summary>
 public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<CreateCategoryCommand, ErrorOr<Category>>
+    : ICommandHandler<CreateCategoryCommand, ErrorOr<Category>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 

@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Carts;
 
@@ -7,4 +8,5 @@ namespace Shopizy.Application.Carts.Queries.GetCart;
 /// Represents a query to retrieve a user's shopping cart.
 /// </summary>
 /// <param name="UserId">The user's unique identifier.</param>
-public record GetCartQuery(Guid UserId) : MediatR.IRequest<ErrorOr<Cart>>;
+public record GetCartQuery(Guid UserId) : IQuery<ErrorOr<Cart>>;
+

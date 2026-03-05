@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
@@ -13,7 +13,7 @@ namespace Shopizy.Application.Users.Commands.UpdatePassword;
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager
-) : IRequestHandler<UpdatePasswordCommand, ErrorOr<Success>>
+) : ICommandHandler<UpdatePasswordCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordManager _passwordManager = passwordManager;

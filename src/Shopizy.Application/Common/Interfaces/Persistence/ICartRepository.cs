@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Carts;
@@ -15,3 +16,4 @@ public interface ICartRepository
     void Update(Cart cart);
     void Remove(Cart cart);
 }
+

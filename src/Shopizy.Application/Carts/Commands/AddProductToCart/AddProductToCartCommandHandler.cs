@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
@@ -16,7 +16,7 @@ namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 public class AddProductToCartCommandHandler(
     ICartRepository cartRepository,
     IProductRepository productRepository
-) : IRequestHandler<AddProductToCartCommand, ErrorOr<Cart>>
+) : ICommandHandler<AddProductToCartCommand, ErrorOr<Cart>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly ICartRepository _cartRepository = cartRepository;

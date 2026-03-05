@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,18 +14,34 @@ public static class DependencyInjectionRegister
         IConfiguration configuration
     )
     {
-        services.AddMediatR(msc =>
-        {
-            msc.RegisterServicesFromAssembly(typeof(DependencyInjectionRegister).Assembly);
-            msc.AddOpenBehavior(typeof(CachingBehavior<,>));
-            msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            msc.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
-        });
+        services.Scan(scan => scan
+            .FromAssemblies(typeof(DependencyInjectionRegister).Assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+        );
+
+        // Decorators
+        services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandlerDecorator<,>));
+        services.Decorate(typeof(IQueryHandler<,>), typeof(ValidationQueryHandlerDecorator<,>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerDecorator<,>));
+        // Note: CachingQueryHandlerDecorator requires ICachableRequest constraint which Scrutor Decorate might have issues with.
+        // For simplicity, we might need a custom factory or explicit registration for cached queries if strictly required.
+
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }
 }
+

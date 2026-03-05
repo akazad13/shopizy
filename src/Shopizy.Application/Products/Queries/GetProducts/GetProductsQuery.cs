@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Domain.Products;
 
@@ -20,7 +20,7 @@ public record GetProductsQuery(
     decimal? AverageRating,
     int PageNumber,
     int PageSize
-) : IRequest<ErrorOr<List<Product>>>, ICachableRequest
+) : IQuery<ErrorOr<List<Product>>>, ICachableRequest
 {
     public string CacheKey
     {

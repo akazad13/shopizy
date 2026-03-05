@@ -7,11 +7,11 @@
     <ProjectReference Include="..\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="ErrorOr" />
+    <PackageReference Include="Scrutor" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

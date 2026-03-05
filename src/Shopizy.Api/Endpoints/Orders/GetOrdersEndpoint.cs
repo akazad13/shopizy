@@ -1,19 +1,20 @@
 using System.Security.Claims;
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Orders;
 
 public class GetOrdersEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/users/{userId:guid}/orders", async (Guid userId, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<GetOrdersEndpoint> logger) =>
+        app.MapGet("api/v1.0/users/{userId:guid}/orders", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetOrdersEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

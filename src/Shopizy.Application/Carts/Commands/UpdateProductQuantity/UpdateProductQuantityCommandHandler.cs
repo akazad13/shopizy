@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
@@ -10,7 +10,7 @@ namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 /// Handles the <see cref="UpdateProductQuantityCommand"/> to update item quantities in a cart.
 /// </summary>
 public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
-    : IRequestHandler<UpdateProductQuantityCommand, ErrorOr<Success>>
+    : ICommandHandler<UpdateProductQuantityCommand, ErrorOr<Success>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
 

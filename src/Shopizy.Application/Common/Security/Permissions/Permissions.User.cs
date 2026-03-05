@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 namespace Shopizy.Application.Common.Security.Permissions;
 
 public static partial class Permissions
@@ -10,3 +11,4 @@ public static partial class Permissions
         public const string Delete = "delete:user";
     }
 }
+

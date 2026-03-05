@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Models;
 
@@ -12,3 +13,4 @@ public interface IPaymentService
     );
     Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request);
 }
+

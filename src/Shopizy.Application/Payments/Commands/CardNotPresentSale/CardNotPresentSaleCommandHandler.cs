@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Models;
@@ -17,7 +17,7 @@ public class CardNotPresentSaleCommandHandler(
     IOrderRepository orderRepository,
     IUserRepository userRepository,
     IPaymentService paymentService
-) : IRequestHandler<CardNotPresentSaleCommand, ErrorOr<Success>>
+) : ICommandHandler<CardNotPresentSaleCommand, ErrorOr<Success>>
 {
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;

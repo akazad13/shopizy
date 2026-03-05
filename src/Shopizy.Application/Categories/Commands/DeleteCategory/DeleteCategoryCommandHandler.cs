@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
@@ -7,7 +7,7 @@ using Shopizy.Domain.Common.CustomErrors;
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
 public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<DeleteCategoryCommand, ErrorOr<Success>>
+    : ICommandHandler<DeleteCategoryCommand, ErrorOr<Success>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 

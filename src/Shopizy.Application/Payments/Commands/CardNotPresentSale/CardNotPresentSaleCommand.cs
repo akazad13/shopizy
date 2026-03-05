@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
@@ -26,4 +27,5 @@ public record CardNotPresentSaleCommand(
     int CardExpiryMonth,
     int CardExpiryYear,
     string LastDigits
-) : MediatR.IRequest<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>;
+

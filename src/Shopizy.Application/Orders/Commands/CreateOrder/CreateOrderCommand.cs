@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
@@ -22,7 +23,7 @@ public record CreateOrderCommand(
     Currency DeliveryChargeCurrency,
     IEnumerable<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
-) : MediatR.IRequest<ErrorOr<Order>>;
+) : ICommand<ErrorOr<Order>>;
 
 /// <summary>
 /// Represents an order item within a create order command.
@@ -48,3 +49,4 @@ public record AddressCommand(
     string Country,
     string ZipCode
 );
+

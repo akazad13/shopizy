@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ardalis.GuardClauses;
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
@@ -11,7 +11,7 @@ using Shopizy.Domain.Products;
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
 public class GetProductsQueryHandler(IProductRepository productRepository)
-    : IRequestHandler<GetProductsQuery, ErrorOr<List<Product>>>
+    : IQueryHandler<GetProductsQuery, ErrorOr<List<Product>>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 

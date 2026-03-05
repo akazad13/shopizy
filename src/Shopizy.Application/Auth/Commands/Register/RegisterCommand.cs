@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Auth.Commands.Register;
 
@@ -11,4 +11,4 @@ namespace Shopizy.Application.Auth.Commands.Register;
 /// <param name="Email">The user's email address.</param>
 /// <param name="Password">The user's password.</param>
 public record RegisterCommand(string FirstName, string LastName, string Email, string Password)
-    : IRequest<ErrorOr<Success>>;
+    : ICommand<ErrorOr<Success>>;

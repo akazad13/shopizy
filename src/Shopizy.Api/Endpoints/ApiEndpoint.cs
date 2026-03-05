@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
@@ -13,17 +13,41 @@ public abstract class ApiEndpoint : IEndpoint
     public abstract void MapEndpoint(IEndpointRouteBuilder app);
 
     /// <summary>
-    /// Handles the request by sending a command/query through MediatR and matching the result.
+    /// Handles the request by sending a command through the dispatcher and matching the result.
     /// </summary>
     protected async Task<IResult> HandleAsync<TResponse>(
-        ISender mediator,
-        IRequest<ErrorOr<TResponse>> request,
+        IDispatcher dispatcher,
+        ICommand<ErrorOr<TResponse>> command,
         Func<TResponse, IResult> onSuccess,
         Action<Exception> onError)
     {
         try
         {
-            var result = await mediator.Send(request);
+            var result = await dispatcher.SendAsync(command);
+            return result.Match(
+                onSuccess,
+                errors => CustomResults.Problem(errors)
+            );
+        }
+        catch (Exception ex)
+        {
+            onError(ex);
+            return CustomResults.Problem([Error.Unexpected(description: ex.Message)]);
+        }
+    }
+
+    /// <summary>
+    /// Handles the request by sending a query through the dispatcher and matching the result.
+    /// </summary>
+    protected async Task<IResult> HandleAsync<TResponse>(
+        IDispatcher dispatcher,
+        IQuery<ErrorOr<TResponse>> query,
+        Func<TResponse, IResult> onSuccess,
+        Action<Exception> onError)
+    {
+        try
+        {
+            var result = await dispatcher.SendAsync(query);
             return result.Match(
                 onSuccess,
                 errors => CustomResults.Problem(errors)

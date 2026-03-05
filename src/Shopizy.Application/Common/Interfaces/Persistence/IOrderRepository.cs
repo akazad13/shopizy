@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Common.Enums;
@@ -24,3 +25,4 @@ public interface IOrderRepository
     Task AddAsync(Order order);
     void Update(Order order);
 }
+

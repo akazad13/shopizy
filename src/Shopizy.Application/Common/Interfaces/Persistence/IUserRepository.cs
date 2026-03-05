@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
@@ -10,3 +11,4 @@ public interface IUserRepository
     Task AddAsync(User user);
     void Update(User user);
 }
+

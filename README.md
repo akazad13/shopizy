@@ -28,6 +28,7 @@ Key features include:
 *   [Redis](https://redis.io/) - In-memory data structure store, used for caching.
 *   [Swagger](https://swagger.io/) - API Documentation.
 *   [ErrorOr](https://github.com/amantinband/error-or) - A simple, fluent discrimination union for error handling.
+*   [Npgsql](https://www.npgsql.org/) - .NET data provider for PostgreSQL.
 *   [xUnit](https://xunit.net/) - Testing framework.
 *   [Shouldly](https://shouldly.io/) - Assertion library with a focus on readability.
 *   [Moq](https://github.com/devlooped/moq) - Mocking library for .NET.
@@ -101,7 +102,9 @@ The solution follows **Clean Architecture** principles:
 *   **Shopizy.Domain**: Contains enterprise logic and types (Entities, Value Objects, Enums). No dependencies.
 *   **Shopizy.Application**: Contains business logic and use cases. Depends on Domain.
 *   **Shopizy.Infrastructure**: Implements interfaces defined in Application (Data access, External services). Depends on Application.
+    *   **Multi-Database Support**: Dynamically configure between PostgreSQL (via Npgsql) and SQL Server using the `UsePostgreSql` flag in `appsettings.json`.
 *   **Shopizy.Api**: The entry point (Controllers, Middleware). Depends on Application and Infrastructure.
+    *   **Eventual Consistency**: Uses `EventualConsistencyMiddleware` to dispatch Domain Events asynchronously after database transactions are committed.
 *   **Shopizy.Contracts**: Shared DTOs (Data Transfer Objects).
 
 ## 🧪 Running Tests

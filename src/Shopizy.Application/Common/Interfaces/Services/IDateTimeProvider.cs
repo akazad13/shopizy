@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 namespace Shopizy.Application.Common.Interfaces.Services;
 
 /// <summary>
@@ -10,3 +11,4 @@ public interface IDateTimeProvider
     /// </summary>
     DateTime UtcNow { get; }
 }
+

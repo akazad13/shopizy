@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 namespace Shopizy.Application.Common.Interfaces.Authentication;
 
 public interface IPasswordManager
@@ -7,3 +8,4 @@ public interface IPasswordManager
     bool IsLatestHastversion(byte[] data);
     public bool IsLatestHastversion(string data);
 }
+

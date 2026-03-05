@@ -1,35 +1,29 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
 namespace Shopizy.SharedKernel.Application.Behaviors;
 
-public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork _unitOfWork)
-    : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class UnitOfWorkCommandHandlerDecorator<TCommand, TResponse>(
+    ICommandHandler<TCommand, TResponse> innerHandler,
+    IUnitOfWork unitOfWork)
+    : ICommandHandler<TCommand, TResponse>
+    where TCommand : ICommand<TResponse>
     where TResponse : IErrorOr
 {
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken
-    )
+    private readonly ICommandHandler<TCommand, TResponse> _innerHandler = innerHandler;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken = default)
     {
-#pragma warning disable CA2016
-        var response = await next();
-#pragma warning restore CA2016
+        var response = await _innerHandler.Handle(command, cancellationToken);
 
         if (response.IsError)
         {
             return response;
         }
 
-        // Only commit if the request is not a Query (conventional check)
-        // Or we can rely on IUnitOfWork being scoped and only saving changes if entities are tracked.
-        if (request.GetType().Name.EndsWith("Command"))
-        {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return response;
     }

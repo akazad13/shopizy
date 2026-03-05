@@ -1,53 +1,35 @@
-using MediatR;
+using ErrorOr;
 using Microsoft.Extensions.Logging;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;
 
 namespace Shopizy.SharedKernel.Application.Behaviors;
 
-/// <summary>
-/// MediatR pipeline behavior for handling request caching.
-/// </summary>
-/// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response.</typeparam>
-public partial class CachingBehavior<TRequest, TResponse>(
+public class CachingQueryHandlerDecorator<TQuery, TResponse>(
+    IQueryHandler<TQuery, TResponse> innerHandler,
     ICacheHelper cacheHelper,
-    ILogger<CachingBehavior<TRequest, TResponse>> logger
-) : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICachableRequest
+    ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> logger)
+    : IQueryHandler<TQuery, TResponse>
+    where TQuery : IQuery<TResponse>, ICachableRequest
 {
+    private readonly IQueryHandler<TQuery, TResponse> _innerHandler = innerHandler;
     private readonly ICacheHelper _cacheHelper = cacheHelper;
-    private readonly ILogger<CachingBehavior<TRequest, TResponse>> _logger = logger;
+    private readonly ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> _logger = logger;
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Checking cache for {RequestName} with key {CacheKey}")]
-    static partial void LogCheckingCache(ILogger logger, string requestName, string cacheKey);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Cache hit for {RequestName} with key {CacheKey}")]
-    static partial void LogCacheHit(ILogger logger, string requestName, string cacheKey);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Cache miss for {RequestName} with key {CacheKey}. Fetching from source.")]
-    static partial void LogCacheMiss(ILogger logger, string requestName, string cacheKey);
-
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken
-    )
+    public async Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken = default)
     {
-        LogCheckingCache(_logger, typeof(TRequest).Name, request.CacheKey);
-        
-        var cacheResult = await _cacheHelper.GetAsync<TResponse>(request.CacheKey);
+        _logger.LogCheckingCache(typeof(TQuery).Name, query.CacheKey);
+
+        var cacheResult = await _cacheHelper.GetAsync<TResponse>(query.CacheKey);
         if (cacheResult.Success)
         {
-            LogCacheHit(_logger, typeof(TRequest).Name, request.CacheKey);
+            _logger.LogCacheHit(typeof(TQuery).Name, query.CacheKey);
             return cacheResult.Value!;
         }
 
-        LogCacheMiss(_logger, typeof(TRequest).Name, request.CacheKey);
-#pragma warning disable CA2016
-        var response = await next();
-#pragma warning restore CA2016
-
-        await _cacheHelper.SetAsync(request.CacheKey, response, request.Expiration);
+        _logger.LogCacheMiss(typeof(TQuery).Name, query.CacheKey);
+        var response = await _innerHandler.Handle(query, cancellationToken);
+        await _cacheHelper.SetAsync(query.CacheKey, response, query.Expiration);
 
         return response;
     }

@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.Permissions;
@@ -12,3 +13,4 @@ public interface IPermissionRepository
     Task AddAsync(Permission user);
     void Update(Permission user);
 }
+

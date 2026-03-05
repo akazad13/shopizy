@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
 
 namespace Shopizy.Application.Categories.Queries.ListCategories;
 
 public class ListCategoriesQueryHandler(ICategoryRepository categoryRepository)
-    : IRequestHandler<ListCategoriesQuery, ErrorOr<List<Category>>>
+    : IQueryHandler<ListCategoriesQuery, ErrorOr<List<Category>>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 

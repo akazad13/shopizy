@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Common.CustomErrors;
@@ -10,7 +10,7 @@ namespace Shopizy.Application.Products.Commands.DeleteProductImage;
 public class DeleteProductImageCommandHandler(
     IProductRepository productRepository,
     IMediaUploader mediaUploader
-) : IRequestHandler<DeleteProductImageCommand, ErrorOr<Success>>
+) : ICommandHandler<DeleteProductImageCommand, ErrorOr<Success>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IMediaUploader _mediaUploader = mediaUploader;

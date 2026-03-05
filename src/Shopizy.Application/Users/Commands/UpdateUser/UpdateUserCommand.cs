@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Users.Commands.UpdateUser;
@@ -26,4 +27,5 @@ public record UpdateUserCommand(
     string State,
     string Country,
     string ZipCode
-) : MediatR.IRequest<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>;
+

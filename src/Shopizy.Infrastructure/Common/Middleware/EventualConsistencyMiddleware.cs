@@ -1,8 +1,8 @@
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.SharedKernel.Application.Messaging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Shopizy.Infrastructure.Common.Middleware;
 
@@ -11,10 +11,10 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
     private readonly ILogger<EventualConsistencyMiddleware> _logger = logger;
     public const string DomainEventsKey = "DomainEventsKey";
 
-    public async Task InvokeAsync(HttpContext context, IPublisher publisher, AppDbContext dbContext)
+    public async Task InvokeAsync(HttpContext context, IDispatcher dispatcher, AppDbContext dbContext)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(publisher);
+        ArgumentNullException.ThrowIfNull(dispatcher);
         ArgumentNullException.ThrowIfNull(dbContext);
 
         if (!HttpMethods.IsGet(method: context.Request.Method))
@@ -35,7 +35,7 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
                 {
                     while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
                     {
-                        await publisher.Publish(nextEvent);
+                        await dispatcher.PublishAsync(nextEvent);
                     }
                 }
             }
@@ -53,7 +53,6 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
         else
         {
             await Next(context);
-            return;
         }
     }
 }

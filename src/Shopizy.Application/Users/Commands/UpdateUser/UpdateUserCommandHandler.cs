@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
@@ -11,7 +11,7 @@ namespace Shopizy.Application.Users.Commands.UpdateUser;
 /// Handles the <see cref="UpdateUserCommand"/> to update user information.
 /// </summary>
 public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
-    : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
+    : ICommandHandler<UpdateUserCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ICacheHelper _cacheHelper = cacheHelper;

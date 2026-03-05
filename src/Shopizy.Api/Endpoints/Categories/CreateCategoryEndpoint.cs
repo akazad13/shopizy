@@ -1,17 +1,18 @@
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Categories;
 
 public class CreateCategoryEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/users/{userId:guid}/categories", async (Guid userId, CreateCategoryRequest request, ISender mediator, IMapper mapper, ILogger<CreateCategoryEndpoint> logger) =>
+        app.MapPost("api/v1.0/users/{userId:guid}/categories", async (Guid userId, CreateCategoryRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateCategoryEndpoint> logger) =>
         {
             var command = mapper.Map<CreateCategoryCommand>((userId, request));
 

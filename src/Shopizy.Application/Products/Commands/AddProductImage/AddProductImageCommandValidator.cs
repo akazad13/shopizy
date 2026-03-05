@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using FluentValidation;
 
 namespace Shopizy.Application.Products.Commands.AddProductImage;
@@ -9,3 +10,4 @@ public class AddProductImageCommandValidator : AbstractValidator<AddProductImage
         RuleFor(category => category.File).NotNull();
     }
 }
+

@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 
@@ -22,3 +23,4 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
         return Guid.Parse(idClaim);
     }
 }
+

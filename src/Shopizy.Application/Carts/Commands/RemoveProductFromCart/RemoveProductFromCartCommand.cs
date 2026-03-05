@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
@@ -9,4 +10,5 @@ namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 /// <param name="CartId">The cart's unique identifier.</param>
 /// <param name="ItemId">The cart item's unique identifier to remove.</param>
 public record RemoveProductFromCartCommand(Guid UserId, Guid CartId, Guid ItemId)
-    : MediatR.IRequest<ErrorOr<Success>>;
+    : ICommand<ErrorOr<Success>>;
+

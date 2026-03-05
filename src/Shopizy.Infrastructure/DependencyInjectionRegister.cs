@@ -37,7 +37,8 @@ public static class DependencyInjectionRegister
             .AddExternalServices(configuration)
             .AddAuthenticationInternal(configuration)
             .AddSecurity()
-            .AddPersistence(configuration);
+            .AddPersistence(configuration)
+            .AddMessaging();
     }
 
     private static string[] Origins()

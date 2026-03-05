@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
@@ -16,7 +16,7 @@ public class RegisterCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager,
     ICartRepository cartRepository
-) : IRequestHandler<RegisterCommand, ErrorOr<Success>>
+) : ICommandHandler<RegisterCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordManager _passwordManager = passwordManager;

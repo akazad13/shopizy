@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Common.CustomErrors;
@@ -11,7 +11,7 @@ namespace Shopizy.Application.Products.Commands.AddProductImage;
 public class AddProductImageCommandHandler(
     IProductRepository productRepository,
     IMediaUploader mediaUploader
-) : IRequestHandler<AddProductImageCommand, ErrorOr<ProductImage>>
+) : ICommandHandler<AddProductImageCommand, ErrorOr<ProductImage>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IMediaUploader _mediaUploader = mediaUploader;

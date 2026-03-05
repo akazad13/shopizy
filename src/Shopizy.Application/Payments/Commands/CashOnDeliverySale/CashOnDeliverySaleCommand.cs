@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
@@ -16,4 +17,5 @@ public record CashOnDeliverySaleCommand(
     decimal Amount,
     string Currency,
     string PaymentMethod
-) : MediatR.IRequest<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>;
+

@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shopizy.Domain.PromoCodes;
@@ -12,3 +13,4 @@ public interface IPromoCodeRepository
     Task AddAsync(PromoCode promoCode);
     void Update(PromoCode promoCode);
 }
+

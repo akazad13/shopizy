@@ -1,17 +1,18 @@
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Products;
 
 public class GetProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/products/{productId:guid}", async (Guid productId, ISender mediator, IMapper mapper, ILogger<GetProductEndpoint> logger) =>
+        app.MapGet("api/v1.0/products/{productId:guid}", async (Guid productId, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetProductEndpoint> logger) =>
         {
             var query = mapper.Map<GetProductQuery>(productId);
 

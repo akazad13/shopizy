@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 namespace Shopizy.Application.Categories.Queries.CategoriesTree;
 
 public class CategoryTree
@@ -7,3 +8,4 @@ public class CategoryTree
     public Guid? ParentId { get; set; }
     public IReadOnlyList<CategoryTree>? Children { get; set; }
 }
+

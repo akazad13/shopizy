@@ -1,5 +1,5 @@
 using Xunit;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Infrastructure.Common.Persistence;
 using System.Net.Http.Headers;
 using Shopizy.Contracts.Authentication;
@@ -15,14 +15,14 @@ namespace Shopizy.Api.IntegrationTests;
 public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>, IDisposable
 {
     private readonly IServiceScope _scope;
-    protected readonly ISender Sender;
+    protected readonly IDispatcher Sender;
     protected readonly AppDbContext DbContext;
     protected readonly HttpClient HttpClient;
 
     protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
     {
         _scope = factory.Services.CreateScope();
-        Sender = _scope.ServiceProvider.GetRequiredService<ISender>();
+        Sender = _scope.ServiceProvider.GetRequiredService<IDispatcher>();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
         HttpClient = factory.CreateClient();
     }

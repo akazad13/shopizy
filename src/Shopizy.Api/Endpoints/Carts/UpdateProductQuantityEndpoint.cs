@@ -1,19 +1,20 @@
 using System.Security.Claims;
 using MapsterMapper;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Contracts.Cart;
 using Shopizy.Contracts.Common;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Carts;
 
 public class UpdateProductQuantityEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/users/{userId:guid}/carts/{cartId:guid}/items/{itemId:guid}", async (Guid userId, Guid cartId, Guid itemId, UpdateProductQuantityRequest request, ClaimsPrincipal user, ISender mediator, IMapper mapper, ILogger<UpdateProductQuantityEndpoint> logger) =>
+        app.MapPatch("api/v1.0/users/{userId:guid}/carts/{cartId:guid}/items/{itemId:guid}", async (Guid userId, Guid cartId, Guid itemId, UpdateProductQuantityRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateProductQuantityEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

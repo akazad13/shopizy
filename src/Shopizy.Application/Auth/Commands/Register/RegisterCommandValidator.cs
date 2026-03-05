@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using FluentValidation;
 
 namespace Shopizy.Application.Auth.Commands.Register;
@@ -12,3 +13,4 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(register => register.Password).NotNull().NotEmpty();
     }
 }
+

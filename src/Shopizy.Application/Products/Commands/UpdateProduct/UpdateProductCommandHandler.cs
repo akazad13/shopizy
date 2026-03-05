@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
@@ -9,7 +9,7 @@ using Shopizy.Domain.Products.ValueObjects;
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommandHandler(IProductRepository productRepository)
-    : IRequestHandler<UpdateProductCommand, ErrorOr<Success>>
+    : ICommandHandler<UpdateProductCommand, ErrorOr<Success>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 

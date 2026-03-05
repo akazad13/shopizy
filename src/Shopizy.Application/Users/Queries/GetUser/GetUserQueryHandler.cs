@@ -1,5 +1,5 @@
 using ErrorOr;
-using MediatR;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.Enums;
@@ -13,7 +13,7 @@ namespace Shopizy.Application.Users.Queries.GetUser;
 public class GetUserQueryHandler(
     IUserRepository userRepository,
     IOrderRepository orderRepository
-) : IRequestHandler<GetUserQuery, ErrorOr<UserDto>>
+) : IQueryHandler<GetUserQuery, ErrorOr<UserDto>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;

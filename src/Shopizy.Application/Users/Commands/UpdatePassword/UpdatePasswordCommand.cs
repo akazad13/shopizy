@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 
 namespace Shopizy.Application.Users.Commands.UpdatePassword;
@@ -9,4 +10,5 @@ namespace Shopizy.Application.Users.Commands.UpdatePassword;
 /// <param name="OldPassword">The current password.</param>
 /// <param name="NewPassword">The new password.</param>
 public record UpdatePasswordCommand(Guid UserId, string OldPassword, string NewPassword)
-    : MediatR.IRequest<ErrorOr<Success>>;
+    : ICommand<ErrorOr<Success>>;
+

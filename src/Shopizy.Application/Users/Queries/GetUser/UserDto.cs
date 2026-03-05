@@ -1,3 +1,4 @@
+﻿using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
@@ -18,3 +19,4 @@ public record UserDto(
     DateTime CreatedOn,
     DateTime? ModifiedOn
 );
+

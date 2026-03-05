@@ -3,65 +3,65 @@ using FluentValidation;
 using FluentValidation.Results;
 using Moq;
 using Shopizy.SharedKernel.Application.Behaviors;
+using Shopizy.SharedKernel.Application.Messaging;
 using Shouldly;
-using MediatR;
 
 namespace Shopizy.Application.UnitTests.Common.Behaviors;
 
 public class ValidationBehaviorTests
 {
-    private readonly Mock<IValidator<TestRequest>> _mockValidator;
-    private readonly Mock<RequestHandlerDelegate<ErrorOr<TestResponse>>> _mockNext;
+    private readonly Mock<IValidator<TestCommand>> _mockValidator;
+    private readonly Mock<ICommandHandler<TestCommand, ErrorOr<TestResponse>>> _mockHandler;
 
     public ValidationBehaviorTests()
     {
-        _mockValidator = new Mock<IValidator<TestRequest>>();
-        _mockNext = new Mock<RequestHandlerDelegate<ErrorOr<TestResponse>>>();
+        _mockValidator = new Mock<IValidator<TestCommand>>();
+        _mockHandler = new Mock<ICommandHandler<TestCommand, ErrorOr<TestResponse>>>();
     }
 
     [Fact]
     public async Task Handle_WhenNoValidator_ShouldCallNext()
     {
         // Arrange
-        var behavior = new ValidationBehavior<TestRequest, ErrorOr<TestResponse>>(null);
-        var request = new TestRequest();
+        var behavior = new ValidationCommandHandlerDecorator<TestCommand, ErrorOr<TestResponse>>(_mockHandler.Object, null);
+        var request = new TestCommand();
         var expectedResponse = (ErrorOr<TestResponse>)new TestResponse();
-        _mockNext.Setup(x => x()).ReturnsAsync(expectedResponse);
+        _mockHandler.Setup(x => x.Handle(request, It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
+        var result = await behavior.Handle(request, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBe(expectedResponse);
-        _mockNext.Verify(x => x(), Times.Once);
+        _mockHandler.Verify(x => x.Handle(request, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_WhenValidationSucceeds_ShouldCallNext()
     {
         // Arrange
-        var behavior = new ValidationBehavior<TestRequest, ErrorOr<TestResponse>>(_mockValidator.Object);
-        var request = new TestRequest();
+        var behavior = new ValidationCommandHandlerDecorator<TestCommand, ErrorOr<TestResponse>>(_mockHandler.Object, _mockValidator.Object);
+        var request = new TestCommand();
         var expectedResponse = (ErrorOr<TestResponse>)new TestResponse();
         
         _mockValidator.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
-        _mockNext.Setup(x => x()).ReturnsAsync(expectedResponse);
+        _mockHandler.Setup(x => x.Handle(request, It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
+        var result = await behavior.Handle(request, TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBe(expectedResponse);
-        _mockNext.Verify(x => x(), Times.Once);
+        _mockHandler.Verify(x => x.Handle(request, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_WhenValidationFails_ShouldReturnValidationErrors()
     {
         // Arrange
-        var behavior = new ValidationBehavior<TestRequest, ErrorOr<TestResponse>>(_mockValidator.Object);
-        var request = new TestRequest();
+        var behavior = new ValidationCommandHandlerDecorator<TestCommand, ErrorOr<TestResponse>>(_mockHandler.Object, _mockValidator.Object);
+        var request = new TestCommand();
         var validationFailures = new List<ValidationFailure>
         {
             new("Prop", "Error")
@@ -71,7 +71,7 @@ public class ValidationBehaviorTests
             .ReturnsAsync(new ValidationResult(validationFailures));
 
         // Act
-        var result = await behavior.Handle(request, _mockNext.Object, TestContext.Current.CancellationToken);
+        var result = await behavior.Handle(request, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.ShouldBeTrue();
@@ -79,9 +79,9 @@ public class ValidationBehaviorTests
         result.FirstError.Type.ShouldBe(ErrorType.Validation);
         result.FirstError.Code.ShouldBe("Prop");
         result.FirstError.Description.ShouldBe("Error");
-        _mockNext.Verify(x => x(), Times.Never);
+        _mockHandler.Verify(x => x.Handle(request, It.IsAny<CancellationToken>()), Times.Never);
     }
 
-    public class TestRequest : IRequest<ErrorOr<TestResponse>> { }
+    public class TestCommand : ICommand<ErrorOr<TestResponse>> { }
     public class TestResponse { }
 }
