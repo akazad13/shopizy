@@ -94,7 +94,6 @@ public class LoginQueryHandlerTests
             .Setup(j =>
                 j.GenerateToken(
                     user.Id,
-                    It.IsAny<List<string>>(),
                     It.Is<IEnumerable<string>>(p =>
                         p.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
                     )
@@ -123,7 +122,6 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(r => r.Count == 0),
                     It.Is<IEnumerable<string>>(p =>
                         p.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
                     )
@@ -146,7 +144,7 @@ public class LoginQueryHandlerTests
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(new List<Permission>().AsReadOnly());
         _mockJwtTokenGenerator
             .Setup(j =>
-                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+                j.GenerateToken(user.Id, It.IsAny<IEnumerable<string>>())
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
@@ -168,7 +166,6 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(r => r.Count == 0),
                     It.Is<IEnumerable<string>>(p => !p.Any())
                 ),
             Times.Once
@@ -193,7 +190,7 @@ public class LoginQueryHandlerTests
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
         _mockJwtTokenGenerator
             .Setup(j =>
-                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+                j.GenerateToken(user.Id, It.IsAny<IEnumerable<string>>())
             )
             .Returns(token);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
@@ -226,7 +223,7 @@ public class LoginQueryHandlerTests
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
         _mockJwtTokenGenerator
             .Setup(j =>
-                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+                j.GenerateToken(user.Id, It.IsAny<IEnumerable<string>>())
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
@@ -243,7 +240,6 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(r => r.Count == 0),
                     It.Is<IEnumerable<string>>(p => !p.Any())
                 ),
             Times.Once
@@ -266,7 +262,7 @@ public class LoginQueryHandlerTests
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(allPermissions);
         _mockJwtTokenGenerator
             .Setup(j =>
-                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+                j.GenerateToken(user.Id, It.IsAny<IEnumerable<string>>())
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
@@ -282,7 +278,6 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(roles => roles.Count == 0),
                     It.Is<IEnumerable<string>>(permissions =>
                         permissions.Count() == 2
                         && permissions.Contains("get:category")
@@ -346,7 +341,7 @@ public class LoginQueryHandlerTests
         _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(permissions);
         _mockJwtTokenGenerator
             .Setup(j =>
-                j.GenerateToken(user.Id, It.IsAny<List<string>>(), It.IsAny<IEnumerable<string>>())
+                j.GenerateToken(user.Id, It.IsAny<IEnumerable<string>>())
             )
             .Returns(expectedToken);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
@@ -368,7 +363,6 @@ public class LoginQueryHandlerTests
             j =>
                 j.GenerateToken(
                     user.Id,
-                    It.Is<List<string>>(roles => roles.Count == 0),
                     It.Is<IEnumerable<string>>(perms =>
                         perms.SequenceEqual(new[] { permissions[0].Name, permissions[1].Name })
                     )

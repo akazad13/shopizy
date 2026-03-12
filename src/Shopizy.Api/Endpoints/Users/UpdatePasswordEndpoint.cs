@@ -30,7 +30,7 @@ public class UpdatePasswordEndpoint : ApiEndpoint
                 ex => logger.UserPasswordUpdateError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("User.Modify")
         .WithTags("Users")
         .WithSummary("Update password")
         .WithDescription("Updates the account password for the authorized user.")

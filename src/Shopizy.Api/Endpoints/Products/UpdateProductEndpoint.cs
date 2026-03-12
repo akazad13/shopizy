@@ -23,7 +23,7 @@ public class UpdateProductEndpoint : ApiEndpoint
                 ex => logger.ProductUpdateError(ex)
             );
         })
-        .RequireAuthorization("SellerOrAdmin")
+        .RequireAuthorization("Product.Modify")
         .WithTags("Products")
         .WithSummary("Update product")
         .WithDescription("Updates the details of an existing product.")

@@ -11,6 +11,6 @@ public static class ClaimsPrincipalExtensions
             
         if (currentUserIdClaim == null) return false;
         
-        return currentUserIdClaim == userId.ToString() || user.IsInRole("Admin");
+        return currentUserIdClaim == userId.ToString();
     }
 }

@@ -55,17 +55,11 @@ public class LoginQueryHandler(
         var allPermissions = await _permissionRepository.GetAsync();
 
         var assignedPermissions = allPermissions
-            .Where(permission => user.PermissionIds.Contains(permission.Id))
-            .Select(p => p.Name);
-
-        var roles = new List<string>() { };
-
-        if (user.Id.Value == Guid.Parse("E68D8E76-72A1-42ED-91D0-0ED0296D662E"))
-        {
-            roles.Add("Admin");
-        }
-
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, roles, assignedPermissions);
+            .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
+            .Select(p => p.Name)
+            .ToList();
+        
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, assignedPermissions);
 
         var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
 

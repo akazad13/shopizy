@@ -26,7 +26,7 @@ public class CreateProductEndpoint : ApiEndpoint
                 ex => logger.ProductCreationError(ex)
             );
         })
-        .RequireAuthorization("SellerOrAdmin")
+        .RequireAuthorization("Product.Create")
         .WithTags("Products")
         .WithSummary("Creates a new product")
         .WithDescription("This endpoint allows a seller or admin to create a new product in the system.")

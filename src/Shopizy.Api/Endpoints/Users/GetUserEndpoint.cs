@@ -30,7 +30,7 @@ public class GetUserEndpoint : ApiEndpoint
                 ex => logger.UserFetchError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("User.Get")
         .WithTags("Users")
         .WithSummary("Get user information")
         .WithDescription("Retrieves the profile details of the authorized user.")

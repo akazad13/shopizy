@@ -22,7 +22,7 @@ public class DeleteProductEndpoint : ApiEndpoint
                 ex => logger.ProductDeleteError(ex)
             );
         })
-        .RequireAuthorization("SellerOrAdmin")
+        .RequireAuthorization("Product.Delete")
         .WithTags("Products")
         .WithSummary("Delete product")
         .WithDescription("Deletes a specific product from the system.")

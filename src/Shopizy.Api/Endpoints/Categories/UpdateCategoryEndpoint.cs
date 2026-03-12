@@ -23,7 +23,7 @@ public class UpdateCategoryEndpoint : ApiEndpoint
                 ex => logger.CategoryUpdateError(ex)
             );
         })
-        .RequireAuthorization("AdminOnly")
+        .RequireAuthorization("Category.Modify")
         .WithTags("Categories")
         .WithSummary("Update category")
         .WithDescription("Updates the details of an existing category.")

@@ -22,7 +22,7 @@ public class DeleteProductImageEndpoint : ApiEndpoint
                 ex => logger.ProductImageDeleteError(ex)
             );
         })
-        .RequireAuthorization("SellerOrAdmin")
+        .RequireAuthorization("Product.Modify")
         .WithTags("Products")
         .WithSummary("Delete product image")
         .WithDescription("Deletes a specific image from a product.")

@@ -45,7 +45,7 @@ public class PayEndpoint : ApiEndpoint
                 );
             }
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Order.Create")
         .WithTags("Payments")
         .WithSummary("Process payment")
         .WithDescription("Processes a payment for an order using either card or cash on delivery.")

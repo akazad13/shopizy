@@ -30,7 +30,7 @@ public class AddProductToCartEndpoint : ApiEndpoint
                 ex => logger.CartCreationError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Cart.Modify")
         .WithTags("Cart")
         .WithSummary("Add product to cart")
         .WithDescription("Adds a product or updates its quantity in the user's shopping cart.")

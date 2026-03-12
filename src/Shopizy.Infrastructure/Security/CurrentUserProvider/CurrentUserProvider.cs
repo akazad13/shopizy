@@ -44,9 +44,8 @@ public partial class CurrentUserProvider(
             }
 
             List<string> permissions = GetClaimValues("permissions");
-            List<string> roles = GetClaimValues(ClaimTypes.Role);
 
-            return new CurrentUser(id, permissions, roles);
+            return new CurrentUser(id, permissions);
         }
         catch (Exception ex)
         {

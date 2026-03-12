@@ -22,7 +22,7 @@ public class DeleteCategoryEndpoint : ApiEndpoint
                 ex => logger.CategoryDeleteError(ex)
             );
         })
-        .RequireAuthorization("AdminOnly")
+        .RequireAuthorization("Category.Delete")
         .WithTags("Categories")
         .WithSummary("Delete category")
         .WithDescription("Deletes an existing product category.")

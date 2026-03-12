@@ -30,7 +30,7 @@ public class UpdateProductQuantityEndpoint : ApiEndpoint
                 ex => logger.CartUpdateError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Cart.Modify")
         .WithTags("Cart")
         .WithSummary("Update item quantity in cart")
         .WithDescription("Updates the quantity for a specific item in the user's shopping cart.")

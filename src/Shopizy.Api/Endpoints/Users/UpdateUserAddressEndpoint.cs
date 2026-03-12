@@ -30,7 +30,7 @@ public class UpdateUserAddressEndpoint : ApiEndpoint
                 ex => logger.UserAddressUpdateError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("User.Modify")
         .WithTags("Users")
         .WithSummary("Update user address")
         .WithDescription("Updates the mailing address of the authorized user.")

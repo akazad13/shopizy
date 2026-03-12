@@ -20,7 +20,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     /// <returns>The user if found; otherwise, null.</returns>
     public Task<User?> GetUserByEmailAsync(string email)
     {
-        return _dbContext.Users.SingleOrDefaultAsync(u => u.Email == email);
+        return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Email == email);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     /// <returns>The user if found; otherwise, null.</returns>
     public Task<User?> GetUserByIdAsync(UserId id)
     {
-        return _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id);
+        return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
     }
 
     /// <summary>

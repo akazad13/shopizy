@@ -28,24 +28,18 @@ public class JwtTokenGeneratorTests
     {
         // Arrange
         var userId = UserId.CreateUnique();
-        var roles = new List<string> { "Admin", "Moderator" };
         var permissions = new List<string> { "CanCreateProduct", "CanEditProduct" };
 
         // Act
-        string token = _jwtTokenGenerator.GenerateToken(userId, roles, permissions);
+        string token = _jwtTokenGenerator.GenerateToken(userId, permissions);
 
         // Assert
         var jwtToken = new JwtSecurityToken(token);
 
-        Assert.Equal(10, jwtToken.Claims.Count());
+        Assert.Equal(8, jwtToken.Claims.Count());
 
         Assert.Contains(jwtToken.Claims, c =>
             c.Type == "id" && c.Value == userId.Value.ToString());
-
-        Assert.Contains(jwtToken.Claims, c =>
-            c.Type == "role" && c.Value == "Admin");
-        Assert.Contains(jwtToken.Claims, c =>
-            c.Type == "role" && c.Value == "Moderator");
 
         Assert.Contains(jwtToken.Claims, c =>
             c.Type == "permissions" && c.Value == "CanCreateProduct");

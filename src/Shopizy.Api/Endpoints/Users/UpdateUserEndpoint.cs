@@ -30,7 +30,7 @@ public class UpdateUserEndpoint : ApiEndpoint
                 ex => logger.UserUpdateError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("User.Modify")
         .WithTags("Users")
         .WithSummary("Update user profile")
         .WithDescription("Updates the profile information of the authorized user.")

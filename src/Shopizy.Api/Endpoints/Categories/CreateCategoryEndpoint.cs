@@ -23,7 +23,7 @@ public class CreateCategoryEndpoint : ApiEndpoint
                 ex => logger.CategoryCreationError(ex)
             );
         })
-        .RequireAuthorization("AdminOnly")
+        .RequireAuthorization("Category.Create")
         .WithTags("Categories")
         .WithSummary("Create category")
         .WithDescription("Creates a new product category.")

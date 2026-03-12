@@ -23,7 +23,7 @@ public class AddProductImageEndpoint : ApiEndpoint
                 ex => logger.ProductImageAdditionError(ex)
             );
         })
-        .RequireAuthorization("SellerOrAdmin")
+        .RequireAuthorization("Product.Modify")
         .WithTags("Products")
         .WithSummary("Add product image")
         .WithDescription("Uploads a new image for a specific product.")

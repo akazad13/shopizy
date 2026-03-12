@@ -30,7 +30,7 @@ public class CreateOrderEndpoint : ApiEndpoint
                 ex => logger.OrderCreationError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Order.Create")
         .WithTags("Orders")
         .WithSummary("Create order")
         .WithDescription("Places a new order for the products in the user's cart.")

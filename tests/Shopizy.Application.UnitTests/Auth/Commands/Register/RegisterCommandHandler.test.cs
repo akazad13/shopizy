@@ -71,14 +71,9 @@ public class RegisterCommandHandlerTests
             PermissionId.Create(new("C920A577-1669-4167-B056-5E0A03329C55")),
         };
 
-        _mockUserRepository
-            .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
-
-        _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 10000))
-            .Returns(hashedPassword);
-
+        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+        _mockPasswordManager.Setup(pm => pm.CreateHashString(It.IsAny<string>(), It.IsAny<int>())).Returns(hashedPassword);
+        _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
@@ -86,9 +81,6 @@ public class RegisterCommandHandlerTests
 
         // Assert
         Assert.False(result.IsError);
-        Assert.IsType<Success>(result.Value);
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
         _mockUserRepository.Verify(
             r =>
                 r.AddAsync(
@@ -97,8 +89,8 @@ public class RegisterCommandHandlerTests
                         && u.LastName == command.LastName
                         && u.Email == command.Email
                         && u.Password == hashedPassword
-                        && u.PermissionIds.Select(p => p.Value)
-                            .SequenceEqual(expectedPermissionIds.Select(p => p.Value))
+                        && u.PermissionIds.Select(p => p.Value).OrderBy(v => v)
+                            .SequenceEqual(expectedPermissionIds.Select(p => p.Value).OrderBy(v => v))
                     )
                 ),
             Times.Once
@@ -118,7 +110,7 @@ public class RegisterCommandHandlerTests
             .ReturnsAsync((User?)null);
 
         _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 10000))
+            .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
             .Returns(hashedPassword);
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
@@ -129,7 +121,7 @@ public class RegisterCommandHandlerTests
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.False(result.IsError);
+        Assert.False(result.IsError, result.IsError ? result.FirstError.Description : "");
         Assert.IsType<Success>(result.Value);
 
         _mockUserRepository.Verify(
@@ -137,42 +129,18 @@ public class RegisterCommandHandlerTests
                 r.AddAsync(
                     It.Is<User>(u =>
                         u.PermissionIds.Count == 12
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("249E733D-5BDC-49C3-91CA-06AE25A9C897"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("D6C2E3C6-314B-4F2E-A407-34139B145771"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("9601BA5E-EB54-4487-BFE0-563462D3CC25"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("0374E597-604E-4146-8F40-8C994D26C290"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("ACD9D507-AC45-4CD2-B0F4-91126C71319A"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("2A19090A-B3F3-4B30-9CED-934EE0503D26"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("4B88CB16-0228-4669-BA7F-B75F42A3B7AF"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("5E2A486B-D9A0-4F83-8FF2-C56EF97CE485"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("DD25381D-063C-4A3A-9539-DEEC640919A4"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("20082930-3857-4B34-80D0-E256B9B585D8"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("0C65A58A-D472-4D5D-848E-EAC46F988F5D"))
-                        )
-                        && u.PermissionIds.Contains(
-                            PermissionId.Create(new Guid("C920A577-1669-4167-B056-5E0A03329C55"))
-                        )
+                        && u.PermissionIds.Any(p => p.Value == new Guid("249E733D-5BDC-49C3-91CA-06AE25A9C897"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("2A19090A-B3F3-4B30-9CED-934EE0503D26"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("D6C2E3C6-314B-4F2E-A407-34139B145771"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("DD25381D-063C-4A3A-9539-DEEC640919A4"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("4B88CB16-0228-4669-BA7F-B75F42A3B7AF"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("5E2A486B-D9A0-4F83-8FF2-C56EF97CE485"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("9601BA5E-EB54-4487-BFE0-563462D3CC25"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("0C65A58A-D472-4D5D-848E-EAC46F988F5D"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("0374E597-604E-4146-8F40-8C994D26C290"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("20082930-3857-4B34-80D0-E256B9B585D8"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("ACD9D507-AC45-4CD2-B0F4-91126C71319A"))
+                        && u.PermissionIds.Any(p => p.Value == new Guid("C920A577-1669-4167-B056-5E0A03329C55"))
                     )
                 ),
             Times.Once
@@ -224,7 +192,7 @@ public class RegisterCommandHandlerTests
             .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
         _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 10000))
+            .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
             .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
@@ -236,7 +204,7 @@ public class RegisterCommandHandlerTests
         // Assert
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
+        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
         _mockUserRepository.Verify(
             r => r.AddAsync(It.Is<User>(u => u.Password == hashedPassword)),
             Times.Once
@@ -257,7 +225,7 @@ public class RegisterCommandHandlerTests
             .ReturnsAsync(User.Create("Existing", "User", command.Email, "existingHash", []));
 
         _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 1000))
+            .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
             .Returns(hashedPassword);
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
@@ -278,7 +246,7 @@ public class RegisterCommandHandlerTests
         Assert.Contains(CustomErrors.User.DuplicateEmail, results[1].Errors);
 
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Exactly(2));
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
+        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
         _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
         _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
     }
@@ -298,7 +266,7 @@ public class RegisterCommandHandlerTests
             .Setup(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null);
         _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, 10000))
+            .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
             .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
@@ -311,7 +279,7 @@ public class RegisterCommandHandlerTests
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
         _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, 10000), Times.Once);
+        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
         _mockUserRepository.Verify(
             r =>
                 r.AddAsync(

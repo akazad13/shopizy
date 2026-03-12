@@ -29,7 +29,7 @@ public class RemoveItemFromCartEndpoint : ApiEndpoint
                 ex => logger.RemoveItemFromCartError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Cart.Modify")
         .WithTags("Cart")
         .WithSummary("Remove item from cart")
         .WithDescription("Deletes a specific item from the user's shopping cart.")

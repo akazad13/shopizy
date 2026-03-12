@@ -30,7 +30,7 @@ public class GetOrderEndpoint : ApiEndpoint
                 ex => logger.OrderFetchError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Order.Get")
         .WithTags("Orders")
         .WithSummary("Get order by ID")
         .WithDescription("Retrieves details of a specific order for the authorized user.")

@@ -30,7 +30,7 @@ public class GetCartEndpoint : ApiEndpoint
                 ex => logger.CartFetchError(ex)
             );
         })
-        .RequireAuthorization()
+        .RequireAuthorization("Cart.Get")
         .WithTags("Cart")
         .WithSummary("Get shopping cart")
         .WithDescription("Retrieves the current shopping cart for the authorized user.")

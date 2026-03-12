@@ -8,6 +8,8 @@ using Shopizy.Domain.Users;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Carts;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shopizy.Api.IntegrationTests;
 
@@ -86,6 +88,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             var existingUser = (await dbContext.Users.FindAsync([UserId.Create(adminId)], TestContext.Current.CancellationToken));
             if (existingUser is null)
             {
+                var allPermissionIds = await dbContext.Permissions
+                    .Select(p => p.Id)
+                    .ToListAsync();
+
                 var hashedPassword = passwordManager.CreateHashString(password);
                 var constructor = typeof(User).GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
@@ -93,7 +99,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
                     new[] { typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(IList<PermissionId>) },
                     null);
 
-                var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, new List<PermissionId>()]);
+                var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, allPermissionIds]);
                 dbContext.Users.Add(user);
                 dbContext.Carts.Add(Cart.Create(user.Id));
                 await dbContext.SaveChangesAsync();

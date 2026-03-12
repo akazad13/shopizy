@@ -19,24 +19,17 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
 
     /// <summary>
-    /// Generates a JWT token for a user with specified roles and permissions.
+    /// Generates a JWT token for a user with specified permissions.
     /// </summary>
     /// <param name="userId">The user's unique identifier.</param>
-    /// <param name="roles">The list of roles assigned to the user.</param>
     /// <param name="Permissions">The list of permissions assigned to the user.</param>
     /// <returns>A JWT token string.</returns>
-    public string GenerateToken(UserId userId, IList<string> roles, IEnumerable<string> Permissions)
+    public string GenerateToken(UserId userId, IEnumerable<string> Permissions)
     {
-        Guard.Against.Null(roles);
         Guard.Against.Null(Permissions);
         Guard.Against.Null(userId);
 
         var claims = new List<Claim> { new("id", userId.Value.ToString()) };
-
-        foreach (string role in roles)
-        {
-            claims.Add(new(ClaimTypes.Role, role));
-        }
 
         foreach (string permission in Permissions)
         {
