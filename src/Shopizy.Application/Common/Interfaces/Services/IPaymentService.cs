@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Common.Interfaces.Services;

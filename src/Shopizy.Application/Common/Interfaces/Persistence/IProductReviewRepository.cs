@@ -1,7 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Shopizy.Domain.ProductReviews;
+﻿using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 
 namespace Shopizy.Application.Common.Interfaces.Persistence;

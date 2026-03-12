@@ -1,4 +1,3 @@
-using ErrorOr;
 using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;

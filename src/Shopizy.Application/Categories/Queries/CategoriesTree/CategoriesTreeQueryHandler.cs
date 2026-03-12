@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;

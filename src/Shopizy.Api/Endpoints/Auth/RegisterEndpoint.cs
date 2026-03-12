@@ -1,6 +1,5 @@
 using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
-using Microsoft.AspNetCore.Authorization;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Contracts.Authentication;

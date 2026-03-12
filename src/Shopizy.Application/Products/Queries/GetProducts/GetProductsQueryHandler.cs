@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Ardalis.GuardClauses;
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;

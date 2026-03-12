@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Common.Interfaces.Persistence;
+﻿namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IAppDbContext
 {

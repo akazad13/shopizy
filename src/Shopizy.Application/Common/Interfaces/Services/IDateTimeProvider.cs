@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Common.Interfaces.Services;
+﻿namespace Shopizy.Application.Common.Interfaces.Services;
 
 /// <summary>
 /// Provides an abstraction for retrieving the current date and time.

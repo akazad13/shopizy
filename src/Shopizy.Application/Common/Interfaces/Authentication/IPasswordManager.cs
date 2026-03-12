@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Common.Interfaces.Authentication;
+﻿namespace Shopizy.Application.Common.Interfaces.Authentication;
 
 public interface IPasswordManager
 {

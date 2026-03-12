@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Domain.Orders.ValueObjects;
+﻿using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Users.Queries.GetUser;

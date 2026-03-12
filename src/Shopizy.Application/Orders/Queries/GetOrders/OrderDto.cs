@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Domain.Common.ValueObjects;
+﻿using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;

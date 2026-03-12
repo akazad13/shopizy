@@ -1,6 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
-using Shopizy.Contracts.Authentication;
 using Shopizy.Contracts.Cart;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;

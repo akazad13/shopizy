@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Common.Security.Permissions;
+﻿namespace Shopizy.Application.Common.Security.Permissions;
 
 public static partial class Permissions
 {

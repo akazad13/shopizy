@@ -1,7 +1,5 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace Shopizy.Api.Endpoints;
 

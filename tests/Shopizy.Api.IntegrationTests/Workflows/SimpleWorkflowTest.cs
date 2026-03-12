@@ -1,16 +1,7 @@
-using System.Net;
 using Shouldly;
 using Xunit;
 using Shopizy.Contracts.Product;
 using Shopizy.Contracts.Category;
-using Shopizy.Contracts.Authentication;
-using System.Reflection;
-using Shopizy.Domain.Users;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Permissions.ValueObjects;
-using Microsoft.Extensions.DependencyInjection;
-using Shopizy.Application.Common.Interfaces.Authentication;
-using Shopizy.Domain.Carts;
 
 namespace Shopizy.Api.IntegrationTests.Workflows;
 

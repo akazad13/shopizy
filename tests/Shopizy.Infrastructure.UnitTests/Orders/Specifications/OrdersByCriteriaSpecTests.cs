@@ -1,4 +1,3 @@
-using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Orders.Specifications;

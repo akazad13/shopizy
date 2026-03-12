@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Common.Security.Roles;
+﻿namespace Shopizy.Application.Common.Security.Roles;
 
 public static class Role
 {

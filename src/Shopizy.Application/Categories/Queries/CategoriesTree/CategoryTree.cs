@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-namespace Shopizy.Application.Categories.Queries.CategoriesTree;
+﻿namespace Shopizy.Application.Categories.Queries.CategoriesTree;
 
 public class CategoryTree
 {

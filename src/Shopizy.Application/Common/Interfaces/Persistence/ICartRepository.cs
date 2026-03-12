@@ -1,7 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Shopizy.Domain.Carts;
+﻿using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 

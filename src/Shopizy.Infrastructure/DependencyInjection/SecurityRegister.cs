@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;

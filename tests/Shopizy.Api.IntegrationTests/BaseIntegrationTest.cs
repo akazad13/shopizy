@@ -8,7 +8,6 @@ using Shopizy.Domain.Users;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Carts;
 using System.Reflection;
-using System.Net.Http.Json;
 
 namespace Shopizy.Api.IntegrationTests;
 

@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Domain.Users;
+﻿using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.Common.Interfaces.Persistence;

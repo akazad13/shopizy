@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Shopizy.Application.Products.Common;
 

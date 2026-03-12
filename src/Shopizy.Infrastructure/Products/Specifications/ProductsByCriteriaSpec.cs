@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Infrastructure.Common.Specifications;

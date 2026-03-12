@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using Shopizy.Contracts.User;
 using Shouldly;
 using Xunit;

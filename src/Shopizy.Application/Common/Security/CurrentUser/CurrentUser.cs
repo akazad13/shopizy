@@ -1,5 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 
 namespace Shopizy.Application.Common.Security.CurrentUser;

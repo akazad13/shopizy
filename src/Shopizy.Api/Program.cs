@@ -1,7 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Microsoft.AspNetCore.Diagnostics;
-using Newtonsoft.Json;
 using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
