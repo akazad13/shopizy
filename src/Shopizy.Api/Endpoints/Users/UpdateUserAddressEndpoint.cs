@@ -32,6 +32,12 @@ public class UpdateUserAddressEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Users")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Update user address";
+            operation.Description = "Updates the mailing address of the authorized user.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

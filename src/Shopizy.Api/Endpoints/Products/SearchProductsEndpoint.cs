@@ -8,6 +8,9 @@ using Shopizy.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Products;
 
+/// <summary>
+/// Endpoint for searching products based on criteria.
+/// </summary>
 public class SearchProductsEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
@@ -25,6 +28,12 @@ public class SearchProductsEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Products")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Search products";
+            operation.Description = "Retrieves a list of products based on various search criteria.";
+            return operation;
+        })
         .Produces<IReadOnlyList<ProductResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

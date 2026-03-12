@@ -25,6 +25,12 @@ public class UpdateCategoryEndpoint : ApiEndpoint
         })
         .RequireAuthorization("AdminOnly")
         .WithTags("Categories")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Update category";
+            operation.Description = "Updates the details of an existing category.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

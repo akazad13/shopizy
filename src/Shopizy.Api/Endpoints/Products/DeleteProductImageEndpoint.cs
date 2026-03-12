@@ -24,6 +24,12 @@ public class DeleteProductImageEndpoint : ApiEndpoint
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Delete product image";
+            operation.Description = "Deletes a specific image from a product.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

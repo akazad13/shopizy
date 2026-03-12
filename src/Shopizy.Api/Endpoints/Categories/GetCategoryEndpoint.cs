@@ -25,6 +25,12 @@ public class GetCategoryEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Categories")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Get category by ID";
+            operation.Description = "Retrieves a specific category's details.";
+            return operation;
+        })
         .Produces<CategoryResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

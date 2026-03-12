@@ -8,6 +8,9 @@ using Shopizy.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Products;
 
+/// <summary>
+/// Endpoint for creating a new product.
+/// </summary>
 public class CreateProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
@@ -25,6 +28,12 @@ public class CreateProductEndpoint : ApiEndpoint
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Creates a new product";
+            operation.Description = "This endpoint allows a seller or admin to create a new product in the system.";
+            return operation;
+        })
         .Produces<ProductResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

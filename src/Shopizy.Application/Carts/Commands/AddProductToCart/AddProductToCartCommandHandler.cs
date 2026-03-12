@@ -29,10 +29,10 @@ public class AddProductToCartCommandHandler(
     /// <returns>The updated cart or an error.</returns>
     public async Task<ErrorOr<Cart>> Handle(
         AddProductToCartCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(cmd, nameof(cmd));
+        ArgumentNullException.ThrowIfNull(cmd);
 
         var cartId = CartId.Create(cmd.CartId);
         var productId = ProductId.Create(cmd.ProductId);

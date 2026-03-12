@@ -24,6 +24,12 @@ public class DeleteCategoryEndpoint : ApiEndpoint
         })
         .RequireAuthorization("AdminOnly")
         .WithTags("Categories")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Delete category";
+            operation.Description = "Deletes an existing product category.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

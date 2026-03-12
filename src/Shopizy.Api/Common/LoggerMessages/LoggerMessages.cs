@@ -281,6 +281,11 @@ public static partial class LoggerMessages
     )]
     public static partial void UserRegisterError(this ILogger logger, Exception ex);
 
+    /// <summary>
+    /// Logs an error when user login fails.
+    /// </summary>
+    /// <param name="logger">The logger instance.</param>
+    /// <param name="ex">The exception that occurred.</param>
     [LoggerMessage(EventId = 1023, Level = LogLevel.Error, Message = "An error occur while login.")]
     public static partial void UserLoginError(this ILogger logger, Exception ex);
 

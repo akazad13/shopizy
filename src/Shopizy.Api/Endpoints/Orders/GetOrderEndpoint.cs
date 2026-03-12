@@ -32,6 +32,12 @@ public class GetOrderEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Orders")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Get order by ID";
+            operation.Description = "Retrieves details of a specific order for the authorized user.";
+            return operation;
+        })
         .Produces<OrderDetailResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

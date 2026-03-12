@@ -3,8 +3,16 @@ using Shopizy.Contracts.Common;
 
 namespace Shopizy.Api.Endpoints;
 
+/// <summary>
+/// Provides custom extension methods for generating common API error results.
+/// </summary>
 public static class CustomResults
 {
+    /// <summary>
+    /// Converts a list of errors into an appropriate <see cref="IResult"/>.
+    /// </summary>
+    /// <param name="errors">The list of errors.</param>
+    /// <returns>A problem result or validation problem result.</returns>
     public static IResult Problem(IList<Error> errors)
     {
         if (errors == null || errors.Count is 0)

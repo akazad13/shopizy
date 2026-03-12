@@ -23,6 +23,12 @@ public class ListCategoriesEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Categories")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "List categories";
+            operation.Description = "Retrieves a flat list of all categories.";
+            return operation;
+        })
         .Produces<IReadOnlyList<CategoryResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

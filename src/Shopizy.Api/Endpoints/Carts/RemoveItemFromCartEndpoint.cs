@@ -31,6 +31,12 @@ public class RemoveItemFromCartEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Cart")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Remove item from cart";
+            operation.Description = "Deletes a specific item from the user's shopping cart.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

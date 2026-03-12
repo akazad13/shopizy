@@ -8,6 +8,9 @@ using Shopizy.Contracts.Common;
 using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Auth;
 
+/// <summary>
+/// Endpoint for user login.
+/// </summary>
 public class LoginEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
@@ -25,6 +28,12 @@ public class LoginEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Auth")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "User login";
+            operation.Description = "Authenticates a user and returns an access token.";
+            return operation;
+        })
         .Produces<AuthResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

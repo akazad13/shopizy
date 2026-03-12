@@ -8,6 +8,9 @@ using Shopizy.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Products;
 
+/// <summary>
+/// Endpoint for retrieving a product by its identifier.
+/// </summary>
 public class GetProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
@@ -25,6 +28,12 @@ public class GetProductEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Products")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Gets a product by ID";
+            operation.Description = "Retrieves detailed information about a specific product using its unique identifier.";
+            return operation;
+        })
         .Produces<ProductDetailResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

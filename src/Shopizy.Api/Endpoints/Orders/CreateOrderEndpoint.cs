@@ -32,6 +32,12 @@ public class CreateOrderEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Orders")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Create order";
+            operation.Description = "Places a new order for the products in the user's cart.";
+            return operation;
+        })
         .Produces<OrderDetailResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

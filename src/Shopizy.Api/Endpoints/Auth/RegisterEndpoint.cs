@@ -8,6 +8,9 @@ using Shopizy.Contracts.Common;
 using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Auth;
 
+/// <summary>
+/// Endpoint for user registration.
+/// </summary>
 public class RegisterEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
@@ -25,6 +28,12 @@ public class RegisterEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Auth")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "User registration";
+            operation.Description = "Registers a new user in the system.";
+            return operation;
+        })
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
