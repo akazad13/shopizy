@@ -28,12 +28,8 @@ public class GetProductEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Products")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Gets a product by ID";
-            operation.Description = "Retrieves detailed information about a specific product using its unique identifier.";
-            return operation;
-        })
+        .WithSummary("Gets a product by ID")
+        .WithDescription("Retrieves detailed information about a specific product using its unique identifier.")
         .Produces<ProductDetailResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

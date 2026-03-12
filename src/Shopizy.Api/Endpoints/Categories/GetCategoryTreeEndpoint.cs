@@ -23,12 +23,8 @@ public class GetCategoryTreeEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Categories")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Get category tree";
-            operation.Description = "Retrieves the hierarchical structure of all categories.";
-            return operation;
-        })
+        .WithSummary("Get category tree")
+        .WithDescription("Retrieves the hierarchical structure of all categories.")
         .Produces<List<CategoryTreeResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

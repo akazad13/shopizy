@@ -32,12 +32,8 @@ public class UpdateUserEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Users")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Update user profile";
-            operation.Description = "Updates the profile information of the authorized user.";
-            return operation;
-        })
+        .WithSummary("Update user profile")
+        .WithDescription("Updates the profile information of the authorized user.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

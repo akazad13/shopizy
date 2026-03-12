@@ -32,12 +32,8 @@ public class UpdatePasswordEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Users")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Update password";
-            operation.Description = "Updates the account password for the authorized user.";
-            return operation;
-        })
+        .WithSummary("Update password")
+        .WithDescription("Updates the account password for the authorized user.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

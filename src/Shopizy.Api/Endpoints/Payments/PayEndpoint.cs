@@ -47,12 +47,8 @@ public class PayEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Payments")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Process payment";
-            operation.Description = "Processes a payment for an order using either card or cash on delivery.";
-            return operation;
-        })
+        .WithSummary("Process payment")
+        .WithDescription("Processes a payment for an order using either card or cash on delivery.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

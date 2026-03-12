@@ -28,12 +28,8 @@ public class RegisterEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Auth")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "User registration";
-            operation.Description = "Registers a new user in the system.";
-            return operation;
-        })
+        .WithSummary("User registration")
+        .WithDescription("Registers a new user in the system.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

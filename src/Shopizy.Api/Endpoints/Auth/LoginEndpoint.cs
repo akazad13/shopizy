@@ -28,12 +28,8 @@ public class LoginEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Auth")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "User login";
-            operation.Description = "Authenticates a user and returns an access token.";
-            return operation;
-        })
+        .WithSummary("User login")
+        .WithDescription("Authenticates a user and returns an access token.")
         .Produces<AuthResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

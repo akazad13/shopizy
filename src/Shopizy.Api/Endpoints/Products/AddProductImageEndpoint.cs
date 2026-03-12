@@ -25,12 +25,8 @@ public class AddProductImageEndpoint : ApiEndpoint
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Add product image";
-            operation.Description = "Uploads a new image for a specific product.";
-            return operation;
-        })
+        .WithSummary("Add product image")
+        .WithDescription("Uploads a new image for a specific product.")
         .DisableAntiforgery()
         .Produces<ProductImageResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)

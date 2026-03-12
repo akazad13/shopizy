@@ -32,12 +32,8 @@ public class GetOrdersEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Orders")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "List user orders";
-            operation.Description = "Retrieves a history of all orders placed by the authorized user.";
-            return operation;
-        })
+        .WithSummary("List user orders")
+        .WithDescription("Retrieves a history of all orders placed by the authorized user.")
         .Produces<List<OrderResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

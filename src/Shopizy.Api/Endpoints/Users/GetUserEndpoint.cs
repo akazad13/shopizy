@@ -32,12 +32,8 @@ public class GetUserEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Users")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Get user information";
-            operation.Description = "Retrieves the profile details of the authorized user.";
-            return operation;
-        })
+        .WithSummary("Get user information")
+        .WithDescription("Retrieves the profile details of the authorized user.")
         .Produces<UserDetails>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

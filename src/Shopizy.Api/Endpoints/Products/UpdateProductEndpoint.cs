@@ -25,12 +25,8 @@ public class UpdateProductEndpoint : ApiEndpoint
         })
         .RequireAuthorization("SellerOrAdmin")
         .WithTags("Products")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Update product";
-            operation.Description = "Updates the details of an existing product.";
-            return operation;
-        })
+        .WithSummary("Update product")
+        .WithDescription("Updates the details of an existing product.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

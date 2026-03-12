@@ -32,12 +32,8 @@ public class AddProductToCartEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Cart")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Add product to cart";
-            operation.Description = "Adds a product or updates its quantity in the user's shopping cart.";
-            return operation;
-        })
+        .WithSummary("Add product to cart")
+        .WithDescription("Adds a product or updates its quantity in the user's shopping cart.")
         .Produces<CartResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

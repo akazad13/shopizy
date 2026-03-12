@@ -58,12 +58,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the user was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     
     /// <summary>
     /// Gets the date and time when the user was last modified.
     /// </summary>
-    public DateTime? ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; }
 
     /// <summary>
     /// Gets the read-only list of order IDs associated with this user.

@@ -25,12 +25,8 @@ public class CreateCategoryEndpoint : ApiEndpoint
         })
         .RequireAuthorization("AdminOnly")
         .WithTags("Categories")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Create category";
-            operation.Description = "Creates a new product category.";
-            return operation;
-        })
+        .WithSummary("Create category")
+        .WithDescription("Creates a new product category.")
         .Produces<CategoryResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

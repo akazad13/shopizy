@@ -13,7 +13,7 @@ public abstract class ApiEndpoint : IEndpoint
     /// <summary>
     /// Handles the request by sending a command through the dispatcher and matching the result.
     /// </summary>
-    protected async Task<IResult> HandleAsync<TResponse>(
+    protected static async Task<IResult> HandleAsync<TResponse>(
         IDispatcher dispatcher,
         ICommand<ErrorOr<TResponse>> command,
         Func<TResponse, IResult> onSuccess,
@@ -37,7 +37,7 @@ public abstract class ApiEndpoint : IEndpoint
     /// <summary>
     /// Handles the request by sending a query through the dispatcher and matching the result.
     /// </summary>
-    protected async Task<IResult> HandleAsync<TResponse>(
+    protected static async Task<IResult> HandleAsync<TResponse>(
         IDispatcher dispatcher,
         IQuery<ErrorOr<TResponse>> query,
         Func<TResponse, IResult> onSuccess,

@@ -28,12 +28,8 @@ public class SearchProductsEndpoint : ApiEndpoint
         })
         .AllowAnonymous()
         .WithTags("Products")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Search products";
-            operation.Description = "Retrieves a list of products based on various search criteria.";
-            return operation;
-        })
+        .WithSummary("Search products")
+        .WithDescription("Retrieves a list of products based on various search criteria.")
         .Produces<IReadOnlyList<ProductResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

@@ -32,12 +32,8 @@ public class GetCartEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Cart")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Get shopping cart";
-            operation.Description = "Retrieves the current shopping cart for the authorized user.";
-            return operation;
-        })
+        .WithSummary("Get shopping cart")
+        .WithDescription("Retrieves the current shopping cart for the authorized user.")
         .Produces<CartResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

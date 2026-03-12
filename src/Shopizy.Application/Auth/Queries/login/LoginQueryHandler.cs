@@ -36,7 +36,7 @@ public class LoginQueryHandler(
     /// <returns>An authentication result containing user information and JWT token, or an error.</returns>
     public async Task<ErrorOr<AuthResult>> Handle(
         LoginQuery query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         cancellationToken.ThrowIfCancellationRequested();

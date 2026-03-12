@@ -32,12 +32,8 @@ public class UpdateProductQuantityEndpoint : ApiEndpoint
         })
         .RequireAuthorization()
         .WithTags("Cart")
-        .WithOpenApi(operation =>
-        {
-            operation.Summary = "Update item quantity in cart";
-            operation.Description = "Updates the quantity for a specific item in the user's shopping cart.";
-            return operation;
-        })
+        .WithSummary("Update item quantity in cart")
+        .WithDescription("Updates the quantity for a specific item in the user's shopping cart.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
