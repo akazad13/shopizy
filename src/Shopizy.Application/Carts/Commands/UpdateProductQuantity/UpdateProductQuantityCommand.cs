@@ -1,5 +1,6 @@
 ﻿using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
+using Shopizy.Domain.Carts;
 
 namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 
@@ -13,9 +14,7 @@ namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 /// <param name="Quantity">The new quantity.</param>
 public record UpdateProductQuantityCommand(
     Guid UserId,
-    Guid CartId,
     Guid CartItemId,
-    Guid ProductId,
     int Quantity
-) : ICommand<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Cart>>;
 

@@ -3,7 +3,6 @@ using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
-using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
@@ -34,10 +33,10 @@ public class AddProductToCartCommandHandler(
     {
         ArgumentNullException.ThrowIfNull(cmd);
 
-        var cartId = CartId.Create(cmd.CartId);
+        var userId = UserId.Create(cmd.UserId);
         var productId = ProductId.Create(cmd.ProductId);
 
-        var cart = await _cartRepository.GetCartByIdAsync(cartId, cancellationToken);
+        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
 
         if (cart is null)
         {
@@ -57,6 +56,6 @@ public class AddProductToCartCommandHandler(
         cart.AddLineItem(CartItem.Create(productId, cmd.Color, cmd.Size, cmd.Quantity));
         _cartRepository.Update(cart);
 
-        return await _cartRepository.GetCartByUserIdAsync(UserId.Create(cmd.UserId));
+        return await _cartRepository.GetCartByUserIdAsync(userId);
     }
 }

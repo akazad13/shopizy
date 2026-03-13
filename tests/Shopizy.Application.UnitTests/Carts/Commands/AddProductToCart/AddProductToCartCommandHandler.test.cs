@@ -5,9 +5,9 @@ using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
-using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart;
 
@@ -36,7 +36,7 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
+            .Setup(x => x.GetCartByUserIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         // Act
@@ -58,17 +58,13 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
+            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(existingCart);
         _mockProductRepository
             .Setup(x => x.IsProductExistAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(true);
 
         _mockCartRepository.Setup(cr => cr.Update(existingCart));
-
-        _mockCartRepository
-            .Setup(cr => cr.GetCartByUserIdAsync(existingCart.UserId))
-            .ReturnsAsync(existingCart);
 
         // Act
         var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -117,17 +113,15 @@ public class AddProductToCartCommandHandlerTests
         var command = AddProductToCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(x => x.GetCartByIdAsync(It.IsAny<CartId>(), TestContext.Current.CancellationToken))
-            .ReturnsAsync(existingCart);
+            .SetupSequence(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
+            .ReturnsAsync(existingCart)
+            .ReturnsAsync(updatedCart);
 
         _mockProductRepository
             .Setup(x => x.IsProductExistAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(true);
 
-        _mockCartRepository.Setup(cr => cr.Update(updatedCart));
-        _mockCartRepository
-            .Setup(cr => cr.GetCartByUserIdAsync(updatedCart.UserId))
-            .ReturnsAsync(updatedCart);
+        _mockCartRepository.Setup(cr => cr.Update(It.IsAny<Cart>()));
 
         // Act
         var cart = await _sut.Handle(command, TestContext.Current.CancellationToken);

@@ -55,18 +55,12 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         products.ShouldContain(p => p.ProductId == product!.ProductId);
 
         // 4. User Journey: Add to Cart
-        // First get the cart to find its ID
-        var getCartResponseInitial = await HttpClient.GetAsync($"/api/v1.0/users/{customerUserId}/carts", TestContext.Current.CancellationToken);
-        getCartResponseInitial.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var initialCart = await getCartResponseInitial.Content.ReadFromJsonAsync<CartResponse>(TestContext.Current.CancellationToken);
-        
         var addToCartRequest = new AddProductToCartRequest(product!.ProductId, "Midnight Blue", "256GB", 1);
-        // Cart uses HttpPatch("{cartId:guid}")
-        var addToCartResponse = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{customerUserId}/carts/{initialCart!.CartId}", addToCartRequest, TestContext.Current.CancellationToken);
+        var addToCartResponse = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{customerUserId}/cart/items", addToCartRequest, TestContext.Current.CancellationToken);
         addToCartResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // 5. User Journey: Review Cart
-        var getCartResponse = await HttpClient.GetAsync($"/api/v1.0/users/{customerUserId}/carts", TestContext.Current.CancellationToken);
+        var getCartResponse = await HttpClient.GetAsync($"/api/v1.0/users/{customerUserId}/cart", TestContext.Current.CancellationToken);
         getCartResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
         var cart = await getCartResponse.Content.ReadFromJsonAsync<CartResponse>(TestContext.Current.CancellationToken);
         cart!.CartItems.ShouldContain(i => i.ProductId == product.ProductId);

@@ -14,7 +14,7 @@ public class GetCartEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/users/{userId:guid}/carts", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetCartEndpoint> logger) =>
+        app.MapGet("api/v1.0/users/{userId:guid}/cart", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetCartEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

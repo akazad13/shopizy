@@ -14,14 +14,14 @@ public class AddProductToCartEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/users/{userId:guid}/carts/{cartId:guid}", async (Guid userId, Guid cartId, AddProductToCartRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<AddProductToCartEndpoint> logger) =>
+        app.MapPatch("api/v1.0/users/{userId:guid}/cart/items", async (Guid userId, AddProductToCartRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<AddProductToCartEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {
                 return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to modify this cart.")]);
             }
 
-            var command = mapper.Map<AddProductToCartCommand>((userId, cartId, request));
+            var command = mapper.Map<AddProductToCartCommand>((userId, request));
 
             return await HandleAsync(
                 mediator,

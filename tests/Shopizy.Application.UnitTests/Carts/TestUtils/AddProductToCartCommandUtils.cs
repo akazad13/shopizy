@@ -9,7 +9,6 @@ public static class AddProductToCartCommandUtils
     {
         return new AddProductToCartCommand(
             Constants.User.Id.Value,
-            Constants.Cart.Id.Value,
             Constants.Product.Id.Value,
             Constants.CartItem.Color,
             Constants.CartItem.Size,

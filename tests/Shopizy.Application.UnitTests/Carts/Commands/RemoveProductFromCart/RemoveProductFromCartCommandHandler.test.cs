@@ -1,11 +1,10 @@
-using ErrorOr;
 using Moq;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
-using Shopizy.Domain.Carts.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.RemoveProductFromCart;
 
@@ -28,7 +27,7 @@ public class RemoveProductFromCartCommandHandlerTests
         var command = RemoveProductFromCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken))
+            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         // Act
@@ -40,7 +39,7 @@ public class RemoveProductFromCartCommandHandlerTests
         Assert.Equal(CustomErrors.Cart.CartNotFound, result.Errors[0]);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken),
+            cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
@@ -55,7 +54,7 @@ public class RemoveProductFromCartCommandHandlerTests
         var command = RemoveProductFromCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken))
+            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => existingCart);
 
         _mockCartRepository.Setup(cr => cr.Update(existingCart));
@@ -65,11 +64,11 @@ public class RemoveProductFromCartCommandHandlerTests
 
         // Assert
         Assert.False(result.IsError);
-        Assert.IsType<Success>(result.Value);
+        Assert.IsType<Cart>(result.Value);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken),
-            Times.Once
+            cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)),
+            Times.Exactly(2)
         );
         _mockCartRepository.Verify(
             x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 0)),

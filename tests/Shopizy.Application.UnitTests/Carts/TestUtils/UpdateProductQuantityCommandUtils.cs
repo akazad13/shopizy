@@ -9,9 +9,7 @@ public static class UpdateProductQuantityCommandUtils
     {
         return new UpdateProductQuantityCommand(
             Constants.User.Id.Value,
-            Constants.Cart.Id.Value,
             Constants.CartItem.Id.Value,
-            Constants.Product.Id.Value,
             quantity
         );
     }

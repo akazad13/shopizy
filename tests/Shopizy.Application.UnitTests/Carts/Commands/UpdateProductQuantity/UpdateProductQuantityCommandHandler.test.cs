@@ -3,7 +3,7 @@ using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
-using Shopizy.Domain.Carts.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.UpdateProductQuantity;
@@ -27,7 +27,7 @@ public class UpdateProductQuantityCommandHandlerTests
         var command = UpdateProductQuantityCommandUtils.CreateCommand(37);
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken))
+            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         // Act
@@ -39,7 +39,7 @@ public class UpdateProductQuantityCommandHandlerTests
         Assert.Equal(CustomErrors.Cart.CartNotFound, result.Errors[0]);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByIdAsync(CartId.Create(command.CartId), TestContext.Current.CancellationToken),
+            cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
