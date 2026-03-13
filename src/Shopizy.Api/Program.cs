@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 app.UseExceptionHandler();
 
 app.UseCors("_myAllowSpecificOrigins");
-if (!app.Environment.IsEnvironment("Testing"))
+if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
