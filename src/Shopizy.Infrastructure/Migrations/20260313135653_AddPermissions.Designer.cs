@@ -13,7 +13,7 @@ namespace Shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260313135653_remaining")]
-    partial class remaining
+    partial class AddPermissions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

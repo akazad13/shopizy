@@ -7,7 +7,7 @@
 namespace Shopizy.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class remaining : Migration
+    public partial class AddPermissions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
