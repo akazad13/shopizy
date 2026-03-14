@@ -9,7 +9,6 @@ using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Carts;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Shopizy.Api.IntegrationTests;
 

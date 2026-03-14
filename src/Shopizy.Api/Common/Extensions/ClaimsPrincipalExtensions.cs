@@ -6,11 +6,11 @@ public static class ClaimsPrincipalExtensions
 {
     public static bool IsAuthorized(this ClaimsPrincipal user, Guid userId)
     {
+        ArgumentNullException.ThrowIfNull(user);
+
         var currentUserIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value 
             ?? user.FindFirst("id")?.Value;
-            
-        if (currentUserIdClaim == null) return false;
-        
-        return currentUserIdClaim == userId.ToString();
+
+        return (currentUserIdClaim != null) && currentUserIdClaim == userId.ToString();
     }
 }

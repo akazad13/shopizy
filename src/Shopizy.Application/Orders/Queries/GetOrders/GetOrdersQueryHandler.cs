@@ -13,14 +13,11 @@ public class GetOrdersQueryHandler(IOrderRepository orderRepository)
 
     public async Task<ErrorOr<List<OrderDto>?>> Handle(
         GetOrdersQuery request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
-        var customerId = request.CustomerId is null
-            ? null
-            : UserId.Create(request.CustomerId.Value);
         var orders = await _orderRepository.GetOrdersAsync(
-            customerId,
+            UserId.Create(request.UserId),
             request.StartDate,
             request.EndDate,
             request.Status,

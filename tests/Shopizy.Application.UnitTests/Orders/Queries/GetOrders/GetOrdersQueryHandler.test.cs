@@ -7,6 +7,7 @@ using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Orders.Entities;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.GetOrders;
 
@@ -25,10 +26,10 @@ public class GetOrdersQueryHandlerTestsRefactored
     public async Task Handle_WithValidRequest_ShouldReturnOrderDtos()
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        var query = new GetOrdersQuery(customerId, null, null, null, null, 1, 10);
+        var userId = Guid.NewGuid();
+        var query = new GetOrdersQuery(userId, null, null, null, 1, 10);
         
-        var orders = new List<Order> { CreateSampleOrder(UserId.Create(customerId)) };
+        var orders = new List<Order> { CreateSampleOrder(UserId.Create(userId)) };
 
         _mockOrderRepository.Setup(r => r.GetOrdersAsync(
             It.IsAny<UserId?>(), 
@@ -43,7 +44,7 @@ public class GetOrdersQueryHandlerTestsRefactored
         result.Value.ShouldNotBeNull();
     }
 
-    private Order CreateSampleOrder(UserId userId)
+    private static Order CreateSampleOrder(UserId userId)
     {
         return Order.Create(
             userId,
@@ -51,7 +52,7 @@ public class GetOrdersQueryHandlerTestsRefactored
             (int)DeliveryMethods.Standard,
             Price.CreateNew(0, Currency.usd),
             Shopizy.Domain.Orders.ValueObjects.Address.CreateNew("S", "C", "ST", "CO", "Z"),
-            new List<Shopizy.Domain.Orders.Entities.OrderItem>()
+            new List<OrderItem>()
         );
     }
 }
