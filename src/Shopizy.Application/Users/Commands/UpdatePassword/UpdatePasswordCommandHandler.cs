@@ -26,7 +26,7 @@ public class UpdatePasswordCommandHandler(
     /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdatePasswordCommand request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (request.OldPassword == request.NewPassword)
