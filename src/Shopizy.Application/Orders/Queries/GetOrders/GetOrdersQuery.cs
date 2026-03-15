@@ -1,4 +1,4 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
 using Shopizy.Domain.Orders.Enums;
 
@@ -14,7 +14,7 @@ namespace Shopizy.Application.Orders.Queries.GetOrders;
 /// <param name="PageNumber">The page number (default: 1).</param>
 /// <param name="PageSize">The page size (default: 10).</param>
 public record GetOrdersQuery(
-    Guid UserId,
+    Guid? UserId,
     DateTime? StartDate,
     DateTime? EndDate,
     OrderStatus? Status,

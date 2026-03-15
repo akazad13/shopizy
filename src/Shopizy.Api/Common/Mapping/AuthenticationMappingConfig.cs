@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Application.Auth.Common;
@@ -18,7 +17,7 @@ public class AuthenticationMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config.NewConfig<AuthResult, AuthResponse>();
         config.NewConfig<LoginRequest, LoginQuery>();

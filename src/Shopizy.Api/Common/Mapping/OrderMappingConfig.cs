@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Orders.Commands.CancelOrder;
 using Shopizy.Application.Orders.Commands.CreateOrder;
@@ -22,7 +21,7 @@ public class OrderMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config.NewConfig<Shopizy.Domain.Common.ValueObjects.Price, Shopizy.Contracts.Order.Price>()
             .Map(dest => dest.Amount, src => src.Amount)

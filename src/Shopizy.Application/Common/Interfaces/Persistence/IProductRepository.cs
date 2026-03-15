@@ -1,4 +1,4 @@
-﻿using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -14,8 +14,11 @@ public interface IProductRepository
         int pageSize
     );
     Task<Product?> GetProductByIdAsync(ProductId id);
-    Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids);
     Task<bool> IsProductExistAsync(ProductId id);
+    Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids);
+    Task<IReadOnlyList<Product>> GetLowStockProductsAsync(int threshold);
+    Task<IReadOnlyList<string>> GetBrandsAsync();
+    Task<int> GetTotalProductCountAsync();
     Task AddAsync(Product product);
     void Update(Product product);
     void Remove(Product product);

@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
@@ -18,7 +17,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
         CancellationToken cancellationToken
     )
     {
-        Guard.Against.Null(query);
+        ArgumentNullException.ThrowIfNull(query);
 
         if (query.PageNumber <= 0) query = query with { PageNumber = 1 };
         if (query.PageSize <= 0) query = query with { PageSize = 10 };

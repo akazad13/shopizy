@@ -1,4 +1,4 @@
-﻿using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -17,6 +17,8 @@ public interface IOrderRepository
         int pageSize,
         OrderType orderType = OrderType.Ascending
     );
+    Task<int> GetTotalOrdersCountAsync();
+    Task<decimal> GetTotalRevenueAsync();
     Task<Order?> GetOrderByIdAsync(OrderId id);
     Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(UserId userId, CancellationToken cancellationToken = default);
     Task AddAsync(Order order);

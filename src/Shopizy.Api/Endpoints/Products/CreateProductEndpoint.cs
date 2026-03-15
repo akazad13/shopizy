@@ -15,9 +15,9 @@ public class CreateProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/users/{userId:guid}/products", async (Guid userId, CreateProductRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
+        app.MapPost("api/v1.0/admin/products", async (CreateProductRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
         {
-            var command = mapper.Map<CreateProductCommand>((userId, request));
+            var command = mapper.Map<CreateProductCommand>((Guid.Empty, request));
 
             return await HandleAsync(
                 mediator,

@@ -1,6 +1,4 @@
-using Ardalis.GuardClauses;
 using Mapster;
-using Shopizy.Application.Users.Commands.UpdateAddress;
 using Shopizy.Application.Users.Commands.UpdatePassword;
 using Shopizy.Application.Users.Commands.UpdateUser;
 using Shopizy.Application.Users.Queries.GetUser;
@@ -19,7 +17,7 @@ public class UserMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config
             .NewConfig<(Guid UserId, UpdateUserRequest request), UpdateUserCommand>()
@@ -30,11 +28,6 @@ public class UserMappingConfig : IRegister
             .Map(dest => dest.State, src => src.request.Address.State)
             .Map(dest => dest.Country, src => src.request.Address.Country)
             .Map(dest => dest.ZipCode, src => src.request.Address.ZipCode);
-
-        config
-            .NewConfig<(Guid UserId, UpdateAddressRequest request), UpdateAddressCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest, src => src.request);
 
         config
             .NewConfig<(Guid UserId, UpdatePasswordRequest request), UpdatePasswordCommand>()

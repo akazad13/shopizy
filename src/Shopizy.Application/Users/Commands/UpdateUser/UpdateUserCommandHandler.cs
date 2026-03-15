@@ -24,20 +24,20 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
     /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdateUserCommand request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
+        
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
             return CustomErrors.User.UserNotFound;
         }
 
-        user.Update(
-            request.FirstName,
-            request.LastName,
-            request.Email,
-            request.PhoneNumber,
+        user.UpdateUserName(request.FirstName, request.LastName);
+
+        user.UpdateAddress(
             request.Street,
             request.City,
             request.State,

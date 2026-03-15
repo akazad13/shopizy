@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
@@ -26,8 +25,8 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
     /// <returns>A JWT token string.</returns>
     public string GenerateToken(UserId userId, IEnumerable<string> Permissions)
     {
-        Guard.Against.Null(Permissions);
-        Guard.Against.Null(userId);
+        ArgumentNullException.ThrowIfNull(Permissions);
+        ArgumentNullException.ThrowIfNull(userId);
 
         var claims = new List<Claim> { new("id", userId.Value.ToString()) };
 

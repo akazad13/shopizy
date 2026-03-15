@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Commands.DeleteProduct;
@@ -24,7 +23,7 @@ public class ProductMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config.NewConfig<ProductsCriteria, GetProductsQuery>()
             .MapWith(src => new GetProductsQuery(

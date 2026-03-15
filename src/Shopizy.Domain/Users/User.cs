@@ -14,52 +14,52 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     private readonly List<OrderId> _orderIds = [];
     private readonly List<ProductReviewId> _productReviewIds = [];
     private readonly List<PermissionId> _permissionIds = [];
-    
+
     /// <summary>
     /// Gets the user's first name.
     /// </summary>
     public string FirstName { get; private set; }
-    
+
     /// <summary>
     /// Gets the user's last name.
     /// </summary>
     public string LastName { get; private set; }
-    
+
     /// <summary>
     /// Gets the user's email address.
     /// </summary>
     public string Email { get; private set; }
-    
+
     /// <summary>
     /// Gets the user's profile image URL.
     /// </summary>
-    public string? ProfileImageUrl { get; }
-    
+    public string? ProfileImageUrl { get; private set;}
+
     /// <summary>
     /// Gets the user's phone number.
     /// </summary>
-    public string Phone { get; private set; }
-    
+    public string Phone { get; private set;}
+
     /// <summary>
     /// Gets the user's hashed password.
     /// </summary>
     public string? Password { get; private set; }
-    
+
     /// <summary>
     /// Gets the user's customer ID for payment processing.
     /// </summary>
     public string? CustomerId { get; private set; } = null;
-    
+
     /// <summary>
     /// Gets the user's address.
     /// </summary>
     public Address? Address { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the user was created.
     /// </summary>
     public DateTime CreatedOn { get; }
-    
+
     /// <summary>
     /// Gets the date and time when the user was last modified.
     /// </summary>
@@ -69,12 +69,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// Gets the read-only list of order IDs associated with this user.
     /// </summary>
     public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
-    
+
     /// <summary>
     /// Gets the read-only list of product review IDs created by this user.
     /// </summary>
     public IReadOnlyList<ProductReviewId> ProductReviewIds => _productReviewIds.AsReadOnly();
-    
+
     /// <summary>
     /// Gets the read-only list of permission IDs assigned to this user.
     /// </summary>
@@ -99,7 +99,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     {
         var user = new User(UserId.CreateUnique(), firstName, lastName, email, password, permissionIds);
         user.AddDomainEvent(new Events.UserRegisteredDomainEvent(user));
-        
+
         return user;
     }
 
@@ -119,7 +119,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         LastName = lastName;
         Email = email;
         Password = password;
-        _permissionIds = permissionIds.ToList();
+        _permissionIds = [.. permissionIds];
     }
 
     /// <summary>
@@ -151,34 +151,35 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     }
 
     /// <summary>
-    /// Updates the user's profile information.
+    /// Updates the user's name.
     /// </summary>
     /// <param name="firstName">The user's first name.</param>
     /// <param name="lastName">The user's last name.</param>
-    /// <param name="email">The user's email address.</param>
-    /// <param name="phone">The user's phone number.</param>
-    /// <param name="street">The street address.</param>
-    /// <param name="city">The city.</param>
-    /// <param name="state">The state or province.</param>
-    /// <param name="country">The country.</param>
-    /// <param name="zipCode">The postal/ZIP code.</param>
-    public void Update(
+    public void UpdateUserName(
         string firstName,
-        string lastName,
-        string email,
-        string? phone,
-        string street,
-        string city,
-        string state,
-        string country,
-        string zipCode
+        string lastName
     )
     {
         FirstName = firstName;
         LastName = lastName;
-        Email = email;
-        Phone = phone ?? string.Empty;
-        Address = Address.CreateNew(street, city, state, country, zipCode);
+    }
+
+    /// <summary>
+    /// Updates the user's phone.
+    /// </summary>
+    /// <param name="phone">The user's phone.</param>
+    public void UpdatePhone(string phone)
+    {
+        Phone = phone;
+    }
+
+    /// <summary>
+    /// Updates the user's profile picture.
+    /// </summary>
+    /// <param name="profileImageUrl">The user's profile picture.</param>
+    public void UpdateProfileImageUrl(string profileImageUrl)
+    {
+        ProfileImageUrl = profileImageUrl;
     }
 
     /// <summary>
@@ -188,5 +189,15 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public void UpdateCustomerId(string customerId)
     {
         CustomerId = customerId;
+    }
+
+    /// <summary>
+    /// Updates the user's permissions.
+    /// </summary>
+    /// <param name="permissionIds">The new list of permission IDs.</param>
+    public void UpdatePermissions(IList<PermissionId> permissionIds)
+    {
+        _permissionIds.Clear();
+        _permissionIds.AddRange(permissionIds);
     }
 }

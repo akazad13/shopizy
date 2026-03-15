@@ -65,14 +65,38 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .ToListAsync();
     }
 
-    /// <summary>
-    /// Checks if a product exists by its identifier.
-    /// </summary>
-    /// <param name="id">The product identifier.</param>
-    /// <returns>True if the product exists; otherwise, false.</returns>
     public Task<bool> IsProductExistAsync(ProductId id)
     {
         return _dbContext.Products.AnyAsync(p => p.Id == id);
+    }
+
+    /// <summary>
+    /// Retrieves a list of all distinct product brands.
+    /// </summary>
+    /// <returns>A list of brand names.</returns>
+    public async Task<IReadOnlyList<string>> GetBrandsAsync()
+    {
+        return await _dbContext.Products
+            .Select(p => p.Brand)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// Gets the total count of products in the database.
+    /// </summary>
+    /// <returns>The total product count.</returns>
+    public Task<int> GetTotalProductCountAsync()
+    {
+        return _dbContext.Products.CountAsync();
+    }
+
+    public async Task<IReadOnlyList<Product>> GetLowStockProductsAsync(int threshold)
+    {
+        return await _dbContext.Products
+            .Where(p => p.StockQuantity <= threshold)
+            .Take(10)
+            .ToListAsync();
     }
 
     /// <summary>

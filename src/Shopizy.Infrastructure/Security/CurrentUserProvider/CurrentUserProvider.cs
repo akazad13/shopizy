@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
@@ -26,7 +25,7 @@ public partial class CurrentUserProvider(
     {
         try
         {
-            Guard.Against.Null(_httpContextAccessor.HttpContext);
+            ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
 
             if (_httpContextAccessor.HttpContext?.User?.Claims == null || 
                 !_httpContextAccessor.HttpContext.User.Claims.Any())

@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Shopizy.Application.Common.Security.CurrentUser;
 
@@ -9,7 +8,7 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
 
     public Guid GetCurrentUserId()
     {
-        Guard.Against.Null(_httpContextAccessor.HttpContext);
+        ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
 
         var idClaim = _httpContextAccessor.HttpContext!.User.FindFirst("id")?.Value 
             ?? _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;

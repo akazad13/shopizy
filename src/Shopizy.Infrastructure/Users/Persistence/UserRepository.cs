@@ -33,6 +33,21 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
     }
 
+    public Task<int> GetTotalUsersCountAsync()
+    {
+        return _dbContext.Users.CountAsync();
+    }
+
+    public async Task<IReadOnlyList<User>> ListUsersAsync(int pageNumber, int pageSize)
+    {
+        return await _dbContext.Users
+            .Include(u => u.PermissionIds)
+            .OrderByDescending(u => u.FirstName)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
     /// <summary>
     /// Adds a new user to the database.
     /// </summary>

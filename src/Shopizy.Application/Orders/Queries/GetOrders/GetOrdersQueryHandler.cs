@@ -17,7 +17,7 @@ public class GetOrdersQueryHandler(IOrderRepository orderRepository)
     )
     {
         var orders = await _orderRepository.GetOrdersAsync(
-            UserId.Create(request.UserId),
+            request.UserId.HasValue ? UserId.Create(request.UserId.Value) : null,
             request.StartDate,
             request.EndDate,
             request.Status,

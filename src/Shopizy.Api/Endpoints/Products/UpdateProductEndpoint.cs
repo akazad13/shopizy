@@ -12,9 +12,9 @@ public class UpdateProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/users/{userId:guid}/products/{productId:guid}", async (Guid userId, Guid productId, UpdateProductRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateProductEndpoint> logger) =>
+        app.MapPut("api/v1.0/admin/products/{productId:guid}", async (Guid productId, UpdateProductRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateProductEndpoint> logger) =>
         {
-            var command = mapper.Map<UpdateProductCommand>((userId, productId, request));
+            var command = mapper.Map<UpdateProductCommand>((Guid.Empty, productId, request));
 
             return await HandleAsync(
                 mediator,

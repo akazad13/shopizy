@@ -39,7 +39,8 @@ public class UserTests
         var newPhone = "123456789";
 
         // Act
-        user.Update(newFirst, newLast, newEmail, newPhone, "Street", "City", "State", "Country", "12345");
+        user.UpdateUserName(newFirst, newLast);
+        user.UpdateAddress("Street", "City", "State", "Country", "12345");
 
         // Assert
         user.FirstName.ShouldBe(newFirst);

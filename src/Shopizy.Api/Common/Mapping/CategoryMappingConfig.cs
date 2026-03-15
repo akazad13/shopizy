@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Categories.Commands.CreateCategory;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
@@ -21,7 +20,7 @@ public class CategoryMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config
             .NewConfig<(Guid UserId, CreateCategoryRequest Request), CreateCategoryCommand>()

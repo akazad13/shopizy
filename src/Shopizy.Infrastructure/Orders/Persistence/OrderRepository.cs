@@ -54,6 +54,17 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .ToListAsync();
     }
 
+    public Task<int> GetTotalOrdersCountAsync()
+    {
+        return _dbContext.Orders.CountAsync();
+    }
+
+    public async Task<decimal> GetTotalRevenueAsync()
+    {
+        var orders = await _dbContext.Orders.Include(o => o.OrderItems).ToListAsync();
+        return orders.Sum(o => o.GetTotal().Amount);
+    }
+
     /// <summary>
     /// Retrieves an order by its unique identifier.
     /// </summary>

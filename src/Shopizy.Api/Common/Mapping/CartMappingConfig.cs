@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Carts.Commands.AddProductToCart;
 using Shopizy.Application.Carts.Commands.RemoveProductFromCart;
@@ -21,7 +20,7 @@ public class CartMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
 
         config
             .NewConfig<(Guid UserId, AddProductToCartRequest request), AddProductToCartCommand>()
