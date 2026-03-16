@@ -4,4 +4,4 @@ using Shopizy.Domain.Orders.Enums;
 
 namespace Shopizy.Application.Orders.Commands.UpdateOrderStatus;
 
-public record UpdateOrderStatusCommand(Guid OrderId, OrderStatus Status) : ICommand<ErrorOr<Success>>;
+public record UpdateOrderStatusCommand(Guid UserId, Guid OrderId, OrderStatus Status) : ICommand<ErrorOr<Success>>;

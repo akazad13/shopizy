@@ -18,7 +18,7 @@ public class AddProductImageCommandHandler(
 
     public async Task<ErrorOr<ProductImage>> Handle(
         AddProductImageCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (cmd.File == null)

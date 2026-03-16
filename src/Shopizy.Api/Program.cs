@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
@@ -37,15 +36,10 @@ app.UseAuthentication()
 
 if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
 {
-    using (IServiceScope scope = app.Services.CreateScope())
-    {
-        var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
-        await initialiser.MigrateAsync();
-    }
+    using IServiceScope scope = app.Services.CreateScope();
+    var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
+    await initialiser.MigrateAsync();
 }
 
 
 await app.RunAsync();
-
-[ExcludeFromCodeCoverage]
-public partial class Program { }

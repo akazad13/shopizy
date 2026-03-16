@@ -1,7 +1,7 @@
 using Shopizy.SharedKernel.Application.Messaging;
 using MapsterMapper;
-using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Queries.GetOrder;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +12,9 @@ public class GetAdminOrderEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/admin/orders/{id:guid}", async (Guid id, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetAdminOrderEndpoint> logger) =>
+        app.MapGet("api/v1.0/admin/orders/{id:guid}", async (Guid id, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetAdminOrderEndpoint> logger) =>
         {
-            // Passing null userId to indicate admin view (if GetOrderQuery supports it)
-            var query = new GetOrderQuery(Guid.Empty, id);
+            var query = new GetOrderQuery(currentUser.GetCurrentUserId(), id);
 
             return await HandleAsync(
                 mediator,

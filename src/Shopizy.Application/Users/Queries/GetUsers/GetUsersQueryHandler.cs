@@ -10,7 +10,7 @@ public class GetUsersQueryHandler(IUserRepository userRepository)
 {
     private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<ErrorOr<IReadOnlyList<User>>> Handle(GetUsersQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IReadOnlyList<User>>> Handle(GetUsersQuery query, CancellationToken cancellationToken = default)
     {
         var users = await _userRepository.ListUsersAsync(query.PageNumber, query.PageSize);
         return users.ToErrorOr();

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;

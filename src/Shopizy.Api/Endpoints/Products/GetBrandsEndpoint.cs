@@ -1,5 +1,4 @@
 using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Queries.GetBrands;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;

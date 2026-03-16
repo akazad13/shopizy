@@ -1,6 +1,5 @@
 using Shopizy.SharedKernel.Application.Messaging;
 using MapsterMapper;
-using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;

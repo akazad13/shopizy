@@ -136,7 +136,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
 
-        this.AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
+        AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
     }
 
     /// <summary>
