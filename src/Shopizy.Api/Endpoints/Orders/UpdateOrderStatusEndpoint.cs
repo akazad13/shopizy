@@ -4,23 +4,23 @@ using Shopizy.Application.Orders.Commands.UpdateOrderStatus;
 using Shopizy.Contracts.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Api.Endpoints.Admin;
+namespace Shopizy.Api.Endpoints.Orders;
 
 public class UpdateOrderStatusEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/admin/orders/{id:guid}/status", async (Guid id, [FromBody] Shopizy.Contracts.Order.OrderStatus status, [FromServices] IDispatcher mediator, ILogger<UpdateOrderStatusEndpoint> logger) =>
+        app.MapPatch("api/v1.0/admin/{userId:guid}/orders/{id:guid}/status", async (Guid id, [FromBody] Contracts.Order.OrderStatus status, [FromServices] IDispatcher mediator, ILogger<UpdateOrderStatusEndpoint> logger) =>
         {
             return await HandleAsync(
                 mediator,
-                new UpdateOrderStatusCommand(id, (Shopizy.Domain.Orders.Enums.OrderStatus)(int)status),
+                new UpdateOrderStatusCommand(id, (Domain.Orders.Enums.OrderStatus)(int)status),
                 success => Results.Ok(SuccessResult.Success("Order status updated successfully.")),
                 ex => logger.LogError(ex, "Error updating order status")
             );
         })
         .RequireAuthorization("Admin.UpdateOrderStatus")
-        .WithTags("Admin")
+        .WithTags("Orders")
         .WithSummary("Update order status")
         .WithDescription("Allows an admin to update the current tracking status of an order.")
         .Produces<SuccessResult>(StatusCodes.Status200OK)

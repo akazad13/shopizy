@@ -95,7 +95,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
                 var constructor = typeof(User).GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
                     null,
-                    new[] { typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(IList<PermissionId>) },
+                    [typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(IList<PermissionId>)],
                     null);
 
                 var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, allPermissionIds]);

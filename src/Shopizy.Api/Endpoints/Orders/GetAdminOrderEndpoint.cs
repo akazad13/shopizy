@@ -6,7 +6,7 @@ using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Api.Endpoints.Admin;
+namespace Shopizy.Api.Endpoints.Orders;
 
 public class GetAdminOrderEndpoint : ApiEndpoint
 {
@@ -25,7 +25,7 @@ public class GetAdminOrderEndpoint : ApiEndpoint
             );
         })
         .RequireAuthorization("Admin.ViewOrder")
-        .WithTags("Admin")
+        .WithTags("Orders")
         .WithSummary("Get order detail")
         .WithDescription("Retrieves full details of a specific order for administrative purposes.")
         .Produces<OrderDetailResponse>(StatusCodes.Status200OK)

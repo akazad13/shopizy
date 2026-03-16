@@ -22,7 +22,7 @@ public class GetDashboardMetricsEndpoint : ApiEndpoint
             );
         })
         .RequireAuthorization("Admin.View")
-        .WithTags("Admin")
+        .WithTags("Dashboard")
         .WithSummary("Get dashboard metrics")
         .WithDescription("Retrieves key performance indicators and alerts for the admin dashboard.")
         .Produces<DashboardMetricsResponse>(StatusCodes.Status200OK)

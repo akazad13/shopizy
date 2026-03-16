@@ -39,37 +39,46 @@ public class LoginQueryHandler(
         CancellationToken cancellationToken = default
     )
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var user = await _userRepository.GetUserByEmailAsync(query.Email);
-        if (user is null)
+        try
         {
-            return CustomErrors.User.UserNotFoundWhileLogin;
-        }
 
-        if (!_passwordManager.Verify(query.Password, user.Password!))
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userRepository.GetUserByEmailAsync(query.Email);
+            if (user is null)
+            {
+                return CustomErrors.User.UserNotFoundWhileLogin;
+            }
+
+            if (!_passwordManager.Verify(query.Password, user.Password!))
+            {
+                return CustomErrors.Authentication.InvalidCredentials;
+            }
+
+            var allPermissions = await _permissionRepository.GetAsync();
+
+            var assignedPermissions = allPermissions
+                .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
+                .Select(p => p.Name)
+                .ToList();
+
+            var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
+
+            var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
+
+            if (cart is null)
+            {
+                cart = Cart.Create(user.Id);
+                await _cartRepository.AddAsync(cart);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+
+            return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
+        }
+        catch (Exception ex)
         {
-            return CustomErrors.Authentication.InvalidCredentials;
+            return CustomErrors.User.InvalidEmailFormat;
         }
-
-        var allPermissions = await _permissionRepository.GetAsync();
-
-        var assignedPermissions = allPermissions
-            .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
-            .Select(p => p.Name)
-            .ToList();
-        
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, assignedPermissions);
-
-        var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
-
-        if (cart is null)
-        {
-            cart = Cart.Create(user.Id);
-            await _cartRepository.AddAsync(cart);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-
-        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);
     }
 }

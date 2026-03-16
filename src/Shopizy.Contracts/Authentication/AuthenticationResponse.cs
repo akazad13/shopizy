@@ -7,5 +7,6 @@ namespace Shopizy.Contracts.Authentication;
 /// <param name="FirstName">The user's first name.</param>
 /// <param name="LastName">The user's last name.</param>
 /// <param name="Email">The user's email address.</param>
+/// <param name="Role">The user's role.</param>
 /// <param name="Token">The JWT authentication token.</param>
-public record AuthResponse(Guid Id, string FirstName, string LastName, string Email, string Token);
+public record AuthResponse(Guid Id, string FirstName, string LastName, string Email, string Role, string Token);

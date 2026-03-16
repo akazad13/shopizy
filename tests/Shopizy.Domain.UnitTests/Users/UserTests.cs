@@ -1,6 +1,7 @@
 using Xunit;
 using Shouldly;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
 using Shopizy.Domain.Permissions.ValueObjects;
 
 namespace Shopizy.Domain.UnitTests.Users;
@@ -18,7 +19,7 @@ public class UserTests
         var permissions = new List<PermissionId>();
 
         // Act
-        var user = User.Create(firstName, lastName, email, password, permissions);
+        var user = User.Create(firstName, lastName, email, password, UserRole.Customer, permissions);
 
         // Assert
         user.ShouldNotBeNull();
@@ -26,17 +27,16 @@ public class UserTests
         user.LastName.ShouldBe(lastName);
         user.Email.ShouldBe(email);
         user.Password.ShouldBe(password);
+        user.Role.ShouldBe(UserRole.Customer);
     }
 
     [Fact]
     public void Update_WithValidData_ShouldUpdateUserDetailsAndAddress()
     {
         // Arrange
-        var user = User.Create("Old", "User", "old@test.com", "hash", new List<PermissionId>());
+        var user = User.Create("Old", "User", "old@test.com", "hash", UserRole.Customer, []);
         var newFirst = "NewFirst";
         var newLast = "NewLast";
-        var newEmail = "new@test.com";
-        var newPhone = "123456789";
 
         // Act
         user.UpdateUserName(newFirst, newLast);
@@ -45,8 +45,6 @@ public class UserTests
         // Assert
         user.FirstName.ShouldBe(newFirst);
         user.LastName.ShouldBe(newLast);
-        user.Email.ShouldBe(newEmail);
-        user.Phone.ShouldBe(newPhone);
         user.Address.ShouldNotBeNull();
         user.Address!.Street.ShouldBe("Street");
     }
@@ -55,7 +53,7 @@ public class UserTests
     public void UpdatePassword_ShouldUpdatePassword()
     {
         // Arrange
-        var user = User.Create("U", "U", "e@e.com", "old", new List<PermissionId>());
+        var user = User.Create("U", "U", "e@e.com", "old", UserRole.Customer, new List<PermissionId>());
         var newPassword = "new_hashed_password";
 
         // Act
@@ -63,5 +61,18 @@ public class UserTests
 
         // Assert
         user.Password.ShouldBe(newPassword);
+    }
+
+    [Fact]
+    public void UpdateRole_ShouldUpdateRole()
+    {
+        // Arrange
+        var user = User.Create("U", "U", "e@e.com", "pass", UserRole.Customer, []);
+
+        // Act
+        user.UpdateRole(UserRole.Admin);
+
+        // Assert
+        user.Role.ShouldBe(UserRole.Admin);
     }
 }

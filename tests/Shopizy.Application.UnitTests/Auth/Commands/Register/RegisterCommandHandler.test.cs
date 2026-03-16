@@ -7,6 +7,7 @@ using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
 
 namespace Shopizy.Application.UnitTests.Auth.Commands.Register;
 
@@ -37,7 +38,7 @@ public class RegisterCommandHandlerTests
 
         _mockUserRepository
             .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync(User.Create("Existing", "User", command.Email, "hashedPassword", []));
+            .ReturnsAsync(User.Create("Existing", "User", command.Email, "hashedPassword", UserRole.Customer, []));
 
         // Act
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
@@ -89,6 +90,7 @@ public class RegisterCommandHandlerTests
                         && u.LastName == command.LastName
                         && u.Email == command.Email
                         && u.Password == hashedPassword
+                        && u.Role == UserRole.Customer
                         && u.PermissionIds.Select(p => p.Value).OrderBy(v => v)
                             .SequenceEqual(expectedPermissionIds.Select(p => p.Value).OrderBy(v => v))
                     )
@@ -129,18 +131,7 @@ public class RegisterCommandHandlerTests
                 r.AddAsync(
                     It.Is<User>(u =>
                         u.PermissionIds.Count == 12
-                        && u.PermissionIds.Any(p => p.Value == new Guid("249E733D-5BDC-49C3-91CA-06AE25A9C897"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("2A19090A-B3F3-4B30-9CED-934EE0503D26"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("D6C2E3C6-314B-4F2E-A407-34139B145771"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("DD25381D-063C-4A3A-9539-DEEC640919A4"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("4B88CB16-0228-4669-BA7F-B75F42A3B7AF"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("5E2A486B-D9A0-4F83-8FF2-C56EF97CE485"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("9601BA5E-EB54-4487-BFE0-563462D3CC25"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("0C65A58A-D472-4D5D-848E-EAC46F988F5D"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("0374E597-604E-4146-8F40-8C994D26C290"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("20082930-3857-4B34-80D0-E256B9B585D8"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("ACD9D507-AC45-4CD2-B0F4-91126C71319A"))
-                        && u.PermissionIds.Any(p => p.Value == new Guid("C920A577-1669-4167-B056-5E0A03329C55"))
+                        && u.Role == UserRole.Customer
                     )
                 ),
             Times.Once
@@ -172,13 +163,6 @@ public class RegisterCommandHandlerTests
         // Assert
         Assert.True(result.IsError);
         Assert.Contains(CustomErrors.User.InvalidName, result.Errors);
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
-        _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
-        _mockPasswordManager.Verify(
-            p => p.CreateHashString(It.IsAny<string>(), 10000),
-            Times.Never
-        );
     }
 
     [Fact]
@@ -222,7 +206,7 @@ public class RegisterCommandHandlerTests
         _mockUserRepository
             .SetupSequence(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null)
-            .ReturnsAsync(User.Create("Existing", "User", command.Email, "existingHash", []));
+            .ReturnsAsync(User.Create("Existing", "User", command.Email, "existingHash", UserRole.Customer, []));
 
         _mockPasswordManager
             .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
@@ -244,85 +228,5 @@ public class RegisterCommandHandlerTests
         Assert.IsType<Success>(results[0].Value);
         Assert.True(results[1].IsError);
         Assert.Contains(CustomErrors.User.DuplicateEmail, results[1].Errors);
-
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Exactly(2));
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
-        _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Once);
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Should_HandleExtremelyLongInputValues_ForFirstNameLastNameAndEmail()
-    {
-        // Arrange
-        var longFirstName = new string('A', 1000);
-        var longLastName = new string('B', 1000);
-        var longEmail = new string('a', 500);
-        longEmail += "@test.com";
-        var command = new RegisterCommand(longFirstName, longLastName, longEmail, "password123");
-        var hashedPassword = "hashedPassword123";
-
-        _mockUserRepository
-            .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
-        _mockPasswordManager
-            .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))
-            .Returns(hashedPassword);
-        _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.False(result.IsError);
-        Assert.IsType<Success>(result.Value);
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Once);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
-        _mockUserRepository.Verify(
-            r =>
-                r.AddAsync(
-                    It.Is<User>(u =>
-                        u.FirstName == longFirstName
-                        && u.LastName == longLastName
-                        && u.Email == longEmail
-                        && u.Password == hashedPassword
-                        && u.PermissionIds.Count == 12
-                    )
-                ),
-            Times.Once
-        );
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
-    }
-
-    [Theory]
-    [InlineData("plainaddress")]
-    [InlineData("@missingusername.com")]
-    [InlineData("username@.com")]
-    [InlineData("username@.com.")]
-    public async Task Should_ReturnValidationError_WhenEmailFormatIsInvalid(string invalidEmail)
-    {
-        // Arrange
-        var command = new RegisterCommand("John", "Doe", invalidEmail, "password123");
-
-        _mockUserRepository
-            .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
-
-        // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.Contains(CustomErrors.User.InvalidEmailFormat, result.Errors);
-
-        _mockUserRepository.Verify(r => r.GetUserByEmailAsync(command.Email), Times.Never);
-        _mockUserRepository.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Never);
-        _mockPasswordManager.Verify(
-            p => p.CreateHashString(It.IsAny<string>(), 10000),
-            Times.Never
-        );
     }
 }

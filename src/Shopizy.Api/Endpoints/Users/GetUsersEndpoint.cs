@@ -6,7 +6,7 @@ using Shopizy.Contracts.Common;
 using Shopizy.Contracts.User;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Api.Endpoints.Admin;
+namespace Shopizy.Api.Endpoints.Users;
 
 public class GetUsersEndpoint : ApiEndpoint
 {
@@ -22,7 +22,7 @@ public class GetUsersEndpoint : ApiEndpoint
             );
         })
         .RequireAuthorization("Admin.ViewUsers")
-        .WithTags("Admin")
+        .WithTags("Users")
         .WithSummary("List all users")
         .WithDescription("Retrieves a paginated list of all registered users for administrative purposes.")
         .Produces<List<UserDetails>>(StatusCodes.Status200OK)

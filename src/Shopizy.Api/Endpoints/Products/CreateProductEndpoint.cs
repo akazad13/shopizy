@@ -2,6 +2,7 @@ using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.CreateProduct;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 
@@ -15,9 +16,9 @@ public class CreateProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/admin/products", async (CreateProductRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
+        app.MapPost("api/v1.0/admin/products", async (CreateProductRequest request, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
         {
-            var command = mapper.Map<CreateProductCommand>((Guid.Empty, request));
+            var command = mapper.Map<CreateProductCommand>((currentUser.GetCurrentUserId(), request));
 
             return await HandleAsync(
                 mediator,

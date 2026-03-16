@@ -3,6 +3,7 @@ using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Domain.Users.Enums;
 
 namespace Shopizy.Domain.Users;
 
@@ -29,6 +30,11 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// Gets the user's email address.
     /// </summary>
     public string Email { get; private set; }
+
+    /// <summary>
+    /// Gets the user's role.
+    /// </summary>
+    public UserRole Role { get; private set; }
 
     /// <summary>
     /// Gets the user's profile image URL.
@@ -87,6 +93,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <param name="lastName">The user's last name.</param>
     /// <param name="email">The user's email address.</param>
     /// <param name="password">The user's hashed password.</param>
+    /// <param name="role">The user's role.</param>
     /// <param name="permissionIds">The list of permission IDs to assign to the user.</param>
     /// <returns>A new <see cref="User"/> instance.</returns>
     public static User Create(
@@ -94,10 +101,11 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         string lastName,
         string email,
         string? password,
+        UserRole role,
         IList<PermissionId> permissionIds
     )
     {
-        var user = new User(UserId.CreateUnique(), firstName, lastName, email, password, permissionIds);
+        var user = new User(UserId.CreateUnique(), firstName, lastName, email, password, role, permissionIds);
         user.AddDomainEvent(new Events.UserRegisteredDomainEvent(user));
 
         return user;
@@ -111,6 +119,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         string lastName,
         string email,
         string? password,
+        UserRole role,
         IList<PermissionId> permissionIds
     )
         : base(userId)
@@ -119,6 +128,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         LastName = lastName;
         Email = email;
         Password = password;
+        Role = role;
         _permissionIds = [.. permissionIds];
     }
 
@@ -189,6 +199,15 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public void UpdateCustomerId(string customerId)
     {
         CustomerId = customerId;
+    }
+
+    /// <summary>
+    /// Updates the user's role.
+    /// </summary>
+    /// <param name="role">The new role.</param>
+    public void UpdateRole(UserRole role)
+    {
+        Role = role;
     }
 
     /// <summary>

@@ -2,6 +2,7 @@ using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Domain.Users.Enums;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 
@@ -18,6 +19,11 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
         if (user == null)
         {
             return CustomErrors.User.UserNotFound;
+        }
+
+        if (Enum.TryParse<UserRole>(command.Role, true, out var role))
+        {
+            user.UpdateRole(role);
         }
 
         user.UpdatePermissions(command.PermissionIds.Select(PermissionId.Create).ToList());

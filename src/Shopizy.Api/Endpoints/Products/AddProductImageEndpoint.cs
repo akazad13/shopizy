@@ -2,6 +2,7 @@ using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.AddProductImage;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 
@@ -12,9 +13,9 @@ public class AddProductImageEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/users/{userId:guid}/products/{productId:guid}/image", async (Guid userId, Guid productId, IFormFile file, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<AddProductImageEndpoint> logger) =>
+        app.MapPost("api/v1.0/admin/products/{productId:guid}/image", async (Guid productId, IFormFile file, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<AddProductImageEndpoint> logger) =>
         {
-            var command = new AddProductImageCommand(userId, productId, file);
+            var command = new AddProductImageCommand(currentUser.GetCurrentUserId(), productId, file);
 
             return await HandleAsync(
                 mediator,

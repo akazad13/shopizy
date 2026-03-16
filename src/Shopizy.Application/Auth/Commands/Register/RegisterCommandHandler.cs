@@ -6,6 +6,7 @@ using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
 
 namespace Shopizy.Application.Auth.Commands.Register;
 
@@ -77,6 +78,7 @@ public class RegisterCommandHandler(
             command.LastName,
             command.Email,
             hashedPassword,
+            UserRole.Customer,
             permissionIds
         );
 

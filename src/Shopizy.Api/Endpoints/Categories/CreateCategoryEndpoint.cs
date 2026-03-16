@@ -2,6 +2,7 @@ using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.CreateCategory;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 
@@ -12,13 +13,11 @@ public class CreateCategoryEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/users/{userId:guid}/categories", async (Guid userId, CreateCategoryRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateCategoryEndpoint> logger) =>
+        app.MapPost("api/v1.0/admin/categories", async ([FromBody] CreateCategoryRequest request, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateCategoryEndpoint> logger) =>
         {
-            var command = mapper.Map<CreateCategoryCommand>((userId, request));
-
             return await HandleAsync(
                 mediator,
-                command,
+                new CreateCategoryCommand(currentUser.GetCurrentUserId(), request.Name, request.ParentId),
                 category => Results.Ok(mapper.Map<CategoryResponse>(category)),
                 ex => logger.CategoryCreationError(ex)
             );

@@ -6,7 +6,7 @@ using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Api.Endpoints.Admin;
+namespace Shopizy.Api.Endpoints.Orders;
 
 public class GetAdminOrdersEndpoint : ApiEndpoint
 {
@@ -18,7 +18,7 @@ public class GetAdminOrdersEndpoint : ApiEndpoint
                 null,
                 ordersCriteria.StartDate,
                 ordersCriteria.EndDate,
-                ordersCriteria.Status.HasValue ? (Shopizy.Domain.Orders.Enums.OrderStatus?)(int)ordersCriteria.Status.Value : null,
+                ordersCriteria.Status.HasValue ? (Domain.Orders.Enums.OrderStatus?)(int)ordersCriteria.Status.Value : null,
                 ordersCriteria.PageNumber,
                 ordersCriteria.PageSize
             );
@@ -31,7 +31,7 @@ public class GetAdminOrdersEndpoint : ApiEndpoint
             );
         })
         .RequireAuthorization("Admin.ViewOrders")
-        .WithTags("Admin")
+        .WithTags("Orders")
         .WithSummary("List all orders")
         .WithDescription("Retrieves a paginated list of all orders in the system for administrative purposes.")
         .Produces<List<OrderResponse>>(StatusCodes.Status200OK)

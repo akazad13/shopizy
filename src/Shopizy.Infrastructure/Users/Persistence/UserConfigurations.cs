@@ -32,6 +32,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.Phone).HasMaxLength(15).IsRequired(false);
 
         builder.Property(u => u.Password).IsRequired(false);
+        builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
@@ -40,11 +41,11 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
             c => c.Address,
             ab =>
             {
-                ab.Property(ad => ad.Street).HasMaxLength(100).IsRequired(false);
-                ab.Property(ad => ad.City).HasMaxLength(30).IsRequired(false);
-                ab.Property(ad => ad.State).HasMaxLength(30).IsRequired(false);
-                ab.Property(ad => ad.Country).HasMaxLength(30).IsRequired(false);
-                ab.Property(ad => ad.ZipCode).HasMaxLength(10).IsRequired(false);
+                ab.Property(ad => ad.Street).HasMaxLength(100).IsRequired();
+                ab.Property(ad => ad.City).HasMaxLength(30).IsRequired();
+                ab.Property(ad => ad.State).HasMaxLength(30).IsRequired();
+                ab.Property(ad => ad.Country).HasMaxLength(30).IsRequired();
+                ab.Property(ad => ad.ZipCode).HasMaxLength(10).IsRequired();
             }
         );
 

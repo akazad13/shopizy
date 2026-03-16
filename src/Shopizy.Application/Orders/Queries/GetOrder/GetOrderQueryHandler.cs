@@ -14,7 +14,7 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository)
 
     public async Task<ErrorOr<Order>> Handle(
         GetOrderQuery request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
