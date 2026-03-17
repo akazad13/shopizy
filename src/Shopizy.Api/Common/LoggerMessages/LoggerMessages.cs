@@ -301,4 +301,25 @@ public static partial class LoggerMessages
         Message = "An unhandled exception has occurred: {Message}"
     )]
     public static partial void UnhandledExceptionError(this ILogger logger, Exception ex, string message);
+
+    [LoggerMessage(
+        EventId = 1025,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching wishlist."
+    )]
+    public static partial void WishlistFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1026,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating wishlist."
+    )]
+    public static partial void WishlistCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1027,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating wishlist."
+    )]
+    public static partial void WishlistUpdateError(this ILogger logger, Exception ex);
 }

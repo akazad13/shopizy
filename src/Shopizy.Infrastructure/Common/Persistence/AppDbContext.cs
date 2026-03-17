@@ -12,6 +12,7 @@ using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Wishlists;
 using Shopizy.Infrastructure.Common.Middleware;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
@@ -69,6 +70,11 @@ public class AppDbContext(
     /// Gets or sets the permissions DbSet.
     /// </summary>
     public DbSet<Permission> Permissions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the wishlists DbSet.
+    /// </summary>
+    public DbSet<Wishlist> Wishlists { get; set; }
 
     /// <summary>
     /// Saves all changes made in this context to the database.

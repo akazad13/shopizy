@@ -13,6 +13,7 @@ using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Users.Persistence;
+using Shopizy.Infrastructure.Wishlists.Persistence;
 using Shopizy.Infrastructure.Services;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
@@ -63,7 +64,8 @@ public static class PersistenceRegister
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IPromoCodeRepository, PromoCodeRepository>()
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IPermissionRepository, PermissionRepository>();
+            .AddScoped<IPermissionRepository, PermissionRepository>()
+            .AddScoped<IWishlistRepository, WishlistRepository>();
 
         return services;
     }
