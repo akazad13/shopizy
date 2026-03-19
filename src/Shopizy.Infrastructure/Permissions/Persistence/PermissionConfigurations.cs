@@ -43,7 +43,11 @@ public sealed class PermissionConfigurations : IEntityTypeConfiguration<Permissi
             CreatePermission("0529A2F2-7507-4FA5-9DAF-68829F9D7FC4", "create:user"),
             CreatePermission("0374E597-604E-4146-8F40-8C994D26C290", "get:user"),
             CreatePermission("C920A577-1669-4167-B056-5E0A03329C55", "modify:user"),
-            CreatePermission("80366E1A-634D-4579-9245-164166E1146B", "delete:user")
+            CreatePermission("80366E1A-634D-4579-9245-164166E1146B", "delete:user"),
+            CreatePermission("9b259d3d-b634-4232-9deb-e5fdb20d7a64", "get:wishlist"),
+            CreatePermission("759b8d6d-ffda-4c99-bf29-ed335c029a5c", "modify:wishlist"),
+            CreatePermission("d99cab25-5af2-4b9c-9fad-385e4715d7f2", "create:wishlist"),
+            CreatePermission("b25fd8ef-723d-47d1-8b31-648a69733975", "get:dashboard")
         );
     }
 

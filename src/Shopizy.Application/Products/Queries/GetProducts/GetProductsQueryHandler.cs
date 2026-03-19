@@ -19,8 +19,15 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        if (query.PageNumber <= 0) query = query with { PageNumber = 1 };
-        if (query.PageSize <= 0) query = query with { PageSize = 10 };
+        if (query.PageNumber <= 0)
+        {
+            query = query with { PageNumber = 1 };
+        }
+
+        if (query.PageSize <= 0)
+        {
+            query = query with { PageSize = 10 };
+        }
 
         var categoryIds = query.CategoryIds?.Any() == true
             ? query.CategoryIds

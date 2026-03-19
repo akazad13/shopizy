@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopizy.Infrastructure.Common.Persistence;
 
@@ -11,13 +12,15 @@ using Shopizy.Infrastructure.Common.Persistence;
 namespace Shopizy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318173658_AddNewPermissions")]
+    partial class AddNewPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -268,7 +271,7 @@ namespace Shopizy.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d99cab25-5af2-4b9c-9fad-385e4715d7f2"),
-                            Name = "create:wishlist"
+                            Name = "delete:wishlist"
                         },
                         new
                         {

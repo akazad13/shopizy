@@ -29,7 +29,9 @@ public sealed class Wishlist : AggregateRoot<WishlistId, Guid>, IAuditable
     {
         var item = _wishlistItems.Find(i => i.ProductId == productId);
         if (item is not null)
+        {
             _wishlistItems.Remove(item);
+        }
     }
 
     private Wishlist(WishlistId id, UserId userId)

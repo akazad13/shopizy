@@ -13,10 +13,10 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
 {
     private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<ErrorOr<Success>> Handle(UpdateUserRoleCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(UpdateUserRoleCommand command, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(command.UserId));
-        if (user == null)
+        if (user is null)
         {
             return CustomErrors.User.UserNotFound;
         }
@@ -26,7 +26,7 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
             user.UpdateRole(role);
         }
 
-        user.UpdatePermissions(command.PermissionIds.Select(PermissionId.Create).ToList());
+        user.UpdatePermissions([.. command.PermissionIds.Select(PermissionId.Create)]);
         _userRepository.Update(user);
 
         return Result.Success;

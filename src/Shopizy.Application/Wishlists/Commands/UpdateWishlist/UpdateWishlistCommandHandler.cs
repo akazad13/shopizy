@@ -23,22 +23,30 @@ public class UpdateWishlistCommandHandler(
 
         var wishlist = await wishlistRepository.GetWishlistByUserIdAsync(userId, cancellationToken);
         if (wishlist is null)
+        {
             return CustomErrors.Wishlist.WishlistNotFound;
+        }
 
         if (!await productRepository.IsProductExistAsync(productId))
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         if (cmd.Action == WishlistAction.Add)
         {
             if (wishlist.WishlistItems.Any(i => i.ProductId == productId))
+            {
                 return CustomErrors.Wishlist.ProductAlreadyInWishlist;
+            }
 
             wishlist.AddItem(productId);
         }
         else
         {
             if (!wishlist.WishlistItems.Any(i => i.ProductId == productId))
+            {
                 return CustomErrors.Wishlist.ProductNotInWishlist;
+            }
 
             wishlist.RemoveItem(productId);
         }

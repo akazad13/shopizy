@@ -48,7 +48,7 @@ public static class SecurityRegister
                 policy.RequireClaim(claimName, "create:wishlist"))
             .AddPolicy("Wishlist.Get", policy =>
                 policy.RequireClaim(claimName, "get:wishlist"))
-            .AddPolicy("Wishlist.Update", policy =>
+            .AddPolicy("Wishlist.Modify", policy =>
                 policy.RequireClaim(claimName, "modify:wishlist"))
             .AddPolicy("User.Get", policy => 
                 policy.RequireClaim(claimName, "get:user"))
