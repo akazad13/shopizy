@@ -27,6 +27,7 @@ public class ProductMappingConfig : IRegister
 
         config.NewConfig<ProductsCriteria, GetProductsQuery>()
             .MapWith(src => new GetProductsQuery(
+                src.ProductIds,
                 src.Name,
                 src.CategoryIds,
                 src.AverageRating,

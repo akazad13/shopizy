@@ -3,12 +3,14 @@ namespace Shopizy.Contracts.Product;
 /// <summary>
 /// Represents criteria for searching and filtering products.
 /// </summary>
+/// <param name="ProductIds">Filter by product ids</param>
 /// <param name="Name">Filter by product name.</param>
 /// <param name="CategoryIds">Filter by category identifiers.</param>
 /// <param name="AverageRating">Filter by minimum average rating.</param>
 /// <param name="PageNumber">The page number for pagination.</param>
 /// <param name="PageSize">The number of items per page.</param>
 public record ProductsCriteria(
+    Guid[]? ProductIds,
     string? Name,
     Guid[]? CategoryIds,
     decimal? AverageRating,

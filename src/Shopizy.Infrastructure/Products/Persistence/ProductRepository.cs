@@ -19,6 +19,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves a paginated list of products based on search criteria.
     /// </summary>
+    /// <param name="productIds">Optional product Ids filter</param>
     /// <param name="name">Optional product name filter.</param>
     /// <param name="categoryIds">Optional list of category IDs to filter by.</param>
     /// <param name="averageRating">Optional minimum average rating filter.</param>
@@ -26,6 +27,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <param name="pageSize">The page size.</param>
     /// <returns>A list of products matching the criteria.</returns>
     public async Task<IReadOnlyList<Product>?> GetProductsAsync(
+        IReadOnlyList<ProductId> productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
@@ -33,7 +35,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         int pageSize
     )
     {
-        return await ApplySpec(new ProductsByCriteriaSpec(name, categoryIds, averageRating))
+        return await ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating))
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

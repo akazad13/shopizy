@@ -4,6 +4,7 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
@@ -14,7 +15,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
 
     public async Task<ErrorOr<List<Product>>> Handle(
         GetProductsQuery query,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -35,7 +36,14 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
                 .ToList()
             : null;
 
+        var productIds = query.ProductIds?.Any() == true
+            ? query.ProductIds
+                .Select(productId => ProductId.Create(productId))
+                .ToList()
+            : null;
+
         var products = await _productRepository.GetProductsAsync(
+            productIds,
             query.Name,
             categoryIds,
             query.AverageRating,
