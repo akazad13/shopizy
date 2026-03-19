@@ -25,6 +25,10 @@ public class ProductMappingConfig : IRegister
     {
         ArgumentNullException.ThrowIfNull(config);
 
+        config.NewConfig<ProductsResult, ProductsPagedResponse>()
+            .Map(dest => dest.Items, src => src.Products)
+            .Map(dest => dest.TotalCount, src => src.TotalCount);
+
         config.NewConfig<ProductsCriteria, GetProductsQuery>()
             .MapWith(src => new GetProductsQuery(
                 src.ProductIds,

@@ -51,8 +51,8 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         // 3. User Journey: Browse Products
         var getProductsResponse = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
         getProductsResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var products = await getProductsResponse.Content.ReadFromJsonAsync<List<ProductResponse>>(cancellationToken: TestContext.Current.CancellationToken);
-        products.ShouldContain(p => p.ProductId == product!.ProductId);
+        var pagedResult = await getProductsResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        pagedResult!.Items.ShouldContain(p => p.ProductId == product!.ProductId);
 
         // 4. User Journey: Add to Cart
         var addToCartRequest = new AddProductToCartRequest(product!.ProductId, "Midnight Blue", "256GB", 1);

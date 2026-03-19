@@ -27,7 +27,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <param name="pageSize">The page size.</param>
     /// <returns>A list of products matching the criteria.</returns>
     public async Task<IReadOnlyList<Product>?> GetProductsAsync(
-        IReadOnlyList<ProductId> productIds,
+        IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
@@ -82,6 +82,17 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .Select(p => p.Brand)
             .Distinct()
             .ToListAsync();
+    }
+
+    public Task<int> CountProductsAsync(
+        IReadOnlyList<ProductId>? productIds,
+        string? name,
+        IReadOnlyList<CategoryId>? categoryIds,
+        decimal? averageRating
+    )
+    {
+        return ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating))
+            .CountAsync();
     }
 
     /// <summary>

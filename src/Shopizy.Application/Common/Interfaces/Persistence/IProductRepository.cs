@@ -7,12 +7,18 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 public interface IProductRepository
 {
     Task<IReadOnlyList<Product>?> GetProductsAsync(
-        IReadOnlyList<ProductId> productIds,
+        IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
         int pageNumber,
         int pageSize
+    );
+    Task<int> CountProductsAsync(
+        IReadOnlyList<ProductId>? productIds,
+        string? name,
+        IReadOnlyList<CategoryId>? categoryIds,
+        decimal? averageRating
     );
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);

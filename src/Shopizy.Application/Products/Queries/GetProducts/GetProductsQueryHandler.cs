@@ -3,17 +3,16 @@ using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
 public class GetProductsQueryHandler(IProductRepository productRepository)
-    : IQueryHandler<GetProductsQuery, ErrorOr<List<Product>>>
+    : IQueryHandler<GetProductsQuery, ErrorOr<ProductsResult>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<ErrorOr<List<Product>>> Handle(
+    public async Task<ErrorOr<ProductsResult>> Handle(
         GetProductsQuery query,
         CancellationToken cancellationToken = default
     )
@@ -42,7 +41,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
                 .ToList()
             : null;
 
-        var products = await _productRepository.GetProductsAsync(
+        var productsTask = _productRepository.GetProductsAsync(
             productIds,
             query.Name,
             categoryIds,
@@ -50,10 +49,23 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageNumber,
             query.PageSize
         );
+        var countTask = _productRepository.CountProductsAsync(
+            productIds,
+            query.Name,
+            categoryIds,
+            query.AverageRating
+        );
+
+        await Task.WhenAll(productsTask, countTask);
+
+        var products = productsTask.Result;
+        var totalCount = countTask.Result;
+
         if (products == null)
         {
             return CustomErrors.Product.ProductNotFound;
         }
-        return products.ToList();
+
+        return new ProductsResult(products.ToList(), totalCount);
     }
 }

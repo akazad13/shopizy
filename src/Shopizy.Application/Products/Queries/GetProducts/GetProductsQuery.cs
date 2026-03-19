@@ -1,7 +1,6 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;
-using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
@@ -21,7 +20,7 @@ public record GetProductsQuery(
     decimal? AverageRating,
     int PageNumber,
     int PageSize
-) : IQuery<ErrorOr<List<Product>>>, ICachableRequest
+) : IQuery<ErrorOr<ProductsResult>>, ICachableRequest
 {
     public string CacheKey
     {

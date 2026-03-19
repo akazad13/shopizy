@@ -82,9 +82,9 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
             TestContext.Current.CancellationToken);
         searchResponse.EnsureSuccessStatusCode();
 
-        var products = await searchResponse.Content.ReadFromJsonAsync<List<ProductResponse>>(
+        var pagedResult = await searchResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(
             TestContext.Current.CancellationToken);
-        products.ShouldNotBeNull();
-        products.ShouldContain(p => p.ProductId == product.ProductId);
+        pagedResult.ShouldNotBeNull();
+        pagedResult.Items.ShouldContain(p => p.ProductId == product.ProductId);
     }
 }

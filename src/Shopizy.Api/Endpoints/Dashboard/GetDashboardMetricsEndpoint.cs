@@ -5,7 +5,7 @@ using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Admin;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Api.Endpoints.Admin;
+namespace Shopizy.Api.Endpoints.Dashboard;
 
 public class GetDashboardMetricsEndpoint : ApiEndpoint
 {

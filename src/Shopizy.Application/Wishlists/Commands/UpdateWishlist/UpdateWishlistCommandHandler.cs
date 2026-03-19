@@ -18,6 +18,8 @@ public class UpdateWishlistCommandHandler(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(cmd);
+
         var userId = UserId.Create(cmd.UserId);
         var productId = ProductId.Create(cmd.ProductId);
 

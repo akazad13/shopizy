@@ -25,6 +25,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         // Use environment variable to ensure it's available early for WebApplicationBuilder.Configuration
         Environment.SetEnvironmentVariable("UsePostgreSql", "true");
         builder.UseEnvironment("Testing");
@@ -45,6 +46,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         builder.ConfigureTestServices(services =>
         {
+            ArgumentNullException.ThrowIfNull(services);
             // Remove the existing DbContext registration (if any)
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
 
@@ -116,6 +118,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return Task.FromResult<ErrorOr.ErrorOr<CreateSaleResponse>>(
                 new CreateSaleResponse
                 {
@@ -130,7 +134,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                     PaymentMethodId = request.PaymentMethodId,
                     PaymentMethodTypes = request.PaymentMethodTypes,
                     Status = "succeeded",
-                    Metadata = new Dictionary<string, string>()
+                    Metadata = []
                 }
             );
         }

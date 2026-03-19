@@ -22,15 +22,15 @@ public class SearchProductsEndpoint : ApiEndpoint
             return await HandleAsync(
                 mediator,
                 query,
-                products => Results.Ok(mapper.Map<IReadOnlyList<ProductResponse>>(products)),
+                products => Results.Ok(mapper.Map<ProductsPagedResponse>(products)),
                 ex => logger.ProductFetchError(ex)
             );
         })
         .AllowAnonymous()
         .WithTags("Products")
         .WithSummary("Search products")
-        .WithDescription("Retrieves a list of products based on various search criteria.")
-        .Produces<IReadOnlyList<ProductResponse>>(StatusCodes.Status200OK)
+        .WithDescription("Retrieves a paginated list of products based on various search criteria.")
+        .Produces<ProductsPagedResponse>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);

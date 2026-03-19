@@ -94,11 +94,11 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var products = await response.Content.ReadFromJsonAsync<List<ProductResponse>>(TestContext.Current.CancellationToken);
-        products.ShouldNotBeNull();
-        products.Count.ShouldBeGreaterThanOrEqualTo(2);
-        products.ShouldContain(p => p.ProductId == product1.Id.Value);
-        products.ShouldContain(p => p.ProductId == product2.Id.Value);
+        var pagedResult = await response.Content.ReadFromJsonAsync<ProductsPagedResponse>(TestContext.Current.CancellationToken);
+        pagedResult.ShouldNotBeNull();
+        pagedResult.TotalCount.ShouldBeGreaterThanOrEqualTo(2);
+        pagedResult.Items.ShouldContain(p => p.ProductId == product1.Id.Value);
+        pagedResult.Items.ShouldContain(p => p.ProductId == product2.Id.Value);
     }
 }
 

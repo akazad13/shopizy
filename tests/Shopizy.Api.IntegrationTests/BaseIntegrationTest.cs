@@ -188,7 +188,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Searches for products via API.
     /// </summary>
-    protected async Task<List<Shopizy.Contracts.Product.ProductResponse>> SearchProductsAsync(
+    protected async Task<Shopizy.Contracts.Product.ProductsPagedResponse> SearchProductsAsync(
         string? name = null,
         Guid? categoryId = null,
         int pageNumber = 1,
@@ -208,8 +208,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         var response = await HttpClient.GetAsync($"/api/v1.0/products?{query}", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var products = await response.Content.ReadFromJsonAsync<List<Shopizy.Contracts.Product.ProductResponse>>(TestContext.Current.CancellationToken);
-        return products ?? new List<Shopizy.Contracts.Product.ProductResponse>();
+        var result = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductsPagedResponse>(TestContext.Current.CancellationToken);
+        return result ?? new Shopizy.Contracts.Product.ProductsPagedResponse([], 0);
     }
 
     #endregion
