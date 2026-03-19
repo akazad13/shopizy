@@ -42,7 +42,7 @@ public class UpdateWishlistEndpoint : ApiEndpoint
                 );
             }
         )
-        .RequireAuthorization("Wishlist.Update")
+        .RequireAuthorization("Wishlist.Modify")
         .WithTags("Wishlist")
         .WithSummary("Update wishlist")
         .WithDescription("Adds or removes a product from the user's wishlist. Action must be \"Add\" or \"Remove\".")

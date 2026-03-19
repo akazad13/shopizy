@@ -28,7 +28,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken();
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/carts", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/cart", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -43,7 +43,7 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
         ClearAuthToken();
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/orders", orderRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -113,14 +113,13 @@ public class AuthorizationTests(IntegrationTestWebAppFactory factory) : BaseInte
     public async Task CreateProduct_AsRegularUser_ReturnsForbidden()
     {
         // Arrange
-        var userId = Guid.NewGuid();
         var email = $"{Guid.NewGuid().ToString()[..8]}@regular.com";
-        var (_, _) = await AuthenticateAsNewUserAsync("Regular", "User", email, "Password123!");
-        
+        await AuthenticateAsNewUserAsync("Regular", "User", email, "Password123!");
+
         var productRequest = new { Name = "New Product", Price = 10.0 };
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/products", productRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", productRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);

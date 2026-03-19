@@ -76,6 +76,10 @@ public class LoginQueryHandler(
 
             return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return CustomErrors.User.InvalidEmailFormat;

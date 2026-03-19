@@ -19,7 +19,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var (adminToken, adminUserId) = await AuthenticateAsAdminAsync();
         
         var categoryRequest = new CreateCategoryRequest("Electronics", null);
-        var categoryResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{adminUserId}/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var categoryResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
         var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(cancellationToken: TestContext.Current.CancellationToken);
         
         var productRequest = new CreateProductRequest(
@@ -39,7 +39,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             StockQuantity: 100,
             SpecificationIds: null
         );
-        var productResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{adminUserId}/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var productResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(cancellationToken: TestContext.Current.CancellationToken);
         
         ClearAuthToken();
@@ -71,7 +71,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var orderItems = new List<OrderItemRequest> { new(product.ProductId, "Midnight Blue", "256GB", 1) };
         var createOrderRequest = new CreateOrderRequest("", 1, deliveryCharge, orderItems, shippingAddress);
         
-        var placeOrderResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{customerUserId}/orders", createOrderRequest, TestContext.Current.CancellationToken);
+        var placeOrderResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", createOrderRequest, TestContext.Current.CancellationToken);
         if (placeOrderResponse.StatusCode == HttpStatusCode.InternalServerError)
         {
             var errorContent = await placeOrderResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);

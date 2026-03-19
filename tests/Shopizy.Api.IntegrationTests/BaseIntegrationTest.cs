@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Shopizy.Contracts.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Carts;
 using System.Reflection;
@@ -95,10 +96,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
                 var constructor = typeof(User).GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
                     null,
-                    [typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(IList<PermissionId>)],
+                    [typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(UserRole), typeof(IList<PermissionId>)],
                     null);
 
-                var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, allPermissionIds]);
+                var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, UserRole.Admin, allPermissionIds]);
                 dbContext.Users.Add(user);
                 dbContext.Carts.Add(Cart.Create(user.Id));
                 await dbContext.SaveChangesAsync();
@@ -165,7 +166,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             stockQuantity
         };
 
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/products", createRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", createRequest, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var product = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductDetailResponse>(TestContext.Current.CancellationToken);
@@ -221,7 +222,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task<Guid> CreateCategoryAsync(Guid userId, string name, Guid? parentId = null)
     {
         var createRequest = new { name, parentId };
-        var response = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{userId}/categories", createRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", createRequest, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var category = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Category.CategoryResponse>(TestContext.Current.CancellationToken);
@@ -249,7 +250,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<Shopizy.Contracts.Cart.CartResponse> GetCartAsync(Guid userId)
     {
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/carts", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/cart", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(TestContext.Current.CancellationToken);
@@ -268,7 +269,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         string size = "M")
     {
         var addRequest = new { productId, color, size, quantity };
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}/carts/{cartId}", addRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}/cart/items", addRequest, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(TestContext.Current.CancellationToken);
@@ -283,7 +284,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     {
         var updateRequest = new { quantity };
         var response = await HttpClient.PatchAsJsonAsync(
-            $"/api/v1.0/users/{userId}/carts/{cartId}/items/{itemId}",
+            $"/api/v1.0/users/{userId}/cart/items/{itemId}",
             updateRequest,
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
@@ -295,7 +296,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task RemoveFromCartAsync(Guid userId, Guid cartId, Guid itemId)
     {
         var response = await HttpClient.DeleteAsync(
-            $"/api/v1.0/users/{userId}/carts/{cartId}/items/{itemId}",
+            $"/api/v1.0/users/{userId}/cart/items/{itemId}",
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
     }
@@ -331,7 +332,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         };
 
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/orders",
+            "/api/v1.0/orders/checkout",
             createOrderRequest,
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();

@@ -9,6 +9,9 @@ using Testcontainers.PostgreSql;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Products.Common;
+using Microsoft.AspNetCore.Http;
+using ErrorOr;
 
 namespace Shopizy.Api.IntegrationTests;
 
@@ -72,6 +75,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             // Mock IPaymentService
             services.RemoveAll(typeof(IPaymentService));
             services.AddScoped<IPaymentService, MockPaymentService>();
+
+            // Mock IMediaUploader
+            services.RemoveAll(typeof(IMediaUploader));
+            services.AddScoped<IMediaUploader, MockMediaUploader>();
         });
     }
 
@@ -126,6 +133,21 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                     Metadata = new Dictionary<string, string>()
                 }
             );
+        }
+    }
+
+    public class MockMediaUploader : IMediaUploader
+    {
+        public Task<ErrorOr.ErrorOr<PhotoUploadResult>> UploadPhotoAsync(IFormFile file, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<PhotoUploadResult>>(
+                new PhotoUploadResult("https://mock.cloudinary.com/image.jpg", "mock_public_id")
+            );
+        }
+
+        public Task<ErrorOr.ErrorOr<Success>> DeletePhotoAsync(string publicId)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<Success>>(Result.Success);
         }
     }
 

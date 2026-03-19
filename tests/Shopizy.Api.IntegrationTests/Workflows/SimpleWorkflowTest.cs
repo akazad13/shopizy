@@ -20,7 +20,7 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
         // 2. Create a category
         var categoryRequest = new CreateCategoryRequest("Electronics", null);
         var categoryResponse = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/categories",
+            "/api/v1.0/admin/categories",
             categoryRequest,
             TestContext.Current.CancellationToken);
         if (!categoryResponse.IsSuccessStatusCode)
@@ -54,7 +54,7 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
         );
 
         var productResponse = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/products",
+            "/api/v1.0/admin/products",
             productRequest,
             TestContext.Current.CancellationToken);
         productResponse.EnsureSuccessStatusCode();

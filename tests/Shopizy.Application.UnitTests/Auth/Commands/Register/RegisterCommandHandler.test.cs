@@ -70,6 +70,9 @@ public class RegisterCommandHandlerTests
             PermissionId.Create(new("20082930-3857-4B34-80D0-E256B9B585D8")),
             PermissionId.Create(new("0C65A58A-D472-4D5D-848E-EAC46F988F5D")),
             PermissionId.Create(new("C920A577-1669-4167-B056-5E0A03329C55")),
+            PermissionId.Create(new("9b259d3d-b634-4232-9deb-e5fdb20d7a64")),
+            PermissionId.Create(new("759b8d6d-ffda-4c99-bf29-ed335c029a5c")),
+            PermissionId.Create(new("d99cab25-5af2-4b9c-9fad-385e4715d7f2")),
         };
 
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
@@ -130,7 +133,7 @@ public class RegisterCommandHandlerTests
             r =>
                 r.AddAsync(
                     It.Is<User>(u =>
-                        u.PermissionIds.Count == 12
+                        u.PermissionIds.Count == 15
                         && u.Role == UserRole.Customer
                     )
                 ),

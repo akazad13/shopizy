@@ -46,7 +46,7 @@ public class JwtTokenGeneratorTests
             c.Type == "id" && c.Value == userId.Value.ToString());
 
         Assert.Contains(jwtToken.Claims, c =>
-            c.Type == ClaimTypes.Role && c.Value == role);
+            c.Type == "role" && c.Value == role);
 
         Assert.Contains(jwtToken.Claims, c =>
             c.Type == "permissions" && c.Value == "CanCreateProduct");

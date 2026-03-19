@@ -2,7 +2,9 @@ using Mapster;
 using Shopizy.Application.Users.Commands.UpdatePassword;
 using Shopizy.Application.Users.Commands.UpdateUser;
 using Shopizy.Application.Users.Queries.GetUser;
+using Shopizy.Contracts.Order;
 using Shopizy.Contracts.User;
+using Shopizy.Domain.Users;
 
 namespace Shopizy.Api.Common.Mapping;
 
@@ -37,5 +39,16 @@ public class UserMappingConfig : IRegister
         config.NewConfig<Guid, GetUserQuery>().MapWith(userId => new GetUserQuery(userId));
 
         config.NewConfig<UserDto, UserDetails>().Map(dest => dest.Id, src => src.Id.Value);
+
+        config
+            .NewConfig<User, UserDetails>()
+            .Map(dest => dest.Id, src => src.Id.Value)
+            .Map(dest => dest.Address, src => src.Address == null
+                ? null
+                : new Address(src.Address.Street, src.Address.City, src.Address.State, src.Address.Country, src.Address.ZipCode))
+            .Map(dest => dest.TotalOrders, src => src.OrderIds.Count)
+            .Map(dest => dest.TotalReviewed, src => src.ProductReviewIds.Count)
+            .Map(dest => dest.TotalFavorites, src => 0)
+            .Map(dest => dest.TotalReturns, src => 0);
     }
 }

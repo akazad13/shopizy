@@ -35,7 +35,7 @@ public class CategoryTests : BaseIntegrationTest
         var categoryId = await CreateCategoryAsync(userId, "DeleteMe");
 
         // Act
-        var response = await HttpClient.DeleteAsync($"/api/v1.0/users/{userId}/categories/{categoryId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.DeleteAsync($"/api/v1.0/admin/categories/{categoryId}", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -53,7 +53,7 @@ public class CategoryTests : BaseIntegrationTest
         var updateRequest = new UpdateCategoryRequest("NewName", null);
 
         // Act
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}/categories/{categoryId}", updateRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/admin/categories/{categoryId}", updateRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
