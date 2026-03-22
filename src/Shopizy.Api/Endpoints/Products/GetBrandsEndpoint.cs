@@ -3,6 +3,7 @@ using Shopizy.Application.Products.Queries.GetBrands;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Products;
 
@@ -16,7 +17,7 @@ public class GetBrandsEndpoint : ApiEndpoint
                 mediator,
                 new GetBrandsQuery(),
                 brands => Results.Ok(brands.Select(b => new BrandResponse(b))),
-                ex => logger.LogError(ex, "Error fetching brands")
+                ex => logger.BrandsFetchError(ex)
             );
         })
         .AllowAnonymous()

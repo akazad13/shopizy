@@ -322,4 +322,25 @@ public static partial class LoggerMessages
         Message = "An error occurred while updating wishlist."
     )]
     public static partial void WishlistUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1028, Level = LogLevel.Error, Message = "An error occurred while fetching dashboard metrics.")]
+    public static partial void DashboardMetricsFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1029, Level = LogLevel.Error, Message = "An error occurred while fetching admin orders list.")]
+    public static partial void AdminOrdersListFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1030, Level = LogLevel.Error, Message = "An error occurred while fetching admin order detail.")]
+    public static partial void AdminOrderDetailFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1031, Level = LogLevel.Error, Message = "An error occurred while updating order status.")]
+    public static partial void OrderStatusUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1032, Level = LogLevel.Error, Message = "An error occurred while updating user role.")]
+    public static partial void UserRoleUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1033, Level = LogLevel.Error, Message = "An error occurred while fetching users list.")]
+    public static partial void UsersListFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1034, Level = LogLevel.Error, Message = "An error occurred while fetching brands.")]
+    public static partial void BrandsFetchError(this ILogger logger, Exception ex);
 }

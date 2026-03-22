@@ -4,6 +4,7 @@ using Shopizy.Application.Users.Queries.GetUsers;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.User;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Users;
 
@@ -17,7 +18,7 @@ public class GetUsersEndpoint : ApiEndpoint
                 mediator,
                 new GetUsersQuery(pageNumber, pageSize),
                 users => Results.Ok(mapper.Map<List<UserDetails>>(users)),
-                ex => logger.LogError(ex, "Error fetching users list for admin")
+                ex => logger.UsersListFetchError(ex)
             );
         })
         .RequireAuthorization("Admin.ViewUsers")

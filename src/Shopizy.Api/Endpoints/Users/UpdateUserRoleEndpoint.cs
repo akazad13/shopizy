@@ -3,6 +3,7 @@ using Shopizy.Application.Users.Commands.UpdateUserRole;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Admin;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Users;
 
@@ -16,7 +17,7 @@ public class UpdateUserRoleEndpoint : ApiEndpoint
                 mediator,
                 new UpdateUserRoleCommand(id, request.Role, request.PermissionIds),
                 success => Results.Ok(SuccessResult.Success("User roles/permissions updated successfully.")),
-                ex => logger.LogError(ex, "Error updating user roles")
+                ex => logger.UserRoleUpdateError(ex)
             );
         })
         .RequireAuthorization("Admin.UpdateUserRole")

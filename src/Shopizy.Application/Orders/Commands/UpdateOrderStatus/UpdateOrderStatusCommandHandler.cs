@@ -11,10 +11,15 @@ public class UpdateOrderStatusCommandHandler(IOrderRepository orderRepository)
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public async Task<ErrorOr<Success>> Handle(UpdateOrderStatusCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(
+        UpdateOrderStatusCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(command.OrderId));
-        if (order == null)
+        if (order is null)
         {
             return CustomErrors.Order.OrderNotFound;
         }

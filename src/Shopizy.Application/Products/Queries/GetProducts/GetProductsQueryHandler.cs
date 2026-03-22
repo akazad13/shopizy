@@ -41,7 +41,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
                 .ToList()
             : null;
 
-        var productsTask = _productRepository.GetProductsAsync(
+        var products = await _productRepository.GetProductsAsync(
             productIds,
             query.Name,
             categoryIds,
@@ -49,17 +49,12 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageNumber,
             query.PageSize
         );
-        var countTask = _productRepository.CountProductsAsync(
+        var totalCount = await _productRepository.CountProductsAsync(
             productIds,
             query.Name,
             categoryIds,
             query.AverageRating
         );
-
-        await Task.WhenAll(productsTask, countTask);
-
-        var products = productsTask.Result;
-        var totalCount = countTask.Result;
 
         if (products == null)
         {

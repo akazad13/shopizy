@@ -3,6 +3,7 @@ using Shopizy.Application.Orders.Commands.UpdateOrderStatus;
 using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Orders;
 
@@ -16,7 +17,7 @@ public class UpdateOrderStatusEndpoint : ApiEndpoint
                 mediator,
                 new UpdateOrderStatusCommand(currentUser.GetCurrentUserId(), id, (Domain.Orders.Enums.OrderStatus)(int)status),
                 success => Results.Ok(SuccessResult.Success("Order status updated successfully.")),
-                ex => logger.LogError(ex, "Error updating order status")
+                ex => logger.OrderStatusUpdateError(ex)
             );
         })
         .RequireAuthorization("Admin.UpdateOrderStatus")

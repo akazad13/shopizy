@@ -4,6 +4,7 @@ using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Orders;
 
@@ -26,7 +27,7 @@ public class GetAdminOrdersEndpoint : ApiEndpoint
                 mediator,
                 query,
                 orders => Results.Ok(mapper.Map<List<OrderResponse>>(orders)),
-                ex => logger.LogError(ex, "Error fetching orders list for admin")
+                ex => logger.AdminOrdersListFetchError(ex)
             );
         })
         .RequireAuthorization("Admin.ViewOrders")

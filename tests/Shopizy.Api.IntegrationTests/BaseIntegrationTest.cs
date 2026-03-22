@@ -16,12 +16,15 @@ namespace Shopizy.Api.IntegrationTests;
 public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>, IDisposable
 {
     private readonly IServiceScope _scope;
+    private bool _disposed;
     protected readonly IDispatcher Sender;
     protected readonly AppDbContext DbContext;
     protected readonly HttpClient HttpClient;
 
     protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
     {
+        ArgumentNullException.ThrowIfNull(factory);
+        
         _scope = factory.Services.CreateScope();
         Sender = _scope.ServiceProvider.GetRequiredService<IDispatcher>();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -141,7 +144,6 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// Creates a product via API and returns the product ID.
     /// </summary>
     protected async Task<Guid> CreateProductAsync(
-        Guid userId,
         string name,
         decimal price,
         Guid categoryId,
@@ -219,7 +221,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Creates a category via API and returns the category ID.
     /// </summary>
-    protected async Task<Guid> CreateCategoryAsync(Guid userId, string name, Guid? parentId = null)
+    protected async Task<Guid> CreateCategoryAsync(string name, Guid? parentId = null)
     {
         var createRequest = new { name, parentId };
         var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", createRequest, TestContext.Current.CancellationToken);
@@ -238,7 +240,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         response.EnsureSuccessStatusCode();
 
         var categories = await response.Content.ReadFromJsonAsync<List<Shopizy.Contracts.Category.CategoryResponse>>(TestContext.Current.CancellationToken);
-        return categories ?? new List<Shopizy.Contracts.Category.CategoryResponse>();
+        return categories ?? [];
     }
 
     #endregion
@@ -262,7 +264,6 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<Guid> AddToCartAsync(
         Guid userId,
-        Guid cartId,
         Guid productId,
         int quantity = 1,
         string color = "Red",
@@ -280,7 +281,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Updates cart item quantity via API.
     /// </summary>
-    protected async Task UpdateCartItemQuantityAsync(Guid userId, Guid cartId, Guid itemId, int quantity)
+    protected async Task UpdateCartItemQuantityAsync(Guid userId, Guid itemId, int quantity)
     {
         var updateRequest = new { quantity };
         var response = await HttpClient.PatchAsJsonAsync(
@@ -293,7 +294,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Removes an item from the cart via API.
     /// </summary>
-    protected async Task RemoveFromCartAsync(Guid userId, Guid cartId, Guid itemId)
+    protected async Task RemoveFromCartAsync(Guid userId, Guid itemId)
     {
         var response = await HttpClient.DeleteAsync(
             $"/api/v1.0/users/{userId}/cart/items/{itemId}",
@@ -309,7 +310,6 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// Places an order via API and returns the order ID.
     /// </summary>
     protected async Task<Guid> PlaceOrderAsync(
-        Guid userId,
         IEnumerable<object> orderItems,
         object? shippingAddress = null)
     {
@@ -368,7 +368,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         response.EnsureSuccessStatusCode();
 
         var orders = await response.Content.ReadFromJsonAsync<List<Shopizy.Contracts.Order.OrderResponse>>(TestContext.Current.CancellationToken);
-        return orders ?? new List<Shopizy.Contracts.Order.OrderResponse>();
+        return orders ?? [];
     }
 
     #endregion
@@ -408,7 +408,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Extracts user ID from authentication token.
     /// </summary>
-    protected Guid GetUserIdFromToken(string token)
+    protected static Guid GetUserIdFromToken(string token)
     {
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var jwtToken = handler.ReadJwtToken(token);
@@ -426,8 +426,23 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
 
     public void Dispose()
     {
-        _scope.Dispose();
-        DbContext.Dispose();
-        HttpClient.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            HttpClient.Dispose();
+            _scope.Dispose(); // disposes scoped services including DbContext
+        }
+
+        _disposed = true;
     }
 }

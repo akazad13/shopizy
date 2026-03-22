@@ -5,7 +5,7 @@ public record DashboardMetricsResponse(
     int TotalOrders,
     int TotalUsers,
     int TotalProducts,
-    List<StockAlertResponse> StockAlerts
+    IReadOnlyList<StockAlertResponse> StockAlerts
 );
 
 public record StockAlertResponse(

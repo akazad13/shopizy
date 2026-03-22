@@ -5,7 +5,7 @@ public record DashboardMetricsDto(
     int TotalOrders,
     int TotalUsers,
     int TotalProducts,
-    List<StockAlertDto> StockAlerts
+    IReadOnlyList<StockAlertDto> StockAlerts
 );
 
 public record StockAlertDto(

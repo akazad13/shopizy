@@ -42,6 +42,7 @@ public class LoginQueryHandler(
         try
         {
 
+            ArgumentNullException.ThrowIfNull(query);
 
             cancellationToken.ThrowIfCancellationRequested();
 

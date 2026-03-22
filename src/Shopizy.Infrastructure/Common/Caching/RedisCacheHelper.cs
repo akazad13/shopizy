@@ -2,8 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Application.Caching;
 using StackExchange.Redis;
-
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
+using Shopizy.Infrastructure;
 
 namespace Shopizy.Infrastructure.Common.Caching;
 
@@ -39,7 +38,7 @@ public class RedisCacheHelper(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving key {Key} from Redis", key);
+            _logger.RedisGetError(ex, key);
             return CacheResult<T>.Miss();
         }
     }
@@ -68,7 +67,7 @@ public class RedisCacheHelper(
         }
         catch (Exception ex)
         {
-             _logger.LogError(ex, "Error setting key {Key} in Redis", key);
+            _logger.RedisSetError(ex, key);
         }
     }
 
@@ -85,7 +84,7 @@ public class RedisCacheHelper(
         }
         catch (Exception ex)
         {
-             _logger.LogError(ex, "Error removing key {Key} from Redis", key);
+            _logger.RedisRemoveError(ex, key);
         }
     }
 }

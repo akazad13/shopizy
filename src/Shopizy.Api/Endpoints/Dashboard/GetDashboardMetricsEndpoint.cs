@@ -4,6 +4,7 @@ using Shopizy.Application.Admin.Queries.GetDashboardMetrics;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Admin;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 
 namespace Shopizy.Api.Endpoints.Dashboard;
 
@@ -17,7 +18,7 @@ public class GetDashboardMetricsEndpoint : ApiEndpoint
                 mediator,
                 new GetDashboardMetricsQuery(),
                 metrics => Results.Ok(mapper.Map<DashboardMetricsResponse>(metrics)),
-                ex => logger.LogError(ex, "Error fetching dashboard metrics")
+                ex => logger.DashboardMetricsFetchError(ex)
             );
         })
         .RequireAuthorization("Admin.View")

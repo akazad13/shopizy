@@ -1,3 +1,3 @@
 namespace Shopizy.Contracts.Admin;
 
-public record UpdateUserRoleRequest(string Role, List<Guid> PermissionIds);
+public record UpdateUserRoleRequest(string Role, IReadOnlyList<Guid> PermissionIds);

@@ -5,21 +5,17 @@ using Xunit;
 
 namespace Shopizy.Api.IntegrationTests.Categories;
 
-public class CategoryTests : BaseIntegrationTest
+public class CategoryTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public CategoryTests(IntegrationTestWebAppFactory factory) : base(factory)
-    {
-    }
-
     [Fact]
     public async Task CreateAndGetCategory_ReturnsCategory()
     {
         // Arrange
-        var (_, userId) = await AuthenticateAsAdminAsync();
+        await AuthenticateAsAdminAsync();
         var categoryName = $"Category_{Guid.NewGuid().ToString()[..8]}";
 
         // Act
-        var categoryId = await CreateCategoryAsync(userId, categoryName);
+        var categoryId = await CreateCategoryAsync(categoryName);
         var categories = await ListCategoriesAsync();
 
         // Assert
@@ -31,8 +27,8 @@ public class CategoryTests : BaseIntegrationTest
     public async Task DeleteCategory_WhenAdmin_ReturnsNoContent()
     {
         // Arrange
-        var (_, userId) = await AuthenticateAsAdminAsync();
-        var categoryId = await CreateCategoryAsync(userId, "DeleteMe");
+        await AuthenticateAsAdminAsync();
+        var categoryId = await CreateCategoryAsync("DeleteMe");
 
         // Act
         var response = await HttpClient.DeleteAsync($"/api/v1.0/admin/categories/{categoryId}", TestContext.Current.CancellationToken);
@@ -48,8 +44,8 @@ public class CategoryTests : BaseIntegrationTest
     public async Task UpdateCategory_WhenAdmin_ReturnsOk()
     {
         // Arrange
-        var (_, userId) = await AuthenticateAsAdminAsync();
-        var categoryId = await CreateCategoryAsync(userId, "OldName");
+        await AuthenticateAsAdminAsync();
+        var categoryId = await CreateCategoryAsync("OldName");
         var updateRequest = new UpdateCategoryRequest("NewName", null);
 
         // Act
@@ -63,8 +59,8 @@ public class CategoryTests : BaseIntegrationTest
     public async Task GetCategory_ReturnsCategory()
     {
         // Arrange
-        var (_, userId) = await AuthenticateAsAdminAsync();
-        var categoryId = await CreateCategoryAsync(userId, "GetMe");
+        await AuthenticateAsAdminAsync();
+        var categoryId = await CreateCategoryAsync("GetMe");
 
         // Act
         var response = await HttpClient.GetAsync($"/api/v1.0/categories/{categoryId}", TestContext.Current.CancellationToken);
