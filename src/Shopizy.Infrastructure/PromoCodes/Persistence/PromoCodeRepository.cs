@@ -25,8 +25,18 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
         await _dbContext.PromoCodes.AddAsync(promoCode);
     }
 
+    public Task<PromoCode?> GetByCodeAsync(string code)
+    {
+        return _dbContext.PromoCodes.FirstOrDefaultAsync(pc => pc.Code == code);
+    }
+
     public void Update(PromoCode promoCode)
     {
         _dbContext.PromoCodes.Update(promoCode);
+    }
+
+    public void Remove(PromoCode promoCode)
+    {
+        _dbContext.PromoCodes.Remove(promoCode);
     }
 }

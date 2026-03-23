@@ -23,6 +23,10 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <param name="name">Optional product name filter.</param>
     /// <param name="categoryIds">Optional list of category IDs to filter by.</param>
     /// <param name="averageRating">Optional minimum average rating filter.</param>
+    /// <param name="minPrice">Optional minimum price filter.</param>
+    /// <param name="maxPrice">Optional maximum price filter.</param>
+    /// <param name="inStockOnly">Optional filter to only in-stock products.</param>
+    /// <param name="sortBy">Optional sort order.</param>
     /// <param name="pageNumber">The page number.</param>
     /// <param name="pageSize">The page size.</param>
     /// <returns>A list of products matching the criteria.</returns>
@@ -31,11 +35,27 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly,
+        string? sortBy,
         int pageNumber,
         int pageSize
     )
     {
-        return await ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating))
+        var query = ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly));
+
+        query = sortBy switch
+        {
+            "price_asc" => query.OrderBy(p => p.UnitPrice.Amount),
+            "price_desc" => query.OrderByDescending(p => p.UnitPrice.Amount),
+            "newest" => query.OrderByDescending(p => p.CreatedOn),
+            "best_rated" => query.OrderByDescending(p => p.AverageRating.Value),
+            "most_reviewed" => query.OrderByDescending(p => p.AverageRating.NumRatings),
+            _ => query
+        };
+
+        return await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -88,10 +108,13 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
-        decimal? averageRating
+        decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly
     )
     {
-        return ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating))
+        return ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly))
             .CountAsync();
     }
 
@@ -137,6 +160,15 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public void Remove(Product product)
     {
         _dbContext.Remove(product);
+    }
+
+    /// <summary>
+    /// Removes multiple products from the database.
+    /// </summary>
+    /// <param name="products">The list of products to remove.</param>
+    public void RemoveRange(IList<Product> products)
+    {
+        _dbContext.RemoveRange(products);
     }
 
     /// <summary>

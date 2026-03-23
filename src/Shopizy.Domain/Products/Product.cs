@@ -1,9 +1,11 @@
+using ErrorOr;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.SharedKernel.Domain.Models;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Products;
 
@@ -14,6 +16,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
 {
     private readonly List<ProductImage> _productImages = [];
     private readonly List<ProductReview> _productReviews = [];
+    private readonly List<ProductVariant> _productVariants = [];
     
     /// <summary>
     /// Gets the product name.
@@ -91,10 +94,15 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     public AverageRating AverageRating { get; private set; }
     
     /// <summary>
+    /// Gets whether the product is active.
+    /// </summary>
+    public bool IsActive { get; private set; } = true;
+
+    /// <summary>
     /// Gets the date and time when the product was created.
     /// </summary>
     public DateTime CreatedOn { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the product was last modified.
     /// </summary>
@@ -109,6 +117,11 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// Gets the read-only list of product reviews.
     /// </summary>
     public IReadOnlyList<ProductReview> ProductReviews => _productReviews.AsReadOnly();
+
+    /// <summary>
+    /// Gets the read-only list of product variants.
+    /// </summary>
+    public IReadOnlyList<ProductVariant> ProductVariants => _productVariants.AsReadOnly();
 
     /// <summary>
     /// Creates a new product.
@@ -243,6 +256,77 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     public void UpdateFavourite()
     {
         Favourites += 1;
+    }
+
+    /// <summary>
+    /// Incorporates a new review rating into the product's average.
+    /// </summary>
+    public void AddReviewRating(Rating rating)
+    {
+        AverageRating.AddNewRating(rating);
+    }
+
+    /// <summary>
+    /// Removes a review rating from the product's average.
+    /// </summary>
+    public void RemoveReviewRating(Rating rating)
+    {
+        AverageRating.RemoveRating(rating);
+    }
+
+    /// <summary>
+    /// Sets the active status of the product.
+    /// </summary>
+    /// <param name="isActive">Whether the product should be active.</param>
+    public void SetIsActive(bool isActive)
+    {
+        IsActive = isActive;
+    }
+
+    /// <summary>
+    /// Adds a product variant.
+    /// </summary>
+    /// <param name="variant">The variant to add.</param>
+    public void AddVariant(ProductVariant variant)
+    {
+        _productVariants.Add(variant);
+    }
+
+    /// <summary>
+    /// Updates an existing product variant.
+    /// </summary>
+    public ErrorOr<ProductVariant> UpdateVariant(
+        ProductVariantId variantId,
+        string name,
+        string sku,
+        Price unitPrice,
+        int stockQuantity,
+        bool isActive
+    )
+    {
+        var variant = _productVariants.FirstOrDefault(v => v.Id == variantId);
+        if (variant is null)
+        {
+            return CustomErrors.ProductVariant.VariantNotFound;
+        }
+
+        variant.Update(name, sku, unitPrice, stockQuantity, isActive);
+        return variant;
+    }
+
+    /// <summary>
+    /// Removes a product variant.
+    /// </summary>
+    public ErrorOr<Deleted> RemoveVariant(ProductVariantId variantId)
+    {
+        var variant = _productVariants.FirstOrDefault(v => v.Id == variantId);
+        if (variant is null)
+        {
+            return CustomErrors.ProductVariant.VariantNotFound;
+        }
+
+        _productVariants.Remove(variant);
+        return Result.Deleted;
     }
 
     private Product(

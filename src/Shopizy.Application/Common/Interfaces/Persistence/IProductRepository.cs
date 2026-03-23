@@ -11,6 +11,10 @@ public interface IProductRepository
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
         decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly,
+        string? sortBy,
         int pageNumber,
         int pageSize
     );
@@ -18,7 +22,10 @@ public interface IProductRepository
         IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
-        decimal? averageRating
+        decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly
     );
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);
@@ -29,5 +36,6 @@ public interface IProductRepository
     Task AddAsync(Product product);
     void Update(Product product);
     void Remove(Product product);
+    void RemoveRange(IList<Product> products);
 }
 

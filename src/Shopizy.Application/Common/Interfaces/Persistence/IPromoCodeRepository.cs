@@ -7,7 +7,9 @@ public interface IPromoCodeRepository
 {
     Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync();
     Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id);
+    Task<PromoCode?> GetByCodeAsync(string code);
     Task AddAsync(PromoCode promoCode);
     void Update(PromoCode promoCode);
+    void Remove(PromoCode promoCode);
 }
 

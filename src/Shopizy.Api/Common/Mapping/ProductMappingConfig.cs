@@ -35,6 +35,10 @@ public class ProductMappingConfig : IRegister
                 src.Name,
                 src.CategoryIds,
                 src.AverageRating,
+                src.MinPrice,
+                src.MaxPrice,
+                src.InStockOnly,
+                src.SortBy,
                 src.PageNumber,
                 src.PageSize));
 

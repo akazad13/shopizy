@@ -33,6 +33,8 @@ public sealed class WishlistConfigurations : IEntityTypeConfiguration<Wishlist>
 
         builder.Property(w => w.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(w => w.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        builder.Property(w => w.Name).HasMaxLength(100).IsRequired(false);
+        builder.Property(w => w.IsPublic).HasDefaultValue(false);
     }
 
     private static void ConfigureWishlistItemsTable(EntityTypeBuilder<Wishlist> builder)

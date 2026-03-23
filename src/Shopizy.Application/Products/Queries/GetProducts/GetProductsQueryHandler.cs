@@ -46,6 +46,10 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.Name,
             categoryIds,
             query.AverageRating,
+            query.MinPrice,
+            query.MaxPrice,
+            query.InStockOnly,
+            query.SortBy,
             query.PageNumber,
             query.PageSize
         );
@@ -53,7 +57,10 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             productIds,
             query.Name,
             categoryIds,
-            query.AverageRating
+            query.AverageRating,
+            query.MinPrice,
+            query.MaxPrice,
+            query.InStockOnly
         );
 
         if (products == null)

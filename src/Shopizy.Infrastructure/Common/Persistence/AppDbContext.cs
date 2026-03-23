@@ -2,12 +2,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
+using Shopizy.Domain.AuditLogs;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
 using Shopizy.SharedKernel.Domain.Models;
+using Shopizy.Domain.GiftCards;
+using Shopizy.Domain.LoyaltyAccounts;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Permissions;
+using Shopizy.Domain.ProductQuestions;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.PromoCodes;
@@ -75,6 +79,26 @@ public class AppDbContext(
     /// Gets or sets the wishlists DbSet.
     /// </summary>
     public DbSet<Wishlist> Wishlists { get; set; }
+
+    /// <summary>
+    /// Gets or sets the loyalty accounts DbSet.
+    /// </summary>
+    public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
+
+    /// <summary>
+    /// Gets or sets the gift cards DbSet.
+    /// </summary>
+    public DbSet<GiftCard> GiftCards { get; set; }
+
+    /// <summary>
+    /// Gets or sets the product questions DbSet.
+    /// </summary>
+    public DbSet<ProductQuestion> ProductQuestions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the audit logs DbSet.
+    /// </summary>
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     /// <summary>
     /// Saves all changes made in this context to the database.

@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.DependencyInjection;
+using Shopizy.Infrastructure.Security.Totp;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure;
@@ -31,6 +33,8 @@ public static class DependencyInjectionRegister
                 }
             );
         });
+
+        services.AddScoped<ITotpHelper, TotpHelper>();
 
         return services
             .AddHttpContextAccessor()

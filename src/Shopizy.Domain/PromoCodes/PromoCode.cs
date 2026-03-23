@@ -26,8 +26,8 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
     /// <summary>
     /// Gets or sets a value indicating whether the discount is a percentage.
     /// </summary>
-    public bool IsPerchantage { get; set; }
-    
+    public bool IsPercentage { get; set; }
+
     /// <summary>
     /// Gets or sets a value indicating whether the promo code is active.
     /// </summary>
@@ -54,14 +54,14 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
     /// <param name="code">The promo code string.</param>
     /// <param name="description">The description.</param>
     /// <param name="discount">The discount value.</param>
-    /// <param name="isPerchantage">Whether the discount is a percentage.</param>
+    /// <param name="isPercentage">Whether the discount is a percentage.</param>
     /// <param name="isActive">Whether the promo code is active.</param>
     /// <returns>A new <see cref="PromoCode"/> instance.</returns>
     public static PromoCode Create(
         string code,
         string description,
         decimal discount,
-        bool isPerchantage,
+        bool isPercentage,
         bool isActive
     )
     {
@@ -70,9 +70,18 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
             code,
             description,
             discount,
-            isPerchantage,
+            isPercentage,
             isActive
         );
+    }
+
+    public void Update(string code, string description, decimal discount, bool isPercentage, bool isActive)
+    {
+        Code = code;
+        Description = description;
+        Discount = discount;
+        IsPercentage = isPercentage;
+        IsActive = isActive;
     }
 
     private PromoCode(
@@ -80,14 +89,14 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
         string code,
         string description,
         decimal discount,
-        bool isPerchantage,
+        bool isPercentage,
         bool isActive
     ) : base(promoCodeId)
     {
         Code = code;
         Description = description;
         Discount = discount;
-        IsPerchantage = isPerchantage;
+        IsPercentage = isPercentage;
         IsActive = isActive;
         NumOfTimeUsed = 0;
     }

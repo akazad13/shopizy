@@ -13,6 +13,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
     {
         ConfigureOrdersTable(builder);
         ConfigureOrderItemsTable(builder);
+        ConfigureShipmentTable(builder);
     }
 
     private static void ConfigureOrdersTable(EntityTypeBuilder<Order> builder)
@@ -83,5 +84,27 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             }
         );
         builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureShipmentTable(EntityTypeBuilder<Order> builder)
+    {
+        builder.OwnsOne(
+            o => o.Shipment,
+            sb =>
+            {
+                sb.ToTable("Shipments");
+                sb.WithOwner().HasForeignKey("OrderId");
+                sb.HasKey(nameof(Shipment.Id), "OrderId");
+                sb.Property(s => s.Id)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, v => ShipmentId.Create(v));
+                sb.Property(s => s.Carrier).HasMaxLength(100);
+                sb.Property(s => s.TrackingNumber).HasMaxLength(100);
+                sb.Property(s => s.EstimatedDelivery).IsRequired(false);
+                sb.Property(s => s.Status).HasConversion<string>();
+                sb.Property(s => s.CreatedOn).HasColumnType("smalldatetime");
+                sb.Property(s => s.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+            }
+        );
     }
 }

@@ -1,6 +1,7 @@
 using Mapster;
 using Shopizy.Application.Wishlists.Commands.CreateWishlist;
 using Shopizy.Application.Wishlists.Commands.UpdateWishlist;
+using Shopizy.Application.Wishlists.Commands.UpdateWishlistSettings;
 using Shopizy.Application.Wishlists.Queries.GetWishlist;
 using Shopizy.Contracts.Wishlist;
 using Shopizy.Domain.Wishlists;
@@ -16,6 +17,9 @@ public class WishlistMappingConfig : IRegister
 
         config.NewConfig<Guid, CreateWishlistCommand>()
             .MapWith(userId => new CreateWishlistCommand(userId));
+
+        config.NewConfig<(Guid UserId, CreateWishlistRequest? request), CreateWishlistCommand>()
+            .MapWith(src => new CreateWishlistCommand(src.UserId, src.request != null ? src.request.Name : null, src.request != null ? src.request.IsPublic : false));
 
         config.NewConfig<Guid, GetWishlistQuery>()
             .MapWith(userId => new GetWishlistQuery(userId));
@@ -33,9 +37,17 @@ public class WishlistMappingConfig : IRegister
             );
 
         config
+            .NewConfig<(Guid UserId, UpdateWishlistSettingsRequest request), UpdateWishlistSettingsCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.Name, src => src.request.Name)
+            .Map(dest => dest.IsPublic, src => src.request.IsPublic);
+
+        config
             .NewConfig<Wishlist, WishlistResponse>()
             .Map(dest => dest.WishlistId, src => src.Id.Value)
             .Map(dest => dest.UserId, src => src.UserId.Value)
+            .Map(dest => dest.Name, src => src.Name)
+            .Map(dest => dest.IsPublic, src => src.IsPublic)
             .Map(dest => dest.WishlistItems, src => src.WishlistItems);
 
         config

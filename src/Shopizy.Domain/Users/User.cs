@@ -1,9 +1,12 @@
 using Shopizy.SharedKernel.Domain.Models;
+using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.ProductReviews.ValueObjects;
+using Shopizy.Domain.Users.Entities;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Users.Enums;
+using ErrorOr;
 
 namespace Shopizy.Domain.Users;
 
@@ -15,6 +18,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     private readonly List<OrderId> _orderIds = [];
     private readonly List<ProductReviewId> _productReviewIds = [];
     private readonly List<PermissionId> _permissionIds = [];
+    private readonly List<UserAddress> _addresses = [];
 
     /// <summary>
     /// Gets the user's first name.
@@ -85,6 +89,31 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// Gets the read-only list of permission IDs assigned to this user.
     /// </summary>
     public IReadOnlyList<PermissionId> PermissionIds => _permissionIds.AsReadOnly();
+
+    /// <summary>
+    /// Gets the read-only list of addresses associated with this user.
+    /// </summary>
+    public IReadOnlyList<UserAddress> Addresses => _addresses.AsReadOnly();
+
+    /// <summary>
+    /// Gets or sets the password reset token.
+    /// </summary>
+    public string? PasswordResetToken { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the password reset token expiry.
+    /// </summary>
+    public DateTime? PasswordResetTokenExpiry { get; private set; }
+
+    /// <summary>
+    /// Gets the two-factor authentication secret.
+    /// </summary>
+    public string? TwoFactorSecret { get; private set; }
+
+    /// <summary>
+    /// Gets whether two-factor authentication is enabled.
+    /// </summary>
+    public bool IsTwoFactorEnabled { get; private set; }
 
     /// <summary>
     /// Creates a new user instance.
@@ -218,5 +247,139 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     {
         _permissionIds.Clear();
         _permissionIds.AddRange(permissionIds);
+    }
+
+    /// <summary>
+    /// Adds a new address to the user's address book.
+    /// </summary>
+    public UserAddress AddAddress(
+        string street,
+        string city,
+        string state,
+        string country,
+        string zipCode,
+        bool isDefault
+    )
+    {
+        if (isDefault)
+        {
+            foreach (var a in _addresses) a.SetDefault(false);
+        }
+
+        var address = UserAddress.Create(street, city, state, country, zipCode, isDefault);
+        _addresses.Add(address);
+        return address;
+    }
+
+    /// <summary>
+    /// Updates an existing address.
+    /// </summary>
+    public ErrorOr<UserAddress> UpdateAddress(
+        UserAddressId addressId,
+        string street,
+        string city,
+        string state,
+        string country,
+        string zipCode
+    )
+    {
+        var address = _addresses.FirstOrDefault(a => a.Id == addressId);
+        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
+        address.Update(street, city, state, country, zipCode);
+        return address;
+    }
+
+    /// <summary>
+    /// Removes an address from the user's address book.
+    /// </summary>
+    public ErrorOr<Deleted> RemoveAddress(UserAddressId addressId)
+    {
+        var address = _addresses.FirstOrDefault(a => a.Id == addressId);
+        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
+        _addresses.Remove(address);
+        return Result.Deleted;
+    }
+
+    /// <summary>
+    /// Sets the default address for the user.
+    /// </summary>
+    public ErrorOr<Success> SetDefaultAddress(UserAddressId addressId)
+    {
+        var address = _addresses.FirstOrDefault(a => a.Id == addressId);
+        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
+        foreach (var a in _addresses) a.SetDefault(false);
+        address.SetDefault(true);
+        return Result.Success;
+    }
+
+    /// <summary>
+    /// Sets the password reset token and expiry.
+    /// </summary>
+    public void SetPasswordResetToken(string token, DateTime expiry)
+    {
+        PasswordResetToken = token;
+        PasswordResetTokenExpiry = expiry;
+    }
+
+    /// <summary>
+    /// Validates whether the provided reset token is valid and not expired.
+    /// </summary>
+    public bool IsPasswordResetTokenValid(string token)
+        => PasswordResetToken == token && PasswordResetTokenExpiry > DateTime.UtcNow;
+
+    /// <summary>
+    /// Clears the password reset token after use.
+    /// </summary>
+    public void ClearPasswordResetToken()
+    {
+        PasswordResetToken = null;
+        PasswordResetTokenExpiry = null;
+    }
+
+    /// <summary>
+    /// Enables two-factor authentication by generating a secret.
+    /// </summary>
+    public string EnableTwoFactor()
+    {
+        TwoFactorSecret = GenerateBase32Secret();
+        IsTwoFactorEnabled = false;
+        return TwoFactorSecret;
+    }
+
+    /// <summary>
+    /// Confirms two-factor authentication after successful code verification.
+    /// </summary>
+    public void ConfirmTwoFactor()
+    {
+        IsTwoFactorEnabled = true;
+    }
+
+    /// <summary>
+    /// Disables two-factor authentication.
+    /// </summary>
+    public void DisableTwoFactor()
+    {
+        TwoFactorSecret = null;
+        IsTwoFactorEnabled = false;
+    }
+
+    private static string GenerateBase32Secret()
+    {
+        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(20);
+        return Base32Encode(bytes);
+    }
+
+    private static string Base32Encode(byte[] data)
+    {
+        const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        var result = new System.Text.StringBuilder();
+        for (int i = 0; i < data.Length; i += 5)
+        {
+            int byteCount = Math.Min(5, data.Length - i);
+            ulong buffer = 0;
+            for (int j = 0; j < byteCount; j++) buffer |= ((ulong)data[i + j]) << (8 * (4 - j));
+            for (int j = 7; j >= 0 - (5 - byteCount) * 2; j--) result.Append(alphabet[(int)((buffer >> (j * 5)) & 0x1F)]);
+        }
+        return result.ToString();
     }
 }

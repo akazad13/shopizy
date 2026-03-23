@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Infrastructure.AuditLogs.Persistence;
 using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -13,6 +14,10 @@ using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Users.Persistence;
+using Shopizy.Infrastructure.AuditLogs.Persistence;
+using Shopizy.Infrastructure.GiftCards.Persistence;
+using Shopizy.Infrastructure.LoyaltyAccounts.Persistence;
+using Shopizy.Infrastructure.ProductQuestions.Persistence;
 using Shopizy.Infrastructure.Wishlists.Persistence;
 using Shopizy.Infrastructure.Services;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
@@ -65,7 +70,11 @@ public static class PersistenceRegister
             .AddScoped<IPromoCodeRepository, PromoCodeRepository>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IPermissionRepository, PermissionRepository>()
-            .AddScoped<IWishlistRepository, WishlistRepository>();
+            .AddScoped<IWishlistRepository, WishlistRepository>()
+            .AddScoped<ILoyaltyAccountRepository, LoyaltyAccountRepository>()
+            .AddScoped<IGiftCardRepository, GiftCardRepository>()
+            .AddScoped<IProductQuestionRepository, ProductQuestionRepository>()
+            .AddScoped<IAuditLogRepository, AuditLogRepository>();
 
         return services;
     }

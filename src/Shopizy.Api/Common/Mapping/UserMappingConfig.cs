@@ -5,6 +5,7 @@ using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Contracts.Order;
 using Shopizy.Contracts.User;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Entities;
 
 namespace Shopizy.Api.Common.Mapping;
 
@@ -50,5 +51,16 @@ public class UserMappingConfig : IRegister
             .Map(dest => dest.TotalReviewed, src => src.ProductReviewIds.Count)
             .Map(dest => dest.TotalFavorites, src => 0)
             .Map(dest => dest.TotalReturns, src => 0);
+
+        config
+            .NewConfig<UserAddress, UserAddressResponse>()
+            .Map(dest => dest.AddressId, src => src.Id.Value)
+            .Map(dest => dest.Street, src => src.Street)
+            .Map(dest => dest.City, src => src.City)
+            .Map(dest => dest.State, src => src.State)
+            .Map(dest => dest.Country, src => src.Country)
+            .Map(dest => dest.ZipCode, src => src.ZipCode)
+            .Map(dest => dest.IsDefault, src => src.IsDefault)
+            .Map(dest => dest.CreatedOn, src => src.CreatedOn);
     }
 }

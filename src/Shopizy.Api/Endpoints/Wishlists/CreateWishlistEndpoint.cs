@@ -18,6 +18,7 @@ public class CreateWishlistEndpoint : ApiEndpoint
             "api/v1.0/users/{userId:guid}/wishlist",
             async (
                 Guid userId,
+                [FromBody] CreateWishlistRequest? request,
                 ClaimsPrincipal user,
                 [FromServices] IDispatcher mediator,
                 IMapper mapper,
@@ -31,7 +32,7 @@ public class CreateWishlistEndpoint : ApiEndpoint
                     );
                 }
 
-                var command = mapper.Map<CreateWishlistCommand>(userId);
+                var command = mapper.Map<CreateWishlistCommand>((userId, request));
 
                 return await HandleAsync(
                     mediator,

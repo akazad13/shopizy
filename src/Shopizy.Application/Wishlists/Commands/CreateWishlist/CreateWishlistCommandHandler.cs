@@ -23,7 +23,7 @@ public class CreateWishlistCommandHandler(IWishlistRepository wishlistRepository
             return CustomErrors.Wishlist.WishlistAlreadyExists;
         }
 
-        var wishlist = Wishlist.Create(userId);
+        var wishlist = Wishlist.Create(userId, cmd.Name, cmd.IsPublic);
         await wishlistRepository.AddAsync(wishlist, cancellationToken);
 
         return wishlist;

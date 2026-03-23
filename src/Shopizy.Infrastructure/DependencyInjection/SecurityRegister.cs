@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
+using Shopizy.Infrastructure.Security.Totp;
 
 namespace Shopizy.Infrastructure.DependencyInjection;
 
@@ -11,6 +12,7 @@ public static class SecurityRegister
     {
         services.AddScoped<IPasswordManager, PasswordManager>();
         services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        services.AddScoped<ITotpHelper, TotpHelper>();
 
         const string claimName = "permissions";
         const string adminRole = "Admin";
@@ -66,7 +68,39 @@ public static class SecurityRegister
                 policy.RequireRole(adminRole))
             .AddPolicy("Admin.UpdateOrderStatus", policy => 
                 policy.RequireRole(adminRole))
-            .AddPolicy("Admin.UpdateUserRole", policy => 
+            .AddPolicy("Admin.UpdateUserRole", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("ProductReview.Create", policy =>
+                policy.RequireClaim(claimName, "create:review"))
+            .AddPolicy("ProductReview.Get", policy =>
+                policy.RequireClaim(claimName, "get:review"))
+            .AddPolicy("Admin.DeleteProductReview", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Create", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Get", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Modify", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Delete", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Loyalty.Get", policy =>
+                policy.RequireClaim(claimName, "get:user"))
+            .AddPolicy("Loyalty.Earn", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Loyalty.Redeem", policy =>
+                policy.RequireClaim(claimName, "modify:user"))
+            .AddPolicy("GiftCard.Create", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("GiftCard.Get", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("GiftCard.Validate", policy =>
+                policy.RequireAuthenticatedUser())
+            .AddPolicy("Question.Ask", policy =>
+                policy.RequireClaim(claimName, "get:product"))
+            .AddPolicy("Question.Answer", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("AuditLog.Get", policy =>
                 policy.RequireRole(adminRole))
             .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()

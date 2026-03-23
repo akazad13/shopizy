@@ -33,6 +33,11 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
     }
 
+    public Task<User?> GetUserByResetTokenAsync(string token)
+    {
+        return _dbContext.Users.SingleOrDefaultAsync(u => u.PasswordResetToken == token);
+    }
+
     public Task<int> GetTotalUsersCountAsync()
     {
         return _dbContext.Users.CountAsync();

@@ -38,6 +38,7 @@ public class OrderMappingConfig : IRegister
         config
             .NewConfig<(Guid UserId, CreateOrderRequest request), CreateOrderCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.PromoCode, src => src.request.PromoCode)
             .Map(dest => dest.DeliveryChargeAmount, src => src.request.DeliveryCharge.Amount)
             .Map(
                 dest => dest.DeliveryChargeCurrency,

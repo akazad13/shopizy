@@ -26,7 +26,7 @@ public class PromoCodeTests
         promoCode.Code.ShouldBe(code);
         promoCode.Description.ShouldBe(description);
         promoCode.Discount.ShouldBe(discount);
-        promoCode.IsPerchantage.ShouldBe(isPercentage);
+        promoCode.IsPercentage.ShouldBe(isPercentage);
         promoCode.IsActive.ShouldBe(isActive);
         promoCode.NumOfTimeUsed.ShouldBe(0);
     }

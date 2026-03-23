@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Wishlists;
+using Shopizy.Domain.Wishlists.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Wishlists.Persistence;
@@ -16,6 +17,16 @@ public class WishlistRepository(AppDbContext dbContext) : IWishlistRepository
         return await dbContext
             .Wishlists.Include(w => w.WishlistItems)
             .FirstOrDefaultAsync(w => w.UserId == userId, cancellationToken);
+    }
+
+    public async Task<Wishlist?> GetWishlistByIdAsync(
+        WishlistId id,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await dbContext
+            .Wishlists.Include(w => w.WishlistItems)
+            .FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
     }
 
     public async Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken)

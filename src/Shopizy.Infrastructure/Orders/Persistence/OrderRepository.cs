@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Shopizy.Application.Admin.Queries.GetSalesReport;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
@@ -63,6 +64,78 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     {
         var orders = await _dbContext.Orders.Include(o => o.OrderItems).ToListAsync();
         return orders.Sum(o => o.GetTotal().Amount);
+    }
+
+    public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end)
+    {
+        var orders = await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
+            .ToListAsync();
+        return orders.Sum(o => o.GetTotal().Amount);
+    }
+
+    public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count)
+    {
+        var orders = await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .ToListAsync();
+
+        var topProducts = orders
+            .SelectMany(o => o.OrderItems)
+            .GroupBy(item => item.Name)
+            .Select(g => new TopProductDto(
+                g.Key,
+                g.Sum(item => item.Quantity),
+                g.Sum(item => item.UnitPrice.Amount * item.Quantity)
+            ))
+            .OrderByDescending(p => p.Revenue)
+            .Take(count)
+            .ToList();
+
+        return topProducts;
+    }
+
+    public async Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count)
+    {
+        var orders = await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .ToListAsync();
+
+        var customerSpend = orders
+            .GroupBy(o => o.UserId)
+            .Select(g => new
+            {
+                UserId = g.Key,
+                TotalSpend = g.Sum(o => o.GetTotal().Amount)
+            })
+            .OrderByDescending(x => x.TotalSpend)
+            .Take(count)
+            .ToList();
+
+        var userIds = customerSpend.Select(x => x.UserId).ToList();
+        var users = await _dbContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
+
+        var topCustomers = customerSpend
+            .Join(users, cs => cs.UserId, u => u.Id, (cs, u) => new TopCustomerDto(
+                u.Id.Value,
+                u.FirstName,
+                u.LastName,
+                cs.TotalSpend
+            ))
+            .ToList();
+
+        return topCustomers;
+    }
+
+    public async Task<IReadOnlyList<Order>> GetOrdersByIdsAsync(IList<OrderId> ids)
+    {
+        return await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .Where(o => ids.Contains(o.Id))
+            .ToListAsync();
     }
 
     /// <summary>

@@ -26,7 +26,7 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenProductsExist_ShouldReturnProductList()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, 1, 10);
         var product = Product.Create(
             "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
             Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
@@ -37,6 +37,10 @@ public class GetProductsQueryHandlerTestsRefactored
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
             It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<bool?>(),
+            It.IsAny<string?>(),
             It.IsAny<int>(),
             It.IsAny<int>()))
             .ReturnsAsync(products);
@@ -45,7 +49,10 @@ public class GetProductsQueryHandlerTestsRefactored
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<decimal?>()))
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<bool?>()))
             .ReturnsAsync(1);
 
         // Act
@@ -61,13 +68,17 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenNoProductsFound_ShouldReturnError()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, 1, 10);
 
         _mockProductRepository.Setup(r => r.GetProductsAsync(
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
             It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<bool?>(),
+            It.IsAny<string?>(),
             It.IsAny<int>(),
             It.IsAny<int>()))
             .ReturnsAsync((IReadOnlyList<Product>?)null);
@@ -76,7 +87,10 @@ public class GetProductsQueryHandlerTestsRefactored
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<decimal?>()))
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<decimal?>(),
+            It.IsAny<bool?>()))
             .ReturnsAsync(0);
 
         // Act

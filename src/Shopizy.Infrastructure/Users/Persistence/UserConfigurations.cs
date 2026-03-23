@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Entities;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Users.Persistence;
@@ -13,6 +14,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         ConfigureUserPermissionsTable(builder);
         ConfigureProductReviewIdsTable(builder);
         ConfigureOrderIdsTable(builder);
+        ConfigureUserAddressesTable(builder);
     }
 
     private static void ConfigureUsersTable(EntityTypeBuilder<User> builder)
@@ -50,6 +52,12 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         );
 
         builder.Property(u => u.CustomerId).HasMaxLength(256).IsRequired(false);
+
+        builder.Property(u => u.PasswordResetToken).HasMaxLength(256).IsRequired(false);
+        builder.Property(u => u.PasswordResetTokenExpiry).IsRequired(false);
+
+        builder.Property(u => u.TwoFactorSecret).HasMaxLength(64).IsRequired(false);
+        builder.Property(u => u.IsTwoFactorEnabled).HasDefaultValue(false);
 
         builder.Navigation(p => p.OrderIds).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviewIds).UsePropertyAccessMode(PropertyAccessMode.Field);
@@ -122,5 +130,30 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder
             .Metadata.FindNavigation(nameof(User.OrderIds))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureUserAddressesTable(EntityTypeBuilder<User> builder)
+    {
+        builder.OwnsMany(
+            u => u.Addresses,
+            ab =>
+            {
+                ab.ToTable("UserAddresses");
+                ab.WithOwner().HasForeignKey("UserId");
+                ab.HasKey(nameof(UserAddress.Id), "UserId");
+                ab.Property(a => a.Id)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, v => UserAddressId.Create(v));
+                ab.Property(a => a.Street).HasMaxLength(100);
+                ab.Property(a => a.City).HasMaxLength(50);
+                ab.Property(a => a.State).HasMaxLength(50);
+                ab.Property(a => a.Country).HasMaxLength(50);
+                ab.Property(a => a.ZipCode).HasMaxLength(10);
+                ab.Property(a => a.IsDefault).HasDefaultValue(false);
+                ab.Property(a => a.CreatedOn).HasColumnType("smalldatetime");
+                ab.Property(a => a.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+            }
+        );
+        builder.Navigation(u => u.Addresses).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -343,4 +343,25 @@ public static partial class LoggerMessages
 
     [LoggerMessage(EventId = 1034, Level = LogLevel.Error, Message = "An error occurred while fetching brands.")]
     public static partial void BrandsFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1035, Level = LogLevel.Error, Message = "An error occurred while fetching product reviews.")]
+    public static partial void ProductReviewFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1036, Level = LogLevel.Error, Message = "An error occurred while creating product review.")]
+    public static partial void ProductReviewCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1037, Level = LogLevel.Error, Message = "An error occurred while deleting product review.")]
+    public static partial void ProductReviewDeleteError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1038, Level = LogLevel.Error, Message = "An error occurred while fetching promo codes.")]
+    public static partial void PromoCodeFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1039, Level = LogLevel.Error, Message = "An error occurred while creating promo code.")]
+    public static partial void PromoCodeCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1040, Level = LogLevel.Error, Message = "An error occurred while updating promo code.")]
+    public static partial void PromoCodeUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1041, Level = LogLevel.Error, Message = "An error occurred while deleting promo code.")]
+    public static partial void PromoCodeDeleteError(this ILogger logger, Exception ex);
 }
