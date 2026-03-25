@@ -84,7 +84,7 @@ public record ProductDetailResponse(
     int Favourites,
     IList<string>? Specifications,
     IList<ProductImageResponse> ProductImages,
-    IList<ProductReviewResponse> ProductReviews
+    IList<ProductDetailReviewResponse> ProductReviews
 );
 
 /// <summary>
@@ -97,7 +97,7 @@ public record ProductDetailResponse(
 public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq, string PublicId);
 
 /// <summary>
-/// Represents a product review.
+/// Represents a product review embedded in product detail.
 /// </summary>
 /// <param name="ProductReviewId">The unique identifier of the review.</param>
 /// <param name="Reviewer">The name of the reviewer.</param>
@@ -105,7 +105,7 @@ public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq
 /// <param name="Comment">The review comment.</param>
 /// <param name="Rating">The rating given.</param>
 /// <param name="CreatedOn">The date the review was created.</param>
-public record ProductReviewResponse(
+public record ProductDetailReviewResponse(
     Guid ProductReviewId,
     string Reviewer,
     string? ReviewerImageUrl,

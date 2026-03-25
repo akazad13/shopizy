@@ -77,7 +77,7 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ProductImageId, src => src.Id.Value);
 
         config
-            .NewConfig<ProductReview, ProductReviewResponse>()
+            .NewConfig<ProductReview, ProductDetailReviewResponse>()
             .Map(dest => dest.ProductReviewId, src => src.Id.Value)
             .Map(dest => dest.Rating, src => src.Rating.Value)
             .Map(dest => dest.Reviewer, src => $"{src.User.FirstName} {src.User.LastName}")
