@@ -30,6 +30,7 @@ public class ResetPasswordEndpoint : ApiEndpoint
             }
         )
         .AllowAnonymous()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("Reset password")
         .WithDescription("Resets the user's password using a valid reset token.")

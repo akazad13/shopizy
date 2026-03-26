@@ -45,9 +45,6 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
             request.ZipCode
         );
 
-        _userRepository.Update(user);
-
-
         await _cacheHelper.RemoveAsync($"user-{user.Id.Value}");
 
         return Result.Success;

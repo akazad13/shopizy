@@ -20,11 +20,6 @@ public class BulkUpdateProductStatusCommandHandler(IProductRepository productRep
             product.SetIsActive(request.IsActive);
         }
 
-        foreach (var product in products)
-        {
-            _productRepository.Update(product);
-        }
-
         return Result.Success;
     }
 }

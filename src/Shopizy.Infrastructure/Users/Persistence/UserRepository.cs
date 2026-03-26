@@ -50,6 +50,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             .OrderByDescending(u => u.FirstName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .AsNoTracking()
             .ToListAsync();
     }
 

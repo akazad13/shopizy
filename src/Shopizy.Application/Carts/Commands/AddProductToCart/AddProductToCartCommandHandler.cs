@@ -36,7 +36,7 @@ public class AddProductToCartCommandHandler(
         var userId = UserId.Create(cmd.UserId);
         var productId = ProductId.Create(cmd.ProductId);
 
-        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+        var cart = await _cartRepository.GetCartByUserIdForUpdateAsync(userId);
 
         if (cart is null)
         {
@@ -54,8 +54,7 @@ public class AddProductToCartCommandHandler(
         }
 
         cart.AddLineItem(CartItem.Create(productId, cmd.Color, cmd.Size, cmd.Quantity));
-        _cartRepository.Update(cart);
 
-        return await _cartRepository.GetCartByUserIdAsync(userId);
+        return cart;
     }
 }

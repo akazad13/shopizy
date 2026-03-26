@@ -35,7 +35,25 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
                 {
                     while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
                     {
-                        await dispatcher.PublishAsync(nextEvent);
+                        var published = false;
+                        for (var attempt = 0; attempt < 3 && !published; attempt++)
+                        {
+                            try
+                            {
+                                await dispatcher.PublishAsync(nextEvent);
+                                published = true;
+                            }
+                            catch (Exception ex) when (attempt < 2)
+                            {
+                                _logger.DomainEventPublishingError(ex);
+                                await Task.Delay(TimeSpan.FromMilliseconds(Math.Pow(2, attempt) * 100));
+                            }
+                        }
+                        if (!published)
+                        {
+                            _logger.DomainEventPublishingError(
+                                new Exception($"Failed to publish {nextEvent.GetType().Name} after 3 attempts"));
+                        }
                     }
                 }
             }

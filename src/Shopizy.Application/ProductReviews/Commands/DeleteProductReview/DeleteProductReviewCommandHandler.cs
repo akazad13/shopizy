@@ -2,18 +2,15 @@ using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.ProductReviews.ValueObjects;
-using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.ProductReviews.Commands.DeleteProductReview;
 
 public class DeleteProductReviewCommandHandler(
-    IProductReviewRepository productReviewRepository,
-    IProductRepository productRepository
+    IProductReviewRepository productReviewRepository
 ) : ICommandHandler<DeleteProductReviewCommand, ErrorOr<Deleted>>
 {
     private readonly IProductReviewRepository _productReviewRepository = productReviewRepository;
-    private readonly IProductRepository _productRepository = productRepository;
 
     public async Task<ErrorOr<Deleted>> Handle(
         DeleteProductReviewCommand request,
@@ -28,15 +25,8 @@ public class DeleteProductReviewCommandHandler(
             return CustomErrors.ProductReview.ReviewNotFound;
         }
 
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(request.ProductId));
-        if (product is null)
-        {
-            return CustomErrors.Product.ProductNotFound;
-        }
-
+        review.Delete();
         _productReviewRepository.Remove(review);
-        product.RemoveReviewRating(review.Rating);
-        _productRepository.Update(product);
 
         return Result.Deleted;
     }

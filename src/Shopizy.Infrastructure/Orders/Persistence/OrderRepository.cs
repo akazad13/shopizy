@@ -62,7 +62,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
 
     public async Task<decimal> GetTotalRevenueAsync()
     {
-        var orders = await _dbContext.Orders.Include(o => o.OrderItems).ToListAsync();
+        var orders = await _dbContext.Orders.Include(o => o.OrderItems).AsNoTracking().ToListAsync();
         return orders.Sum(o => o.GetTotal().Amount);
     }
 
@@ -71,6 +71,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         var orders = await _dbContext.Orders
             .Include(o => o.OrderItems)
             .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
+            .AsNoTracking()
             .ToListAsync();
         return orders.Sum(o => o.GetTotal().Amount);
     }
@@ -79,6 +80,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     {
         var orders = await _dbContext.Orders
             .Include(o => o.OrderItems)
+            .AsNoTracking()
             .ToListAsync();
 
         var topProducts = orders
@@ -100,6 +102,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     {
         var orders = await _dbContext.Orders
             .Include(o => o.OrderItems)
+            .AsNoTracking()
             .ToListAsync();
 
         var customerSpend = orders
@@ -116,6 +119,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         var userIds = customerSpend.Select(x => x.UserId).ToList();
         var users = await _dbContext.Users
             .Where(u => userIds.Contains(u.Id))
+            .AsNoTracking()
             .ToListAsync();
 
         var topCustomers = customerSpend

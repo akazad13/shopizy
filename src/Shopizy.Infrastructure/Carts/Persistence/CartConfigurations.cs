@@ -53,6 +53,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
                 ci.Property(li => li.ProductId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
+                ci.HasIndex(li => li.ProductId);
                 ci.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
             }
         );

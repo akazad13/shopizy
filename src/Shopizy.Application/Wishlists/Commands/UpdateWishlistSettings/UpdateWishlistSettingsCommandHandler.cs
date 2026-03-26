@@ -26,7 +26,6 @@ public class UpdateWishlistSettingsCommandHandler(IWishlistRepository wishlistRe
         }
 
         wishlist.UpdateSettings(request.Name, request.IsPublic);
-        wishlistRepository.Update(wishlist);
 
         return wishlist;
     }

@@ -29,8 +29,6 @@ public class CreateShipmentCommandHandler(IOrderRepository orderRepository)
 
         if (result.IsError) return result.Errors;
 
-        orderRepository.Update(order);
-
         return result.Value;
     }
 }

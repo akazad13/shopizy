@@ -18,6 +18,10 @@ public class StripeService(
     private readonly CustomerService _customerService = customerService;
     private readonly PaymentIntentService _paymentIntentService = paymentIntentService;
 
+    private static bool IsTransientStripeError(StripeException ex) =>
+        ex.StripeError?.Code == "rate_limit_error"
+        || ex.StripeError?.Code == "api_connection_error";
+
     /// <summary>
     /// Creates a new customer in Stripe.
     /// </summary>
@@ -31,21 +35,34 @@ public class StripeService(
         CancellationToken cancellationToken
     )
     {
-        try
+        var maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
         {
-            var customerOptions = new CustomerCreateOptions { Email = email, Name = name };
-            Customer customer = await _customerService.CreateAsync(
-                options: customerOptions,
-                requestOptions: null,
-                cancellationToken: cancellationToken
-            );
+            try
+            {
+                var customerOptions = new CustomerCreateOptions { Email = email, Name = name };
+                Customer customer = await _customerService.CreateAsync(
+                    options: customerOptions,
+                    requestOptions: null,
+                    cancellationToken: cancellationToken
+                );
 
-            return new CustomerResource(customer.Id, customer.Email, customer.Name);
+                return new CustomerResource(customer.Id, customer.Email, customer.Name);
+            }
+            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            {
+                await Task.Delay(
+                    TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),
+                    cancellationToken
+                );
+            }
+            catch (StripeException ex)
+            {
+                return Error.Failure(description: ex.Message);
+            }
         }
-        catch (StripeException ex)
-        {
-            return Error.Failure(description: ex.Message);
-        }
+
+        return Error.Failure(description: "Stripe request failed after maximum retry attempts.");
     }
 
     /// <summary>
@@ -67,39 +84,52 @@ public class StripeService(
             PaymentMethod = request.PaymentMethodId,
         };
 
-        try
+        var maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
         {
-            var response = await _paymentIntentService.CreateAsync(intentCreateOptions);
-
-            // var result = await _paymentIntentService.ConfirmAsync(response.Id); // if Confirm is false and we manaully confirm payment
-
-            return new CreateSaleResponse
+            try
             {
-                ResponseStatusCode = (int)response.StripeResponse.StatusCode,
-                Amount = response.Amount,
-                Currency = response.Currency,
-                PaymentIntentId = response.Id,
-                ObjectType = response.Object,
-                PaymentMethodId = response.PaymentMethodId,
-                CaptureMethod = response.CaptureMethod,
-                CustomerId = response.CustomerId,
-                ChargeId = response.LatestChargeId,
-                Status = response.Status,
-                Metadata = response.Metadata,
-                PaymentMethodTypes = response.PaymentMethodTypes,
-            };
+                var response = await _paymentIntentService.CreateAsync(intentCreateOptions);
+
+                // var result = await _paymentIntentService.ConfirmAsync(response.Id); // if Confirm is false and we manaully confirm payment
+
+                return new CreateSaleResponse
+                {
+                    ResponseStatusCode = (int)response.StripeResponse.StatusCode,
+                    Amount = response.Amount,
+                    Currency = response.Currency,
+                    PaymentIntentId = response.Id,
+                    ObjectType = response.Object,
+                    PaymentMethodId = response.PaymentMethodId,
+                    CaptureMethod = response.CaptureMethod,
+                    CustomerId = response.CustomerId,
+                    ChargeId = response.LatestChargeId,
+                    Status = response.Status,
+                    Metadata = response.Metadata,
+                    PaymentMethodTypes = response.PaymentMethodTypes,
+                };
+            }
+            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)));
+            }
+            catch (StripeException ex)
+            {
+                return Error.Failure(
+                    code: ex.StripeResponse.StatusCode.ToString(),
+                    description: FormatStripeException(ex)
+                );
+            }
+            catch (Exception ex)
+            {
+                return Error.Failure(code: "500", description: ex.Message);
+            }
         }
-        catch (StripeException ex)
-        {
-            return Error.Failure(
-                code: ex.StripeResponse.StatusCode.ToString(),
-                description: FormatStripeException(ex)
-            );
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(code: "500", description: ex.Message);
-        }
+
+        return Error.Failure(
+            code: "500",
+            description: "Stripe request failed after maximum retry attempts."
+        );
     }
 
     private static string FormatStripeException(StripeException e)

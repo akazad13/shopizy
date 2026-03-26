@@ -53,7 +53,6 @@ public class UpdateWishlistCommandHandler(
             wishlist.RemoveItem(productId);
         }
 
-        wishlistRepository.Update(wishlist);
         return wishlist;
     }
 }

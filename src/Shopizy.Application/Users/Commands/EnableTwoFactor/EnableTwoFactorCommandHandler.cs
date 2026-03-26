@@ -21,7 +21,6 @@ public class EnableTwoFactorCommandHandler(IUserRepository userRepository)
         }
 
         var secret = user.EnableTwoFactor();
-        userRepository.Update(user);
 
         var qrCodeUri = $"otpauth://totp/Shopizy:{user.Email}?secret={secret}&issuer=Shopizy";
 

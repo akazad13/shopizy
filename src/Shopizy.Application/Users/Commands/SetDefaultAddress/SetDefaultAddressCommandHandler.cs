@@ -23,8 +23,6 @@ public class SetDefaultAddressCommandHandler(IUserRepository userRepository)
         var result = user.SetDefaultAddress(UserAddressId.Create(request.AddressId));
         if (result.IsError) return result.Errors;
 
-        userRepository.Update(user);
-
         return Result.Success;
     }
 }

@@ -33,8 +33,6 @@ public class AnswerQuestionCommandHandler(IProductQuestionRepository productQues
             return result.Errors;
         }
 
-        _productQuestionRepository.Update(question);
-
         return question;
     }
 }

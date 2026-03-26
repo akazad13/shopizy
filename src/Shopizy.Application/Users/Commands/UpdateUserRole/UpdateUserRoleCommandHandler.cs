@@ -27,7 +27,6 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
         }
 
         user.UpdatePermissions([.. command.PermissionIds.Select(PermissionId.Create)]);
-        _userRepository.Update(user);
 
         return Result.Success;
     }

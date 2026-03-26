@@ -26,7 +26,7 @@ public class AddProductImageCommandHandler(
             return CustomErrors.Product.ProductImageNotUploaded;
         }
 
-        Domain.Products.Product? product = await _productRepository.GetProductByIdAsync(
+        Domain.Products.Product? product = await _productRepository.GetProductByIdForUpdateAsync(
             ProductId.Create(cmd.ProductId)
         );
 
@@ -49,8 +49,6 @@ public class AddProductImageCommandHandler(
                 res.Value.PublicId
             );
             product.AddProductImage(productImage);
-
-            _productRepository.Update(product);
 
             return productImage;
         }

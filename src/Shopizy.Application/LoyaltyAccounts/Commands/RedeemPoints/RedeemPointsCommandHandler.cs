@@ -30,8 +30,6 @@ public class RedeemPointsCommandHandler(ILoyaltyAccountRepository loyaltyAccount
             return result.Errors;
         }
 
-        _loyaltyAccountRepository.Update(account);
-
         return account;
     }
 }

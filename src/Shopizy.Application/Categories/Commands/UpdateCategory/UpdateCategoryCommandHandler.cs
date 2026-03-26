@@ -26,8 +26,6 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
 
         category.Update(cmd.Name, cmd.ParentId);
 
-        _categoryRepository.Update(category);
-
         return Result.Success;
     }
 }

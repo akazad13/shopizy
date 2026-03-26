@@ -24,10 +24,6 @@ public class EarnPointsCommandHandler(ILoyaltyAccountRepository loyaltyAccountRe
             account = LoyaltyAccount.Create(userId);
             await _loyaltyAccountRepository.AddAsync(account);
         }
-        else
-        {
-            _loyaltyAccountRepository.Update(account);
-        }
 
         account.EarnPoints(request.Points, request.Description);
 

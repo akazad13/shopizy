@@ -30,8 +30,6 @@ public class AddUserAddressCommandHandler(IUserRepository userRepository)
             request.IsDefault
         );
 
-        userRepository.Update(user);
-
         return address;
     }
 }

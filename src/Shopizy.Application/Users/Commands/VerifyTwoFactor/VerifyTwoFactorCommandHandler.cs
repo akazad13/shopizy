@@ -34,7 +34,6 @@ public class VerifyTwoFactorCommandHandler(
         }
 
         user.ConfirmTwoFactor();
-        userRepository.Update(user);
 
         return Result.Success;
     }

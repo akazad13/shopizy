@@ -18,7 +18,7 @@ public class UpdateVariantCommandHandler(IProductRepository productRepository)
         CancellationToken cancellationToken
     )
     {
-        var product = await _productRepository.GetProductByIdAsync(
+        var product = await _productRepository.GetProductByIdForUpdateAsync(
             ProductId.Create(cmd.ProductId)
         );
 
@@ -40,8 +40,6 @@ public class UpdateVariantCommandHandler(IProductRepository productRepository)
         {
             return result.Errors;
         }
-
-        _productRepository.Update(product);
 
         return result.Value;
     }

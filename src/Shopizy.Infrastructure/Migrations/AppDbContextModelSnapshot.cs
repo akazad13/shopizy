@@ -165,6 +165,8 @@ namespace Shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("LoyaltyAccounts", (string)null);
                 });
 
@@ -200,6 +202,14 @@ namespace Shopizy.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedOn");
+
+                    b.HasIndex("OrderStatus");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "CreatedOn");
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -423,6 +433,8 @@ namespace Shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("ProductQuestions", (string)null);
                 });
 
@@ -529,7 +541,17 @@ namespace Shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Brand");
+
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CreatedOn");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("StockQuantity");
+
+                    b.HasIndex("CategoryId", "IsActive");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -575,7 +597,8 @@ namespace Shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.ToTable("PromoCodes", (string)null);
                 });
@@ -1225,6 +1248,8 @@ namespace Shopizy.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.HasKey("ProductId");
+
+                            b1.HasIndex("Amount");
 
                             b1.ToTable("Products");
 

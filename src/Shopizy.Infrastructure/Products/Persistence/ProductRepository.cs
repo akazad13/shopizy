@@ -58,6 +58,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -71,7 +72,13 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return _dbContext
             .Products.Include(p => p.ProductReviews)
             .ThenInclude(p => p.User)
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public Task<Product?> GetProductByIdForUpdateAsync(ProductId id)
+    {
+        return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     /// <summary>
@@ -99,6 +106,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public async Task<IReadOnlyList<string>> GetBrandsAsync()
     {
         return await _dbContext.Products
+            .AsNoTracking()
             .Select(p => p.Brand)
             .Distinct()
             .ToListAsync();
@@ -132,6 +140,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return await _dbContext.Products
             .Where(p => p.StockQuantity <= threshold)
             .Take(10)
+            .AsNoTracking()
             .ToListAsync();
     }
 

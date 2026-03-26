@@ -27,6 +27,7 @@ public class RegisterEndpoint : ApiEndpoint
             );
         })
         .AllowAnonymous()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("User registration")
         .WithDescription("Registers a new user in the system.")

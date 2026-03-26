@@ -53,6 +53,11 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder
             .Property(c => c.UserId)
             .HasConversion(id => id.Value, value => UserId.Create(value));
+
+        builder.HasIndex(o => o.UserId);
+        builder.HasIndex(o => o.OrderStatus);
+        builder.HasIndex(o => o.CreatedOn);
+        builder.HasIndex(o => new { o.UserId, o.CreatedOn });
     }
 
     private static void ConfigureOrderItemsTable(EntityTypeBuilder<Order> builder)

@@ -32,8 +32,6 @@ public class UpdateUserAddressCommandHandler(IUserRepository userRepository)
 
         if (result.IsError) return result.Errors;
 
-        userRepository.Update(user);
-
         return result.Value;
     }
 }

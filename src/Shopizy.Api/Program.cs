@@ -32,7 +32,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication()
-   .UseAuthorization();
+   .UseAuthorization()
+   .UseRateLimiter();
 
 if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
 {

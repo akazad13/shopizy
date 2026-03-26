@@ -31,6 +31,7 @@ public class EnableTwoFactorEndpoint : ApiEndpoint
             }
         )
         .RequireAuthorization()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("Enable two-factor authentication")
         .WithDescription("Generates a TOTP secret and QR code URI to set up two-factor authentication.")

@@ -37,6 +37,8 @@ public sealed class ProductQuestionConfigurations : IEntityTypeConfiguration<Pro
         builder.Property(pq => pq.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(pq => pq.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
+        builder.HasIndex(pq => pq.ProductId);
+
         builder.OwnsOne(
             pq => pq.Answer,
             ab =>

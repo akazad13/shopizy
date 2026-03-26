@@ -2,7 +2,6 @@ using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
@@ -15,13 +14,11 @@ namespace Shopizy.Application.Auth.Commands.Register;
 /// </summary>
 public class RegisterCommandHandler(
     IUserRepository userRepository,
-    IPasswordManager passwordManager,
-    ICartRepository cartRepository
+    IPasswordManager passwordManager
 ) : ICommandHandler<RegisterCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordManager _passwordManager = passwordManager;
-    private readonly ICartRepository _cartRepository = cartRepository;
 
     /// <summary>
     /// Handles the user registration process including validation, password hashing, and cart creation.
@@ -86,9 +83,6 @@ public class RegisterCommandHandler(
         );
 
         await _userRepository.AddAsync(user);
-
-        var cart = Cart.Create(user.Id);
-        await _cartRepository.AddAsync(cart);
 
         return Result.Success;
     }

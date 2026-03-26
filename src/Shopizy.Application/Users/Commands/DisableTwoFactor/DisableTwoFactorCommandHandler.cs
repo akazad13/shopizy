@@ -21,7 +21,6 @@ public class DisableTwoFactorCommandHandler(IUserRepository userRepository)
         }
 
         user.DisableTwoFactor();
-        userRepository.Update(user);
 
         return Result.Success;
     }

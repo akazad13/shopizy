@@ -21,11 +21,6 @@ public class BulkUpdateOrderStatusCommandHandler(IOrderRepository orderRepositor
             order.UpdateOrderStatus((OrderStatus)request.Status);
         }
 
-        foreach (var order in orders)
-        {
-            _orderRepository.Update(order);
-        }
-
         return Result.Success;
     }
 }

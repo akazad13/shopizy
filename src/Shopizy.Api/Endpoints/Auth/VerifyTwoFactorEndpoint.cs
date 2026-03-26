@@ -32,6 +32,7 @@ public class VerifyTwoFactorEndpoint : ApiEndpoint
             }
         )
         .RequireAuthorization()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("Verify two-factor authentication")
         .WithDescription("Verifies the TOTP code and confirms two-factor authentication is enabled.")

@@ -179,6 +179,19 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     }
 
     /// <summary>
+    /// Marks the order payment as complete, transitions to Processing status,
+    /// and raises a <see cref="Events.PaymentCompletedDomainEvent"/>.
+    /// </summary>
+    /// <param name="customerId">The Stripe customer ID associated with this payment.</param>
+    public void CompletePayment(string customerId)
+    {
+        PaymentStatus = PaymentStatus.Payed;
+        OrderStatus = OrderStatus.Processing;
+
+        AddDomainEvent(new Events.PaymentCompletedDomainEvent(Id, UserId, customerId));
+    }
+
+    /// <summary>
     /// Adds a shipment to the order.
     /// </summary>
     public ErrorOr<Shipment> AddShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery)

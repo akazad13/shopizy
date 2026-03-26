@@ -1,5 +1,6 @@
-using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using Shopizy.Api.Common.LoggerMessages;
 
@@ -15,12 +16,26 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
+        var traceId = httpContext.TraceIdentifier;
         _logger.UnhandledExceptionError(exception, exception.Message);
 
-        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        httpContext.Response.ContentType = "application/json";
+        var (statusCode, title) = exception switch
+        {
+            DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, "Conflict"),
+            OperationCanceledException => (499, "Client Closed Request"),
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+        };
 
-        await httpContext.Response.WriteAsJsonAsync(new { message = "Error occured!", errors = new string[] { exception.Message } }, cancellationToken);
+        httpContext.Response.StatusCode = statusCode;
+
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = title,
+            Extensions = { ["traceId"] = traceId }
+        };
+
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
     }

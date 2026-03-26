@@ -28,6 +28,7 @@ public interface IProductRepository
         bool? inStockOnly
     );
     Task<Product?> GetProductByIdAsync(ProductId id);
+    Task<Product?> GetProductByIdForUpdateAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);
     Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids);
     Task<IReadOnlyList<Product>> GetLowStockProductsAsync(int threshold);

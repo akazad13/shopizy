@@ -32,6 +32,8 @@ public sealed class LoyaltyAccountConfigurations : IEntityTypeConfiguration<Loya
         builder.Property(la => la.TotalPoints).HasDefaultValue(0);
         builder.Property(la => la.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(la => la.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+
+        builder.HasIndex(la => la.UserId);
     }
 
     private static void ConfigureLoyaltyTransactionsTable(EntityTypeBuilder<LoyaltyAccount> builder)

@@ -30,8 +30,6 @@ public class ResetPasswordCommandHandler(
         user.UpdatePassword(hashedPassword);
         user.ClearPasswordResetToken();
 
-        userRepository.Update(user);
-
         return Result.Success;
     }
 }

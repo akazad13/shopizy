@@ -30,8 +30,6 @@ public class UpdateShipmentCommandHandler(IOrderRepository orderRepository)
 
         if (result.IsError) return result.Errors;
 
-        orderRepository.Update(order);
-
         return Result.Success;
     }
 }

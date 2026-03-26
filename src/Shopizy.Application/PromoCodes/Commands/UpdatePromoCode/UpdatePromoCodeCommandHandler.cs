@@ -33,8 +33,6 @@ public class UpdatePromoCodeCommandHandler(IPromoCodeRepository promoCodeReposit
             request.IsActive
         );
 
-        _promoCodeRepository.Update(promoCode);
-
         return promoCode;
     }
 }

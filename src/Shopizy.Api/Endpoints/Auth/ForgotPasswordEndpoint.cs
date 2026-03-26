@@ -30,6 +30,7 @@ public class ForgotPasswordEndpoint : ApiEndpoint
             }
         )
         .AllowAnonymous()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("Forgot password")
         .WithDescription("Initiates the password reset flow by generating a reset token.")

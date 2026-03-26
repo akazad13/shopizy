@@ -25,7 +25,6 @@ public class UpdateOrderStatusCommandHandler(IOrderRepository orderRepository)
         }
 
         order.UpdateOrderStatus(command.Status);
-        _orderRepository.Update(order);
 
         return Result.Success;
     }

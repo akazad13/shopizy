@@ -25,7 +25,6 @@ public class ForgotPasswordCommandHandler(IUserRepository userRepository)
         var expiry = DateTime.UtcNow.AddHours(1);
 
         user.SetPasswordResetToken(token, expiry);
-        userRepository.Update(user);
 
         // In production, send token via email; here we return it directly for dev purposes
         return token;

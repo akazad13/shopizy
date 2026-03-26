@@ -47,8 +47,6 @@ public class UpdatePasswordCommandHandler(
 
         user.UpdatePassword(_passwordManager.CreateHashString(request.NewPassword));
 
-        _userRepository.Update(user);
-
         return Result.Success;
     }
 }

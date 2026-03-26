@@ -20,7 +20,7 @@ public class DeleteProductImageCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.GetProductByIdForUpdateAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {
@@ -41,8 +41,6 @@ public class DeleteProductImageCommandHandler(
         if (!res.IsError)
         {
             product.RemoveProductImage(prodImage);
-
-            _productRepository.Update(product);
 
             return Result.Success;
         }

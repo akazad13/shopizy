@@ -16,7 +16,7 @@ public class RemoveVariantCommandHandler(IProductRepository productRepository)
         CancellationToken cancellationToken
     )
     {
-        var product = await _productRepository.GetProductByIdAsync(
+        var product = await _productRepository.GetProductByIdForUpdateAsync(
             ProductId.Create(cmd.ProductId)
         );
 
@@ -31,8 +31,6 @@ public class RemoveVariantCommandHandler(IProductRepository productRepository)
         {
             return result.Errors;
         }
-
-        _productRepository.Update(product);
 
         return Result.Deleted;
     }

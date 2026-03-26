@@ -16,7 +16,7 @@ public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode
     {
         builder.ToTable("PromoCodes");
         builder.HasKey(pc => pc.Id);
-        builder.HasIndex(pc => pc.Code);
+        builder.HasIndex(pc => pc.Code).IsUnique();
 
         builder
             .Property(pc => pc.Id)

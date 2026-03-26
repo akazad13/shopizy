@@ -25,7 +25,6 @@ public static class DependencyInjectionRegister
                 builder =>
                 {
                     builder
-                        .SetIsOriginAllowed((host) => true)
                         .WithOrigins(Origins())
                         .AllowAnyHeader()
                         .AllowAnyMethod()

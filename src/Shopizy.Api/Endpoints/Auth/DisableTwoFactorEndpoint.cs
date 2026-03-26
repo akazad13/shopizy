@@ -30,6 +30,7 @@ public class DisableTwoFactorEndpoint : ApiEndpoint
             }
         )
         .RequireAuthorization()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("Disable two-factor authentication")
         .WithDescription("Disables two-factor authentication for the authenticated user.")

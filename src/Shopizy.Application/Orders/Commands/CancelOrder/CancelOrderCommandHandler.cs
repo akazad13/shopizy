@@ -24,8 +24,6 @@ public class CancelOrderCommandHandler(IOrderRepository orderRepository)
 
         order.CancelOrder(request.Reason);
 
-        _orderRepository.Update(order);
-
         return Result.Success;
     }
 }

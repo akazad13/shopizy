@@ -25,40 +25,28 @@ public class CashOnDeliverySaleCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        try
+        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+
+        if (order is null)
         {
-            var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
-
-            if (order is null)
-            {
-                return CustomErrors.Order.OrderNotFound;
-            }
-
-            var payment = Payment.Create(
-                UserId.Create(request.UserId),
-                OrderId.Create(request.OrderId),
-                request.PaymentMethod,
-                "",
-                "",
-                PaymentStatus.Pending,
-                Price.CreateNew(request.Amount, Currency.usd),
-                order.ShippingAddress
-            );
-
-            await _paymentRepository.AddAsync(payment);
-
-            order.UpdateOrderStatus(OrderStatus.Processing);
-
-            _orderRepository.Update(order);
-
-            return Result.Success;
+            return CustomErrors.Order.OrderNotFound;
         }
-        catch (Exception)
-        {
-            return Error.Failure(
-                code: "payment.failed",
-                description: "Failed to collect the payment."
-            );
-        }
+
+        var payment = Payment.Create(
+            UserId.Create(request.UserId),
+            OrderId.Create(request.OrderId),
+            request.PaymentMethod,
+            "",
+            "",
+            PaymentStatus.Pending,
+            Price.CreateNew(request.Amount, Currency.usd),
+            order.ShippingAddress
+        );
+
+        await _paymentRepository.AddAsync(payment);
+
+        order.UpdateOrderStatus(OrderStatus.Processing);
+
+        return Result.Success;
     }
 }

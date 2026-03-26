@@ -1,6 +1,11 @@
 using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Caching;
 using ErrorOr;
 
 namespace Shopizy.Application.Products.Queries.GetBrands;
 
-public record GetBrandsQuery() : IQuery<ErrorOr<IReadOnlyList<string>>>;
+public record GetBrandsQuery() : IQuery<ErrorOr<IReadOnlyList<string>>>, ICachableRequest
+{
+    public string CacheKey => "products:brands";
+    public TimeSpan? Expiration => TimeSpan.FromMinutes(60);
+}

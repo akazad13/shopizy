@@ -27,7 +27,7 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
     )
     {
         var userId = UserId.Create(cmd.UserId);
-        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+        var cart = await _cartRepository.GetCartByUserIdForUpdateAsync(userId);
 
         if (cart is null)
         {
@@ -40,8 +40,6 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
             cart.RemoveLineItem(lineItem);
         }
 
-        _cartRepository.Update(cart);
-
-        return await _cartRepository.GetCartByUserIdAsync(userId);
+        return cart;
     }
 }
