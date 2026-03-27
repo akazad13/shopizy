@@ -53,6 +53,6 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageSize
         );
 
-        return new ProductsResult(products.ToList(), totalCount);
+        return new ProductsResult(products.ToList(), totalCount, (int)Math.Ceiling(totalCount/(1.0 * query.PageSize)), query.PageNumber);
     }
 }
