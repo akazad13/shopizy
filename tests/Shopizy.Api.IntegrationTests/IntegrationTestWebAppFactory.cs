@@ -58,7 +58,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             services.AddDbContext<AppDbContext>((sp, options) =>
             {
                 var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseNpgsql(_dbContainer.GetConnectionString())
+                options.UseNpgsql(_dbContainer.GetConnectionString(),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .AddInterceptors(interceptor);
             });
 

@@ -1,6 +1,7 @@
 using Mapster;
 using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Categories.Queries.GetCategory;
+using Shopizy.Application.Categories.Queries.ListCategories;
 using Shopizy.Contracts.Category;
 using Shopizy.Domain.Categories;
 
@@ -26,6 +27,8 @@ public class CategoryMappingConfig : IRegister
             .Map(dest => dest.Id, src => src.Id.Value);
 
         config.NewConfig<CategoryTree, CategoryTreeResponse>();
+
+        config.NewConfig<CategoryItem, CategoryResponse>();
 
         config.NewConfig<Guid, GetCategoryQuery>().MapWith(src => new GetCategoryQuery(src));
     }

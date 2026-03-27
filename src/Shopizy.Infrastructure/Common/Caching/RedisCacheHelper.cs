@@ -41,6 +41,11 @@ public class RedisCacheHelper(
             var value = JsonSerializer.Deserialize<T>(data.ToString(), _jsonOptions)!;
             return CacheResult<T>.Hit(value);
         }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
+            return CacheResult<T>.Miss();
+        }
         catch (Exception ex)
         {
             _logger.RedisGetError(ex, key);
@@ -70,6 +75,10 @@ public class RedisCacheHelper(
                 await db.StringSetAsync(key, serializedValue, expiry: null, when: When.Always, flags: CommandFlags.None);
             }
         }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
+        }
         catch (Exception ex)
         {
             _logger.RedisSetError(ex, key);
@@ -86,6 +95,10 @@ public class RedisCacheHelper(
         {
             var db = _connectionMultiplexer.GetDatabase();
             await db.KeyDeleteAsync(key);
+        }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
         }
         catch (Exception ex)
         {

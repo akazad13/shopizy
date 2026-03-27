@@ -52,7 +52,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             "newest" => query.OrderByDescending(p => p.CreatedOn),
             "best_rated" => query.OrderByDescending(p => p.AverageRating.Value),
             "most_reviewed" => query.OrderByDescending(p => p.AverageRating.NumRatings),
-            _ => query
+            _ => query.OrderByDescending(p => p.CreatedOn)
         };
 
         return await query
@@ -149,7 +149,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             "newest" => query.OrderByDescending(p => p.CreatedOn),
             "best_rated" => query.OrderByDescending(p => p.AverageRating.Value),
             "most_reviewed" => query.OrderByDescending(p => p.AverageRating.NumRatings),
-            _ => query
+            _ => query.OrderByDescending(p => p.CreatedOn)
         };
 
         var products = await sortedQuery
@@ -174,6 +174,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     {
         return await _dbContext.Products
             .Where(p => p.StockQuantity <= threshold)
+            .OrderBy(p => p.StockQuantity)
             .Take(10)
             .AsNoTracking()
             .ToListAsync();

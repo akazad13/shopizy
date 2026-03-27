@@ -38,6 +38,7 @@ public class OrdersByCriteriaSpec : Specification<Order>
             AddCriteria(order => order.OrderStatus == status);
         }
 
+        AddOrderBy(order => order.CreatedOn, orderType);
         AddPaging(pageSize, pageNumber);
     }
 }

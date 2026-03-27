@@ -1,21 +1,22 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Categories;
 
 namespace Shopizy.Application.Categories.Queries.ListCategories;
 
 public class ListCategoriesQueryHandler(ICategoryRepository categoryRepository)
-    : IQueryHandler<ListCategoriesQuery, ErrorOr<List<Category>>>
+    : IQueryHandler<ListCategoriesQuery, ErrorOr<List<CategoryItem>>>
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
-    public async Task<ErrorOr<List<Category>>> Handle(
+    public async Task<ErrorOr<List<CategoryItem>>> Handle(
         ListCategoriesQuery query,
         CancellationToken cancellationToken
     )
     {
         var categories = await _categoryRepository.GetCategoriesAsync();
-        return categories.ToList();
+        return categories
+            .Select(c => new CategoryItem(c.Id.Value, c.Name, c.ParentId))
+            .ToList();
     }
 }

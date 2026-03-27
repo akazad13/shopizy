@@ -1,6 +1,5 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.SharedKernel.Application.Caching;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
@@ -28,17 +27,4 @@ public record GetProductsQuery(
     string? SortBy,
     int PageNumber,
     int PageSize
-) : IQuery<ErrorOr<ProductsResult>>, ICachableRequest
-{
-    public string CacheKey
-    {
-        get
-        {
-            var categoryIdsStr = CategoryIds != null ? string.Join(",", CategoryIds) : "none";
-            var productIdsStr = ProductIds != null ? string.Join(",", ProductIds): "none";
-            return $"products-ids:{productIdsStr}-name:{Name}-categories:{categoryIdsStr}-rating:{AverageRating}-minPrice:{MinPrice}-maxPrice:{MaxPrice}-inStock:{InStockOnly}-sortBy:{SortBy}-page:{PageNumber}-size:{PageSize}";
-        }
-    }
-
-    public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-}
+) : IQuery<ErrorOr<ProductsResult>>;
