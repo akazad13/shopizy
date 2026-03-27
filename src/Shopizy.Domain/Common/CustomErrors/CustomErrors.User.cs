@@ -14,7 +14,7 @@ public static partial class CustomErrors
                 description: "User is not found with this phone & password."
             );
         public static Error UserNotFound =>
-            Error.Unauthorized(code: "User.UserNotFound", description: "User is not found.");
+            Error.NotFound(code: "User.UserNotFound", description: "User is not found.");
         public static Error UserNotCreated =>
             Error.Failure(code: "User.UserNotCreated", description: "Failed to create User.");
         public static Error UserNotUpdated =>
@@ -30,7 +30,7 @@ public static partial class CustomErrors
                 description: "Password is same as old password."
             );
         public static Error PasswordNotUpdated =>
-            Error.Validation(
+            Error.Failure(
                 code: "User.PasswordNotUpdated",
                 description: "Failed to update password."
             );

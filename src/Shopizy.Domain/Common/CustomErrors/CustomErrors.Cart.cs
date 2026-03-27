@@ -12,21 +12,21 @@ public static partial class CustomErrors
             Error.Failure(code: "Cart.CartNotCreated", description: "Failed to create Cart.");
         public static Error CartNotDeleted =>
             Error.Failure(code: "Cart.CartNotDeleted", description: "Failed to delete Cart.");
-        public static Error CartPrductNotAdded =>
+        public static Error CartProductNotAdded =>
             Error.Failure(
-                code: "Cart.CartPrductNotAdded",
+                code: "Cart.CartProductNotAdded",
                 description: "Failed to add product to Cart."
             );
-        public static Error CartPrductNotFound =>
-            Error.Validation(
-                code: "User.CartImageNotFound",
-                description: "Cart image is not found."
+        public static Error CartProductNotFound =>
+            Error.NotFound(
+                code: "Cart.CartProductNotFound",
+                description: "Cart product is not found."
             );
         public static Error CartNotUpdated =>
             Error.Failure(code: "Cart.CartNotUpdated", description: "Failed to update Cart.");
-        public static Error CartPrductNotRemoved =>
+        public static Error CartProductNotRemoved =>
             Error.Failure(
-                code: "Cart.CartPrductNotRemoved",
+                code: "Cart.CartProductNotRemoved",
                 description: "Failed to remove product from Cart."
             );
         public static Error ProductAlreadyExistInCart =>

@@ -63,8 +63,7 @@ public class CreateOrderCommandHandler(
                 .ConvertAll(item =>
                 {
                     var product = products.First(p => p.Id.Value == item.ProductId);
-                    var photoUrl =
-                        product.ProductImages.Count == 0 ? "" : product.ProductImages[0].ImageUrl;
+                    var photoUrl = product.ProductImages?.FirstOrDefault()?.ImageUrl ?? "";
 
                     return OrderItem.Create(
                         name: product.Name,

@@ -30,7 +30,7 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.FirstName).HasMaxLength(50);
         builder.Property(u => u.LastName).HasMaxLength(50);
 
-        builder.Property(u => u.Email).HasMaxLength(50).IsRequired(true);
+        builder.Property(u => u.Email).HasMaxLength(254).IsRequired(true);
         builder.Property(u => u.Phone).HasMaxLength(15).IsRequired(false);
 
         builder.Property(u => u.Password).IsRequired(false);

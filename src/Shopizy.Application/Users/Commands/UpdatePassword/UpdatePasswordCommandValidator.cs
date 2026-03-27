@@ -11,7 +11,7 @@ public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCo
         RuleFor(x => x.NewPassword)
             .NotEmpty()
             .MinimumLength(8)
-            .Matches(@"(?=.*[A-Z])(?=.*\d)")
-            .WithMessage("New password must contain at least one uppercase letter and one number.");
+            .Matches(@"(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])")
+            .WithMessage("New password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).");
     }
 }

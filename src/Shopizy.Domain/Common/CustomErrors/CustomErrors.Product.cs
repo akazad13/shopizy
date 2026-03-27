@@ -12,7 +12,7 @@ public static partial class CustomErrors
                 description: "Product with the same name is already in use."
             );
         public static Error ProductNotFound =>
-            Error.NotFound(code: "User.ProductNotFound", description: "Product is not found.");
+            Error.NotFound(code: "Product.ProductNotFound", description: "Product is not found.");
         public static Error ProductNotCreated =>
             Error.Failure(
                 code: "Product.ProductNotCreated",
@@ -40,7 +40,7 @@ public static partial class CustomErrors
             );
         public static Error ProductImageNotFound =>
             Error.Validation(
-                code: "User.ProductImageNotFound",
+                code: "Product.ProductImageNotFound",
                 description: "Product image is not found."
             );
         public static Error InsufficientStock =>

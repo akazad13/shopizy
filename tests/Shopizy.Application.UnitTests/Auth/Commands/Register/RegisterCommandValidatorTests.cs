@@ -63,7 +63,7 @@ public class RegisterCommandValidatorTests
     [Fact]
     public void Should_HaveError_WhenEmailExceedsMaxLength()
     {
-        var command = new RegisterCommand("First", "Last", new string('a', 42) + "@test.com", "password");
+        var command = new RegisterCommand("First", "Last", new string('a', 246) + "@test.com", "password");
         var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }

@@ -27,7 +27,7 @@ public class RemoveProductFromCartCommandHandlerTests
         var command = RemoveProductFromCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
+            .Setup(cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => null);
 
         // Act
@@ -39,7 +39,7 @@ public class RemoveProductFromCartCommandHandlerTests
         Assert.Equal(CustomErrors.Cart.CartNotFound, result.Errors[0]);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)),
+            cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)),
             Times.Once
         );
         _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
@@ -54,10 +54,8 @@ public class RemoveProductFromCartCommandHandlerTests
         var command = RemoveProductFromCartCommandUtils.CreateCommand();
 
         _mockCartRepository
-            .Setup(cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)))
+            .Setup(cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(() => existingCart);
-
-        _mockCartRepository.Setup(cr => cr.Update(existingCart));
 
         // Act
         var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -67,12 +65,12 @@ public class RemoveProductFromCartCommandHandlerTests
         Assert.IsType<Cart>(result.Value);
 
         _mockCartRepository.Verify(
-            cr => cr.GetCartByUserIdAsync(UserId.Create(command.UserId)),
-            Times.Exactly(2)
+            cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)),
+            Times.Once
         );
         _mockCartRepository.Verify(
-            x => x.Update(It.Is<Cart>(c => c.CartItems.Count == 0)),
-            Times.Once
+            x => x.Update(It.IsAny<Cart>()),
+            Times.Never
         );
     }
 }

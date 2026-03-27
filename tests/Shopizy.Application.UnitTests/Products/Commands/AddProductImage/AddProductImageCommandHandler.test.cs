@@ -52,7 +52,7 @@ public class AddProductImageCommandHandlerTests
         var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, Constants.Product.Id.Value);
 
         _mockProductRepository
-            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
+            .Setup(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(() => null);
 
         // Act
@@ -75,7 +75,7 @@ public class AddProductImageCommandHandlerTests
         var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, product.Id.Value);
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
+            .Setup(p => p.GetProductByIdForUpdateAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockMediaUploader

@@ -22,7 +22,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         var (statusCode, title) = exception switch
         {
             DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, "Conflict"),
-            OperationCanceledException => (499, "Client Closed Request"),
+            OperationCanceledException or TaskCanceledException => (499, "Client Closed Request"),
+            ArgumentException or InvalidOperationException => (StatusCodes.Status400BadRequest, "Bad Request"),
+            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
+            TimeoutException => (StatusCodes.Status503ServiceUnavailable, "Service Unavailable"),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
 

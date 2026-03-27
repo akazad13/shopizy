@@ -66,24 +66,24 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         return orders.Sum(o => o.GetTotal().Amount);
     }
 
+    public Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end)
+    {
+        return _dbContext.Orders
+            .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
+            .CountAsync();
+    }
+
     public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end)
     {
-        var orders = await _dbContext.Orders
-            .Include(o => o.OrderItems)
+        return await _dbContext.Orders
             .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
-            .AsNoTracking()
-            .ToListAsync();
-        return orders.Sum(o => o.GetTotal().Amount);
+            .SelectMany(o => o.OrderItems)
+            .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
     }
 
     public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count)
     {
-        var orders = await _dbContext.Orders
-            .Include(o => o.OrderItems)
-            .AsNoTracking()
-            .ToListAsync();
-
-        var topProducts = orders
+        return await _dbContext.Orders
             .SelectMany(o => o.OrderItems)
             .GroupBy(item => item.Name)
             .Select(g => new TopProductDto(
@@ -93,28 +93,23 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             ))
             .OrderByDescending(p => p.Revenue)
             .Take(count)
-            .ToList();
-
-        return topProducts;
+            .ToListAsync();
     }
 
     public async Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count)
     {
-        var orders = await _dbContext.Orders
-            .Include(o => o.OrderItems)
-            .AsNoTracking()
-            .ToListAsync();
-
-        var customerSpend = orders
+        var customerSpend = await _dbContext.Orders
             .GroupBy(o => o.UserId)
             .Select(g => new
             {
                 UserId = g.Key,
-                TotalSpend = g.Sum(o => o.GetTotal().Amount)
+                TotalSpend = g.Sum(o =>
+                    o.OrderItems.Sum(i => i.UnitPrice.Amount * i.Quantity) + o.DeliveryCharge.Amount
+                )
             })
             .OrderByDescending(x => x.TotalSpend)
             .Take(count)
-            .ToList();
+            .ToListAsync();
 
         var userIds = customerSpend.Select(x => x.UserId).ToList();
         var users = await _dbContext.Users
@@ -122,7 +117,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .AsNoTracking()
             .ToListAsync();
 
-        var topCustomers = customerSpend
+        return customerSpend
             .Join(users, cs => cs.UserId, u => u.Id, (cs, u) => new TopCustomerDto(
                 u.Id.Value,
                 u.FirstName,
@@ -130,8 +125,6 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
                 cs.TotalSpend
             ))
             .ToList();
-
-        return topCustomers;
     }
 
     public async Task<IReadOnlyList<Order>> GetOrdersByIdsAsync(IList<OrderId> ids)

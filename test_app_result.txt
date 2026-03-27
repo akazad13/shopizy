@@ -1,0 +1,136 @@
+Build started 3/27/2026 1:10:37 PM.
+Test run for D:\Practice\Projects\shopizy\tests\Shopizy.Application.UnitTests\bin\Debug\net10.0\Shopizy.Application.UnitTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.5)
+[xUnit.net 00:00:00.27]   Discovering: Shopizy.Application.UnitTests
+[xUnit.net 00:00:00.67]   Discovered:  Shopizy.Application.UnitTests
+[xUnit.net 00:00:00.99]   Starting:    Shopizy.Application.UnitTests
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_NotHaveError_When_AllFieldsAreValid [65 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_HaveError_When_NameIsNull [20 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_HaveError_When_NameExceedsMaxLength [2 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_HaveError_When_NameIsEmpty [1 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_NotHaveError_When_NameIsValid [1 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryValidatorTests.Should_NotHaveError_When_NameIsAtMaxLength [1 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Commands.CreateOrder.CreateOrderCommandHandlerTests.Should_ReturnError_WhenProductIdNotFound [143 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.DeleteProduct.DeleteProductCommandHandlerTests.Should_SuccessfullyDeleteAProduct_WithValidId [151 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Commands.RemoveProductFromCart.RemoveProductFromCartCommandHandlerTests.Should_RemoveLastLineItemFromCart_WhenCartIsFound [151 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory.DeleteCategoryCommandHandlerTests.Should_DeleteCategoryAndReturnSuccessResponse_WhenCategoryExists [152 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.ListCategories.ListCategoriesQueryHandlerTests.Handle_WhenCategoriesExist_ReturnsAllCategories [153 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdatePassword.UpdatePasswordCommandHandlerTests.Should_UpdatePassword_WhenOldPasswordIsCorrectAndNewPasswordIsProvided [154 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.ListCategories.ListCategoriesQueryHandlerTests.Handle_WhenNoCategories_ReturnsEmptyList [1 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.DeleteProduct.DeleteProductCommandHandlerTests.Should_ReturnProductNotFound_When_ProductDoesNotExist [3 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.GetCategory.GetCategoryQueryHandlerTests.Should_ReturnCategoryDetails_WhenCategoryIsFound [156 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory.DeleteCategoryValidatorTests.Should_NotHaveError_When_UserIdIsEmpty [1 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory.DeleteCategoryValidatorTests.Should_NotHaveError_When_CommandIsValid [1 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Commands.RemoveProductFromCart.RemoveProductFromCartCommandHandlerTests.Should_ReturnsCartNotFound_WhenCartIsNotFound [9 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory.UpdateCategoryCommandHandlerTests.Should_ReturnCategory_WhenCategoryIsUpdatedSuccessfully [10 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory.DeleteCategoryValidatorTests.Should_NotHaveError_When_CategoryIdIsEmpty [5 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_NotHaveError_When_NameIsValid [3 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdatePassword.UpdatePasswordCommandHandlerTests.Should_ReturnError_WhenOldPasswordDoesNotMatch [16 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory.DeleteCategoryValidatorTests.Should_NotHaveError_When_BothIdsAreEmpty [5 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_NotHaveError_When_AllFieldsAreValid [1 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_HaveError_When_NameIsNull [2 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.GetCategory.GetCategoryQueryHandlerTests.ShouldReturnCategoryNotFoundErrorWhenCategoryIdDoesNotExist [18 ms]
+  Passed Shopizy.Application.UnitTests.Payments.Commands.CardNotPresentSale.CardNotPresentSaleCommandHandlerTests.Handle_WhenOrderNotFound_ShouldReturnError [19 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Queries.GetCart.GetCartQueryHandlerTestsRefactored.Handle_WhenCartExists_ShouldReturnCart [13 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_NotHaveError_When_NameIsAtMaxLength [2 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_HaveError_When_NameIsEmpty [1 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Commands.CreateOrder.CreateOrderCommandHandlerTests.Should_HandleValidOrderCreationRequest [29 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Queries.GetCart.GetCartQueryHandlerTestsRefactored.Handle_WhenCartDoesNotExist_ShouldReturnError [6 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryValidatorTests.Should_HaveError_When_NameExceedsMaxLength [5 ms]
+  Passed Shopizy.Application.UnitTests.Products.Queries.GetProduct.GetProductQueryHandlerTestsRefactored.Handle_WhenProductDoesNotExist_ShouldReturnError [4 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenEmailExceedsMaxLength [15 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenFirstNameIsEmpty [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdatePassword.UpdatePasswordCommandHandlerTests.Should_ReturnError_WhenNewPasswordIsSameAsOldPassword [20 ms]
+  Passed Shopizy.Application.UnitTests.Products.Queries.GetProduct.GetProductQueryHandlerTestsRefactored.Handle_WhenProductExists_ShouldReturnProduct [1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenPasswordIsEmpty [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_NotHaveError_WhenCommandIsValid [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenEmailIsInvalid [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenLastNameIsEmpty [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandValidatorTests.Should_HaveError_WhenFirstNameExceedsMaxLength [2 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdatePassword.UpdatePasswordCommandHandlerTests.Should_ReturnError_WhenUserIsNotFound [7 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Commands.UpdateProductQuantity.UpdateProductQuantityCommandHandlerTests.Should_ReturnsCartNotFound_WhenCartIsNoFound [6 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Queries.login.LoginQueryHandlerTests.Should_ThrowsOperationCanceledException_WhenCancellationRequested [17 ms]
+  Passed Shopizy.Application.UnitTests.Payments.Commands.CardNotPresentSale.CardNotPresentSaleCommandHandlerTests.Handle_WhenPaymentServiceFails_ShouldReturnError [40 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.UnitOfWorkCommandHandlerDecoratorTests.Handle_WhenInnerHandlerReturnsError_ShouldNotCallSaveChangesAsync [41 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.CreateProduct.CreateProductCommandHandlerTests.Should_ThrowException_WhenProductNameIsEmpty [13 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.CachingQueryHandlerDecoratorTests.Handle_WhenCacheMiss_ShouldCallInnerHandlerAndCacheResult [95 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.CategoriesTree.CategoriesTreeQueryHandlerTests.Handle_WhenNoCategories_ReturnsEmptyTree [43 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.UnitOfWorkCommandHandlerDecoratorTests.Handle_WhenInnerHandlerReturnsSuccess_ShouldCallSaveChangesAsync [10 ms]
+  Passed Shopizy.Application.UnitTests.Payments.Commands.CardNotPresentSale.CardNotPresentSaleCommandHandlerTests.Handle_WhenSuccessful_ShouldReturnSuccess [18 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.CachingQueryHandlerDecoratorTests.Handle_WhenQueryIsNotCachable_ShouldPassThroughToInnerHandlerWithNoCacheInteraction [16 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Queries.GetOrder.GetOrderQueryHandlerTests.Should_ReturnCorrectOrder_WhenRequestedOrderExists [8 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandHandlerTests.Should_ReturnErrorResponse_WhenProductIsNotFound [43 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Queries.login.LoginQueryHandlerTests.Should_ReturnsAuthResultWithEmptyPermissions_WhenEmptyPermissionList [37 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Queries.GetOrder.GetOrderQueryHandlerTests.Should_ReturnErrorResponse_WhenRequestedOrderDoesNotExist [4 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.CategoriesTree.CategoriesTreeQueryHandlerTests.Handle_WhenDeepHierarchy_ReturnsCorrectTreeStructure [22 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Queries.CategoriesTree.CategoriesTreeQueryHandlerTests.Handle_WhenCategoriesExist_ReturnsCorrectTreeStructure [4 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Queries.login.LoginQueryHandlerTests.ShouldReturnsInvalidCredentialsErrorWhenInvalidPassword [5 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdateUser.UpdateUserCommandHandlerTests.Should_InvalidateCache_When_UserIsUpdatedSuccessfully [8 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.CreateProduct.CreateProductCommandHandlerTests.Should_CreateAndReturnProduct_WhenProductIsValid [34 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandHandlerTests.Should_ReturnProductImage_WhenProductIsFoundAndImageIsUploaded [15 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandHandlerTests.Should_ThrowException_WhenFileIsNull [1 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdateUser.UpdateUserCommandHandlerTests.Should_ReturnUserNotFound_When_UserDoesNotExist [4 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.ValidationBehaviorTests.Handle_WhenValidationFails_ShouldReturnValidationErrors [94 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.CachingQueryHandlerDecoratorTests.Handle_WhenCacheHit_ShouldReturnCachedValueWithoutCallingInnerHandler [25 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.UpdateProduct.UpdateProductCommandHandlerTests.Should_ReturnProductNotFound_When_ProductDoesNotExist [8 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_CreateNewUserWithHashedPassword_WhenValidInputIsProvided [41 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.DeleteProductImage.DeleteProductImageCommandHandlerTests.Should_DeleteAndReturnSuccess_WhenProductIsFoundAndImageIsFound [25 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.UpdateProduct.UpdateProductCommandHandlerTests.Should_UpdateTheProductSuccessfully_WhenAllRequiredFieldsAreProvided [12 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Commands.CancelOrder.CancelOrderCommandHandlerTests.Should_ReturnOrderIsNotFound_WhenOrderIdIsNotProvided [17 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Queries.GetOrders.GetOrdersQueryHandlerTestsRefactored.Handle_WithValidRequest_ShouldReturnOrderDtos [15 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.ValidationBehaviorTests.Handle_WhenNoValidator_ShouldCallNext [17 ms]
+  Passed Shopizy.Application.UnitTests.Users.Commands.UpdateUser.UpdateUserCommandHandlerTests.Should_UpdateUserSuccessfully_When_ValidDataProvided [22 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_AssignAllDefaultPermissions_WhenCreatingNewUser [8 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandValidatorTests.Should_HaveError_When_FileIsNull [3 ms]
+  Passed Shopizy.Application.UnitTests.Orders.Commands.CancelOrder.CancelOrderCommandHandlerTests.Should_CancelTheOrder_WhenOrderExistsAndCancellationReasonIsValid [4 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Queries.login.LoginQueryHandlerTests.Should_GeneratesTokenWithCorrectData_WhenValidCredentials [32 ms]
+  Passed Shopizy.Application.UnitTests.Common.Behaviors.ValidationBehaviorTests.Handle_WhenValidationSucceeds_ShouldCallNext [4 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandValidatorTests.Should_NotHaveError_When_FileIsProvided [1 ms]
+  Passed Shopizy.Application.UnitTests.Products.Commands.AddProductImage.AddProductImageCommandValidatorTests.Should_NotHaveError_When_AllFieldsAreValid [1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Queries.login.LoginQueryHandlerTests.Should_ReturnsUserNotFoundWhileLoginError_WhenUserNotFound [2 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryCommandHandlerTests.Should_ReturnError_WhenCreatingCategoryWithDuplicateName [5 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "John", lastName: "   ") [4 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "John", lastName: "") [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "  ", lastName: "Doe") [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "", lastName: "") [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "  ", lastName: "   ") [1 ms]
+  Passed Shopizy.Application.UnitTests.Categories.Commands.CreateCategory.CreateCategoryCommandHandlerTests.Should_CreateANewCategory_Successfully [6 ms]
+[xUnit.net 00:00:01.43]     Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_AddNewLineItem_ForAnotherProduct [FAIL]
+[xUnit.net 00:00:01.43]       Assert.Contains() Failure: Filter not matched in collection
+[xUnit.net 00:00:01.43]       Collection: [CartItem { Color = "White", DomainEvents = [], Id = CartItemId { Value = 393e5922-19a4-47dd-84a6-c4c4c6ce0d30 }, Product = null, ProductId = ProductId { Value = b2038da8-ae5a-4e9b-b937-76e20fa07ec0 }, ··· }, CartItem { Color = "White", DomainEvents = [], Id = CartItemId { Value = 7fb9873c-83f9-4f12-8f8b-d3a3666161fa }, Product = null, ProductId = ProductId { Value = dd0aa32a-f7ab-4d48-b33e-1a3c1092f1e2 }, ··· }]
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.44]         D:\Practice\Projects\shopizy\tests\Shopizy.Application.UnitTests\Carts\Commands\AddProductToCart\AddProductToCartCommandHandler.test.cs(125,0): at Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_AddNewLineItem_ForAnotherProduct()
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.44]   Finished:    Shopizy.Application.UnitTests (ID = '032be3d0a9d8a3cd5e41059bfd388621691fa61d0a84d18f8d4f91eac2aa1fe7')
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnValidationErrorWhen_FirstNameOrLastNameIsEmptyOrWhitespace(firstName: "", lastName: "Doe") [< 1 ms]
+  Passed Shopizy.Application.UnitTests.Products.Queries.GetProducts.GetProductsQueryHandlerTestsRefactored.Handle_WhenProductsExist_ShouldReturnProductList [20 ms]
+  Passed Shopizy.Application.UnitTests.Products.Queries.GetProducts.GetProductsQueryHandlerTestsRefactored.Handle_WhenNoProductsFound_ShouldReturnEmptyList [2 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_HandleConcurrentRegistrationAttempts_ForSameEmail [6 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_ReturnDuplicateEmailError_WhenUserWithSameEmailAlreadyExists [2 ms]
+  Passed Shopizy.Application.UnitTests.Auth.Commands.Register.RegisterCommandHandlerTests.Should_EnsurePasswordIsHashed_BeforeStoringInDatabase [6 ms]
+  Failed Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_AddNewLineItem_ForAnotherProduct [25 ms]
+  Error Message:
+   Assert.Contains() Failure: Filter not matched in collection
+Collection: [CartItem { Color = "White", DomainEvents = [], Id = CartItemId { Value = 393e5922-19a4-47dd-84a6-c4c4c6ce0d30 }, Product = null, ProductId = ProductId { Value = b2038da8-ae5a-4e9b-b937-76e20fa07ec0 }, ··· }, CartItem { Color = "White", DomainEvents = [], Id = CartItemId { Value = 7fb9873c-83f9-4f12-8f8b-d3a3666161fa }, Product = null, ProductId = ProductId { Value = dd0aa32a-f7ab-4d48-b33e-1a3c1092f1e2 }, ··· }]
+  Stack Trace:
+     at Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_AddNewLineItem_ForAnotherProduct() in D:\Practice\Projects\shopizy\tests\Shopizy.Application.UnitTests\Carts\Commands\AddProductToCart\AddProductToCartCommandHandler.test.cs:line 125
+--- End of stack trace from previous location ---
+  Passed Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_ReturnError_WhenCartIdIsInvalid [2 ms]
+  Passed Shopizy.Application.UnitTests.Carts.Commands.AddProductToCart.AddProductToCartCommandHandlerTests.Should_AddNewLineItemToCart_WhenProductIsNotAlreadyPresent [4 ms]
+
+Test Run Failed.
+Total tests: 100
+     Passed: 99
+     Failed: 1
+ Total time: 2.3224 Seconds
+     1>Project "D:\Practice\Projects\shopizy\tests\Shopizy.Application.UnitTests\Shopizy.Application.UnitTests.csproj" on node 1 (VSTest target(s)).
+     1>_VSTestConsole:
+         MSB4181: The "VSTestTask" task returned false but did not log an error.
+     1>Done Building Project "D:\Practice\Projects\shopizy\tests\Shopizy.Application.UnitTests\Shopizy.Application.UnitTests.csproj" (VSTest target(s)) -- FAILED.
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.55

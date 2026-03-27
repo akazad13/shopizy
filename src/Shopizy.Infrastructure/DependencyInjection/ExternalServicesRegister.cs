@@ -46,7 +46,6 @@ public static class ExternalServicesRegister
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
         StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
         StripeConfiguration.MaxNetworkRetries = 0; // retry logic is handled manually in StripeService
-        StripeConfiguration.HttpTimeoutInSeconds = 30;
         
         services.AddScoped<IPaymentService, StripeService>()
             .AddScoped<CustomerService>()

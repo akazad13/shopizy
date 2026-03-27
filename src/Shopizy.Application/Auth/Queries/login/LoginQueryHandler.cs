@@ -39,51 +39,39 @@ public class LoginQueryHandler(
         CancellationToken cancellationToken = default
     )
     {
-        try
+        ArgumentNullException.ThrowIfNull(query);
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var user = await _userRepository.GetUserByEmailAsync(query.Email);
+        if (user is null)
         {
-
-            ArgumentNullException.ThrowIfNull(query);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var user = await _userRepository.GetUserByEmailAsync(query.Email);
-            if (user is null)
-            {
-                return CustomErrors.User.UserNotFoundWhileLogin;
-            }
-
-            if (!_passwordManager.Verify(query.Password, user.Password!))
-            {
-                return CustomErrors.Authentication.InvalidCredentials;
-            }
-
-            var allPermissions = await _permissionRepository.GetAsync();
-
-            var assignedPermissions = allPermissions
-                .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
-                .Select(p => p.Name)
-                .ToList();
-
-            var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
-
-            var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
-
-            if (cart is null)
-            {
-                cart = Cart.Create(user.Id);
-                await _cartRepository.AddAsync(cart);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-            }
-
-            return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
+            return CustomErrors.User.UserNotFoundWhileLogin;
         }
-        catch (OperationCanceledException)
+
+        if (!_passwordManager.Verify(query.Password, user.Password!))
         {
-            throw;
+            return CustomErrors.Authentication.InvalidCredentials;
         }
-        catch (Exception ex)
+
+        var allPermissions = await _permissionRepository.GetAsync();
+
+        var assignedPermissions = allPermissions
+            .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
+            .Select(p => p.Name)
+            .ToList();
+
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
+
+        var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
+
+        if (cart is null)
         {
-            return CustomErrors.User.InvalidEmailFormat;
+            cart = Cart.Create(user.Id);
+            await _cartRepository.AddAsync(cart);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
+
+        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
     }
 }

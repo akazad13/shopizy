@@ -8,12 +8,12 @@ public static partial class CustomErrors
     {
         public static Error PaymentNotCreated =>
             Error.Failure(
-                code: "payment.PaymentNotCreated",
+                code: "Payment.PaymentNotCreated",
                 description: "Failed to create Payment."
             );
         public static Error CustomerNotCreated =>
             Error.Failure(
-                code: "payment.CustomerNotCreated",
+                code: "Payment.CustomerNotCreated",
                 description: "Failed to create customer."
             );
     }

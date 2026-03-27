@@ -3,7 +3,6 @@ using Shouldly;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Products;
-using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
@@ -32,7 +31,7 @@ public class GetProductsQueryHandlerTestsRefactored
             Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
         var products = new List<Product> { product };
 
-        _mockProductRepository.Setup(r => r.GetProductsAsync(
+        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
@@ -43,17 +42,7 @@ public class GetProductsQueryHandlerTestsRefactored
             It.IsAny<string?>(),
             It.IsAny<int>(),
             It.IsAny<int>()))
-            .ReturnsAsync(products);
-
-        _mockProductRepository.Setup(r => r.CountProductsAsync(
-            It.IsAny<IReadOnlyList<ProductId>?>(),
-            It.IsAny<string?>(),
-            It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<bool?>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync(((IReadOnlyList<Product>)products, 1));
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
@@ -65,12 +54,12 @@ public class GetProductsQueryHandlerTestsRefactored
     }
 
     [Fact]
-    public async Task Handle_WhenNoProductsFound_ShouldReturnError()
+    public async Task Handle_WhenNoProductsFound_ShouldReturnEmptyList()
     {
         // Arrange
         var query = new GetProductsQuery(null, null, null, null, null, null, null, null, 1, 10);
 
-        _mockProductRepository.Setup(r => r.GetProductsAsync(
+        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
@@ -81,23 +70,14 @@ public class GetProductsQueryHandlerTestsRefactored
             It.IsAny<string?>(),
             It.IsAny<int>(),
             It.IsAny<int>()))
-            .ReturnsAsync((IReadOnlyList<Product>?)null);
-
-        _mockProductRepository.Setup(r => r.CountProductsAsync(
-            It.IsAny<IReadOnlyList<ProductId>?>(),
-            It.IsAny<string?>(),
-            It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<bool?>()))
-            .ReturnsAsync(0);
+            .ReturnsAsync(((IReadOnlyList<Product>)new List<Product>(), 0));
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        result.IsError.ShouldBeTrue();
-        result.FirstError.ShouldBe(CustomErrors.Product.ProductNotFound);
+        result.IsError.ShouldBeFalse();
+        result.Value.Products.Count.ShouldBe(0);
+        result.Value.TotalCount.ShouldBe(0);
     }
 }

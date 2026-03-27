@@ -1,0 +1,40 @@
+Build started 3/27/2026 1:10:55 PM.
+Test run for D:\Practice\Projects\shopizy\tests\Shopizy.Domain.UnitTests\bin\Debug\net10.0\Shopizy.Domain.UnitTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.5)
+[xUnit.net 00:00:03.62]   Discovering: Shopizy.Domain.UnitTests
+[xUnit.net 00:00:03.98]   Discovered:  Shopizy.Domain.UnitTests
+[xUnit.net 00:00:04.34]   Starting:    Shopizy.Domain.UnitTests
+  Passed Shopizy.Domain.UnitTests.Products.ProductTests.UpdateFavourite_ShouldIncrementFavourites [1 s]
+  Passed Shopizy.Domain.UnitTests.Customers.CustomerTests.SetAddress_UpdatesAddressProperty [1 s]
+  Passed Shopizy.Domain.UnitTests.Carts.CartTests.UpdateLineItem_ShouldUpdateQuantity [1 s]
+  Passed Shopizy.Domain.UnitTests.Carts.CartTests.RemoveLineItem_ShouldRemoveProductFromCart [2 ms]
+  Passed Shopizy.Domain.UnitTests.Carts.CartTests.Create_ShouldInitializeEmptyCart [< 1 ms]
+  Passed Shopizy.Domain.UnitTests.Carts.CartTests.AddLineItem_ShouldAddProductToCart [< 1 ms]
+  Passed Shopizy.Domain.UnitTests.ProductReviews.ProductReviewTests.Create_WithValidData_ReturnsProductReview [1 s]
+  Passed Shopizy.Domain.UnitTests.Users.UserTests.UpdatePassword_ShouldUpdatePassword [1 s]
+  Passed Shopizy.Domain.UnitTests.Customers.CustomerTests.Create_WithValidData_ReturnsCustomer [9 ms]
+  Passed Shopizy.Domain.UnitTests.Users.UserTests.UpdateRole_ShouldUpdateRole [4 ms]
+  Passed Shopizy.Domain.UnitTests.Users.UserTests.Create_WithValidData_ShouldCreateUser [1 ms]
+  Passed Shopizy.Domain.UnitTests.Categories.CategoryTests.Create_WithValidData_ShouldCreateCategory [1 s]
+  Passed Shopizy.Domain.UnitTests.Categories.CategoryTests.Update_WithValidData_ShouldUpdateCategory [1 ms]
+  Passed Shopizy.Domain.UnitTests.Users.UserTests.Update_WithValidData_ShouldUpdateUserDetailsAndAddress [1 ms]
+  Passed Shopizy.Domain.UnitTests.PromoCodes.PromoCodeTests.Create_WithValidData_ReturnsPromoCode [1 s]
+  Passed Shopizy.Domain.UnitTests.Orders.OrderTests.CancelOrder_ShouldChangeStatusAndAddDomainEvent [1 s]
+  Passed Shopizy.Domain.UnitTests.Products.ProductTests.Create_WithValidData_ShouldCreateProductAndAddDomainEvent [21 ms]
+[xUnit.net 00:00:05.92]   Finished:    Shopizy.Domain.UnitTests (ID = 'b4bad3c670fe86bd1cac3ada1ea66f847bb9e65aa82052a07d69664fa55ea60d')
+  Passed Shopizy.Domain.UnitTests.Products.ProductTests.Update_WithValidData_ShouldUpdateProductAndAddDomainEvent [< 1 ms]
+  Passed Shopizy.Domain.UnitTests.Orders.OrderTests.UpdatePaymentStatus_ShouldUpdateStatus [1 ms]
+  Passed Shopizy.Domain.UnitTests.Orders.OrderTests.GetTotal_ShouldCalculateCorrectAmount [7 ms]
+  Passed Shopizy.Domain.UnitTests.Orders.OrderTests.Create_WithValidData_ShouldCreateOrderAndAddDomainEvent [1 ms]
+
+Test Run Successful.
+Total tests: 21
+     Passed: 21
+ Total time: 9.9602 Seconds
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.20

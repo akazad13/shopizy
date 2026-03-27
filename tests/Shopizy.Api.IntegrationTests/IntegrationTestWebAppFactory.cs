@@ -11,6 +11,9 @@ using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Common;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 using ErrorOr;
 
 namespace Shopizy.Api.IntegrationTests;
@@ -81,6 +84,29 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             // Mock IMediaUploader
             services.RemoveAll(typeof(IMediaUploader));
             services.AddScoped<IMediaUploader, MockMediaUploader>();
+
+            // Disable rate limiting for tests: remove original Configure callbacks,
+            // then re-register with very permissive limits so 429s never occur.
+            services.RemoveAll<IConfigureOptions<RateLimiterOptions>>();
+            services.Configure<RateLimiterOptions>(options =>
+            {
+                options.AddFixedWindowLimiter("auth", o =>
+                {
+                    o.Window = TimeSpan.FromSeconds(1);
+                    o.PermitLimit = 10000;
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit = 0;
+                });
+                options.AddSlidingWindowLimiter("api", o =>
+                {
+                    o.Window = TimeSpan.FromSeconds(1);
+                    o.SegmentsPerWindow = 1;
+                    o.PermitLimit = 10000;
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit = 0;
+                });
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            });
         });
     }
 

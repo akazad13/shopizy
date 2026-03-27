@@ -12,9 +12,9 @@ public class GetSalesReportQueryHandler(IOrderRepository orderRepository)
     public async Task<ErrorOr<SalesReportDto>> Handle(GetSalesReportQuery request, CancellationToken cancellationToken)
     {
         var revenue = await _orderRepository.GetRevenueByPeriodAsync(request.StartDate, request.EndDate);
-        var orders = await _orderRepository.GetOrdersAsync(null, request.StartDate, request.EndDate, null, 1, int.MaxValue);
+        var orderCount = await _orderRepository.GetOrdersCountByPeriodAsync(request.StartDate, request.EndDate);
         var topProducts = await _orderRepository.GetTopProductsByRevenueAsync(10);
 
-        return new SalesReportDto(request.StartDate, request.EndDate, revenue, orders.Count, topProducts);
+        return new SalesReportDto(request.StartDate, request.EndDate, revenue, orderCount, topProducts);
     }
 }

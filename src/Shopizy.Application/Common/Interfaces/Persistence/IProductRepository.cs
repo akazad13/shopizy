@@ -27,6 +27,18 @@ public interface IProductRepository
         decimal? maxPrice,
         bool? inStockOnly
     );
+    Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(
+        IReadOnlyList<ProductId>? productIds,
+        string? name,
+        IReadOnlyList<CategoryId>? categoryIds,
+        decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly,
+        string? sortBy,
+        int pageNumber,
+        int pageSize
+    );
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task<Product?> GetProductByIdForUpdateAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);

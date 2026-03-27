@@ -13,24 +13,3 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.ShippingAddress).NotNull().SetValidator(new AddressCommandValidator());
     }
 }
-
-public class OrderItemCommandValidator : AbstractValidator<OrderItemCommand>
-{
-    public OrderItemCommandValidator()
-    {
-        RuleFor(x => x.ProductId).NotEmpty();
-        RuleFor(x => x.Quantity).GreaterThan(0);
-    }
-}
-
-public class AddressCommandValidator : AbstractValidator<AddressCommand>
-{
-    public AddressCommandValidator()
-    {
-        RuleFor(x => x.Street).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.City).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.State).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Country).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.ZipCode).NotEmpty().MaximumLength(10);
-    }
-}

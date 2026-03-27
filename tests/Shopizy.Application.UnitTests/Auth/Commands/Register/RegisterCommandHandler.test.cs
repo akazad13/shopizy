@@ -3,7 +3,6 @@ using Moq;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
@@ -15,18 +14,15 @@ public class RegisterCommandHandlerTests
 {
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IPasswordManager> _mockPasswordManager;
-    private readonly Mock<ICartRepository> _mockCartRepository;
     private readonly RegisterCommandHandler _handler;
 
     public RegisterCommandHandlerTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
         _mockPasswordManager = new Mock<IPasswordManager>();
-        _mockCartRepository = new Mock<ICartRepository>();
         _handler = new RegisterCommandHandler(
             _mockUserRepository.Object,
-            _mockPasswordManager.Object,
-            _mockCartRepository.Object
+            _mockPasswordManager.Object
         );
     }
 
@@ -78,7 +74,6 @@ public class RegisterCommandHandlerTests
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
         _mockPasswordManager.Setup(pm => pm.CreateHashString(It.IsAny<string>(), It.IsAny<int>())).Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
@@ -100,7 +95,6 @@ public class RegisterCommandHandlerTests
                 ),
             Times.Once
         );
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
     }
 
     [Fact]
@@ -119,8 +113,6 @@ public class RegisterCommandHandlerTests
             .Returns(hashedPassword);
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
@@ -183,8 +175,6 @@ public class RegisterCommandHandlerTests
             .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-
         // Act
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
@@ -196,7 +186,6 @@ public class RegisterCommandHandlerTests
             r => r.AddAsync(It.Is<User>(u => u.Password == hashedPassword)),
             Times.Once
         );
-        _mockCartRepository.Verify(r => r.AddAsync(It.IsAny<Cart>()), Times.Once);
     }
 
     [Fact]
@@ -216,8 +205,6 @@ public class RegisterCommandHandlerTests
             .Returns(hashedPassword);
 
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-
-        _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
         // Act
         var task1 = _handler.Handle(command, TestContext.Current.CancellationToken);

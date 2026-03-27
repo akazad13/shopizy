@@ -41,6 +41,11 @@ public class CardNotPresentSaleCommandHandler(
             UserId.Create(request.UserId)
         );
 
+        if (user is null)
+        {
+            return CustomErrors.User.UserNotFound;
+        }
+
         var payment = Payment.Create(
             UserId.Create(request.UserId),
             OrderId.Create(request.OrderId),
