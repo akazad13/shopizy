@@ -16,6 +16,8 @@ public class GetProductQuestionsEndpoint : ApiEndpoint
             "api/v1.0/products/{productId:guid}/questions",
             async (
                 Guid productId,
+                [FromQuery] int pageNumber,
+                [FromQuery] int pageSize,
                 [FromServices] IDispatcher mediator,
                 IMapper mapper,
                 ILogger<GetProductQuestionsEndpoint> logger
@@ -23,7 +25,7 @@ public class GetProductQuestionsEndpoint : ApiEndpoint
             {
                 return await HandleAsync(
                     mediator,
-                    new GetProductQuestionsQuery(productId),
+                    new GetProductQuestionsQuery(productId, pageNumber, pageSize),
                     questions => Results.Ok(mapper.Map<IReadOnlyList<ProductQuestionResponse>>(questions)),
                     ex => logger.ProductQuestionFetchError(ex)
                 );
@@ -32,7 +34,7 @@ public class GetProductQuestionsEndpoint : ApiEndpoint
         .AllowAnonymous()
         .WithTags("ProductQuestions")
         .WithSummary("Get product questions")
-        .WithDescription("Returns all questions and answers for a product.")
+        .WithDescription("Returns a paginated list of questions and answers for a product.")
         .Produces<IReadOnlyList<ProductQuestionResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }

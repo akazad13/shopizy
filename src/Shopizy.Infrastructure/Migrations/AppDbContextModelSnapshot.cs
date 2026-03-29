@@ -722,6 +722,13 @@ namespace Shopizy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DeadLetteredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeadLetterReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<DateTime>("OccurredOn")
                         .HasColumnType("datetime2");
 
@@ -734,6 +741,8 @@ namespace Shopizy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeadLetteredOn");
 
                     b.HasIndex("ProcessedOn");
 

@@ -17,7 +17,9 @@ public class GetProductQuestionsQueryHandler(IProductQuestionRepository productQ
     )
     {
         var questions = await _productQuestionRepository.GetByProductIdAsync(
-            ProductId.Create(request.ProductId)
+            ProductId.Create(request.ProductId),
+            request.PageNumber,
+            request.PageSize
         );
 
         return ErrorOrFactory.From(questions);

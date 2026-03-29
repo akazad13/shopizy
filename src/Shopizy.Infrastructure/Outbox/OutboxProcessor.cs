@@ -53,7 +53,7 @@ public sealed class OutboxProcessor(
         var threshold = DateTime.UtcNow - ProcessingThreshold;
 
         var pending = await dbContext.OutboxMessages
-            .Where(m => m.ProcessedOn == null && m.OccurredOn <= threshold)
+            .Where(m => m.ProcessedOn == null && m.DeadLetteredOn == null && m.OccurredOn <= threshold)
             .OrderBy(m => m.OccurredOn)
             .Take(50)
             .ToListAsync(cancellationToken);
@@ -72,13 +72,27 @@ public sealed class OutboxProcessor(
                 var eventType = System.Type.GetType(message.Type);
                 if (eventType is null)
                 {
-                    logger.LogWarning("Outbox: cannot resolve type '{Type}' for message {Id}.", message.Type, message.Id);
+                    var reason = $"Cannot resolve type '{message.Type}'.";
+                    logger.LogWarning("Outbox: dead-lettering message {Id} — {Reason}", message.Id, reason);
+                    await dbContext.OutboxMessages
+                        .Where(m => m.Id == message.Id)
+                        .ExecuteUpdateAsync(
+                            s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
+                                  .SetProperty(p => p.DeadLetterReason, reason),
+                            cancellationToken);
                     continue;
                 }
 
                 if (JsonSerializer.Deserialize(message.Content, eventType) is not IDomainEvent domainEvent)
                 {
-                    logger.LogWarning("Outbox: cannot deserialize message {Id} as IDomainEvent.", message.Id);
+                    var reason = $"Cannot deserialize content as '{eventType.Name}'.";
+                    logger.LogWarning("Outbox: dead-lettering message {Id} — {Reason}", message.Id, reason);
+                    await dbContext.OutboxMessages
+                        .Where(m => m.Id == message.Id)
+                        .ExecuteUpdateAsync(
+                            s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
+                                  .SetProperty(p => p.DeadLetterReason, reason),
+                            cancellationToken);
                     continue;
                 }
 

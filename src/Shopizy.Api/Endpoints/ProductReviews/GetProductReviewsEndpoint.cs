@@ -16,6 +16,8 @@ public class GetProductReviewsEndpoint : ApiEndpoint
             "api/v1.0/products/{productId:guid}/reviews",
             async (
                 Guid productId,
+                [FromQuery] int pageNumber,
+                [FromQuery] int pageSize,
                 [FromServices] IDispatcher mediator,
                 IMapper mapper,
                 ILogger<GetProductReviewsEndpoint> logger
@@ -23,7 +25,7 @@ public class GetProductReviewsEndpoint : ApiEndpoint
             {
                 return await HandleAsync(
                     mediator,
-                    new GetProductReviewsQuery(productId),
+                    new GetProductReviewsQuery(productId, pageNumber, pageSize),
                     reviews => Results.Ok(mapper.Map<List<ProductReviewResponse>>(reviews)),
                     ex => logger.ProductReviewFetchError(ex)
                 );
@@ -32,7 +34,7 @@ public class GetProductReviewsEndpoint : ApiEndpoint
         .AllowAnonymous()
         .WithTags("ProductReviews")
         .WithSummary("Get product reviews")
-        .WithDescription("Returns paginated reviews for a specific product.")
+        .WithDescription("Returns a paginated list of reviews for a specific product.")
         .Produces<List<ProductReviewResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status404NotFound)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);

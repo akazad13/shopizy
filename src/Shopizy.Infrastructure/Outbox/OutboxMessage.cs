@@ -17,4 +17,10 @@ public sealed class OutboxMessage
 
     /// <summary>Set once the event has been successfully dispatched.</summary>
     public DateTime? ProcessedOn { get; set; }
+
+    /// <summary>Set when the message cannot be deserialized or its type cannot be resolved; prevents infinite retry loops.</summary>
+    public DateTime? DeadLetteredOn { get; set; }
+
+    /// <summary>Human-readable reason the message was dead-lettered.</summary>
+    public string? DeadLetterReason { get; set; }
 }

@@ -55,7 +55,8 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     public Task<Product?> GetProductByIdAsync(ProductId id)
     {
         return _dbContext
-            .Products.Include(p => p.ProductReviews)
+            .Products.Include(p => p.ProductImages)
+            .Include(p => p.ProductReviews)
             .ThenInclude(p => p.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);

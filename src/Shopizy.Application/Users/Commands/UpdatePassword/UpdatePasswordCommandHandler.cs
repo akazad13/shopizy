@@ -40,7 +40,7 @@ public class UpdatePasswordCommandHandler(
             return (Error)CustomErrors.User.UserNotFound;
         }
 
-        if (!_passwordManager.Verify(request.OldPassword, user.Password ?? ""))
+        if (user.Password is null || !_passwordManager.Verify(request.OldPassword, user.Password))
         {
             return (Error)CustomErrors.User.PasswordNotCorrect;
         }

@@ -11,10 +11,13 @@ public class ProductQuestionRepository(AppDbContext dbContext) : IProductQuestio
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<ProductQuestion>> GetByProductIdAsync(ProductId productId)
+    public async Task<IReadOnlyList<ProductQuestion>> GetByProductIdAsync(ProductId productId, int pageNumber, int pageSize)
     {
         return await _dbContext.Set<ProductQuestion>()
             .Where(pq => pq.ProductId == productId)
+            .OrderByDescending(pq => pq.CreatedOn)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
     }
 

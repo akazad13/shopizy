@@ -37,13 +37,17 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
 
         user.UpdateUserName(request.FirstName, request.LastName);
 
-        user.UpdateAddress(
-            request.Street,
-            request.City,
-            request.State,
-            request.Country,
-            request.ZipCode
-        );
+        if (request.Street is not null || request.City is not null || request.State is not null ||
+            request.Country is not null || request.ZipCode is not null)
+        {
+            user.UpdateAddress(
+                request.Street ?? string.Empty,
+                request.City ?? string.Empty,
+                request.State ?? string.Empty,
+                request.Country ?? string.Empty,
+                request.ZipCode ?? string.Empty
+            );
+        }
 
         await _cacheHelper.RemoveAsync($"user-{user.Id.Value}");
 

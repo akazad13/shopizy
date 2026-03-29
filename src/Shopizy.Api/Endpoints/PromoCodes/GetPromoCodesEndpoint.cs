@@ -15,6 +15,8 @@ public class GetPromoCodesEndpoint : ApiEndpoint
         app.MapGet(
             "api/v1.0/admin/promo-codes",
             async (
+                [FromQuery] int pageNumber,
+                [FromQuery] int pageSize,
                 [FromServices] IDispatcher mediator,
                 IMapper mapper,
                 ILogger<GetPromoCodesEndpoint> logger
@@ -22,7 +24,7 @@ public class GetPromoCodesEndpoint : ApiEndpoint
             {
                 return await HandleAsync(
                     mediator,
-                    new GetPromoCodesQuery(),
+                    new GetPromoCodesQuery(pageNumber, pageSize),
                     promoCodes => Results.Ok(mapper.Map<List<PromoCodeResponse>>(promoCodes)),
                     ex => logger.PromoCodeFetchError(ex)
                 );
