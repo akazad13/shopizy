@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -11,17 +11,17 @@ namespace Shopizy.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "DeadLetteredOn",
-                table: "OutboxMessages",
-                type: "datetime2",
-                nullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "DeadLetterReason",
                 table: "OutboxMessages",
                 type: "nvarchar(1000)",
                 maxLength: 1000,
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeadLetteredOn",
+                table: "OutboxMessages",
+                type: "datetime2",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
@@ -38,11 +38,11 @@ namespace Shopizy.Infrastructure.Migrations
                 table: "OutboxMessages");
 
             migrationBuilder.DropColumn(
-                name: "DeadLetteredOn",
+                name: "DeadLetterReason",
                 table: "OutboxMessages");
 
             migrationBuilder.DropColumn(
-                name: "DeadLetterReason",
+                name: "DeadLetteredOn",
                 table: "OutboxMessages");
         }
     }
