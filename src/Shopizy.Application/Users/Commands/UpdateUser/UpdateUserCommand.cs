@@ -22,10 +22,10 @@ public record UpdateUserCommand(
     string LastName,
     string Email,
     string? PhoneNumber,
-    string Street,
-    string City,
-    string State,
-    string Country,
-    string ZipCode
+    string? Street,
+    string? City,
+    string? State,
+    string? Country,
+    string? ZipCode
 ) : ICommand<ErrorOr<Success>>;
 

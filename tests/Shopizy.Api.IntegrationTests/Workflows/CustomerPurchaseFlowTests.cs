@@ -19,7 +19,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var (adminToken, adminUserId) = await AuthenticateAsAdminAsync();
         
         var categoryRequest = new CreateCategoryRequest("Electronics", null);
-        var categoryResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{adminUserId}/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var categoryResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
         var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(cancellationToken: TestContext.Current.CancellationToken);
         
         var productRequest = new CreateProductRequest(
@@ -39,7 +39,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             StockQuantity: 100,
             SpecificationIds: null
         );
-        var productResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{adminUserId}/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var productResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(cancellationToken: TestContext.Current.CancellationToken);
         
         ClearAuthToken();
@@ -51,8 +51,8 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         // 3. User Journey: Browse Products
         var getProductsResponse = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
         getProductsResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var products = await getProductsResponse.Content.ReadFromJsonAsync<List<ProductResponse>>(cancellationToken: TestContext.Current.CancellationToken);
-        products.ShouldContain(p => p.ProductId == product!.ProductId);
+        var pagedResult = await getProductsResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        pagedResult!.Items.ShouldContain(p => p.ProductId == product!.ProductId);
 
         // 4. User Journey: Add to Cart
         var addToCartRequest = new AddProductToCartRequest(product!.ProductId, "Midnight Blue", "256GB", 1);
@@ -71,12 +71,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var orderItems = new List<OrderItemRequest> { new(product.ProductId, "Midnight Blue", "256GB", 1) };
         var createOrderRequest = new CreateOrderRequest("", 1, deliveryCharge, orderItems, shippingAddress);
         
-        var placeOrderResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{customerUserId}/orders", createOrderRequest, TestContext.Current.CancellationToken);
-        if (placeOrderResponse.StatusCode == HttpStatusCode.InternalServerError)
-        {
-            var errorContent = await placeOrderResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            throw new Exception($"Order placement failed with 500. Response: {errorContent}");
-        }
+        var placeOrderResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", createOrderRequest, TestContext.Current.CancellationToken);
         placeOrderResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
         var order = await placeOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
         order.ShouldNotBeNull();

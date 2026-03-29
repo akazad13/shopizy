@@ -1,11 +1,13 @@
 using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Domain.Orders.Entities;
 
 public sealed class OrderItem : Entity<OrderItemId>
 {
+    public ProductId ProductId { get; private set; }
     public string Name { get; private set; }
     public string PictureUrl { get; private set; }
     public Price UnitPrice { get; private set; }
@@ -15,6 +17,7 @@ public sealed class OrderItem : Entity<OrderItemId>
     public decimal Discount { get; private set; }
 
     public static OrderItem Create(
+        ProductId productId,
         string name,
         string pictureUrl,
         Price unitPrice,
@@ -26,6 +29,7 @@ public sealed class OrderItem : Entity<OrderItemId>
     {
         return new OrderItem(
             OrderItemId.CreateUnique(),
+            productId,
             name,
             pictureUrl,
             unitPrice,
@@ -38,6 +42,7 @@ public sealed class OrderItem : Entity<OrderItemId>
 
     private OrderItem(
         OrderItemId orderItemId,
+        ProductId productId,
         string name,
         string pictureUrl,
         Price unitPrice,
@@ -48,6 +53,7 @@ public sealed class OrderItem : Entity<OrderItemId>
     )
         : base(orderItemId)
     {
+        ProductId = productId;
         Name = name;
         PictureUrl = pictureUrl;
         UnitPrice = unitPrice;

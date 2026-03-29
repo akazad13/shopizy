@@ -27,10 +27,8 @@ public class UpdateProductCommandHandlerTests
         var product = ProductFactory.CreateProduct();
 
         _mockProductRepository
-            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
+            .Setup(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(product);
-
-        _mockProductRepository.Setup(x => x.Update(It.IsAny<Product>()));
 
         // Act
         var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -40,10 +38,10 @@ public class UpdateProductCommandHandlerTests
         Assert.IsType<Success>(result.Value);
 
         _mockProductRepository.Verify(
-            x => x.GetProductByIdAsync(It.IsAny<ProductId>()),
+            x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()),
             Times.Once
         );
-        _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Once);
+        _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Never);
     }
 
     [Fact]
@@ -53,7 +51,7 @@ public class UpdateProductCommandHandlerTests
         var command = UpdateProductCommandUtils.CreateCommand();
 
         _mockProductRepository
-            .Setup(x => x.GetProductByIdAsync(It.IsAny<ProductId>()))
+            .Setup(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()))
             .ReturnsAsync((Product?)null);
 
         // Act
@@ -64,7 +62,7 @@ public class UpdateProductCommandHandlerTests
         Assert.Equal(Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotFound, result.FirstError);
 
         _mockProductRepository.Verify(
-            x => x.GetProductByIdAsync(It.IsAny<ProductId>()),
+            x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()),
             Times.Once
         );
         _mockProductRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Never);

@@ -22,12 +22,12 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
     /// <returns>The created category or an error.</returns>
     public async Task<ErrorOr<Category>> Handle(
         CreateCategoryCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (await _categoryRepository.GetCategoryByNameAsync(cmd.Name))
         {
-            return CustomErrors.Category.DuplicateName;
+            return (Error)CustomErrors.Category.DuplicateName;
         }
 
         var category = Category.Create(cmd.Name, cmd.ParentId);

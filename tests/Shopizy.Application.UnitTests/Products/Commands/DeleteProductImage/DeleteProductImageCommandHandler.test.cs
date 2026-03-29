@@ -39,7 +39,7 @@ public class DeleteProductImageCommandHandlerTests
         );
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
+            .Setup(p => p.GetProductByIdForUpdateAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockMediaUploader

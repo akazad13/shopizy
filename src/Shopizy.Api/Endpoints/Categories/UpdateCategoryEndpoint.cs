@@ -1,7 +1,7 @@
-using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Category;
 using Shopizy.Contracts.Common;
 
@@ -12,13 +12,11 @@ public class UpdateCategoryEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/users/{userId:guid}/categories/{categoryId:guid}", async (Guid userId, Guid categoryId, UpdateCategoryRequest request, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateCategoryEndpoint> logger) =>
+        app.MapPatch("api/v1.0/admin/categories/{categoryId:guid}", async (Guid categoryId, [FromBody] UpdateCategoryRequest request, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, ILogger<UpdateCategoryEndpoint> logger) =>
         {
-            var command = mapper.Map<UpdateCategoryCommand>((userId, categoryId, request));
-
             return await HandleAsync(
                 mediator,
-                command,
+                new UpdateCategoryCommand(currentUser.GetCurrentUserId(), categoryId, request.Name, request.ParentId),
                 success => Results.Ok(SuccessResult.Success("Successfully updated category.")),
                 ex => logger.CategoryUpdateError(ex)
             );

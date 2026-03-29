@@ -94,7 +94,7 @@ public class CardNotPresentSaleCommandHandlerTests
 
         // Assert
         result.IsError.ShouldBeFalse();
-        _mockOrderRepository.Verify(r => r.Update(order), Times.Once);
+        _mockOrderRepository.Verify(r => r.Update(order), Times.Never);
     }
 
     private static CardNotPresentSaleCommand CreateCommand()

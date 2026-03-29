@@ -62,13 +62,20 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
         string comment
     )
     {
-        return new ProductReview(
+        var review = new ProductReview(
             ProductReviewId.CreateUnique(),
             userId,
             productId,
             rating,
             comment
         );
+        review.AddDomainEvent(new Events.ProductReviewCreatedDomainEvent(productId, rating));
+        return review;
+    }
+
+    public void Delete()
+    {
+        AddDomainEvent(new Events.ProductReviewDeletedDomainEvent(ProductId, Rating));
     }
 
     private ProductReview(

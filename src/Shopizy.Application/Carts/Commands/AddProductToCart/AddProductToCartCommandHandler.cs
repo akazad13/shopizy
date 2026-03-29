@@ -36,26 +36,25 @@ public class AddProductToCartCommandHandler(
         var userId = UserId.Create(cmd.UserId);
         var productId = ProductId.Create(cmd.ProductId);
 
-        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+        var cart = await _cartRepository.GetCartByUserIdForUpdateAsync(userId);
 
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return (Error)CustomErrors.Cart.CartNotFound;
         }
 
         if (cart.CartItems.Any(li => li.ProductId == productId && li.Color == cmd.Color && li.Size == cmd.Size))
         {
-            return CustomErrors.Cart.ProductAlreadyExistInCart;
+            return (Error)CustomErrors.Cart.ProductAlreadyExistInCart;
         }
 
         if (!await _productRepository.IsProductExistAsync(productId))
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         cart.AddLineItem(CartItem.Create(productId, cmd.Color, cmd.Size, cmd.Quantity));
-        _cartRepository.Update(cart);
 
-        return await _cartRepository.GetCartByUserIdAsync(userId);
+        return cart;
     }
 }

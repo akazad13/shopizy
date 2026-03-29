@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
@@ -19,17 +18,22 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
     private readonly JwtSettings _jwtSettings = jwtOptoins.Value;
 
     /// <summary>
-    /// Generates a JWT token for a user with specified permissions.
+    /// Generates a JWT token for a user with specified role and permissions.
     /// </summary>
     /// <param name="userId">The user's unique identifier.</param>
+    /// <param name="role">The user's role.</param>
     /// <param name="Permissions">The list of permissions assigned to the user.</param>
     /// <returns>A JWT token string.</returns>
-    public string GenerateToken(UserId userId, IEnumerable<string> Permissions)
+    public string GenerateToken(UserId userId, string role, IEnumerable<string> Permissions)
     {
-        Guard.Against.Null(Permissions);
-        Guard.Against.Null(userId);
+        ArgumentNullException.ThrowIfNull(Permissions);
+        ArgumentNullException.ThrowIfNull(userId);
 
-        var claims = new List<Claim> { new("id", userId.Value.ToString()) };
+        var claims = new List<Claim> 
+        { 
+            new("id", userId.Value.ToString()),
+            new(ClaimTypes.Role, role)
+        };
 
         foreach (string permission in Permissions)
         {

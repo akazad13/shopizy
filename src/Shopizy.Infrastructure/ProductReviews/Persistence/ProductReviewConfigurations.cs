@@ -41,5 +41,8 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
         builder
             .Property(pr => pr.ProductId)
             .HasConversion(id => id.Value, value => ProductId.Create(value));
+
+        builder.HasIndex(pr => pr.ProductId);
+        builder.HasIndex(pr => pr.UserId);
     }
 }

@@ -63,6 +63,15 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     }
 
     /// <summary>
+    /// Removes all items from the cart without raising per-item domain events.
+    /// Used for system-initiated clearing (e.g. after order placement).
+    /// </summary>
+    public void Clear()
+    {
+        _cartItems.Clear();
+    }
+
+    /// <summary>
     /// Updates the quantity of a cart item.
     /// </summary>
     /// <param name="cartItemId">The cart item identifier.</param>

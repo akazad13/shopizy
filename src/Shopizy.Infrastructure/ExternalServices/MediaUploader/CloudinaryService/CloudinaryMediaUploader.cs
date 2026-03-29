@@ -9,6 +9,8 @@ namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryServic
 
 public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 {
+    private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+
     private readonly ICloudinary _cloudinary = cloudinary;
 
     public async Task<ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
@@ -16,9 +18,22 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
         CancellationToken cancellationToken = default
     )
     {
-        try
+        if (file.Length == 0)
         {
-            if (file.Length > 0)
+            return ErrorOr.Error.Failure(description: "File not found!");
+        }
+
+        if (file.Length > MaxFileSizeBytes)
+        {
+            return ErrorOr.Error.Failure(
+                description: $"File size exceeds the maximum allowed size of {MaxFileSizeBytes / (1024 * 1024)} MB."
+            );
+        }
+
+        var maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            try
             {
                 using Stream stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams()
@@ -37,12 +52,24 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
                     _ => ErrorOr.Error.Failure(description: uploadResult.Error.Message),
                 };
             }
-            return ErrorOr.Error.Failure(description: "File not found!");
+            catch (Exception ex) when (
+                ex is HttpRequestException or TaskCanceledException or TimeoutException
+                && attempt < maxAttempts - 1)
+            {
+                await Task.Delay(
+                    TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),
+                    cancellationToken
+                );
+            }
+            catch (Exception ex)
+            {
+                return ErrorOr.Error.Failure(description: ex.Message);
+            }
         }
-        catch (Exception ex)
-        {
-            return ErrorOr.Error.Failure(description: ex.Message);
-        }
+
+        return ErrorOr.Error.Failure(
+            description: "Photo upload failed after maximum retry attempts."
+        );
     }
 
     public async Task<ErrorOr<Success>> DeletePhotoAsync(string publicId)

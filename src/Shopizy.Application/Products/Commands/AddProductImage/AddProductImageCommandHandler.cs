@@ -18,21 +18,21 @@ public class AddProductImageCommandHandler(
 
     public async Task<ErrorOr<ProductImage>> Handle(
         AddProductImageCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (cmd.File == null)
         {
-            return CustomErrors.Product.ProductImageNotUploaded;
+            return (Error)CustomErrors.Product.ProductImageNotUploaded;
         }
 
-        Domain.Products.Product? product = await _productRepository.GetProductByIdAsync(
+        Domain.Products.Product? product = await _productRepository.GetProductByIdForUpdateAsync(
             ProductId.Create(cmd.ProductId)
         );
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         ProductImage productImage;
@@ -49,8 +49,6 @@ public class AddProductImageCommandHandler(
                 res.Value.PublicId
             );
             product.AddProductImage(productImage);
-
-            _productRepository.Update(product);
 
             return productImage;
         }

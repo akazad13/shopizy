@@ -26,7 +26,7 @@ public class GetCartQueryHandler(ICartRepository cartRepository)
         var cart = await _cartRepository.GetCartByUserIdAsync(UserId.Create(query.UserId));
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return (Error)CustomErrors.Cart.CartNotFound;
         }
         return cart;
     }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Orders.Persistence;
@@ -13,6 +14,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
     {
         ConfigureOrdersTable(builder);
         ConfigureOrderItemsTable(builder);
+        ConfigureShipmentTable(builder);
     }
 
     private static void ConfigureOrdersTable(EntityTypeBuilder<Order> builder)
@@ -52,6 +54,13 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder
             .Property(c => c.UserId)
             .HasConversion(id => id.Value, value => UserId.Create(value));
+
+        builder.HasIndex(o => o.UserId);
+        builder.HasIndex(o => o.OrderStatus);
+        builder.HasIndex(o => o.CreatedOn);
+        builder.HasIndex(o => new { o.UserId, o.CreatedOn });
+
+        builder.Property<byte[]>("RowVersion");
     }
 
     private static void ConfigureOrderItemsTable(EntityTypeBuilder<Order> builder)
@@ -68,6 +77,10 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => OrderItemId.Create(value));
 
+                ib.Property(oi => oi.ProductId)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, value => ProductId.Create(value));
+
                 ib.Property(oi => oi.Name).HasMaxLength(100);
                 ib.Property(oi => oi.PictureUrl).IsRequired(false);
                 ib.Property(oi => oi.Quantity);
@@ -83,5 +96,27 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             }
         );
         builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureShipmentTable(EntityTypeBuilder<Order> builder)
+    {
+        builder.OwnsOne(
+            o => o.Shipment,
+            sb =>
+            {
+                sb.ToTable("Shipments");
+                sb.WithOwner().HasForeignKey("OrderId");
+                sb.HasKey(nameof(Shipment.Id), "OrderId");
+                sb.Property(s => s.Id)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, v => ShipmentId.Create(v));
+                sb.Property(s => s.Carrier).HasMaxLength(100);
+                sb.Property(s => s.TrackingNumber).HasMaxLength(100);
+                sb.Property(s => s.EstimatedDelivery).IsRequired(false);
+                sb.Property(s => s.Status).HasConversion<string>();
+                sb.Property(s => s.CreatedOn).HasColumnType("smalldatetime");
+                sb.Property(s => s.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+            }
+        );
     }
 }

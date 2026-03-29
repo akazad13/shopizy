@@ -1,6 +1,13 @@
 namespace Shopizy.Contracts.Product;
 
 /// <summary>
+/// Represents a paginated list of products with total count.
+/// </summary>
+/// <param name="Items">The products on the current page.</param>
+/// <param name="TotalCount">The total number of products matching the query.</param>
+public record ProductsPagedResponse(IReadOnlyList<ProductResponse> Items, int TotalCount, int TotalPages, int PageNumber);
+
+/// <summary>
 /// Represents a summary of a product.
 /// </summary>
 /// <param name="ProductId">The unique identifier of the product.</param>
@@ -77,7 +84,7 @@ public record ProductDetailResponse(
     int Favourites,
     IList<string>? Specifications,
     IList<ProductImageResponse> ProductImages,
-    IList<ProductReviewResponse> ProductReviews
+    IList<ProductDetailReviewResponse> ProductReviews
 );
 
 /// <summary>
@@ -90,7 +97,7 @@ public record ProductDetailResponse(
 public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq, string PublicId);
 
 /// <summary>
-/// Represents a product review.
+/// Represents a product review embedded in product detail.
 /// </summary>
 /// <param name="ProductReviewId">The unique identifier of the review.</param>
 /// <param name="Reviewer">The name of the reviewer.</param>
@@ -98,7 +105,7 @@ public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq
 /// <param name="Comment">The review comment.</param>
 /// <param name="Rating">The rating given.</param>
 /// <param name="CreatedOn">The date the review was created.</param>
-public record ProductReviewResponse(
+public record ProductDetailReviewResponse(
     Guid ProductReviewId,
     string Reviewer,
     string? ReviewerImageUrl,

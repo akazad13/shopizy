@@ -1,18 +1,25 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
+using Shopizy.Domain.AuditLogs;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
 using Shopizy.SharedKernel.Domain.Models;
+using Shopizy.Domain.GiftCards;
+using Shopizy.Domain.LoyaltyAccounts;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Permissions;
+using Shopizy.Domain.ProductQuestions;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.PromoCodes;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Wishlists;
 using Shopizy.Infrastructure.Common.Middleware;
+using Shopizy.Infrastructure.Outbox;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
 
@@ -71,6 +78,36 @@ public class AppDbContext(
     public DbSet<Permission> Permissions { get; set; }
 
     /// <summary>
+    /// Gets or sets the wishlists DbSet.
+    /// </summary>
+    public DbSet<Wishlist> Wishlists { get; set; }
+
+    /// <summary>
+    /// Gets or sets the loyalty accounts DbSet.
+    /// </summary>
+    public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
+
+    /// <summary>
+    /// Gets or sets the gift cards DbSet.
+    /// </summary>
+    public DbSet<GiftCard> GiftCards { get; set; }
+
+    /// <summary>
+    /// Gets or sets the product questions DbSet.
+    /// </summary>
+    public DbSet<ProductQuestion> ProductQuestions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the audit logs DbSet.
+    /// </summary>
+    public DbSet<AuditLog> AuditLogs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the outbox messages DbSet.
+    /// </summary>
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    /// <summary>
     /// Saves all changes made in this context to the database.
     /// Handles domain event publishing with eventual consistency support via Best Effort (Offline Queue).
     /// </summary>
@@ -84,12 +121,31 @@ public class AppDbContext(
             .SelectMany(entry => entry.Entity.PopDomainEvents())
             .ToList();
 
-        if (IsUserWaitingOnline())
+        if (IsUserWaitingOnline() && domainEvents.Count > 0)
         {
-            AddDomainEventsToOfflineProcessingQueue(domainEvents);
+            var outboxMessages = WriteEventsToOutbox(domainEvents);
+            AddDomainEventsToOfflineProcessingQueue(domainEvents, outboxMessages);
         }
 
         return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Creates <see cref="OutboxMessage"/> rows for each domain event so they are
+    /// committed atomically with the aggregate change.
+    /// </summary>
+    private List<OutboxMessage> WriteEventsToOutbox(List<IDomainEvent> domainEvents)
+    {
+        var messages = domainEvents.Select(e => new OutboxMessage
+        {
+            Id = Guid.NewGuid(),
+            OccurredOn = DateTime.UtcNow,
+            Type = e.GetType().AssemblyQualifiedName!,
+            Content = JsonSerializer.Serialize(e, e.GetType()),
+        }).ToList();
+
+        OutboxMessages.AddRange(messages);
+        return messages;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -98,17 +154,32 @@ public class AppDbContext(
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         
-        // Hack for integration tests: remove SQL Server specific column types when using PostgreSQL
-        if (Database.ProviderName != "Microsoft.EntityFrameworkCore.SqlServer")
+        var isSqlServer = Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer";
+
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
-            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            foreach (var property in entity.GetProperties())
             {
-                foreach (var property in entity.GetProperties())
+                if (!isSqlServer)
                 {
-                    if (property.GetColumnType() == "smalldatetime")
+                    // Strip SQL Server-specific column types that Npgsql/other providers don't support
+                    var colType = property.GetColumnType();
+                    if (colType == "smalldatetime" || colType == "nvarchar(max)")
                     {
                         property.SetColumnType(null);
                     }
+                }
+            }
+
+            if (isSqlServer)
+            {
+                // Apply rowversion optimistic concurrency only on SQL Server where the DB auto-updates the column
+                var rowVersionProp = entity.FindProperty("RowVersion");
+                if (rowVersionProp?.ClrType == typeof(byte[]))
+                {
+                    rowVersionProp.IsConcurrencyToken = true;
+                    rowVersionProp.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAddOrUpdate;
+                    rowVersionProp.SetColumnType("rowversion");
                 }
             }
         }
@@ -118,22 +189,24 @@ public class AppDbContext(
 
     private bool IsUserWaitingOnline() => _httpContextAccessor.HttpContext is not null;
 
-    private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
+    private void AddDomainEventsToOfflineProcessingQueue(
+        List<IDomainEvent> domainEvents,
+        List<OutboxMessage> outboxMessages)
     {
-        // Get pending domain events from session
-        Queue<IDomainEvent> domainEventsQueue =
+        // Get pending domain events from session (carries outbox IDs for post-dispatch marking)
+        Queue<(IDomainEvent Event, Guid OutboxId)> queue =
             _httpContextAccessor.HttpContext!.Items.TryGetValue(
                 EventualConsistencyMiddleware.DomainEventsKey,
                 out object? value
-            ) && value is Queue<IDomainEvent> existingDomainEvents
-                ? existingDomainEvents
+            ) && value is Queue<(IDomainEvent, Guid)> existing
+                ? existing
                 : new();
 
-        // Add new domain event to the Queue
-        domainEvents.ForEach(domainEventsQueue.Enqueue);
+        for (int i = 0; i < domainEvents.Count; i++)
+        {
+            queue.Enqueue((domainEvents[i], outboxMessages[i].Id));
+        }
 
-        // Update the session with newly added events
-        _httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] =
-            domainEventsQueue;
+        _httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] = queue;
     }
 }

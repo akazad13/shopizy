@@ -3,8 +3,6 @@ using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Application.Caching;
 using StackExchange.Redis;
 
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-
 namespace Shopizy.Infrastructure.Common.Caching;
 
 /// <summary>
@@ -15,6 +13,11 @@ public class RedisCacheHelper(
     ILogger<RedisCacheHelper> logger
 ) : ICacheHelper
 {
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        Converters = { new ErrorOrConverterFactory() }
+    };
+
     private readonly IConnectionMultiplexer _connectionMultiplexer = connectionMultiplexer;
     private readonly ILogger<RedisCacheHelper> _logger = logger;
 
@@ -34,12 +37,17 @@ public class RedisCacheHelper(
                 return CacheResult<T>.Miss();
             }
 
-            var value = JsonSerializer.Deserialize<T>(data.ToString())!;
+            var value = JsonSerializer.Deserialize<T>(data.ToString(), _jsonOptions)!;
             return CacheResult<T>.Hit(value);
+        }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
+            return CacheResult<T>.Miss();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving key {Key} from Redis", key);
+            _logger.RedisGetError(ex, key);
             return CacheResult<T>.Miss();
         }
     }
@@ -56,7 +64,7 @@ public class RedisCacheHelper(
         try
         {
             var db = _connectionMultiplexer.GetDatabase();
-            var serializedValue = JsonSerializer.Serialize(value);
+            var serializedValue = JsonSerializer.Serialize(value, _jsonOptions);
             if (expiration.HasValue)
             {
                 await db.StringSetAsync(key, serializedValue, expiry: expiration.Value, when: When.Always, flags: CommandFlags.None);
@@ -66,9 +74,13 @@ public class RedisCacheHelper(
                 await db.StringSetAsync(key, serializedValue, expiry: null, when: When.Always, flags: CommandFlags.None);
             }
         }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
+        }
         catch (Exception ex)
         {
-             _logger.LogError(ex, "Error setting key {Key} in Redis", key);
+            _logger.RedisSetError(ex, key);
         }
     }
 
@@ -83,9 +95,13 @@ public class RedisCacheHelper(
             var db = _connectionMultiplexer.GetDatabase();
             await db.KeyDeleteAsync(key);
         }
+        catch (RedisConnectionException)
+        {
+            _logger.RedisUnavailable(key);
+        }
         catch (Exception ex)
         {
-             _logger.LogError(ex, "Error removing key {Key} from Redis", key);
+            _logger.RedisRemoveError(ex, key);
         }
     }
 }

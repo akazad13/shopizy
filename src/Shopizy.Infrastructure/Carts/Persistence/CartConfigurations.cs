@@ -22,6 +22,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
         builder.HasKey(c => c.Id);
 
         builder.HasIndex(c => c.UserId);
+        builder.Property<byte[]>("RowVersion");
 
         builder
             .Property(c => c.Id)
@@ -53,6 +54,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
                 ci.Property(li => li.ProductId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
+                ci.HasIndex(li => li.ProductId);
                 ci.Navigation(li => li.Product).UsePropertyAccessMode(PropertyAccessMode.Field);
             }
         );

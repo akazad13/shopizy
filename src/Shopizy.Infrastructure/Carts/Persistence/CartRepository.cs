@@ -44,6 +44,19 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
         return _dbContext
             .Carts.Include(c => c.CartItems)
             .ThenInclude(li => li.Product)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.UserId == id);
+    }
+
+    /// <summary>
+    /// Retrieves a cart by user identifier for mutation, including only cart items (no Product navigation).
+    /// </summary>
+    /// <param name="id">The user identifier.</param>
+    /// <returns>The cart if found; otherwise, null.</returns>
+    public Task<Cart?> GetCartByUserIdForUpdateAsync(UserId id)
+    {
+        return _dbContext
+            .Carts.Include(c => c.CartItems)
             .FirstOrDefaultAsync(c => c.UserId == id);
     }
 

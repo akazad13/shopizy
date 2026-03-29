@@ -13,7 +13,7 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteCategoryCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(
@@ -21,7 +21,7 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
         );
         if (category is null)
         {
-            return CustomErrors.Category.CategoryNotFound;
+            return (Error)CustomErrors.Category.CategoryNotFound;
         }
 
         _categoryRepository.Remove(category);

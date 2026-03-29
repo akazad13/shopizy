@@ -13,7 +13,7 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
 
     public async Task<ErrorOr<Success>> Handle(
         UpdateCategoryCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(
@@ -21,12 +21,10 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
         );
         if (category is null)
         {
-            return CustomErrors.Category.CategoryNotFound;
+            return (Error)CustomErrors.Category.CategoryNotFound;
         }
 
         category.Update(cmd.Name, cmd.ParentId);
-
-        _categoryRepository.Update(category);
 
         return Result.Success;
     }

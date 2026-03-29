@@ -20,11 +20,11 @@ public class DeleteProductImageCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.GetProductByIdForUpdateAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         var prodImage = product.ProductImages.FirstOrDefault(pi =>
@@ -33,7 +33,7 @@ public class DeleteProductImageCommandHandler(
 
         if (prodImage is null)
         {
-            return CustomErrors.Product.ProductImageNotFound;
+            return (Error)CustomErrors.Product.ProductImageNotFound;
         }
 
         var res = await _mediaUploader.DeletePhotoAsync(prodImage.PublicId);
@@ -41,8 +41,6 @@ public class DeleteProductImageCommandHandler(
         if (!res.IsError)
         {
             product.RemoveProductImage(prodImage);
-
-            _productRepository.Update(product);
 
             return Result.Success;
         }

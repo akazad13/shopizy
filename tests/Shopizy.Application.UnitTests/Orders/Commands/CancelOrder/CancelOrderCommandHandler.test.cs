@@ -49,7 +49,6 @@ public class CancelOrderCommandHandlerTests
         var command = CancelOrderCommandUtils.CreateCommand(order.Id.Value);
 
         _mockOrderRepository.Setup(x => x.GetOrderByIdAsync(order.Id)).ReturnsAsync(order);
-        _mockOrderRepository.Setup(x => x.Update(order));
 
         // Act
         var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -62,6 +61,6 @@ public class CancelOrderCommandHandlerTests
             x => x.GetOrderByIdAsync(OrderId.Create(command.OrderId)),
             Times.Once
         );
-        _mockOrderRepository.Verify(x => x.Update(order), Times.Once);
+        _mockOrderRepository.Verify(x => x.Update(order), Times.Never);
     }
 }

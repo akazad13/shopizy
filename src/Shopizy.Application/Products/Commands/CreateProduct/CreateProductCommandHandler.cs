@@ -15,13 +15,11 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
 
     public async Task<ErrorOr<Product>> Handle(
         CreateProductCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         if (string.IsNullOrWhiteSpace(cmd.Name))
-        {
-            return CustomErrors.Product.ProductNotCreated;
-        }
+            return CustomErrors.Product.ProductNotCreated.ToError();
 
         var product = Product.Create(
             name: cmd.Name,

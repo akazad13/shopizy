@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Infrastructure.AuditLogs.Persistence;
 using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -13,6 +14,12 @@ using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Users.Persistence;
+using Shopizy.Infrastructure.GiftCards.Persistence;
+using Shopizy.Infrastructure.LoyaltyAccounts.Persistence;
+using Shopizy.Infrastructure.ProductQuestions.Persistence;
+using Shopizy.Infrastructure.Wishlists.Persistence;
+using Shopizy.Infrastructure.Common.HealthChecks;
+using Shopizy.Infrastructure.Outbox;
 using Shopizy.Infrastructure.Services;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
@@ -35,7 +42,8 @@ public static class PersistenceRegister
             services.AddDbContext<AppDbContext>((sp, options) =>
             {
                 var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .AddInterceptors(interceptor);
             });
         }
@@ -44,10 +52,14 @@ public static class PersistenceRegister
             services.AddDbContext<AppDbContext>((sp, options) =>
             {
                 var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .AddInterceptors(interceptor);
             });
         }
+
+        services.AddHealthChecks().AddCheck<DbHealthCheck>("database");
+        services.AddHostedService<OutboxProcessor>();
 
         return services.AddRepositories();
     }
@@ -63,7 +75,12 @@ public static class PersistenceRegister
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IPromoCodeRepository, PromoCodeRepository>()
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IPermissionRepository, PermissionRepository>();
+            .AddScoped<IPermissionRepository, PermissionRepository>()
+            .AddScoped<IWishlistRepository, WishlistRepository>()
+            .AddScoped<ILoyaltyAccountRepository, LoyaltyAccountRepository>()
+            .AddScoped<IGiftCardRepository, GiftCardRepository>()
+            .AddScoped<IProductQuestionRepository, ProductQuestionRepository>()
+            .AddScoped<IAuditLogRepository, AuditLogRepository>();
 
         return services;
     }

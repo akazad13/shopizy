@@ -5,6 +5,7 @@ using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.Events;
+using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
@@ -25,7 +26,7 @@ public class OrderTests
         var shippingAddress = Address.CreateNew("Street", "City", "State", "Country", "12345");
         var orderItems = new List<OrderItem>
         {
-            OrderItem.Create("Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
+            OrderItem.Create(ProductId.CreateUnique(), "Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
         };
 
         // Act
@@ -65,7 +66,7 @@ public class OrderTests
         var deliveryCharge = Price.CreateNew(10, Currency.usd);
         var orderItems = new List<OrderItem>
         {
-            OrderItem.Create("Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
+            OrderItem.Create(ProductId.CreateUnique(), "Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
         };
         var order = Order.Create(UserId.CreateUnique(), "", (int)DeliveryMethods.Standard, deliveryCharge, 
             Address.CreateNew("S", "C", "ST", "CO", "Z"), orderItems);

@@ -29,46 +29,39 @@ public class GetUserQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        try
+        var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
+
+        if (user is null)
         {
-            var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
-
-            if (user is null)
-            {
-                return CustomErrors.User.UserNotFound;
-            }
-
-            var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(user.Id, cancellationToken);
-            
-            var userOrders = userOrdersList
-                .Select(o => new { o.Id, o.OrderStatus })
-                .ToList();
-
-            var totalOrders = userOrders.Count;
-            var totalRefundedOrders = userOrders.Count(o => o.OrderStatus == OrderStatus.Refunded);
-            var totalFavorites = 0;
-
-            var userDto = new UserDto(
-                user.Id,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.ProfileImageUrl,
-                user.Phone,
-                user.Address,
-                totalOrders,
-                user.ProductReviewIds.Count,
-                totalFavorites,
-                totalRefundedOrders,
-                user.CreatedOn,
-                user.ModifiedOn
-            );
-
-            return userDto;
+            return (Error)CustomErrors.User.UserNotFound;
         }
-        catch (Exception)
-        {
-            return CustomErrors.User.UserNotFound;
-        }
+
+        var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(user.Id, cancellationToken);
+
+        var userOrders = userOrdersList
+            .Select(o => new { o.Id, o.OrderStatus })
+            .ToList();
+
+        var totalOrders = userOrders.Count;
+        var totalRefundedOrders = userOrders.Count(o => o.OrderStatus == OrderStatus.Refunded);
+        var totalFavorites = 0;
+
+        var userDto = new UserDto(
+            user.Id,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.ProfileImageUrl,
+            user.Phone,
+            user.Address,
+            totalOrders,
+            user.ProductReviewIds.Count,
+            totalFavorites,
+            totalRefundedOrders,
+            user.CreatedOn,
+            user.ModifiedOn
+        );
+
+        return userDto;
     }
 }

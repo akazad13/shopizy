@@ -26,10 +26,13 @@ public class DeleteProductCommandHandler(
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
-        // Delete product image from media
+        foreach (var image in product.ProductImages)
+        {
+            await _mediaUploader.DeletePhotoAsync(image.PublicId);
+        }
 
         _productRepository.Remove(product);
 

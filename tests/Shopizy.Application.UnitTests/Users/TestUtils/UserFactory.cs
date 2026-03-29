@@ -1,5 +1,6 @@
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
 
 namespace Shopizy.Application.UnitTests.Users.TestUtils;
 
@@ -12,6 +13,7 @@ public static class UserFactory
             Constants.User.LastName,
             Constants.User.Email,
             Constants.User.Password,
+            UserRole.Customer,
             Constants.User.PermissionIds
         );
     }

@@ -24,29 +24,30 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
     /// <returns>A success result or an error.</returns>
     public async Task<ErrorOr<Success>> Handle(
         UpdateUserCommand request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
+        
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
-        user.Update(
-            request.FirstName,
-            request.LastName,
-            request.Email,
-            request.PhoneNumber,
-            request.Street,
-            request.City,
-            request.State,
-            request.Country,
-            request.ZipCode
-        );
+        user.UpdateUserName(request.FirstName, request.LastName);
 
-        _userRepository.Update(user);
-
+        if (request.Street is not null || request.City is not null || request.State is not null ||
+            request.Country is not null || request.ZipCode is not null)
+        {
+            user.UpdateAddress(
+                request.Street ?? string.Empty,
+                request.City ?? string.Empty,
+                request.State ?? string.Empty,
+                request.Country ?? string.Empty,
+                request.ZipCode ?? string.Empty
+            );
+        }
 
         await _cacheHelper.RemoveAsync($"user-{user.Id.Value}");
 

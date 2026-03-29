@@ -1,7 +1,7 @@
-using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Categories.Commands.DeleteCategory;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +11,11 @@ public class DeleteCategoryEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/v1.0/users/{userId:guid}/categories/{categoryId:guid}", async (Guid userId, Guid categoryId, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<DeleteCategoryEndpoint> logger) =>
+        app.MapDelete("api/v1.0/admin/categories/{categoryId:guid}", async (Guid categoryId, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, ILogger<DeleteCategoryEndpoint> logger) =>
         {
-            var command = mapper.Map<DeleteCategoryCommand>((userId, categoryId));
-
             return await HandleAsync(
                 mediator,
-                command,
+                new DeleteCategoryCommand(currentUser.GetCurrentUserId(), categoryId),
                 success => Results.Ok(SuccessResult.Success("Successfully deleted category.")),
                 ex => logger.CategoryDeleteError(ex)
             );

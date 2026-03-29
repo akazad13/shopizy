@@ -301,4 +301,67 @@ public static partial class LoggerMessages
         Message = "An unhandled exception has occurred: {Message}"
     )]
     public static partial void UnhandledExceptionError(this ILogger logger, Exception ex, string message);
+
+    [LoggerMessage(
+        EventId = 1025,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching wishlist."
+    )]
+    public static partial void WishlistFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1026,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating wishlist."
+    )]
+    public static partial void WishlistCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1027,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating wishlist."
+    )]
+    public static partial void WishlistUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1028, Level = LogLevel.Error, Message = "An error occurred while fetching dashboard metrics.")]
+    public static partial void DashboardMetricsFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1029, Level = LogLevel.Error, Message = "An error occurred while fetching admin orders list.")]
+    public static partial void AdminOrdersListFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1030, Level = LogLevel.Error, Message = "An error occurred while fetching admin order detail.")]
+    public static partial void AdminOrderDetailFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1031, Level = LogLevel.Error, Message = "An error occurred while updating order status.")]
+    public static partial void OrderStatusUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1032, Level = LogLevel.Error, Message = "An error occurred while updating user role.")]
+    public static partial void UserRoleUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1033, Level = LogLevel.Error, Message = "An error occurred while fetching users list.")]
+    public static partial void UsersListFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1034, Level = LogLevel.Error, Message = "An error occurred while fetching brands.")]
+    public static partial void BrandsFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1035, Level = LogLevel.Error, Message = "An error occurred while fetching product reviews.")]
+    public static partial void ProductReviewFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1036, Level = LogLevel.Error, Message = "An error occurred while creating product review.")]
+    public static partial void ProductReviewCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1037, Level = LogLevel.Error, Message = "An error occurred while deleting product review.")]
+    public static partial void ProductReviewDeleteError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1038, Level = LogLevel.Error, Message = "An error occurred while fetching promo codes.")]
+    public static partial void PromoCodeFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1039, Level = LogLevel.Error, Message = "An error occurred while creating promo code.")]
+    public static partial void PromoCodeCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1040, Level = LogLevel.Error, Message = "An error occurred while updating promo code.")]
+    public static partial void PromoCodeUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1041, Level = LogLevel.Error, Message = "An error occurred while deleting promo code.")]
+    public static partial void PromoCodeDeleteError(this ILogger logger, Exception ex);
 }

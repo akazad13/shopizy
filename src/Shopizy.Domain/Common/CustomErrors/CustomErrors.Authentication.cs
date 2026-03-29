@@ -1,4 +1,4 @@
-using ErrorOr;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Common.CustomErrors;
 
@@ -6,7 +6,7 @@ public static partial class CustomErrors
 {
     public static class Authentication
     {
-        public static Error InvalidCredentials =>
-            Error.Unauthorized(code: "Auth.InvalidCred", description: "Invalid credentials.");
+        public static DomainError InvalidCredentials =>
+            DomainError.Unauthorized(code: "Auth.InvalidCred", description: "Invalid credentials.");
     }
 }

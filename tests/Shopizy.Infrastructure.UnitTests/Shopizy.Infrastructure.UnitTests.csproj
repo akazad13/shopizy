@@ -8,7 +8,10 @@
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shopizy.Infrastructure\Shopizy.Infrastructure.csproj" />

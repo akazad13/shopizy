@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Shopizy.Api;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
@@ -17,6 +16,7 @@ var app = builder.Build();
 
 app.UseInfrastructure();
 app.MapEndpoints();
+app.MapHealthChecks("/healthz");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -33,19 +33,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication()
-   .UseAuthorization();
+   .UseAuthorization()
+   .UseRateLimiter();
 
 if (!builder.Configuration.GetValue<bool>("UsePostgreSql"))
 {
-    using (IServiceScope scope = app.Services.CreateScope())
-    {
-        var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
-        await initialiser.MigrateAsync();
-    }
+    using IServiceScope scope = app.Services.CreateScope();
+    var initialiser = scope.ServiceProvider.GetRequiredService<DbMigrationsHelper>();
+    await initialiser.MigrateAsync();
 }
 
 
 await app.RunAsync();
-
-[ExcludeFromCodeCoverage]
-public partial class Program { }

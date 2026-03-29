@@ -1,4 +1,5 @@
 using CloudinaryDotNet;
+using Shopizy.Infrastructure.Common.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,10 +46,12 @@ public static class ExternalServicesRegister
         // Stripe
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
         StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
+        StripeConfiguration.MaxNetworkRetries = 0; // retry logic is handled manually in StripeService
         
         services.AddScoped<IPaymentService, StripeService>()
             .AddScoped<CustomerService>()
-            .AddScoped<PaymentIntentService>();
+            .AddScoped<PaymentIntentService>()
+            .AddScoped<RefundService>();
 
         // Redis
         services.Configure<RedisSettings>(configuration.GetSection(RedisSettings.Section));
@@ -67,6 +70,10 @@ public static class ExternalServicesRegister
         });
 
         services.AddSingleton<ICacheHelper, RedisCacheHelper>();
+
+        services.AddHealthChecks().AddCheck<RedisHealthCheck>("redis");
+
+        services.AddScoped<IEmailService, LoggingEmailService>();
 
         return services;
     }

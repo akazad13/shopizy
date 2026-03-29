@@ -10,9 +10,14 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync()
+    public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.PromoCodes.AsNoTracking().ToListAsync();
+        return await _dbContext.PromoCodes
+            .AsNoTracking()
+            .OrderByDescending(pc => pc.CreatedOn)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 
     public Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id)
@@ -25,8 +30,18 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
         await _dbContext.PromoCodes.AddAsync(promoCode);
     }
 
+    public Task<PromoCode?> GetByCodeAsync(string code)
+    {
+        return _dbContext.PromoCodes.FirstOrDefaultAsync(pc => pc.Code == code);
+    }
+
     public void Update(PromoCode promoCode)
     {
         _dbContext.PromoCodes.Update(promoCode);
+    }
+
+    public void Remove(PromoCode promoCode)
+    {
+        _dbContext.PromoCodes.Remove(promoCode);
     }
 }

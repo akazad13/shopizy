@@ -13,6 +13,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
     {
         ConfigureProductsTable(builder);
         ConfigureProductImagesTable(builder);
+        ConfigureProductVariantsTable(builder);
     }
 
     private static void ConfigureProductsTable(EntityTypeBuilder<Product> builder)
@@ -35,6 +36,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Colors).HasMaxLength(50).IsRequired();
         builder.Property(p => p.Sizes).HasMaxLength(20).IsRequired();
         builder.Property(p => p.Tags).HasMaxLength(200).IsRequired(false);
+        builder.Property(p => p.IsActive).HasDefaultValue(true);
         builder.Property(p => p.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(p => p.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
@@ -43,6 +45,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
             pb =>
             {
                 pb.Property(p => p.Amount).HasPrecision(18, 2);
+                pb.HasIndex(p => p.Amount);
             }
         );
         builder.OwnsOne(
@@ -59,6 +62,14 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
 
         builder.Navigation(p => p.ProductImages).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(p => p.ProductVariants).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.HasIndex(p => p.CategoryId);
+        builder.HasIndex(p => p.Brand);
+        builder.HasIndex(p => p.StockQuantity);
+        builder.HasIndex(p => p.IsActive);
+        builder.HasIndex(p => p.CreatedOn);
+        builder.HasIndex(p => new { p.CategoryId, p.IsActive });
     }
 
     private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)
@@ -77,6 +88,33 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductImageId.Create(value));
                 pib.Property(pi => pi.ImageUrl).IsRequired();
+            }
+        );
+    }
+
+    private static void ConfigureProductVariantsTable(EntityTypeBuilder<Product> builder)
+    {
+        builder.OwnsMany(
+            p => p.ProductVariants,
+            pvb =>
+            {
+                pvb.ToTable("ProductVariants");
+                pvb.WithOwner().HasForeignKey("ProductId");
+                pvb.HasKey("ProductId", nameof(ProductVariant.Id));
+                pvb.Property(v => v.Id)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, v => ProductVariantId.Create(v));
+                pvb.Property(v => v.Name).HasMaxLength(100);
+                pvb.Property(v => v.SKU).HasMaxLength(50);
+                pvb.Property(v => v.StockQuantity);
+                pvb.Property(v => v.IsActive).HasDefaultValue(true);
+                pvb.OwnsOne(
+                    v => v.UnitPrice,
+                    pb =>
+                    {
+                        pb.Property(p => p.Amount).HasPrecision(18, 2);
+                    }
+                );
             }
         );
     }

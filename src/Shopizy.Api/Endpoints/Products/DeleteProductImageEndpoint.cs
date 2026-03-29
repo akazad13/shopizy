@@ -2,6 +2,7 @@ using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Products.Commands.DeleteProductImage;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ public class DeleteProductImageEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/v1.0/users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}", async (Guid userId, Guid productId, Guid imageId, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<DeleteProductImageEndpoint> logger) =>
+        app.MapDelete("api/v1.0/admin/products/{productId:guid}/image/{imageId:guid}", async (Guid productId, Guid imageId, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<DeleteProductImageEndpoint> logger) =>
         {
-            var command = mapper.Map<DeleteProductImageCommand>((userId, productId, imageId));
+            var command = mapper.Map<DeleteProductImageCommand>((currentUser.GetCurrentUserId(), productId, imageId));
 
             return await HandleAsync(
                 mediator,

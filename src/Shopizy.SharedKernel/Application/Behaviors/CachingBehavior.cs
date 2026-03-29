@@ -9,26 +9,27 @@ public class CachingQueryHandlerDecorator<TQuery, TResponse>(
     ICacheHelper cacheHelper,
     ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> logger)
     : IQueryHandler<TQuery, TResponse>
-    where TQuery : IQuery<TResponse>, ICachableRequest
+    where TQuery : IQuery<TResponse>
 {
-    private readonly IQueryHandler<TQuery, TResponse> _innerHandler = innerHandler;
-    private readonly ICacheHelper _cacheHelper = cacheHelper;
-    private readonly ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> _logger = logger;
-
     public async Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken = default)
     {
-        _logger.LogCheckingCache(typeof(TQuery).Name, query.CacheKey);
+        if (query is not ICachableRequest cachableRequest)
+        {
+            return await innerHandler.Handle(query, cancellationToken);
+        }
 
-        var cacheResult = await _cacheHelper.GetAsync<TResponse>(query.CacheKey);
+        logger.LogCheckingCache(typeof(TQuery).Name, cachableRequest.CacheKey);
+
+        var cacheResult = await cacheHelper.GetAsync<TResponse>(cachableRequest.CacheKey);
         if (cacheResult.Success)
         {
-            _logger.LogCacheHit(typeof(TQuery).Name, query.CacheKey);
+            logger.LogCacheHit(typeof(TQuery).Name, cachableRequest.CacheKey);
             return cacheResult.Value!;
         }
 
-        _logger.LogCacheMiss(typeof(TQuery).Name, query.CacheKey);
-        var response = await _innerHandler.Handle(query, cancellationToken);
-        await _cacheHelper.SetAsync(query.CacheKey, response, query.Expiration);
+        logger.LogCacheMiss(typeof(TQuery).Name, cachableRequest.CacheKey);
+        var response = await innerHandler.Handle(query, cancellationToken);
+        await cacheHelper.SetAsync(cachableRequest.CacheKey, response, cachableRequest.Expiration);
 
         return response;
     }

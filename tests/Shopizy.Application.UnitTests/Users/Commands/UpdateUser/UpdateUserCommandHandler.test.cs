@@ -37,8 +37,6 @@ public class UpdateUserCommandHandlerTests
             .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
 
-        _mockUserRepository.Setup(u => u.Update(user));
-
         _mockCacheHelper
             .Setup(c => c.RemoveAsync($"user-{user.Id.Value}"))
             .Returns(Task.CompletedTask);
@@ -51,7 +49,7 @@ public class UpdateUserCommandHandlerTests
         Assert.IsType<Success>(result.Value);
 
         _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
-        _mockUserRepository.Verify(x => x.Update(user), Times.Once);
+        _mockUserRepository.Verify(x => x.Update(user), Times.Never);
         _mockCacheHelper.Verify(c => c.RemoveAsync($"user-{user.Id.Value}"), Times.Once);
     }
 
@@ -88,8 +86,6 @@ public class UpdateUserCommandHandlerTests
         _mockUserRepository
             .Setup(u => u.GetUserByIdAsync(UserId.Create(command.UserId)))
             .ReturnsAsync(user);
-
-        _mockUserRepository.Setup(u => u.Update(user));
 
         _mockCacheHelper
             .Setup(c => c.RemoveAsync($"user-{user.Id.Value}"))

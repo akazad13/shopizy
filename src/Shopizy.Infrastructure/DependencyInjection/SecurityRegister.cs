@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.Security.CurrentUserProvider;
 using Shopizy.Infrastructure.Security.Hashing;
+using Shopizy.Infrastructure.Security.Totp;
 
 namespace Shopizy.Infrastructure.DependencyInjection;
 
@@ -11,58 +12,99 @@ public static class SecurityRegister
     {
         services.AddScoped<IPasswordManager, PasswordManager>();
         services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        services.AddScoped<ITotpHelper, TotpHelper>();
 
-        services.AddAuthorization(options =>
-        {
-            // Granular Permission Policies
-            options.AddPolicy("Product.Create", policy => 
-                policy.RequireClaim("permissions", "create:product"));
-            
-            options.AddPolicy("Product.Modify", policy => 
-                policy.RequireClaim("permissions", "modify:product"));
-            
-            options.AddPolicy("Product.Delete", policy => 
-                policy.RequireClaim("permissions", "delete:product"));
+        const string claimName = "permissions";
+        const string adminRole = "Admin";
 
-            options.AddPolicy("Category.Create", policy => 
-                policy.RequireClaim("permissions", "create:category"));
-            
-            options.AddPolicy("Category.Modify", policy => 
-                policy.RequireClaim("permissions", "modify:category"));
-            
-            options.AddPolicy("Category.Delete", policy => 
-                policy.RequireClaim("permissions", "delete:category"));
-            
-            // Order Policies
-            options.AddPolicy("Order.Create", policy => 
-                policy.RequireClaim("permissions", "create:order"));
-            options.AddPolicy("Order.Get", policy => 
-                policy.RequireClaim("permissions", "get:order"));
-            options.AddPolicy("Order.Modify", policy => 
-                policy.RequireClaim("permissions", "modify:order"));
-            options.AddPolicy("Order.Delete", policy => 
-                policy.RequireClaim("permissions", "delete:order"));
-
-            // Cart Policies
-            options.AddPolicy("Cart.Create", policy => 
-                policy.RequireClaim("permissions", "create:cart"));
-            options.AddPolicy("Cart.Get", policy => 
-                policy.RequireClaim("permissions", "get:cart"));
-            options.AddPolicy("Cart.Modify", policy => 
-                policy.RequireClaim("permissions", "modify:cart"));
-            options.AddPolicy("Cart.Delete", policy => 
-                policy.RequireClaim("permissions", "delete:cart"));
-
-            // User Policies
-            options.AddPolicy("User.Get", policy => 
-                policy.RequireClaim("permissions", "get:user"));
-            options.AddPolicy("User.Modify", policy => 
-                policy.RequireClaim("permissions", "modify:user"));
-
-            options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Product.Create", policy => 
+                policy.RequireClaim(claimName, "create:product").RequireRole(adminRole))
+            .AddPolicy("Product.Modify", policy => 
+                policy.RequireClaim(claimName, "modify:product").RequireRole(adminRole))
+            .AddPolicy("Product.Delete", policy => 
+                policy.RequireClaim(claimName, "delete:product").RequireRole(adminRole))
+            .AddPolicy("Category.Create", policy => 
+                policy.RequireClaim(claimName, "create:category").RequireRole(adminRole))
+            .AddPolicy("Category.Modify", policy => 
+                policy.RequireClaim(claimName, "modify:category").RequireRole(adminRole))
+            .AddPolicy("Category.Delete", policy => 
+                policy.RequireClaim(claimName, "delete:category").RequireRole(adminRole))
+            .AddPolicy("Order.Create", policy => 
+                policy.RequireClaim(claimName, "create:order"))
+            .AddPolicy("Order.Get", policy => 
+                policy.RequireClaim(claimName, "get:order"))
+            .AddPolicy("Order.Modify", policy => 
+                policy.RequireClaim(claimName, "modify:order"))
+            .AddPolicy("Order.Delete", policy => 
+                policy.RequireClaim(claimName, "delete:order"))
+            .AddPolicy("Cart.Create", policy => 
+                policy.RequireClaim(claimName, "create:cart"))
+            .AddPolicy("Cart.Get", policy => 
+                policy.RequireClaim(claimName, "get:cart"))
+            .AddPolicy("Cart.Modify", policy => 
+                policy.RequireClaim(claimName, "modify:cart"))
+            .AddPolicy("Cart.Delete", policy => 
+                policy.RequireClaim(claimName, "delete:cart"))
+            .AddPolicy("Wishlist.Create", policy =>
+                policy.RequireClaim(claimName, "create:wishlist"))
+            .AddPolicy("Wishlist.Get", policy =>
+                policy.RequireClaim(claimName, "get:wishlist"))
+            .AddPolicy("Wishlist.Modify", policy =>
+                policy.RequireClaim(claimName, "modify:wishlist"))
+            .AddPolicy("User.Get", policy => 
+                policy.RequireClaim(claimName, "get:user"))
+            .AddPolicy("User.Modify", policy => 
+                policy.RequireClaim(claimName, "modify:user"))
+            .AddPolicy("Admin", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.View", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.ViewOrder", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.ViewOrders", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.ViewUsers", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.UpdateOrderStatus", policy => 
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.UpdateUserRole", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("ProductReview.Create", policy =>
+                policy.RequireClaim(claimName, "create:review"))
+            .AddPolicy("ProductReview.Get", policy =>
+                policy.RequireClaim(claimName, "get:review"))
+            .AddPolicy("Admin.DeleteProductReview", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Create", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Get", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Modify", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Admin.PromoCode.Delete", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Loyalty.Get", policy =>
+                policy.RequireClaim(claimName, "get:user"))
+            .AddPolicy("Loyalty.Earn", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("Loyalty.Redeem", policy =>
+                policy.RequireClaim(claimName, "modify:user"))
+            .AddPolicy("GiftCard.Create", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("GiftCard.Get", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("GiftCard.Validate", policy =>
+                policy.RequireAuthenticatedUser())
+            .AddPolicy("Question.Ask", policy =>
+                policy.RequireClaim(claimName, "get:product"))
+            .AddPolicy("Question.Answer", policy =>
+                policy.RequireRole(adminRole))
+            .AddPolicy("AuditLog.Get", policy =>
+                policy.RequireRole(adminRole))
+            .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .Build();
-        });
+                .Build());
 
         return services;
     }

@@ -418,3 +418,6 @@ full_build.log
 infra_build.txt
 infra_errors.txt
 msbuild.log
+
+# Local development secrets - never commit
+src/Shopizy.Api/appsettings.Development.json

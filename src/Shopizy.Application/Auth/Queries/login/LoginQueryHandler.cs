@@ -39,17 +39,19 @@ public class LoginQueryHandler(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var user = await _userRepository.GetUserByEmailAsync(query.Email);
         if (user is null)
         {
-            return CustomErrors.User.UserNotFoundWhileLogin;
+            return (Error)CustomErrors.User.UserNotFoundWhileLogin;
         }
 
         if (!_passwordManager.Verify(query.Password, user.Password!))
         {
-            return CustomErrors.Authentication.InvalidCredentials;
+            return (Error)CustomErrors.Authentication.InvalidCredentials;
         }
 
         var allPermissions = await _permissionRepository.GetAsync();
@@ -58,8 +60,8 @@ public class LoginQueryHandler(
             .Where(permission => user.PermissionIds.Any(up => up.Value == permission.Id.Value))
             .Select(p => p.Name)
             .ToList();
-        
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, assignedPermissions);
+
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
 
         var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
 
@@ -70,6 +72,6 @@ public class LoginQueryHandler(
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, token);
+        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.DependencyInjection;
+using Shopizy.Infrastructure.Security.Totp;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure;
@@ -23,14 +25,15 @@ public static class DependencyInjectionRegister
                 builder =>
                 {
                     builder
-                        .SetIsOriginAllowed((host) => true)
-                        .WithOrigins(Origins())
+                        .WithOrigins(Origins(configuration))
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
                 }
             );
         });
+
+        services.AddScoped<ITotpHelper, TotpHelper>();
 
         return services
             .AddHttpContextAccessor()
@@ -41,8 +44,8 @@ public static class DependencyInjectionRegister
             .AddMessaging();
     }
 
-    private static string[] Origins()
+    private static string[] Origins(IConfiguration configuration)
     {
-        return ["http://localhost:4200", "https://shopizy.netlify.app/"];
+        return configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>() ?? [];
     }
 }

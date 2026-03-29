@@ -29,7 +29,7 @@ public class CreateOrderCommandHandler(
         );
         if (products == null || products.Count == 0)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         foreach (var product in products)
@@ -37,11 +37,9 @@ public class CreateOrderCommandHandler(
             var requestedItem = request.OrderItems.FirstOrDefault(i => i.ProductId == product.Id.Value);
             if (requestedItem != null && product.StockQuantity < requestedItem.Quantity)
             {
-                return CustomErrors.Product.InsufficientStock;
+                return (Error)CustomErrors.Product.InsufficientStock;
             }
         }
-
-
 
         var order = Order.Create(
             userId: UserId.Create(request.UserId),
@@ -63,10 +61,10 @@ public class CreateOrderCommandHandler(
                 .ConvertAll(item =>
                 {
                     var product = products.First(p => p.Id.Value == item.ProductId);
-                    var photoUrl =
-                        product.ProductImages.Count == 0 ? "" : product.ProductImages[0].ImageUrl;
+                    var photoUrl = product.ProductImages?.FirstOrDefault()?.ImageUrl ?? "";
 
                     return OrderItem.Create(
+                        productId: product.Id,
                         name: product.Name,
                         pictureUrl: photoUrl,
                         unitPrice: Price.CreateNew(
@@ -82,8 +80,6 @@ public class CreateOrderCommandHandler(
         );
 
         await _orderRepository.AddAsync(order);
-
-        // remove cart items events
 
         return order;
     }

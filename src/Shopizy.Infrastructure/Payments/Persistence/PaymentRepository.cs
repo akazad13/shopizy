@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -30,6 +31,11 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
     public Task<Payment?> GetPaymentByIdAsync(PaymentId id)
     {
         return _dbContext.Payments.FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public Task<Payment?> GetPaymentByOrderIdAsync(OrderId orderId)
+    {
+        return _dbContext.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
     }
 
     /// <summary>

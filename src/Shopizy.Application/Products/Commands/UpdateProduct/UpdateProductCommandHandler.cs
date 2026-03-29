@@ -15,14 +15,14 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
     public async Task<ErrorOr<Success>> Handle(
         UpdateProductCommand cmd,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.GetProductByIdForUpdateAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         product.Update(
@@ -39,8 +39,6 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
             sizes: cmd.Sizes,
             tags: cmd.Tags
         );
-
-        _productRepository.Update(product);
 
         return Result.Success;
     }

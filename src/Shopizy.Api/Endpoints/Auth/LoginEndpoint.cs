@@ -27,6 +27,7 @@ public class LoginEndpoint : ApiEndpoint
             );
         })
         .AllowAnonymous()
+        .RequireRateLimiting("auth")
         .WithTags("Auth")
         .WithSummary("User login")
         .WithDescription("Authenticates a user and returns an access token.")

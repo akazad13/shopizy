@@ -28,17 +28,15 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
     )
     {
         var userId = UserId.Create(cmd.UserId);
-        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+        var cart = await _cartRepository.GetCartByUserIdForUpdateAsync(userId);
 
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return (Error)CustomErrors.Cart.CartNotFound;
         }
 
         cart.UpdateLineItem(CartItemId.Create(cmd.CartItemId), cmd.Quantity);
 
-        _cartRepository.Update(cart);
-
-        return await _cartRepository.GetCartByUserIdAsync(userId);
+        return cart;
     }
 }

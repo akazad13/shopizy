@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using Mapster;
 using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Products.Commands.DeleteProduct;
@@ -24,13 +23,22 @@ public class ProductMappingConfig : IRegister
     /// <param name="config">The type adapter configuration.</param>
     public void Register(TypeAdapterConfig config)
     {
-        Guard.Against.Null(config);
+        ArgumentNullException.ThrowIfNull(config);
+
+        config.NewConfig<ProductsResult, ProductsPagedResponse>()
+            .Map(dest => dest.Items, src => src.Products)
+            .Map(dest => dest.TotalCount, src => src.TotalCount);
 
         config.NewConfig<ProductsCriteria, GetProductsQuery>()
             .MapWith(src => new GetProductsQuery(
+                src.ProductIds,
                 src.Name,
                 src.CategoryIds,
                 src.AverageRating,
+                src.MinPrice,
+                src.MaxPrice,
+                src.InStockOnly,
+                src.SortBy,
                 src.PageNumber,
                 src.PageSize));
 
@@ -69,7 +77,7 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ProductImageId, src => src.Id.Value);
 
         config
-            .NewConfig<ProductReview, ProductReviewResponse>()
+            .NewConfig<ProductReview, ProductDetailReviewResponse>()
             .Map(dest => dest.ProductReviewId, src => src.Id.Value)
             .Map(dest => dest.Rating, src => src.Rating.Value)
             .Map(dest => dest.Reviewer, src => $"{src.User.FirstName} {src.User.LastName}")

@@ -26,7 +26,10 @@ public class UpdateAuditableEntitiesInterceptor(IDateTimeProvider dateTimeProvid
 
     private void UpdateEntities(DbContext? context)
     {
-        if (context == null) return;
+        if (context == null)
+        {
+            return;
+        }
 
         foreach (var entry in context.ChangeTracker.Entries<IAuditable>())
         {

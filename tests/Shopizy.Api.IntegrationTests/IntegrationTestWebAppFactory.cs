@@ -9,6 +9,11 @@ using Testcontainers.PostgreSql;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Common.Interfaces.Services;
+using Shopizy.Application.Products.Common;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
+using ErrorOr;
 
 namespace Shopizy.Api.IntegrationTests;
 
@@ -22,6 +27,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         // Use environment variable to ensure it's available early for WebApplicationBuilder.Configuration
         Environment.SetEnvironmentVariable("UsePostgreSql", "true");
         builder.UseEnvironment("Testing");
@@ -42,6 +48,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         builder.ConfigureTestServices(services =>
         {
+            ArgumentNullException.ThrowIfNull(services);
             // Remove the existing DbContext registration (if any)
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
 
@@ -50,7 +57,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             services.AddDbContext<AppDbContext>((sp, options) =>
             {
                 var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseNpgsql(_dbContainer.GetConnectionString())
+                options.UseNpgsql(_dbContainer.GetConnectionString(),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .AddInterceptors(interceptor);
             });
 
@@ -72,6 +80,33 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             // Mock IPaymentService
             services.RemoveAll(typeof(IPaymentService));
             services.AddScoped<IPaymentService, MockPaymentService>();
+
+            // Mock IMediaUploader
+            services.RemoveAll(typeof(IMediaUploader));
+            services.AddScoped<IMediaUploader, MockMediaUploader>();
+
+            // Disable rate limiting for tests: remove original Configure callbacks,
+            // then re-register with very permissive limits so 429s never occur.
+            services.RemoveAll<IConfigureOptions<RateLimiterOptions>>();
+            services.Configure<RateLimiterOptions>(options =>
+            {
+                options.AddFixedWindowLimiter("auth", o =>
+                {
+                    o.Window = TimeSpan.FromSeconds(1);
+                    o.PermitLimit = 10000;
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit = 0;
+                });
+                options.AddSlidingWindowLimiter("api", o =>
+                {
+                    o.Window = TimeSpan.FromSeconds(1);
+                    o.SegmentsPerWindow = 1;
+                    o.PermitLimit = 10000;
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit = 0;
+                });
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            });
         });
     }
 
@@ -107,8 +142,12 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             );
         }
 
+        public Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken) => throw new NotImplementedException();
+
         public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return Task.FromResult<ErrorOr.ErrorOr<CreateSaleResponse>>(
                 new CreateSaleResponse
                 {
@@ -123,9 +162,24 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                     PaymentMethodId = request.PaymentMethodId,
                     PaymentMethodTypes = request.PaymentMethodTypes,
                     Status = "succeeded",
-                    Metadata = new Dictionary<string, string>()
+                    Metadata = []
                 }
             );
+        }
+    }
+
+    public class MockMediaUploader : IMediaUploader
+    {
+        public Task<ErrorOr.ErrorOr<PhotoUploadResult>> UploadPhotoAsync(IFormFile file, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<PhotoUploadResult>>(
+                new PhotoUploadResult("https://mock.cloudinary.com/image.jpg", "mock_public_id")
+            );
+        }
+
+        public Task<ErrorOr.ErrorOr<Success>> DeletePhotoAsync(string publicId)
+        {
+            return Task.FromResult<ErrorOr.ErrorOr<Success>>(Result.Success);
         }
     }
 

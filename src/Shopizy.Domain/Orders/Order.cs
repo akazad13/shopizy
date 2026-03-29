@@ -14,7 +14,7 @@ namespace Shopizy.Domain.Orders;
 public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
 {
     private readonly IList<OrderItem> _orderItems = [];
-    
+
     /// <summary>
     /// Gets the user ID who placed the order.
     /// </summary>
@@ -58,17 +58,22 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the order was last modified.
     /// </summary>
-    public DateTime? ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; }
     
     /// <summary>
     /// Gets the date and time when the order was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     
     /// <summary>
     /// Gets the read-only list of order items.
     /// </summary>
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
+
+    /// <summary>
+    /// Gets the shipment associated with this order.
+    /// </summary>
+    public Shipment? Shipment { get; private set; }
 
     /// <summary>
     /// Creates a new order.
@@ -136,7 +141,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         CancellationReason = reason;
         OrderStatus = OrderStatus.Cancelled;
 
-        this.AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
+        AddDomainEvent(new Events.OrderCancelledDomainEvent(this));
     }
 
     /// <summary>
@@ -169,5 +174,46 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     public void UpdateOrderStatus(OrderStatus status)
     {
         OrderStatus = status;
+    }
+
+    /// <summary>
+    /// Marks the order payment as complete, transitions to Processing status,
+    /// and raises a <see cref="Events.PaymentCompletedDomainEvent"/>.
+    /// </summary>
+    /// <param name="customerId">The Stripe customer ID associated with this payment.</param>
+    public void CompletePayment(string customerId)
+    {
+        PaymentStatus = PaymentStatus.Payed;
+        OrderStatus = OrderStatus.Processing;
+
+        AddDomainEvent(new Events.PaymentCompletedDomainEvent(Id, UserId, customerId));
+    }
+
+    /// <summary>
+    /// Adds a shipment to the order.
+    /// </summary>
+    public DomainResult<Shipment> AddShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery)
+    {
+        if (Shipment is not null)
+        {
+            return DomainError.Conflict("Order.ShipmentExists", "Order already has a shipment.");
+        }
+
+        Shipment = Shipment.Create(carrier, trackingNumber, estimatedDelivery);
+        return Shipment;
+    }
+
+    /// <summary>
+    /// Updates the shipment associated with the order.
+    /// </summary>
+    public DomainResult<bool> UpdateShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery, ShipmentStatus status)
+    {
+        if (Shipment is null)
+        {
+            return DomainError.NotFound("Order.ShipmentNotFound", "Order has no shipment.");
+        }
+
+        Shipment.Update(carrier, trackingNumber, estimatedDelivery, status);
+        return true;
     }
 }
