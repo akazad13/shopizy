@@ -4,6 +4,9 @@ namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
 public class DeleteCategoryValidator : AbstractValidator<DeleteCategoryCommand>
 {
-    public DeleteCategoryValidator() { }
+    public DeleteCategoryValidator()
+    {
+        RuleFor(x => x.CategoryId).NotEmpty();
+    }
 }
 

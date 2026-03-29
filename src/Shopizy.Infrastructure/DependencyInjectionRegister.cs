@@ -25,7 +25,7 @@ public static class DependencyInjectionRegister
                 builder =>
                 {
                     builder
-                        .WithOrigins(Origins())
+                        .WithOrigins(Origins(configuration))
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -44,8 +44,8 @@ public static class DependencyInjectionRegister
             .AddMessaging();
     }
 
-    private static string[] Origins()
+    private static string[] Origins(IConfiguration configuration)
     {
-        return ["http://localhost:4200", "https://shopizy.netlify.app/"];
+        return configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>() ?? [];
     }
 }

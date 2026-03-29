@@ -211,7 +211,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductsPagedResponse>(TestContext.Current.CancellationToken);
-        return result ?? new Shopizy.Contracts.Product.ProductsPagedResponse([], 0);
+        return result ?? new Shopizy.Contracts.Product.ProductsPagedResponse([], 0, 0, 0);
     }
 
     #endregion

@@ -41,7 +41,17 @@ public class CreateOrderCommandHandler(
             }
         }
 
-
+        // Reduce stock for each ordered product. GetProductsByIdsAsync uses AsNoTracking,
+        // so we must explicitly mark entities as modified after mutation.
+        foreach (var product in products)
+        {
+            var requestedItem = request.OrderItems.FirstOrDefault(i => i.ProductId == product.Id.Value);
+            if (requestedItem != null)
+            {
+                product.ReduceStock(requestedItem.Quantity);
+                _productRepository.Update(product);
+            }
+        }
 
         var order = Order.Create(
             userId: UserId.Create(request.UserId),
@@ -81,8 +91,6 @@ public class CreateOrderCommandHandler(
         );
 
         await _orderRepository.AddAsync(order);
-
-        // remove cart items events
 
         return order;
     }

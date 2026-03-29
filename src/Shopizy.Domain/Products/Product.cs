@@ -221,6 +221,17 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         Colors = colors;
         Sizes = sizes;
         Tags = tags;
+
+        AddDomainEvent(new Events.ProductUpdatedDomainEvent(this));
+    }
+
+    /// <summary>
+    /// Reduces the stock quantity by the specified amount.
+    /// </summary>
+    /// <param name="quantity">The quantity to deduct from stock.</param>
+    public void ReduceStock(int quantity)
+    {
+        StockQuantity -= quantity;
     }
 
     /// <summary>

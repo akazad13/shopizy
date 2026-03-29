@@ -34,6 +34,8 @@ public static class DependencyInjectionRegister
         services.AddExceptionHandler<Shopizy.Api.Common.Errors.GlobalExceptionHandler>();
         services.AddProblemDetails();
 
+        services.AddHealthChecks();
+
         services.AddRateLimiter(options =>
         {
             // Fixed window for auth endpoints - 5 requests per minute per IP

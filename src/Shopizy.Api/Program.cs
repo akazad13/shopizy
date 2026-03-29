@@ -16,6 +16,7 @@ var app = builder.Build();
 
 app.UseInfrastructure();
 app.MapEndpoints();
+app.MapHealthChecks("/healthz");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
