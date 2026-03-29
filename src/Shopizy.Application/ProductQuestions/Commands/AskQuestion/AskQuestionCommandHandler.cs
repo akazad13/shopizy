@@ -26,7 +26,7 @@ public class AskQuestionCommandHandler(
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         var question = ProductQuestion.Create(

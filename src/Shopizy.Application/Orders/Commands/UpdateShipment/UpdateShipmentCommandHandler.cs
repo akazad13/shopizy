@@ -18,7 +18,7 @@ public class UpdateShipmentCommandHandler(IOrderRepository orderRepository)
         var order = await orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         var result = order.UpdateShipment(
@@ -28,7 +28,7 @@ public class UpdateShipmentCommandHandler(IOrderRepository orderRepository)
             (ShipmentStatus)request.Status
         );
 
-        if (result.IsError) return result.Errors;
+        if (result.IsError) return result.Error.ToError();
 
         return Result.Success;
     }

@@ -18,7 +18,7 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(command.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         if (Enum.TryParse<UserRole>(command.Role, true, out var role))

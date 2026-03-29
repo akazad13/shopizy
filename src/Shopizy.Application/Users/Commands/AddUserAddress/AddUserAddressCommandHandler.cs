@@ -18,7 +18,7 @@ public class AddUserAddressCommandHandler(IUserRepository userRepository)
         var user = await userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         var address = user.AddAddress(

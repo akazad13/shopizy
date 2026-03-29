@@ -26,7 +26,12 @@ public class GetAdminOrdersEndpoint : ApiEndpoint
             return await HandleAsync(
                 mediator,
                 query,
-                orders => Results.Ok(mapper.Map<List<OrderResponse>>(orders)),
+                orders => Results.Ok(new PagedResponse<OrderResponse>(
+                    mapper.Map<List<OrderResponse>>(orders.Items.ToList()),
+                    orders.PageNumber,
+                    orders.PageSize,
+                    orders.TotalCount
+                )),
                 ex => logger.AdminOrdersListFetchError(ex)
             );
         })
@@ -34,7 +39,7 @@ public class GetAdminOrdersEndpoint : ApiEndpoint
         .WithTags("Orders")
         .WithSummary("List all orders")
         .WithDescription("Retrieves a paginated list of all orders in the system for administrative purposes.")
-        .Produces<List<OrderResponse>>(StatusCodes.Status200OK)
+        .Produces<PagedResponse<OrderResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
         .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);

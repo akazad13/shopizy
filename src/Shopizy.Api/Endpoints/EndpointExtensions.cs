@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using System.Reflection;
 
 namespace Shopizy.Api.Endpoints;
@@ -19,11 +20,18 @@ public static class EndpointExtensions
 
     public static IApplicationBuilder MapEndpoints(this WebApplication app)
     {
+        var versionSet = app.NewApiVersionSet()
+            .HasApiVersion(new ApiVersion(1, 0))
+            .ReportApiVersions()
+            .Build();
+
+        var group = app.MapGroup(string.Empty).WithApiVersionSet(versionSet);
+
         var endpoints = app.Services.CreateScope().ServiceProvider.GetServices<IEndpoint>();
 
         foreach (var endpoint in endpoints)
         {
-            endpoint.MapEndpoint(app);
+            endpoint.MapEndpoint(group);
         }
 
         return app;

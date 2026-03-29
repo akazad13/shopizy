@@ -23,7 +23,7 @@ public class AddProductImageCommandHandler(
     {
         if (cmd.File == null)
         {
-            return CustomErrors.Product.ProductImageNotUploaded;
+            return (Error)CustomErrors.Product.ProductImageNotUploaded;
         }
 
         Domain.Products.Product? product = await _productRepository.GetProductByIdForUpdateAsync(
@@ -32,7 +32,7 @@ public class AddProductImageCommandHandler(
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         ProductImage productImage;

@@ -22,6 +22,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
         builder.HasKey(c => c.Id);
 
         builder.HasIndex(c => c.UserId);
+        builder.Property<byte[]>("RowVersion");
 
         builder
             .Property(c => c.Id)

@@ -1,4 +1,3 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
@@ -6,7 +5,7 @@ using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Users.Entities;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Users.Enums;
-using ErrorOr;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Users;
 
@@ -51,9 +50,24 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public string Phone { get; private set;}
 
     /// <summary>
-    /// Gets the user's hashed password.
+    /// Gets the credential information for this user (password, reset token, 2FA).
     /// </summary>
-    public string? Password { get; private set; }
+    public UserCredential Credentials { get; private set; } = null!;
+
+    /// <summary>Gets the user's hashed password.</summary>
+    public string? Password => Credentials.Password;
+
+    /// <summary>Gets the password reset token.</summary>
+    public string? PasswordResetToken => Credentials.PasswordResetToken;
+
+    /// <summary>Gets the password reset token expiry.</summary>
+    public DateTime? PasswordResetTokenExpiry => Credentials.PasswordResetTokenExpiry;
+
+    /// <summary>Gets the two-factor authentication secret.</summary>
+    public string? TwoFactorSecret => Credentials.TwoFactorSecret;
+
+    /// <summary>Gets whether two-factor authentication is enabled.</summary>
+    public bool IsTwoFactorEnabled => Credentials.IsTwoFactorEnabled;
 
     /// <summary>
     /// Gets the user's customer ID for payment processing.
@@ -96,26 +110,6 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public IReadOnlyList<UserAddress> Addresses => _addresses.AsReadOnly();
 
     /// <summary>
-    /// Gets or sets the password reset token.
-    /// </summary>
-    public string? PasswordResetToken { get; private set; }
-
-    /// <summary>
-    /// Gets or sets the password reset token expiry.
-    /// </summary>
-    public DateTime? PasswordResetTokenExpiry { get; private set; }
-
-    /// <summary>
-    /// Gets the two-factor authentication secret.
-    /// </summary>
-    public string? TwoFactorSecret { get; private set; }
-
-    /// <summary>
-    /// Gets whether two-factor authentication is enabled.
-    /// </summary>
-    public bool IsTwoFactorEnabled { get; private set; }
-
-    /// <summary>
     /// Creates a new user instance.
     /// </summary>
     /// <param name="firstName">The user's first name.</param>
@@ -156,7 +150,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         FirstName = firstName;
         LastName = lastName;
         Email = email;
-        Password = password;
+        Credentials = new UserCredential(password);
         Role = role;
         _permissionIds = [.. permissionIds];
     }
@@ -184,10 +178,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// Updates the user's password.
     /// </summary>
     /// <param name="password">The new hashed password.</param>
-    public void UpdatePassword(string password)
-    {
-        Password = password;
-    }
+    public void UpdatePassword(string password) => Credentials.UpdatePassword(password);
 
     /// <summary>
     /// Updates the user's name.
@@ -274,7 +265,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Updates an existing address.
     /// </summary>
-    public ErrorOr<UserAddress> UpdateAddress(
+    public DomainResult<UserAddress> UpdateAddress(
         UserAddressId addressId,
         string street,
         string city,
@@ -292,94 +283,41 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Removes an address from the user's address book.
     /// </summary>
-    public ErrorOr<Deleted> RemoveAddress(UserAddressId addressId)
+    public DomainResult<bool> RemoveAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
         if (address is null) return CustomErrors.UserAddress.AddressNotFound;
         _addresses.Remove(address);
-        return Result.Deleted;
+        return true;
     }
 
     /// <summary>
     /// Sets the default address for the user.
     /// </summary>
-    public ErrorOr<Success> SetDefaultAddress(UserAddressId addressId)
+    public DomainResult<bool> SetDefaultAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
         if (address is null) return CustomErrors.UserAddress.AddressNotFound;
         foreach (var a in _addresses) a.SetDefault(false);
         address.SetDefault(true);
-        return Result.Success;
+        return true;
     }
 
-    /// <summary>
-    /// Sets the password reset token and expiry.
-    /// </summary>
-    public void SetPasswordResetToken(string token, DateTime expiry)
-    {
-        PasswordResetToken = token;
-        PasswordResetTokenExpiry = expiry;
-    }
+    /// <summary>Sets the password reset token and expiry.</summary>
+    public void SetPasswordResetToken(string token, DateTime expiry) => Credentials.SetPasswordResetToken(token, expiry);
 
-    /// <summary>
-    /// Validates whether the provided reset token is valid and not expired.
-    /// </summary>
-    public bool IsPasswordResetTokenValid(string token)
-        => PasswordResetToken == token && PasswordResetTokenExpiry > DateTime.UtcNow;
+    /// <summary>Returns true when the reset token matches and has not expired.</summary>
+    public bool IsPasswordResetTokenValid(string token) => Credentials.IsPasswordResetTokenValid(token);
 
-    /// <summary>
-    /// Clears the password reset token after use.
-    /// </summary>
-    public void ClearPasswordResetToken()
-    {
-        PasswordResetToken = null;
-        PasswordResetTokenExpiry = null;
-    }
+    /// <summary>Clears the password reset token after use.</summary>
+    public void ClearPasswordResetToken() => Credentials.ClearPasswordResetToken();
 
-    /// <summary>
-    /// Enables two-factor authentication by generating a secret.
-    /// </summary>
-    public string EnableTwoFactor()
-    {
-        TwoFactorSecret = GenerateBase32Secret();
-        IsTwoFactorEnabled = false;
-        return TwoFactorSecret;
-    }
+    /// <summary>Generates a new TOTP secret and marks 2FA as pending confirmation.</summary>
+    public string EnableTwoFactor() => Credentials.EnableTwoFactor();
 
-    /// <summary>
-    /// Confirms two-factor authentication after successful code verification.
-    /// </summary>
-    public void ConfirmTwoFactor()
-    {
-        IsTwoFactorEnabled = true;
-    }
+    /// <summary>Marks 2FA as fully enabled after code verification.</summary>
+    public void ConfirmTwoFactor() => Credentials.ConfirmTwoFactor();
 
-    /// <summary>
-    /// Disables two-factor authentication.
-    /// </summary>
-    public void DisableTwoFactor()
-    {
-        TwoFactorSecret = null;
-        IsTwoFactorEnabled = false;
-    }
-
-    private static string GenerateBase32Secret()
-    {
-        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(20);
-        return Base32Encode(bytes);
-    }
-
-    private static string Base32Encode(byte[] data)
-    {
-        const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-        var result = new System.Text.StringBuilder();
-        for (int i = 0; i < data.Length; i += 5)
-        {
-            int byteCount = Math.Min(5, data.Length - i);
-            ulong buffer = 0;
-            for (int j = 0; j < byteCount; j++) buffer |= ((ulong)data[i + j]) << (8 * (4 - j));
-            for (int j = 7; j >= 0 - (5 - byteCount) * 2; j--) result.Append(alphabet[(int)((buffer >> (j * 5)) & 0x1F)]);
-        }
-        return result.ToString();
-    }
+    /// <summary>Removes the TOTP secret and disables 2FA.</summary>
+    public void DisableTwoFactor() => Credentials.DisableTwoFactor();
 }

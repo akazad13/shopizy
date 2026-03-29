@@ -7,6 +7,7 @@ namespace Shopizy.Application.Orders.Events;
 
 public class OrderCreatedDomainEventHandler(
     ICartRepository cartRepository,
+    IProductRepository productRepository,
     IUnitOfWork unitOfWork
 ) : IDomainEventHandler<OrderCreatedDomainEvent>
 {
@@ -15,14 +16,25 @@ public class OrderCreatedDomainEventHandler(
         CancellationToken cancellationToken = default
     )
     {
-        var cart = await cartRepository.GetCartByUserIdForUpdateAsync(domainEvent.Order.UserId);
+        var productIds = domainEvent.Order.OrderItems.Select(i => i.ProductId).ToList();
+        var products = await productRepository.GetProductsByIdsForUpdateAsync(productIds);
 
-        if (cart is null || cart.CartItems.Count == 0)
+        foreach (var item in domainEvent.Order.OrderItems)
         {
-            return;
+            var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+            if (product is not null)
+            {
+                product.ReduceStock(item.Quantity);
+                productRepository.Update(product);
+            }
         }
 
-        cart.Clear();
+        var cart = await cartRepository.GetCartByUserIdForUpdateAsync(domainEvent.Order.UserId);
+        if (cart is not null && cart.CartItems.Count > 0)
+        {
+            cart.Clear();
+        }
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

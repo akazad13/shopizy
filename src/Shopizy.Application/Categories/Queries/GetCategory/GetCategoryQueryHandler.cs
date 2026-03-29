@@ -23,7 +23,7 @@ public class GetCategoryQueryHandler(ICategoryRepository categoryRepository)
 
         if (category is null)
         {
-            return CustomErrors.Category.CategoryNotFound;
+            return (Error)CustomErrors.Category.CategoryNotFound;
         }
 
         return category;

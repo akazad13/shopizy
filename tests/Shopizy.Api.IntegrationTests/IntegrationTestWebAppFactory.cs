@@ -10,7 +10,6 @@ using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Common;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using System.Threading.RateLimiting;
@@ -142,6 +141,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 new CustomerResource("cus_mock_123", email, name)
             );
         }
+
+        public Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken) => throw new NotImplementedException();
 
         public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
         {

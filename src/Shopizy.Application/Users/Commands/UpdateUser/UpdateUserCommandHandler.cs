@@ -32,7 +32,7 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         user.UpdateUserName(request.FirstName, request.LastName);

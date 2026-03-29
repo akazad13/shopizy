@@ -20,7 +20,7 @@ public class AddShipmentCommandHandler(IOrderRepository orderRepository)
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         var result = order.AddShipment(
@@ -29,7 +29,7 @@ public class AddShipmentCommandHandler(IOrderRepository orderRepository)
             request.EstimatedDelivery
         );
 
-        if (result.IsError) return result.Errors;
+        if (result.IsError) return result.Error.ToError();
 
         return result.Value;
     }

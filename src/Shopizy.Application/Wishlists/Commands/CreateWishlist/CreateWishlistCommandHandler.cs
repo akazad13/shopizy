@@ -20,7 +20,7 @@ public class CreateWishlistCommandHandler(IWishlistRepository wishlistRepository
         var existing = await wishlistRepository.GetWishlistByUserIdAsync(userId, cancellationToken);
         if (existing is not null)
         {
-            return CustomErrors.Wishlist.WishlistAlreadyExists;
+            return (Error)CustomErrors.Wishlist.WishlistAlreadyExists;
         }
 
         var wishlist = Wishlist.Create(userId, cmd.Name, cmd.IsPublic);

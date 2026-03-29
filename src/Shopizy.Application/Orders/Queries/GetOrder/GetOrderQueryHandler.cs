@@ -21,7 +21,7 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository)
 
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         return order;

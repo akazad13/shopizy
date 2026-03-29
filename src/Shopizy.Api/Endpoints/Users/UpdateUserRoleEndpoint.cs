@@ -1,5 +1,6 @@
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Users.Commands.UpdateUserRole;
+using Shopizy.Application.Common.Security.CurrentUser;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Admin;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ public class UpdateUserRoleEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/v1.0/admin/users/{id:guid}/role", async (Guid id, [FromBody] UpdateUserRoleRequest request, [FromServices] IDispatcher mediator, ILogger<UpdateUserRoleEndpoint> logger) =>
+        app.MapPatch("api/v1.0/admin/users/{id:guid}/role", async (Guid id, [FromBody] UpdateUserRoleRequest request, [FromServices] IDispatcher mediator, [FromServices] ICurrentUser currentUser, ILogger<UpdateUserRoleEndpoint> logger) =>
         {
+            var adminId = currentUser.GetCurrentUserId();
+
             return await HandleAsync(
                 mediator,
-                new UpdateUserRoleCommand(id, request.Role, request.PermissionIds),
+                new UpdateUserRoleCommand(id, request.Role, request.PermissionIds, adminId),
                 success => Results.Ok(SuccessResult.Success("User roles/permissions updated successfully.")),
                 ex => logger.UserRoleUpdateError(ex)
             );

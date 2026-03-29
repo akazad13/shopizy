@@ -29,4 +29,11 @@ public static partial class LoggerMessages
 
     [LoggerMessage(EventId = 1005, Level = LogLevel.Warning, Message = "Redis unavailable for key {Key}, falling back to cache miss.")]
     public static partial void RedisUnavailable(this ILogger logger, string key);
+
+    [LoggerMessage(
+        EventId = 1006,
+        Level = LogLevel.Error,
+        Message = "Domain event {EventType} permanently failed after all retries. Payload: {EventPayload}"
+    )]
+    public static partial void DomainEventDeadLettered(this ILogger logger, string eventType, string eventPayload);
 }

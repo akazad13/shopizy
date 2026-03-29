@@ -32,7 +32,7 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
 
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return (Error)CustomErrors.Cart.CartNotFound;
         }
 
         cart.UpdateLineItem(CartItemId.Create(cmd.CartItemId), cmd.Quantity);

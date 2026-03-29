@@ -18,7 +18,7 @@ public class UpdateUserAddressCommandHandler(IUserRepository userRepository)
         var user = await userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         var result = user.UpdateAddress(
@@ -30,7 +30,7 @@ public class UpdateUserAddressCommandHandler(IUserRepository userRepository)
             request.ZipCode
         );
 
-        if (result.IsError) return result.Errors;
+        if (result.IsError) return result.Error.ToError();
 
         return result.Value;
     }

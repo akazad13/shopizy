@@ -1,4 +1,3 @@
-using ErrorOr;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.LoyaltyAccounts.Entities;
 using Shopizy.Domain.LoyaltyAccounts.Enums;
@@ -31,7 +30,7 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
         ModifiedOn = DateTime.UtcNow;
     }
 
-    public ErrorOr<Updated> RedeemPoints(int points, string description)
+    public DomainResult<bool> RedeemPoints(int points, string description)
     {
         if (TotalPoints < points)
         {
@@ -43,7 +42,7 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
         TotalPoints -= points;
         ModifiedOn = DateTime.UtcNow;
 
-        return Result.Updated;
+        return true;
     }
 
     public void AdjustPoints(int points, string description)

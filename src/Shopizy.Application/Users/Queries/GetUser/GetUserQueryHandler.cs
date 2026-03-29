@@ -33,7 +33,7 @@ public class GetUserQueryHandler(
 
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(user.Id, cancellationToken);

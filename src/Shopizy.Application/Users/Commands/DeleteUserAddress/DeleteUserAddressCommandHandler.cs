@@ -17,11 +17,11 @@ public class DeleteUserAddressCommandHandler(IUserRepository userRepository)
         var user = await userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         var result = user.RemoveAddress(UserAddressId.Create(request.AddressId));
-        if (result.IsError) return result.Errors;
+        if (result.IsError) return result.Error.ToError();
 
         return Result.Deleted;
     }

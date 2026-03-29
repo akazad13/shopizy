@@ -26,7 +26,12 @@ public class GetOrdersEndpoint : ApiEndpoint
             return await HandleAsync(
                 mediator,
                 query,
-                orders => Results.Ok(mapper.Map<List<OrderResponse>>(orders)),
+                orders => Results.Ok(new PagedResponse<OrderResponse>(
+                    mapper.Map<List<OrderResponse>>(orders.Items.ToList()),
+                    orders.PageNumber,
+                    orders.PageSize,
+                    orders.TotalCount
+                )),
                 ex => logger.OrderFetchError(ex)
             );
         })
@@ -34,7 +39,7 @@ public class GetOrdersEndpoint : ApiEndpoint
         .WithTags("Orders")
         .WithSummary("List user orders")
         .WithDescription("Retrieves a history of all orders placed by the authorized user.")
-        .Produces<List<OrderResponse>>(StatusCodes.Status200OK)
+        .Produces<PagedResponse<OrderResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
         .Produces<ErrorResult>(StatusCodes.Status403Forbidden)

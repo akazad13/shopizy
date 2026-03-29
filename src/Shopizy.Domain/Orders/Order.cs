@@ -5,7 +5,6 @@ using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
-using ErrorOr;
 
 namespace Shopizy.Domain.Orders;
 
@@ -15,8 +14,7 @@ namespace Shopizy.Domain.Orders;
 public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
 {
     private readonly IList<OrderItem> _orderItems = [];
-    private Shipment? _shipment;
-    
+
     /// <summary>
     /// Gets the user ID who placed the order.
     /// </summary>
@@ -60,12 +58,12 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the order was last modified.
     /// </summary>
-    public DateTime? ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; }
     
     /// <summary>
     /// Gets the date and time when the order was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     
     /// <summary>
     /// Gets the read-only list of order items.
@@ -75,7 +73,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the shipment associated with this order.
     /// </summary>
-    public Shipment? Shipment => _shipment;
+    public Shipment? Shipment { get; private set; }
 
     /// <summary>
     /// Creates a new order.
@@ -194,20 +192,28 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Adds a shipment to the order.
     /// </summary>
-    public ErrorOr<Shipment> AddShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery)
+    public DomainResult<Shipment> AddShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery)
     {
-        if (_shipment is not null) return Error.Conflict("Order.ShipmentExists", "Order already has a shipment.");
-        _shipment = Shipment.Create(carrier, trackingNumber, estimatedDelivery);
-        return _shipment;
+        if (Shipment is not null)
+        {
+            return DomainError.Conflict("Order.ShipmentExists", "Order already has a shipment.");
+        }
+
+        Shipment = Shipment.Create(carrier, trackingNumber, estimatedDelivery);
+        return Shipment;
     }
 
     /// <summary>
     /// Updates the shipment associated with the order.
     /// </summary>
-    public ErrorOr<Success> UpdateShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery, ShipmentStatus status)
+    public DomainResult<bool> UpdateShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery, ShipmentStatus status)
     {
-        if (_shipment is null) return Error.NotFound("Order.ShipmentNotFound", "Order has no shipment.");
-        _shipment.Update(carrier, trackingNumber, estimatedDelivery, status);
-        return Result.Success;
+        if (Shipment is null)
+        {
+            return DomainError.NotFound("Order.ShipmentNotFound", "Order has no shipment.");
+        }
+
+        Shipment.Update(carrier, trackingNumber, estimatedDelivery, status);
+        return true;
     }
 }

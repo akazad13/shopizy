@@ -31,18 +31,18 @@ public class UpdatePasswordCommandHandler(
     {
         if (request.OldPassword == request.NewPassword)
         {
-            return CustomErrors.User.PasswordSameAsOld;
+            return (Error)CustomErrors.User.PasswordSameAsOld;
         }
 
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         if (!_passwordManager.Verify(request.OldPassword, user.Password ?? ""))
         {
-            return CustomErrors.User.PasswordNotCorrect;
+            return (Error)CustomErrors.User.PasswordNotCorrect;
         }
 
         user.UpdatePassword(_passwordManager.CreateHashString(request.NewPassword));

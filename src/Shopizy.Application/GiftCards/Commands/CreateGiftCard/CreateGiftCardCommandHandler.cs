@@ -19,7 +19,7 @@ public class CreateGiftCardCommandHandler(IGiftCardRepository giftCardRepository
         var existing = await _giftCardRepository.GetByCodeAsync(request.Code);
         if (existing is not null)
         {
-            return CustomErrors.GiftCard.DuplicateCode;
+            return (Error)CustomErrors.GiftCard.DuplicateCode;
         }
 
         var giftCard = GiftCard.Create(request.Code, request.InitialBalance, request.ExpiresOn);

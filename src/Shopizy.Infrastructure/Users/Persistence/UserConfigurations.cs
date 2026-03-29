@@ -33,7 +33,6 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email).HasMaxLength(254).IsRequired(true);
         builder.Property(u => u.Phone).HasMaxLength(15).IsRequired(false);
 
-        builder.Property(u => u.Password).IsRequired(false);
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(u => u.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
@@ -53,11 +52,17 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.CustomerId).HasMaxLength(256).IsRequired(false);
 
-        builder.Property(u => u.PasswordResetToken).HasMaxLength(256).IsRequired(false);
-        builder.Property(u => u.PasswordResetTokenExpiry).IsRequired(false);
-
-        builder.Property(u => u.TwoFactorSecret).HasMaxLength(64).IsRequired(false);
-        builder.Property(u => u.IsTwoFactorEnabled).HasDefaultValue(false);
+        builder.OwnsOne(
+            u => u.Credentials,
+            cb =>
+            {
+                cb.Property(c => c.Password).HasColumnName("Password").IsRequired(false);
+                cb.Property(c => c.PasswordResetToken).HasColumnName("PasswordResetToken").HasMaxLength(256).IsRequired(false);
+                cb.Property(c => c.PasswordResetTokenExpiry).HasColumnName("PasswordResetTokenExpiry").IsRequired(false);
+                cb.Property(c => c.TwoFactorSecret).HasColumnName("TwoFactorSecret").HasMaxLength(64).IsRequired(false);
+                cb.Property(c => c.IsTwoFactorEnabled).HasColumnName("IsTwoFactorEnabled").HasDefaultValue(false);
+            }
+        );
 
         builder.Navigation(p => p.OrderIds).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviewIds).UsePropertyAccessMode(PropertyAccessMode.Field);

@@ -46,12 +46,12 @@ public class LoginQueryHandler(
         var user = await _userRepository.GetUserByEmailAsync(query.Email);
         if (user is null)
         {
-            return CustomErrors.User.UserNotFoundWhileLogin;
+            return (Error)CustomErrors.User.UserNotFoundWhileLogin;
         }
 
         if (!_passwordManager.Verify(query.Password, user.Password!))
         {
-            return CustomErrors.Authentication.InvalidCredentials;
+            return (Error)CustomErrors.Authentication.InvalidCredentials;
         }
 
         var allPermissions = await _permissionRepository.GetAsync();

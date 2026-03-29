@@ -22,7 +22,7 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         product.Update(

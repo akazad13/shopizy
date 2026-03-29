@@ -31,7 +31,7 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
 
         if (cart is null)
         {
-            return CustomErrors.Cart.CartNotFound;
+            return (Error)CustomErrors.Cart.CartNotFound;
         }
 
         var lineItem = cart.CartItems.FirstOrDefault(li => li.Id.Value == cmd.ItemId);

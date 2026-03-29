@@ -26,19 +26,19 @@ public class UpdateWishlistCommandHandler(
         var wishlist = await wishlistRepository.GetWishlistByUserIdAsync(userId, cancellationToken);
         if (wishlist is null)
         {
-            return CustomErrors.Wishlist.WishlistNotFound;
+            return (Error)CustomErrors.Wishlist.WishlistNotFound;
         }
 
         if (!await productRepository.IsProductExistAsync(productId))
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         if (cmd.Action == WishlistAction.Add)
         {
             if (wishlist.WishlistItems.Any(i => i.ProductId == productId))
             {
-                return CustomErrors.Wishlist.ProductAlreadyInWishlist;
+                return (Error)CustomErrors.Wishlist.ProductAlreadyInWishlist;
             }
 
             wishlist.AddItem(productId);
@@ -47,7 +47,7 @@ public class UpdateWishlistCommandHandler(
         {
             if (!wishlist.WishlistItems.Any(i => i.ProductId == productId))
             {
-                return CustomErrors.Wishlist.ProductNotInWishlist;
+                return (Error)CustomErrors.Wishlist.ProductNotInWishlist;
             }
 
             wishlist.RemoveItem(productId);

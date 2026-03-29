@@ -1,4 +1,3 @@
-using ErrorOr;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.GiftCards.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
@@ -23,7 +22,7 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
         return new GiftCard(GiftCardId.CreateUnique(), code, initialBalance, expiresOn);
     }
 
-    public ErrorOr<Updated> Redeem(UserId userId)
+    public DomainResult<bool> Redeem(UserId userId)
     {
         if (!IsActive)
         {
@@ -50,7 +49,7 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
         IsActive = false;
         ModifiedOn = DateTime.UtcNow;
 
-        return Result.Updated;
+        return true;
     }
 
     public void Deactivate()

@@ -43,6 +43,7 @@ public interface IProductRepository
     Task<Product?> GetProductByIdForUpdateAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);
     Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids);
+    Task<IReadOnlyList<Product>> GetProductsByIdsForUpdateAsync(IReadOnlyList<ProductId> ids);
     Task<IReadOnlyList<Product>> GetLowStockProductsAsync(int threshold);
     Task<IReadOnlyList<string>> GetBrandsAsync();
     Task<int> GetTotalProductCountAsync();

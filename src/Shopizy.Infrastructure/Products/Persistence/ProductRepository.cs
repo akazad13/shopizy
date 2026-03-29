@@ -4,8 +4,6 @@ using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.Infrastructure.Common.Specifications;
-using Shopizy.Infrastructure.Products.Specifications;
 
 namespace Shopizy.Infrastructure.Products.Persistence;
 
@@ -19,17 +17,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves a paginated list of products based on search criteria.
     /// </summary>
-    /// <param name="productIds">Optional product Ids filter</param>
-    /// <param name="name">Optional product name filter.</param>
-    /// <param name="categoryIds">Optional list of category IDs to filter by.</param>
-    /// <param name="averageRating">Optional minimum average rating filter.</param>
-    /// <param name="minPrice">Optional minimum price filter.</param>
-    /// <param name="maxPrice">Optional maximum price filter.</param>
-    /// <param name="inStockOnly">Optional filter to only in-stock products.</param>
-    /// <param name="sortBy">Optional sort order.</param>
-    /// <param name="pageNumber">The page number.</param>
-    /// <param name="pageSize">The page size.</param>
-    /// <returns>A list of products matching the criteria.</returns>
     public async Task<IReadOnlyList<Product>?> GetProductsAsync(
         IReadOnlyList<ProductId>? productIds,
         string? name,
@@ -43,7 +30,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         int pageSize
     )
     {
-        var query = ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly));
+        var query = BuildProductCriteriaQuery(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly);
 
         query = sortBy switch
         {
@@ -65,8 +52,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves a product by its unique identifier, including reviews.
     /// </summary>
-    /// <param name="id">The product identifier.</param>
-    /// <returns>The product if found; otherwise, null.</returns>
     public Task<Product?> GetProductByIdAsync(ProductId id)
     {
         return _dbContext
@@ -84,13 +69,18 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves multiple products by their identifiers.
     /// </summary>
-    /// <param name="ids">The list of product identifiers.</param>
-    /// <returns>A list of products.</returns>
     public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids)
     {
         return await _dbContext.Products
             .Where(p => ids.Contains(p.Id))
             .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<Product>> GetProductsByIdsForUpdateAsync(IReadOnlyList<ProductId> ids)
+    {
+        return await _dbContext.Products
+            .Where(p => ids.Contains(p.Id))
             .ToListAsync();
     }
 
@@ -102,7 +92,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves a list of all distinct product brands.
     /// </summary>
-    /// <returns>A list of brand names.</returns>
     public async Task<IReadOnlyList<string>> GetBrandsAsync()
     {
         return await _dbContext.Products
@@ -122,7 +111,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         bool? inStockOnly
     )
     {
-        return ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly))
+        return BuildProductCriteriaQuery(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly)
             .CountAsync();
     }
 
@@ -139,7 +128,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         int pageSize
     )
     {
-        var query = ApplySpec(new ProductsByCriteriaSpec(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly));
+        var query = BuildProductCriteriaQuery(productIds, name, categoryIds, averageRating, minPrice, maxPrice, inStockOnly);
         var totalCount = await query.CountAsync();
 
         var sortedQuery = sortBy switch
@@ -164,7 +153,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Gets the total count of products in the database.
     /// </summary>
-    /// <returns>The total product count.</returns>
     public Task<int> GetTotalProductCountAsync()
     {
         return _dbContext.Products.CountAsync();
@@ -183,7 +171,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Adds a new product to the database.
     /// </summary>
-    /// <param name="product">The product to add.</param>
     public async Task AddAsync(Product product)
     {
         await _dbContext.Products.AddAsync(product);
@@ -192,7 +179,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Updates an existing product in the database.
     /// </summary>
-    /// <param name="product">The product to update.</param>
     public void Update(Product product)
     {
         _dbContext.Update(product);
@@ -201,7 +187,6 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Removes a product from the database.
     /// </summary>
-    /// <param name="product">The product to remove.</param>
     public void Remove(Product product)
     {
         _dbContext.Remove(product);
@@ -210,19 +195,31 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Removes multiple products from the database.
     /// </summary>
-    /// <param name="products">The list of products to remove.</param>
     public void RemoveRange(IList<Product> products)
     {
         _dbContext.RemoveRange(products);
     }
 
-    /// <summary>
-    /// Applies a specification to the product query.
-    /// </summary>
-    /// <param name="spec">The specification to apply.</param>
-    /// <returns>A queryable of products.</returns>
-    private IQueryable<Product> ApplySpec(Specification<Product> spec)
+    private IQueryable<Product> BuildProductCriteriaQuery(
+        IReadOnlyList<ProductId>? productIds,
+        string? name,
+        IReadOnlyList<CategoryId>? categoryIds,
+        decimal? averageRating,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool? inStockOnly
+    )
     {
-        return SpecificationEvaluator.GetQuery(_dbContext.Products, spec);
+        var query = _dbContext.Products.Include(p => p.ProductImages).AsQueryable();
+
+        if (productIds is not null) query = query.Where(p => productIds.Contains(p.Id));
+        if (name is not null) query = query.Where(p => p.Name.Contains(name));
+        if (categoryIds is not null) query = query.Where(p => categoryIds.Contains(p.CategoryId));
+        if (averageRating is not null) query = query.Where(p => p.AverageRating.Value >= averageRating);
+        if (minPrice is not null) query = query.Where(p => p.UnitPrice.Amount >= minPrice);
+        if (maxPrice is not null) query = query.Where(p => p.UnitPrice.Amount <= maxPrice);
+        if (inStockOnly is true) query = query.Where(p => p.StockQuantity > 0);
+
+        return query;
     }
 }

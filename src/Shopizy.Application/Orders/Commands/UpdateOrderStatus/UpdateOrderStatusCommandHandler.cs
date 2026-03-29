@@ -21,7 +21,7 @@ public class UpdateOrderStatusCommandHandler(IOrderRepository orderRepository)
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(command.OrderId));
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         order.UpdateOrderStatus(command.Status);

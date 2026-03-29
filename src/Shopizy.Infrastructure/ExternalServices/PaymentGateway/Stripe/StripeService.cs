@@ -12,11 +12,13 @@ namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 [ExcludeFromCodeCoverage]
 public class StripeService(
     CustomerService customerService,
-    PaymentIntentService paymentIntentService
+    PaymentIntentService paymentIntentService,
+    RefundService refundService
 ) : IPaymentService
 {
     private readonly CustomerService _customerService = customerService;
     private readonly PaymentIntentService _paymentIntentService = paymentIntentService;
+    private readonly RefundService _refundService = refundService;
 
     private static bool IsTransientStripeError(StripeException ex) =>
         ex.StripeError?.Code == "rate_limit_error"
@@ -130,6 +132,42 @@ public class StripeService(
             code: "500",
             description: "Stripe request failed after maximum retry attempts."
         );
+    }
+
+    /// <summary>
+    /// Issues a full refund for a Stripe charge.
+    /// </summary>
+    /// <param name="chargeId">The Stripe charge ID to refund.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Success if the refund was created; otherwise, an error.</returns>
+    public async Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken)
+    {
+        var maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            try
+            {
+                var options = new RefundCreateOptions { Charge = chargeId };
+                await _refundService.CreateAsync(options, cancellationToken: cancellationToken);
+                return Result.Success;
+            }
+            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            {
+                await Task.Delay(
+                    TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),
+                    cancellationToken
+                );
+            }
+            catch (StripeException ex)
+            {
+                return Error.Failure(
+                    code: ex.StripeResponse.StatusCode.ToString(),
+                    description: FormatStripeException(ex)
+                );
+            }
+        }
+
+        return Error.Failure(code: "500", description: "Stripe refund failed after maximum retry attempts.");
     }
 
     private static string FormatStripeException(StripeException e)

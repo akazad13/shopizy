@@ -70,6 +70,11 @@ namespace Shopizy.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -197,6 +202,11 @@ namespace Shopizy.Infrastructure.Migrations
                     b.Property<string>("PromoCode")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -702,6 +712,34 @@ namespace Shopizy.Infrastructure.Migrations
                     b.ToTable("Wishlists", (string)null);
                 });
 
+            modelBuilder.Entity("Shopizy.Infrastructure.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessedOn");
+
+                    b.ToTable("OutboxMessages", (string)null);
+                });
+
             modelBuilder.Entity("Shopizy.Domain.Carts.Cart", b =>
                 {
                     b.OwnsMany("Shopizy.Domain.Carts.Entities.CartItem", "CartItems", b1 =>
@@ -789,6 +827,26 @@ namespace Shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Orders.Order", b =>
                 {
+                    b.OwnsOne("Shopizy.Domain.Common.ValueObjects.Price", "DeliveryCharge", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<int>("Currency")
+                                .HasColumnType("int");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
                     b.OwnsMany("Shopizy.Domain.Orders.Entities.OrderItem", "OrderItems", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -812,6 +870,9 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.Property<string>("PictureUrl")
                                 .HasColumnType("nvarchar(max)");
+
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<int>("Quantity")
                                 .HasColumnType("int");
@@ -846,7 +907,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                                     b2.HasKey("OrderItemId", "OrderItemOrderId");
 
-                                    b2.ToTable("OrderItems");
+                                    b2.ToTable("OrderItems", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("OrderItemId", "OrderItemOrderId");
@@ -898,26 +959,6 @@ namespace Shopizy.Infrastructure.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
-                    b.OwnsOne("Shopizy.Domain.Common.ValueObjects.Price", "DeliveryCharge", b1 =>
-                        {
-                            b1.Property<Guid>("OrderId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<decimal>("Amount")
-                                .HasPrecision(18, 2)
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<int>("Currency")
-                                .HasColumnType("int");
-
-                            b1.HasKey("OrderId");
-
-                            b1.ToTable("Orders");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderId");
-                        });
-
                     b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
@@ -950,7 +991,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -1013,7 +1054,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasKey("PaymentId");
 
-                            b1.ToTable("Payments");
+                            b1.ToTable("Payments", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentId");
@@ -1033,7 +1074,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasKey("PaymentId");
 
-                            b1.ToTable("Payments");
+                            b1.ToTable("Payments", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentId");
@@ -1107,7 +1148,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasKey("ProductReviewId");
 
-                            b1.ToTable("ProductReviews");
+                            b1.ToTable("ProductReviews", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductReviewId");
@@ -1141,7 +1182,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasKey("ProductId");
 
-                            b1.ToTable("Products");
+                            b1.ToTable("Products", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
@@ -1225,7 +1266,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                                     b2.HasKey("ProductVariantProductId", "ProductVariantId");
 
-                                    b2.ToTable("ProductVariants");
+                                    b2.ToTable("ProductVariants", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("ProductVariantProductId", "ProductVariantId");
@@ -1251,7 +1292,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                             b1.HasIndex("Amount");
 
-                            b1.ToTable("Products");
+                            b1.ToTable("Products", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
@@ -1270,6 +1311,98 @@ namespace Shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Users.User", b =>
                 {
+                    b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("ZipCode")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsMany("Shopizy.Domain.Users.Entities.UserAddress", "Addresses", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("smalldatetime");
+
+                            b1.Property<bool>("IsDefault")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bit")
+                                .HasDefaultValue(false);
+
+                            b1.Property<DateTime?>("ModifiedOn")
+                                .HasColumnType("smalldatetime");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("ZipCode")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)");
+
+                            b1.HasKey("Id", "UserId");
+
+                            b1.HasIndex("UserId");
+
+                            b1.ToTable("UserAddresses", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsMany("Shopizy.Domain.Orders.ValueObjects.OrderId", "OrderIds", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -1340,98 +1473,6 @@ namespace Shopizy.Infrastructure.Migrations
                             b1.HasIndex("UserId");
 
                             b1.ToTable("ProductReviewIds", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsMany("Shopizy.Domain.Users.Entities.UserAddress", "Addresses", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("smalldatetime");
-
-                            b1.Property<bool>("IsDefault")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bit")
-                                .HasDefaultValue(false);
-
-                            b1.Property<DateTime?>("ModifiedOn")
-                                .HasColumnType("smalldatetime");
-
-                            b1.Property<string>("State")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("ZipCode")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
-
-                            b1.HasKey("Id", "UserId");
-
-                            b1.HasIndex("UserId");
-
-                            b1.ToTable("UserAddresses", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("Shopizy.Domain.Orders.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("State")
-                                .IsRequired()
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("ZipCode")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

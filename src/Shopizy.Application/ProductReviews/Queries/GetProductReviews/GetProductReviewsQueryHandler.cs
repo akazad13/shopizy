@@ -24,7 +24,7 @@ public class GetProductReviewsQueryHandler(
         var productExists = await _productRepository.IsProductExistAsync(productId);
         if (!productExists)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         var reviews = await _productReviewRepository.GetReviewsByProductIdAsync(productId);

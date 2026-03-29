@@ -21,13 +21,13 @@ public class RedeemPointsCommandHandler(ILoyaltyAccountRepository loyaltyAccount
 
         if (account is null)
         {
-            return CustomErrors.LoyaltyAccount.AccountNotFound;
+            return (Error)CustomErrors.LoyaltyAccount.AccountNotFound;
         }
 
         var result = account.RedeemPoints(request.Points, request.Description);
         if (result.IsError)
         {
-            return result.Errors;
+            return result.Error.ToError();
         }
 
         return account;

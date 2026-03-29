@@ -61,9 +61,9 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var orders = await response.Content.ReadFromJsonAsync<List<OrderResponse>>(TestContext.Current.CancellationToken);
-        orders.ShouldNotBeNull();
-        orders.ShouldNotBeEmpty();
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
+        paged.Items.ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -188,9 +188,9 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var orders = await response.Content.ReadFromJsonAsync<List<OrderResponse>>(TestContext.Current.CancellationToken);
-        orders.ShouldNotBeNull();
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
         // All returned orders should have Pending status
-        orders.All(o => o.OrderStatus == "Pending").ShouldBeTrue();
+        paged.Items.All(o => o.OrderStatus == "Pending").ShouldBeTrue();
     }
 }

@@ -17,7 +17,12 @@ public class GetUsersEndpoint : ApiEndpoint
             return await HandleAsync(
                 mediator,
                 new GetUsersQuery(pageNumber, pageSize),
-                users => Results.Ok(mapper.Map<List<UserDetails>>(users)),
+                users => Results.Ok(new PagedResponse<UserDetails>(
+                    mapper.Map<List<UserDetails>>(users.Items.ToList()),
+                    users.PageNumber,
+                    users.PageSize,
+                    users.TotalCount
+                )),
                 ex => logger.UsersListFetchError(ex)
             );
         })
@@ -25,7 +30,7 @@ public class GetUsersEndpoint : ApiEndpoint
         .WithTags("Users")
         .WithSummary("List all users")
         .WithDescription("Retrieves a paginated list of all registered users for administrative purposes.")
-        .Produces<List<UserDetails>>(StatusCodes.Status200OK)
+        .Produces<PagedResponse<UserDetails>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
         .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);

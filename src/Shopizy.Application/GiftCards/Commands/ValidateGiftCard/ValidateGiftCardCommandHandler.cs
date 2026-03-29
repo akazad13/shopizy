@@ -20,17 +20,17 @@ public class ValidateGiftCardCommandHandler(IGiftCardRepository giftCardReposito
 
         if (giftCard is null)
         {
-            return CustomErrors.GiftCard.GiftCardNotFound;
+            return (Error)CustomErrors.GiftCard.GiftCardNotFound;
         }
 
         if (!giftCard.IsActive)
         {
-            return CustomErrors.GiftCard.GiftCardInactive;
+            return (Error)CustomErrors.GiftCard.GiftCardInactive;
         }
 
         if (giftCard.ExpiresOn.HasValue && giftCard.ExpiresOn.Value < DateTime.UtcNow)
         {
-            return CustomErrors.GiftCard.GiftCardExpired;
+            return (Error)CustomErrors.GiftCard.GiftCardExpired;
         }
 
         return giftCard;

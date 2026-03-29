@@ -21,7 +21,7 @@ public class DeletePromoCodeCommandHandler(IPromoCodeRepository promoCodeReposit
         );
         if (promoCode is null)
         {
-            return CustomErrors.PromoCode.PromoCodeNotFound;
+            return (Error)CustomErrors.PromoCode.PromoCodeNotFound;
         }
 
         _promoCodeRepository.Remove(promoCode);

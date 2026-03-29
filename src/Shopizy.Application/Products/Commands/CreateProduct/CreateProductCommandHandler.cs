@@ -20,7 +20,7 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
     {
         if (string.IsNullOrWhiteSpace(cmd.Name))
         {
-            return CustomErrors.Product.ProductNotCreated;
+            return (Error)CustomErrors.Product.ProductNotCreated;
         }
 
         var product = Product.Create(

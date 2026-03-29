@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Infrastructure.Orders.Persistence;
@@ -58,6 +59,8 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.HasIndex(o => o.OrderStatus);
         builder.HasIndex(o => o.CreatedOn);
         builder.HasIndex(o => new { o.UserId, o.CreatedOn });
+
+        builder.Property<byte[]>("RowVersion");
     }
 
     private static void ConfigureOrderItemsTable(EntityTypeBuilder<Order> builder)
@@ -73,6 +76,10 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                 ib.Property(oi => oi.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => OrderItemId.Create(value));
+
+                ib.Property(oi => oi.ProductId)
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value, value => ProductId.Create(value));
 
                 ib.Property(oi => oi.Name).HasMaxLength(100);
                 ib.Property(oi => oi.PictureUrl).IsRequired(false);

@@ -27,7 +27,7 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
     {
         if (await _categoryRepository.GetCategoryByNameAsync(cmd.Name))
         {
-            return CustomErrors.Category.DuplicateName;
+            return (Error)CustomErrors.Category.DuplicateName;
         }
 
         var category = Category.Create(cmd.Name, cmd.ParentId);

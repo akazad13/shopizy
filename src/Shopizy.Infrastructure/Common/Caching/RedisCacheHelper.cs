@@ -2,7 +2,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Shopizy.SharedKernel.Application.Caching;
 using StackExchange.Redis;
-using Shopizy.Infrastructure;
 
 namespace Shopizy.Infrastructure.Common.Caching;
 

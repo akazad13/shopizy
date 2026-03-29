@@ -19,7 +19,7 @@ public class CreatePromoCodeCommandHandler(IPromoCodeRepository promoCodeReposit
         var existing = await _promoCodeRepository.GetByCodeAsync(request.Code);
         if (existing is not null)
         {
-            return CustomErrors.PromoCode.DuplicateCode;
+            return (Error)CustomErrors.PromoCode.DuplicateCode;
         }
 
         var promoCode = PromoCode.Create(

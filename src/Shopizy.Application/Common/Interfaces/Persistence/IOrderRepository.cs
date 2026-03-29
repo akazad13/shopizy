@@ -19,6 +19,7 @@ public interface IOrderRepository
         OrderType orderType = OrderType.Ascending
     );
     Task<int> GetTotalOrdersCountAsync();
+    Task<int> GetOrdersCountAsync(UserId? customerId, DateTime? startDate, DateTime? endDate, OrderStatus? status);
     Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end);
     Task<decimal> GetTotalRevenueAsync();
     Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end);

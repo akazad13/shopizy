@@ -1,4 +1,3 @@
-using ErrorOr;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
@@ -306,7 +305,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Updates an existing product variant.
     /// </summary>
-    public ErrorOr<ProductVariant> UpdateVariant(
+    public DomainResult<ProductVariant> UpdateVariant(
         ProductVariantId variantId,
         string name,
         string sku,
@@ -328,7 +327,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Removes a product variant.
     /// </summary>
-    public ErrorOr<Deleted> RemoveVariant(ProductVariantId variantId)
+    public DomainResult<bool> RemoveVariant(ProductVariantId variantId)
     {
         var variant = _productVariants.FirstOrDefault(v => v.Id == variantId);
         if (variant is null)
@@ -337,7 +336,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         }
 
         _productVariants.Remove(variant);
-        return Result.Deleted;
+        return true;
     }
 
     private Product(

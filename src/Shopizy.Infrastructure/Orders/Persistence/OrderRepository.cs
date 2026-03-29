@@ -7,8 +7,6 @@ using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.Infrastructure.Common.Specifications;
-using Shopizy.Infrastructure.Orders.Specifications;
 
 namespace Shopizy.Infrastructure.Orders.Persistence;
 
@@ -22,14 +20,6 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <summary>
     /// Retrieves a paginated list of orders based on search criteria.
     /// </summary>
-    /// <param name="customerId">Optional customer ID filter.</param>
-    /// <param name="startDate">Optional start date filter.</param>
-    /// <param name="endDate">Optional end date filter.</param>
-    /// <param name="status">Optional order status filter.</param>
-    /// <param name="pageNumber">The page number.</param>
-    /// <param name="pageSize">The page size.</param>
-    /// <param name="orderType">The sort order (ascending or descending).</param>
-    /// <returns>A list of orders matching the criteria.</returns>
     public async Task<IReadOnlyList<Order>> GetOrdersAsync(
         UserId? customerId,
         DateTime? startDate,
@@ -40,17 +30,20 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         OrderType orderType = OrderType.Ascending
     )
     {
-        return await ApplySpec(
-                new OrdersByCriteriaSpec(
-                    customerId,
-                    startDate,
-                    endDate,
-                    status,
-                    pageNumber,
-                    pageSize,
-                    orderType
-                )
-            )
+        var query = _dbContext.Orders.AsQueryable();
+
+        if (customerId is not null) query = query.Where(o => o.UserId == customerId);
+        if (startDate is not null) query = query.Where(o => o.CreatedOn >= startDate);
+        if (endDate is not null) query = query.Where(o => o.CreatedOn <= endDate);
+        if (status is not null) query = query.Where(o => o.OrderStatus == status);
+
+        var ordered = orderType == OrderType.Descending
+            ? query.OrderByDescending(o => o.CreatedOn)
+            : query.OrderBy(o => o.CreatedOn);
+
+        return await ordered
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .AsNoTracking()
             .ToListAsync();
     }
@@ -58,6 +51,18 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     public Task<int> GetTotalOrdersCountAsync()
     {
         return _dbContext.Orders.CountAsync();
+    }
+
+    public Task<int> GetOrdersCountAsync(UserId? customerId, DateTime? startDate, DateTime? endDate, OrderStatus? status)
+    {
+        var query = _dbContext.Orders.AsQueryable();
+
+        if (customerId is not null) query = query.Where(o => o.UserId == customerId);
+        if (startDate is not null) query = query.Where(o => o.CreatedOn >= startDate);
+        if (endDate is not null) query = query.Where(o => o.CreatedOn <= endDate);
+        if (status is not null) query = query.Where(o => o.OrderStatus == status);
+
+        return query.CountAsync();
     }
 
     public async Task<decimal> GetTotalRevenueAsync()
@@ -138,19 +143,16 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <summary>
     /// Retrieves an order by its unique identifier.
     /// </summary>
-    /// <param name="id">The order identifier.</param>
-    /// <returns>The order if found; otherwise, null.</returns>
     public Task<Order?> GetOrderByIdAsync(OrderId id)
     {
-        return ApplySpec(new OrderByIdSpec(id)).FirstOrDefaultAsync();
+        return _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .FirstOrDefaultAsync(o => o.Id == id);
     }
 
     /// <summary>
     /// Retrieves all orders for a specific user asynchronously.
     /// </summary>
-    /// <param name="userId">The user identifier.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A read-only list of orders for the user.</returns>
     public async Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(UserId userId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Orders
@@ -162,7 +164,6 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <summary>
     /// Adds a new order to the database.
     /// </summary>
-    /// <param name="order">The order to add.</param>
     public async Task AddAsync(Order order)
     {
         await _dbContext.Orders.AddAsync(order);
@@ -171,19 +172,8 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <summary>
     /// Updates an existing order in the database.
     /// </summary>
-    /// <param name="order">The order to update.</param>
     public void Update(Order order)
     {
         _dbContext.Update(order);
-    }
-
-    /// <summary>
-    /// Applies a specification to the order query.
-    /// </summary>
-    /// <param name="spec">The specification to apply.</param>
-    /// <returns>A queryable of orders.</returns>
-    private IQueryable<Order> ApplySpec(Specification<Order> spec)
-    {
-        return SpecificationEvaluator.GetQuery(_dbContext.Orders, spec);
     }
 }

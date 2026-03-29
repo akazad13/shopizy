@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Asp.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
 using Shopizy.Api.Common.Mapping;
 using System.Diagnostics.CodeAnalysis;
@@ -19,6 +19,17 @@ public static class DependencyInjectionRegister
     /// <returns>The service collection with presentation layer services added.</returns>
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new QueryStringApiVersionReader("api-version"),
+                new HeaderApiVersionReader("api-version")
+            );
+        });
+
         services.AddEndpointsApiExplorer().AddSwaggerGen(options =>
         {
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";

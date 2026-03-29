@@ -22,7 +22,7 @@ public class GetPublicWishlistQueryHandler(IWishlistRepository wishlistRepositor
 
         if (wishlist is null)
         {
-            return CustomErrors.Wishlist.WishlistNotFound;
+            return (Error)CustomErrors.Wishlist.WishlistNotFound;
         }
 
         if (!wishlist.IsPublic)

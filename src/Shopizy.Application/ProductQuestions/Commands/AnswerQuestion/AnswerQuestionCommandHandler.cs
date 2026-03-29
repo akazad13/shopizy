@@ -24,13 +24,13 @@ public class AnswerQuestionCommandHandler(IProductQuestionRepository productQues
 
         if (question is null)
         {
-            return CustomErrors.ProductQuestion.QuestionNotFound;
+            return (Error)CustomErrors.ProductQuestion.QuestionNotFound;
         }
 
         var result = question.AddAnswer(UserId.Create(request.AnsweredByUserId), request.Answer);
         if (result.IsError)
         {
-            return result.Errors;
+            return result.Error.ToError();
         }
 
         return question;

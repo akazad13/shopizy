@@ -9,5 +9,9 @@ public class BulkDeleteProductsCommandValidator : AbstractValidator<BulkDeletePr
         RuleFor(x => x.ProductIds)
             .NotEmpty()
             .WithMessage("At least one product ID must be provided.");
+
+        RuleForEach(x => x.ProductIds)
+            .NotEmpty()
+            .WithMessage("Product IDs must not contain empty GUIDs.");
     }
 }

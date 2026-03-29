@@ -136,6 +136,18 @@ public sealed class Payment : Entity<PaymentId>, IAuditable
     private Payment() { }
 
     /// <summary>
+    /// Marks this payment as successfully completed, records the charge ID,
+    /// and raises <see cref="Events.PaymentSucceededDomainEvent"/> so the associated
+    /// order can be transitioned to Processing via a domain event handler.
+    /// </summary>
+    public void Complete(string chargeId, string customerId)
+    {
+        PaymentStatus = PaymentStatus.Payed;
+        TransactionId = chargeId;
+        AddDomainEvent(new Events.PaymentSucceededDomainEvent(OrderId, customerId));
+    }
+
+    /// <summary>
     /// Updates the payment status.
     /// </summary>
     /// <param name="status">The new payment status.</param>

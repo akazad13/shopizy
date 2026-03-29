@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Users.Enums;

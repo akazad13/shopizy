@@ -39,28 +39,28 @@ public class DeleteCategoryValidatorTests
     }
 
     [Fact]
-    public async Task Should_NotHaveError_When_CategoryIdIsEmpty()
+    public async Task Should_HaveError_When_CategoryIdIsEmpty()
     {
-        // Arrange - No validation rules exist, so even empty GUID should pass
+        // Arrange
         var command = new DeleteCategoryCommand(Guid.NewGuid(), Guid.Empty);
 
         // Act
         var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldNotHaveAnyValidationErrors();
+        result.ShouldHaveValidationErrorFor(x => x.CategoryId);
     }
 
     [Fact]
-    public async Task Should_NotHaveError_When_BothIdsAreEmpty()
+    public async Task Should_HaveError_When_BothIdsAreEmpty()
     {
-        // Arrange - No validation rules exist
+        // Arrange
         var command = new DeleteCategoryCommand(Guid.Empty, Guid.Empty);
 
         // Act
         var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        result.ShouldNotHaveAnyValidationErrors();
+        result.ShouldHaveValidationErrorFor(x => x.CategoryId);
     }
 }

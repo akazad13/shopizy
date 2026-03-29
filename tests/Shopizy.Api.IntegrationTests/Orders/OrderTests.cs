@@ -116,10 +116,10 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var orders = await response.Content.ReadFromJsonAsync<List<OrderResponse>>(TestContext.Current.CancellationToken);
-        orders.ShouldNotBeNull();
-        orders.ShouldNotBeEmpty();
-        orders.All(o => o.UserId == userId).ShouldBeTrue();
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
+        paged.Items.ShouldNotBeEmpty();
+        paged.Items.All(o => o.UserId == userId).ShouldBeTrue();
     }
 
     [Fact]
@@ -202,8 +202,10 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var orders = await response.Content.ReadFromJsonAsync<List<OrderResponse>>(TestContext.Current.CancellationToken);
-        orders.ShouldNotBeNull();
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
+        paged.Items.ShouldNotBeEmpty();
+        paged.Items.All(o => o.UserId == userId).ShouldBeTrue();
     }
 
     [Fact]

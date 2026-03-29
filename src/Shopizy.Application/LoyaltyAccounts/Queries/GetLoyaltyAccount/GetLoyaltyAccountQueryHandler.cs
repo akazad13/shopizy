@@ -21,7 +21,7 @@ public class GetLoyaltyAccountQueryHandler(ILoyaltyAccountRepository loyaltyAcco
 
         if (account is null)
         {
-            return CustomErrors.LoyaltyAccount.AccountNotFound;
+            return (Error)CustomErrors.LoyaltyAccount.AccountNotFound;
         }
 
         return account;

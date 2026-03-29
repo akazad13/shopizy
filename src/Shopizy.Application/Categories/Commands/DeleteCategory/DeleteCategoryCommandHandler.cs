@@ -21,7 +21,7 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
         );
         if (category is null)
         {
-            return CustomErrors.Category.CategoryNotFound;
+            return (Error)CustomErrors.Category.CategoryNotFound;
         }
 
         _categoryRepository.Remove(category);

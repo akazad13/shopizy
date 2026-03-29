@@ -72,11 +72,6 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var createOrderRequest = new CreateOrderRequest("", 1, deliveryCharge, orderItems, shippingAddress);
         
         var placeOrderResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", createOrderRequest, TestContext.Current.CancellationToken);
-        if (placeOrderResponse.StatusCode == HttpStatusCode.InternalServerError)
-        {
-            var errorContent = await placeOrderResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            throw new Exception($"Order placement failed with 500. Response: {errorContent}");
-        }
         placeOrderResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
         var order = await placeOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
         order.ShouldNotBeNull();

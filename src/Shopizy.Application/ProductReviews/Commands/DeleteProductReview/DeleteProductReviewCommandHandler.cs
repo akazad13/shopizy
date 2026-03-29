@@ -22,7 +22,7 @@ public class DeleteProductReviewCommandHandler(
         );
         if (review is null)
         {
-            return CustomErrors.ProductReview.ReviewNotFound;
+            return (Error)CustomErrors.ProductReview.ReviewNotFound;
         }
 
         review.Delete();

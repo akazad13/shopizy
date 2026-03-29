@@ -14,11 +14,12 @@ using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
 using Shopizy.Infrastructure.Users.Persistence;
-using Shopizy.Infrastructure.AuditLogs.Persistence;
 using Shopizy.Infrastructure.GiftCards.Persistence;
 using Shopizy.Infrastructure.LoyaltyAccounts.Persistence;
 using Shopizy.Infrastructure.ProductQuestions.Persistence;
 using Shopizy.Infrastructure.Wishlists.Persistence;
+using Shopizy.Infrastructure.Common.HealthChecks;
+using Shopizy.Infrastructure.Outbox;
 using Shopizy.Infrastructure.Services;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
@@ -56,6 +57,9 @@ public static class PersistenceRegister
                     .AddInterceptors(interceptor);
             });
         }
+
+        services.AddHealthChecks().AddCheck<DbHealthCheck>("database");
+        services.AddHostedService<OutboxProcessor>();
 
         return services.AddRepositories();
     }

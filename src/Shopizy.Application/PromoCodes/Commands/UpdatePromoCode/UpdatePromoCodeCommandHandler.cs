@@ -22,7 +22,7 @@ public class UpdatePromoCodeCommandHandler(IPromoCodeRepository promoCodeReposit
         );
         if (promoCode is null)
         {
-            return CustomErrors.PromoCode.PromoCodeNotFound;
+            return (Error)CustomErrors.PromoCode.PromoCodeNotFound;
         }
 
         promoCode.Update(

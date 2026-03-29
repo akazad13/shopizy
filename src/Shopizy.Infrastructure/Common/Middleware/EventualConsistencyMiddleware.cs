@@ -1,8 +1,11 @@
-using Shopizy.SharedKernel.Domain.Models;
-using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.SharedKernel.Application.Messaging;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Outbox;
+using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Infrastructure.Common.Middleware;
 
@@ -30,12 +33,14 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
             {
                 if (
                     context.Items.TryGetValue(DomainEventsKey, out object? value)
-                    && value is Queue<IDomainEvent> domainEvent
+                    && value is Queue<(IDomainEvent Event, Guid OutboxId)> domainEventsQueue
                 )
                 {
-                    while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
+                    while (domainEventsQueue.TryDequeue(out var entry))
                     {
+                        var (nextEvent, outboxId) = entry;
                         var published = false;
+
                         for (var attempt = 0; attempt < 3 && !published; attempt++)
                         {
                             try
@@ -49,10 +54,21 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
                                 await Task.Delay(TimeSpan.FromMilliseconds(Math.Pow(2, attempt) * 100));
                             }
                         }
-                        if (!published)
+
+                        if (published)
                         {
-                            _logger.DomainEventPublishingError(
-                                new Exception($"Failed to publish {nextEvent.GetType().Name} after 3 attempts"));
+                            // Mark outbox message as processed so the background worker skips it
+                            await dbContext.OutboxMessages
+                                .Where(m => m.Id == outboxId)
+                                .ExecuteUpdateAsync(
+                                    s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow));
+                        }
+                        else
+                        {
+                            var eventType = nextEvent.GetType().Name;
+                            var payload = JsonSerializer.Serialize(nextEvent, nextEvent.GetType());
+                            _logger.DomainEventDeadLettered(eventType, payload);
+                            // OutboxMessage.ProcessedOn stays null → OutboxProcessor will retry
                         }
                     }
                 }
@@ -61,7 +77,7 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
             {
                 _logger.DomainEventPublishingError(ex);
                 // If publishing fails, data is already committed.
-                // This is "Best Effort" consistency.
+                // OutboxProcessor will retry any unprocessed messages.
             }
             finally
             {

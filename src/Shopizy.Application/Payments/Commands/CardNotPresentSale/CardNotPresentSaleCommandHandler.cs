@@ -32,7 +32,7 @@ public class CardNotPresentSaleCommandHandler(
 
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         var total = order.GetTotal();
@@ -43,7 +43,7 @@ public class CardNotPresentSaleCommandHandler(
 
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         var payment = Payment.Create(
@@ -70,7 +70,7 @@ public class CardNotPresentSaleCommandHandler(
 
             if (customer.IsError)
             {
-                return CustomErrors.Payment.CustomerNotCreated;
+                return (Error)CustomErrors.Payment.CustomerNotCreated;
             }
 
             user.UpdateCustomerId(customer.Value.CustomerId);
@@ -97,11 +97,7 @@ public class CardNotPresentSaleCommandHandler(
             );
         }
 
-        order.CompletePayment(user.CustomerId!);
-        payment.UpdatePaymentStatus(PaymentStatus.Payed);
-        payment.UpdateTransactionId(response.Value.ChargeId);
-
-        _paymentRepository.Update(payment);
+        payment.Complete(response.Value.ChargeId, user.CustomerId!);
 
         return Result.Success;
     }

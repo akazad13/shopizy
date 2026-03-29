@@ -20,7 +20,7 @@ public class VerifyTwoFactorCommandHandler(
         var user = await userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
-            return CustomErrors.User.UserNotFound;
+            return (Error)CustomErrors.User.UserNotFound;
         }
 
         if (string.IsNullOrEmpty(user.TwoFactorSecret))

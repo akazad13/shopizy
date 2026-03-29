@@ -23,7 +23,7 @@ public class GetProductVariantsQueryHandler(IProductRepository productRepository
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         return ErrorOrFactory.From(product.ProductVariants);

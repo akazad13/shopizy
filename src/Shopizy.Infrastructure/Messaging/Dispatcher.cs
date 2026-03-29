@@ -76,12 +76,13 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
                 return (ht, ht.GetMethod("Handle")!);
             });
 
-        // Get all registered handlers for this event type
+        // Get all registered handlers for this event type.
+        // Run sequentially to avoid concurrent DbContext access (DbContext is not thread-safe).
         var handlers = _serviceProvider.GetServices(handlerType);
 
-        var tasks = handlers.Select(handler =>
-            (Task)method.Invoke(handler, [domainEvent, cancellationToken])!);
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        foreach (var handler in handlers)
+        {
+            await ((Task)method.Invoke(handler, [domainEvent, cancellationToken])!).ConfigureAwait(false);
+        }
     }
 }

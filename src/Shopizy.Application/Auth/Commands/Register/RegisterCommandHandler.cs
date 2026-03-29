@@ -36,12 +36,12 @@ public class RegisterCommandHandler(
         // check if command.Email is valid email address
         if (string.IsNullOrEmpty(command.Email) || !IsValidEmail(command.Email))
         {
-            return CustomErrors.User.InvalidEmailFormat;
+            return (Error)CustomErrors.User.InvalidEmailFormat;
         }
 
         if (await _userRepository.GetUserByEmailAsync(command.Email) is not null)
         {
-            return CustomErrors.User.DuplicateEmail;
+            return (Error)CustomErrors.User.DuplicateEmail;
         }
 
         if (
@@ -49,7 +49,7 @@ public class RegisterCommandHandler(
             || string.IsNullOrEmpty(command.LastName?.Trim())
         )
         {
-            return CustomErrors.User.InvalidName;
+            return (Error)CustomErrors.User.InvalidName;
         }
 
         var hashedPassword = _passwordManager.CreateHashString(command.Password);

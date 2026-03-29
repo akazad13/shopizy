@@ -1,5 +1,6 @@
 using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
+using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Domain.Orders.Enums;
 
 namespace Shopizy.Application.Orders.Queries.GetOrders;
@@ -20,5 +21,5 @@ public record GetOrdersQuery(
     OrderStatus? Status,
     int PageNumber = 1,
     int PageSize = 10
-) : IQuery<ErrorOr<List<OrderDto>?>>;
+) : IQuery<ErrorOr<PagedResult<OrderDto>>>;
 

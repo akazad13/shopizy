@@ -24,7 +24,7 @@ public class UpdateVariantCommandHandler(IProductRepository productRepository)
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         var result = product.UpdateVariant(
@@ -38,7 +38,7 @@ public class UpdateVariantCommandHandler(IProductRepository productRepository)
 
         if (result.IsError)
         {
-            return result.Errors;
+            return result.Error.ToError();
         }
 
         return result.Value;

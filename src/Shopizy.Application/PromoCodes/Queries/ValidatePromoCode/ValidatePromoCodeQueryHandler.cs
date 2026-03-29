@@ -19,12 +19,12 @@ public class ValidatePromoCodeQueryHandler(IPromoCodeRepository promoCodeReposit
         var promoCode = await _promoCodeRepository.GetByCodeAsync(request.Code);
         if (promoCode is null)
         {
-            return CustomErrors.PromoCode.PromoCodeNotFound;
+            return (Error)CustomErrors.PromoCode.PromoCodeNotFound;
         }
 
         if (!promoCode.IsActive)
         {
-            return CustomErrors.PromoCode.PromoCodeInactive;
+            return (Error)CustomErrors.PromoCode.PromoCodeInactive;
         }
 
         return promoCode;

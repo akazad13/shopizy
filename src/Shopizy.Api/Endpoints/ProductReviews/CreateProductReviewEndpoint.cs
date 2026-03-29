@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;

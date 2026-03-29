@@ -29,7 +29,7 @@ public class CashOnDeliverySaleCommandHandler(
 
         if (order is null)
         {
-            return CustomErrors.Order.OrderNotFound;
+            return (Error)CustomErrors.Order.OrderNotFound;
         }
 
         var payment = Payment.Create(

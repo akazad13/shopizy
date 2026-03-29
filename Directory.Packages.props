@@ -1,6 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
+    <PackageVersion Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageVersion Include="CloudinaryDotNet" Version="1.28.0" />
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="ErrorOr" Version="2.1.0" />

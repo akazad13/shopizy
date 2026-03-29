@@ -22,7 +22,7 @@ public class UpdateWishlistSettingsCommandHandler(IWishlistRepository wishlistRe
 
         if (wishlist is null)
         {
-            return CustomErrors.Wishlist.WishlistNotFound;
+            return (Error)CustomErrors.Wishlist.WishlistNotFound;
         }
 
         wishlist.UpdateSettings(request.Name, request.IsPublic);

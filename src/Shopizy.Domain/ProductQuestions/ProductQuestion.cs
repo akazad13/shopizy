@@ -1,4 +1,3 @@
-using ErrorOr;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.ProductQuestions.Entities;
 using Shopizy.Domain.ProductQuestions.ValueObjects;
@@ -23,7 +22,7 @@ public sealed class ProductQuestion : AggregateRoot<ProductQuestionId, Guid>, IA
         return new ProductQuestion(ProductQuestionId.CreateUnique(), productId, askedByUserId, question);
     }
 
-    public ErrorOr<Updated> AddAnswer(UserId answeredByUserId, string answer)
+    public DomainResult<bool> AddAnswer(UserId answeredByUserId, string answer)
     {
         if (IsAnswered)
         {
@@ -34,7 +33,7 @@ public sealed class ProductQuestion : AggregateRoot<ProductQuestionId, Guid>, IA
         IsAnswered = true;
         ModifiedOn = DateTime.UtcNow;
 
-        return Result.Updated;
+        return true;
     }
 
     private ProductQuestion(

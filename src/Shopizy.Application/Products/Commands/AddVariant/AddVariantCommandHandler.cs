@@ -24,7 +24,7 @@ public class AddVariantCommandHandler(IProductRepository productRepository)
 
         if (product is null)
         {
-            return CustomErrors.Product.ProductNotFound;
+            return (Error)CustomErrors.Product.ProductNotFound;
         }
 
         var variant = ProductVariant.Create(

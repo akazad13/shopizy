@@ -23,9 +23,9 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var users = await response.Content.ReadFromJsonAsync<List<UserDetails>>(TestContext.Current.CancellationToken);
-        users.ShouldNotBeNull();
-        users.ShouldNotBeEmpty();
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
+        paged.Items.ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -68,9 +68,9 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var users = await response.Content.ReadFromJsonAsync<List<UserDetails>>(TestContext.Current.CancellationToken);
-        users.ShouldNotBeNull();
-        users.Count.ShouldBeLessThanOrEqualTo(5);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(TestContext.Current.CancellationToken);
+        paged.ShouldNotBeNull();
+        paged.Items.Count.ShouldBeLessThanOrEqualTo(5);
     }
 
     [Fact]
