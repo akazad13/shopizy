@@ -16,6 +16,7 @@ namespace Shopizy.Contracts.Product;
 /// <param name="Sizes">Comma-separated list of sizes.</param>
 /// <param name="Tags">Comma-separated list of tags.</param>
 /// <param name="Barcode">The barcode.</param>
+/// <param name="StockQuantity">The Stock Quantity</param>
 /// <param name="SpecificationIds">List of specification identifiers.</param>
 public record UpdateProductRequest(
     string Name,
@@ -31,5 +32,6 @@ public record UpdateProductRequest(
     string Sizes,
     string Tags,
     string Barcode,
+    int StockQuantity,
     IList<Guid>? SpecificationIds
 );

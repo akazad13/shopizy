@@ -205,7 +205,8 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         string barcode,
         string colors,
         string sizes,
-        string tags
+        string tags,
+        int stockQuantity
     )
     {
         Name = name;
@@ -220,6 +221,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         Colors = colors;
         Sizes = sizes;
         Tags = tags;
+        StockQuantity = stockQuantity;
 
         AddDomainEvent(new Events.ProductUpdatedDomainEvent(this));
     }

@@ -37,7 +37,8 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
             barcode: cmd.Barcode,
             colors: cmd.Colors,
             sizes: cmd.Sizes,
-            tags: cmd.Tags
+            tags: cmd.Tags,
+            stockQuantity: cmd.StockQuantity
         );
 
         return Result.Success;

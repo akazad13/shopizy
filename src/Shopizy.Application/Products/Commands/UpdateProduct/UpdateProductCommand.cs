@@ -20,6 +20,7 @@ public record UpdateProductCommand(
     string Sizes,
     string Tags,
     string Barcode,
+    int StockQuantity,
     IList<Guid>? SpecificationIds
 ) : ICommand<ErrorOr<Success>>;
 
