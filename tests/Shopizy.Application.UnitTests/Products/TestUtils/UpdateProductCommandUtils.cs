@@ -23,6 +23,7 @@ public static class UpdateProductCommandUtils
             Constants.Product.Sizes,
             Constants.Product.Tags,
             Constants.Product.Barcode,
+            Constants.Product.StockQuantity,
             []
         );
     }

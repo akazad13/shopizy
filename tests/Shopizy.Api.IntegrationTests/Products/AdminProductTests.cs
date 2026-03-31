@@ -89,7 +89,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         var updateRequest = new UpdateProductRequest(
             "Product After Update", "Updated short desc", "Updated full description",
             categoryId, 249.99m, 1, 5m, created!.Barcode, "UpdatedBrand",
-            "Green", "L,XL", "updated", created.Barcode, null);
+            "Green", "L,XL", "updated", created.Barcode, 10, null);
 
         // Act
         var response = await HttpClient.PutAsJsonAsync(
@@ -109,7 +109,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         await AuthenticateAsNewUserAsync("Upd", "Customer");
         var updateRequest = new UpdateProductRequest(
             "Hacked", "Hacked desc", "Hacked desc", Guid.NewGuid(),
-            1m, 1, 0m, "HACK", "Hack", "Red", "S", "hack", "000", null);
+            1m, 1, 0m, "HACK", "Hack", "Red", "S", "hack", "000", 10, null);
 
         // Act
         var response = await HttpClient.PutAsJsonAsync(

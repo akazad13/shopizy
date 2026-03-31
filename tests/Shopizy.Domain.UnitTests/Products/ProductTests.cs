@@ -82,7 +82,8 @@ public class ProductTests
             product.Barcode,
             product.Colors,
             product.Sizes,
-            product.Tags
+            product.Tags,
+            product.StockQuantity
         );
 
         // Assert

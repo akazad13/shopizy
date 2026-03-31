@@ -19,13 +19,45 @@ public sealed class OutboxProcessor(
     ILogger<OutboxProcessor> logger
 ) : BackgroundService
 {
-    private static readonly TimeSpan PollingInterval = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan s_pollingInterval = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan s_processingThreshold = TimeSpan.FromMinutes(5);
 
-    /// <summary>
-    /// Only retry messages older than this threshold, giving the synchronous
-    /// in-process handler (EventualConsistencyMiddleware) time to mark them processed.
-    /// </summary>
-    private static readonly TimeSpan ProcessingThreshold = TimeSpan.FromMinutes(5);
+    // LoggerMessage delegates
+    private static readonly Action<ILogger, int, Exception?> s_processingMessages =
+        LoggerMessage.Define<int>(
+            LogLevel.Information,
+            new EventId(1, nameof(OutboxProcessor)),
+            "Outbox: processing {Count} pending message(s).");
+
+    private static readonly Action<ILogger, Guid, string, Exception?> s_deadLetteringMessageType =
+        LoggerMessage.Define<Guid, string>(
+            LogLevel.Warning,
+            new EventId(2, nameof(OutboxProcessor)),
+            "Outbox: dead-lettering message {Id} — {Reason}");
+
+    private static readonly Action<ILogger, Guid, string, Exception?> s_deadLetteringMessageDeserialize =
+        LoggerMessage.Define<Guid, string>(
+            LogLevel.Warning,
+            new EventId(3, nameof(OutboxProcessor)),
+            "Outbox: dead-lettering message {Id} — {Reason}");
+
+    private static readonly Action<ILogger, Guid, string, Exception?> s_processedMessage =
+        LoggerMessage.Define<Guid, string>(
+            LogLevel.Information,
+            new EventId(4, nameof(OutboxProcessor)),
+            "Outbox: processed message {Id} ({Type}).");
+
+    private static readonly Action<ILogger, Guid, string, Exception?> s_failedToProcessMessage =
+        LoggerMessage.Define<Guid, string>(
+            LogLevel.Error,
+            new EventId(5, nameof(OutboxProcessor)),
+            "Outbox: failed to process message {Id} ({Type}).");
+
+    private static readonly Action<ILogger, Exception?> s_unhandledError =
+        LoggerMessage.Define(
+            LogLevel.Error,
+            new EventId(6, nameof(OutboxProcessor)),
+            "Outbox processor encountered an unhandled error.");
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -33,24 +65,24 @@ public sealed class OutboxProcessor(
         {
             try
             {
-                await ProcessPendingMessagesAsync(stoppingToken);
+                await processPendingMessagesAsync(stoppingToken);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                logger.LogError(ex, "Outbox processor encountered an unhandled error.");
+                s_unhandledError(logger, ex);
             }
 
-            await Task.Delay(PollingInterval, stoppingToken);
+            await Task.Delay(s_pollingInterval, stoppingToken);
         }
     }
 
-    private async Task ProcessPendingMessagesAsync(CancellationToken cancellationToken)
+    private async Task processPendingMessagesAsync(CancellationToken cancellationToken)     
     {
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var dispatcher = scope.ServiceProvider.GetRequiredService<IDispatcher>();
 
-        var threshold = DateTime.UtcNow - ProcessingThreshold;
+        var threshold = DateTime.UtcNow - s_processingThreshold;
 
         var pending = await dbContext.OutboxMessages
             .Where(m => m.ProcessedOn == null && m.DeadLetteredOn == null && m.OccurredOn <= threshold)
@@ -63,7 +95,7 @@ public sealed class OutboxProcessor(
             return;
         }
 
-        logger.LogInformation("Outbox: processing {Count} pending message(s).", pending.Count);
+        s_processingMessages(logger, pending.Count, null);
 
         foreach (var message in pending)
         {
@@ -73,7 +105,7 @@ public sealed class OutboxProcessor(
                 if (eventType is null)
                 {
                     var reason = $"Cannot resolve type '{message.Type}'.";
-                    logger.LogWarning("Outbox: dead-lettering message {Id} — {Reason}", message.Id, reason);
+                    s_deadLetteringMessageType(logger, message.Id, reason, null);
                     await dbContext.OutboxMessages
                         .Where(m => m.Id == message.Id)
                         .ExecuteUpdateAsync(
@@ -86,7 +118,7 @@ public sealed class OutboxProcessor(
                 if (JsonSerializer.Deserialize(message.Content, eventType) is not IDomainEvent domainEvent)
                 {
                     var reason = $"Cannot deserialize content as '{eventType.Name}'.";
-                    logger.LogWarning("Outbox: dead-lettering message {Id} — {Reason}", message.Id, reason);
+                    s_deadLetteringMessageDeserialize(logger, message.Id, reason, null);
                     await dbContext.OutboxMessages
                         .Where(m => m.Id == message.Id)
                         .ExecuteUpdateAsync(
@@ -98,18 +130,17 @@ public sealed class OutboxProcessor(
 
                 await dispatcher.PublishAsync(domainEvent, cancellationToken);
 
-                // Mark processed using ExecuteUpdateAsync (bypasses SaveChangesAsync override)
                 await dbContext.OutboxMessages
                     .Where(m => m.Id == message.Id)
                     .ExecuteUpdateAsync(
                         s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow),
                         cancellationToken);
 
-                logger.LogInformation("Outbox: processed message {Id} ({Type}).", message.Id, eventType.Name);
+                s_processedMessage(logger, message.Id, eventType.Name, null);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Outbox: failed to process message {Id} ({Type}).", message.Id, message.Type);
+                s_failedToProcessMessage(logger, message.Id, message.Type, ex);
             }
         }
     }
