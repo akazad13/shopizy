@@ -17,4 +17,7 @@
     <ProjectReference Include="..\..\src\Shopizy.Application\Shopizy.Application.csproj" />
     <ProjectReference Include="..\..\src\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ProductReviews\Events\" />
+  </ItemGroup>
 </Project>
