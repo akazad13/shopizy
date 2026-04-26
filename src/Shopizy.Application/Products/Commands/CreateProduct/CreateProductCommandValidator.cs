@@ -30,18 +30,15 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
         RuleFor(x => x.StockQuantity)
             .GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.Brand)
-            .MaximumLength(50);
-
         RuleFor(x => x.Barcode)
             .MaximumLength(50);
-            
+
         RuleFor(x => x.Colors)
             .NotEmpty().MaximumLength(50);
-            
+
         RuleFor(x => x.Sizes)
             .NotEmpty().MaximumLength(20);
-            
+
         RuleFor(x => x.Tags)
             .MaximumLength(200);
     }

@@ -44,7 +44,7 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
             Currency: 1, // USD
             Discount: 0m,
             Sku: "LAP-001",
-            Brand: "TechBrand",
+            BrandId: null,
             Colors: "Silver,Black",
             Sizes: "15-inch,17-inch",
             Tags: "laptop,computer",

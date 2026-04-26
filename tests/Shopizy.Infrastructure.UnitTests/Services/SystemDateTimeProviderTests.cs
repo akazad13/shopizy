@@ -1,7 +1,4 @@
-﻿using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.Infrastructure.Services;
-using Shouldly;
-using System;
+﻿using Shouldly;
 using Xunit;
 
 

@@ -10,6 +10,7 @@ public sealed class GiftCardConfigurations : IEntityTypeConfiguration<GiftCard>
 {
     public void Configure(EntityTypeBuilder<GiftCard> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         ConfigureGiftCardsTable(builder);
     }
 

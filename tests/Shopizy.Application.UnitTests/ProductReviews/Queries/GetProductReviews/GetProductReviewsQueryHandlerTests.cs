@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using ErrorOr;
-using Moq;
+﻿using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.ProductReviews.Queries.GetProductReviews;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products.ValueObjects;
 using Shouldly;
-using Xunit;
 
 
 namespace Shopizy.Application.ProductReviews.Queries.GetProductReviews.UnitTests;

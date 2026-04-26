@@ -8,7 +8,7 @@ public class UpdateUserCommandValidatorTests
     private readonly UpdateUserCommandValidator _validator = new();
 
     private static UpdateUserCommand ValidCommand() =>
-        new(Guid.NewGuid(), "John", "Doe", "john@example.com", null, "123 Main St", "Springfield", "IL", "USA", "62701");
+        new(Guid.NewGuid(), "John", "Doe", null, "123 Main St", "Springfield", "IL", "USA", "62701");
 
     [Fact]
     public async Task Should_HaveError_When_UserIdIsEmpty()
@@ -32,22 +32,6 @@ public class UpdateUserCommandValidatorTests
         var command = ValidCommand() with { LastName = "" };
         var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
         result.ShouldHaveValidationErrorFor(x => x.LastName);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_EmailIsInvalid()
-    {
-        var command = ValidCommand() with { Email = "not-an-email" };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
-        result.ShouldHaveValidationErrorFor(x => x.Email);
-    }
-
-    [Fact]
-    public async Task Should_HaveError_When_EmailIsEmpty()
-    {
-        var command = ValidCommand() with { Email = "" };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
-        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]

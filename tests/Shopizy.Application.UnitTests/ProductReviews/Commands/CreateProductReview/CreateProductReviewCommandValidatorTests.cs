@@ -1,8 +1,4 @@
-﻿using System;
-using FluentValidation.TestHelper;
-using Shopizy.Application.ProductReviews.Commands.CreateProductReview;
-using Shouldly;
-using Xunit;
+﻿using Shouldly;
 
 
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview.UnitTests;

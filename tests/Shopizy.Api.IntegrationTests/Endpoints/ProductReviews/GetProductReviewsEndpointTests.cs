@@ -1,22 +1,10 @@
-﻿using MapsterMapper;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
-using Moq;
-using Shopizy.Api.Common.LoggerMessages;
+﻿using Moq;
 using Shopizy.Api.Endpoints.ProductReviews;
-using Shopizy.Application.ProductReviews.Queries.GetProductReviews;
-using Shopizy.Contracts.ProductReview;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shouldly;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 
-namespace Shopizy.Api.Endpoints.ProductReviews.UnitTests;
+namespace Shopizy.Api.IntegrationTests.Endpoints.ProductReviews;
 
 /// <summary>
 /// Unit tests for the GetProductReviewsEndpoint class.
@@ -65,29 +53,9 @@ public class GetProductReviewsEndpointTests
 
         mockEndpointRouteBuilder
             .Setup(x => x.DataSources)
-            .Returns(new List<EndpointDataSource>());
+            .Returns([]);
 
         // Act & Assert
         Should.NotThrow(() => endpoint.MapEndpoint(mockEndpointRouteBuilder.Object));
     }
-
-    /// <summary>
-    /// Tests that MapEndpoint throws ArgumentNullException when provided a null IEndpointRouteBuilder.
-    /// This test is commented out because the parameter is non-nullable and the compiler prevents null assignment.
-    /// In C# with nullable reference types enabled, passing null to a non-nullable parameter is a compile-time error.
-    /// </summary>
-    /// <remarks>
-    /// The app parameter is declared as non-nullable (IEndpointRouteBuilder app), so this edge case
-    /// is prevented by the type system rather than requiring runtime validation.
-    /// </remarks>
-    // [Fact]
-    // public void MapEndpoint_WithNullRouteBuilder_ThrowsArgumentNullException()
-    // {
-    //     // Arrange
-    //     var endpoint = new GetProductReviewsEndpoint();
-    //
-    //     // Act & Assert
-    //     // Cannot test: The parameter is non-nullable, and passing null is a compile-time error
-    //     // Should.Throw<ArgumentNullException>(() => endpoint.MapEndpoint(null!));
-    // }
 }

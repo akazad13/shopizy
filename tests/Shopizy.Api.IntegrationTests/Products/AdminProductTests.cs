@@ -20,9 +20,30 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         return category!.Id;
     }
 
-    private CreateProductRequest BuildProductRequest(Guid categoryId, string name = "Admin Test Product") =>
+    private async Task<Guid> SetupBrandAsync(string namePrefix = "AdminBrand")
+    {
+        await AuthenticateAsAdminAsync();
+
+        var request = new CreateBrandRequest(
+            $"{namePrefix}_{Guid.NewGuid().ToString()[..8]}",
+            $"https://example.com/{Guid.NewGuid():N}.png",
+            "Kenya"
+        );
+
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/brands",
+            request,
+            TestContext.Current.CancellationToken
+        );
+        response.EnsureSuccessStatusCode();
+
+        var brand = await response.Content.ReadFromJsonAsync<BrandResponse>(TestContext.Current.CancellationToken);
+        return brand!.Id;
+    }
+
+    private CreateProductRequest BuildProductRequest(Guid categoryId, Guid? brandId = null, string name = "Admin Test Product") =>
         new(name, "Short description", "Full product description", categoryId,
-            199.99m, 1, 10m, $"ADM-{Guid.NewGuid().ToString()[..6]}", "AdminBrand",
+            199.99m, 1, 10m, $"ADM-{Guid.NewGuid().ToString()[..6]}", brandId,
             "Black,White", "S,M,L,XL", "admin,test", Guid.NewGuid().ToString()[..8], 50, null);
 
     [Fact]
@@ -30,7 +51,8 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     {
         // Arrange
         var categoryId = await SetupCategoryAsync("Create Product Cat");
-        var request = BuildProductRequest(categoryId, "New Admin Product");
+        var brandId = await SetupBrandAsync();
+        var request = BuildProductRequest(categoryId, brandId, "New Admin Product");
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
@@ -42,6 +64,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         product.ShouldNotBeNull();
         product.Name.ShouldBe("New Admin Product");
         product.CategoryId.ShouldBe(categoryId);
+        product.BrandId.ShouldBe(brandId);
         product.StockQuantity.ShouldBe(50);
     }
 
@@ -50,7 +73,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     {
         // Arrange
         await AuthenticateAsNewUserAsync("Regular", "Customer");
-        var request = BuildProductRequest(Guid.NewGuid(), "Unauthorized Product");
+        var request = BuildProductRequest(Guid.NewGuid(), name: "Unauthorized Product");
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
@@ -65,7 +88,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     {
         // Arrange
         ClearAuthToken();
-        var request = BuildProductRequest(Guid.NewGuid(), "Unauth Product");
+        var request = BuildProductRequest(Guid.NewGuid(), name: "Unauth Product");
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
@@ -80,7 +103,9 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     {
         // Arrange
         var categoryId = await SetupCategoryAsync("Update Product Cat");
-        var createRequest = BuildProductRequest(categoryId, "Product Before Update");
+        var initialBrandId = await SetupBrandAsync("InitBrand");
+        var updatedBrandId = await SetupBrandAsync("UpdatedBrand");
+        var createRequest = BuildProductRequest(categoryId, initialBrandId, "Product Before Update");
         var createResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products", createRequest, TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
@@ -88,7 +113,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
 
         var updateRequest = new UpdateProductRequest(
             "Product After Update", "Updated short desc", "Updated full description",
-            categoryId, 249.99m, 1, 5m, created!.Barcode, "UpdatedBrand",
+            categoryId, 249.99m, 1, 5m, created!.Barcode, updatedBrandId,
             "Green", "L,XL", "updated", created.Barcode, 10, null);
 
         // Act
@@ -100,6 +125,15 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         var result = await response.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
         result.Message.ShouldNotBeNullOrEmpty();
+
+        var getUpdatedResponse = await HttpClient.GetAsync(
+            $"/api/v1.0/products/{created.ProductId}",
+            TestContext.Current.CancellationToken
+        );
+        getUpdatedResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var updated = await getUpdatedResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(TestContext.Current.CancellationToken);
+        updated.ShouldNotBeNull();
+        updated.BrandId.ShouldBe(updatedBrandId);
     }
 
     [Fact]
@@ -109,7 +143,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         await AuthenticateAsNewUserAsync("Upd", "Customer");
         var updateRequest = new UpdateProductRequest(
             "Hacked", "Hacked desc", "Hacked desc", Guid.NewGuid(),
-            1m, 1, 0m, "HACK", "Hack", "Red", "S", "hack", "000", 10, null);
+            1m, 1, 0m, "HACK", null, "Red", "S", "hack", "000", 10, null);
 
         // Act
         var response = await HttpClient.PutAsJsonAsync(
@@ -124,7 +158,7 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     {
         // Arrange
         var categoryId = await SetupCategoryAsync("Delete Product Cat");
-        var createRequest = BuildProductRequest(categoryId, "Product To Delete");
+        var createRequest = BuildProductRequest(categoryId, name: "Product To Delete");
         var createResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products", createRequest, TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
@@ -160,10 +194,14 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
     [Fact]
     public async Task GetBrands_Anonymous_ReturnsOkWithList()
     {
-        // Arrange — create a product with a distinct brand so the brands list is non-empty
-        var categoryId = await SetupCategoryAsync("Brands Category");
-        var createRequest = BuildProductRequest(categoryId, "Branded Product");
-        await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", createRequest, TestContext.Current.CancellationToken);
+        // Arrange
+        await AuthenticateAsAdminAsync();
+        var request = new CreateBrandRequest(
+            $"AdminBrand_{Guid.NewGuid().ToString()[..8]}",
+            $"https://example.com/{Guid.NewGuid():N}.png",
+            "Kenya"
+        );
+        await HttpClient.PostAsJsonAsync("/api/v1.0/admin/brands", request, TestContext.Current.CancellationToken);
         ClearAuthToken();
 
         // Act
@@ -174,6 +212,6 @@ public class AdminProductTests(IntegrationTestWebAppFactory factory) : BaseInteg
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var brands = await response.Content.ReadFromJsonAsync<List<BrandResponse>>(TestContext.Current.CancellationToken);
         brands.ShouldNotBeNull();
-        brands.ShouldContain(b => b.Name == "AdminBrand");
+        brands.ShouldContain(b => b.Name == request.Name);
     }
 }

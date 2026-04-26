@@ -1,3 +1,4 @@
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
@@ -10,6 +11,8 @@ public interface IProductRepository
         IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
+        IReadOnlyList<BrandId>? brandIds,
+        string? color,
         decimal? averageRating,
         decimal? minPrice,
         decimal? maxPrice,
@@ -22,6 +25,8 @@ public interface IProductRepository
         IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
+        IReadOnlyList<BrandId>? brandIds,
+        string? color,
         decimal? averageRating,
         decimal? minPrice,
         decimal? maxPrice,
@@ -31,6 +36,7 @@ public interface IProductRepository
         IReadOnlyList<ProductId>? productIds,
         string? name,
         IReadOnlyList<CategoryId>? categoryIds,
+        IReadOnlyList<BrandId>? brandIds,
         decimal? averageRating,
         decimal? minPrice,
         decimal? maxPrice,

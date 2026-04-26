@@ -1,6 +1,7 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
@@ -30,7 +31,7 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
             stockQuantity: cmd.StockQuantity,
             unitPrice: Price.CreateNew(cmd.UnitPrice, cmd.Currency),
             discount: cmd.Discount,
-            brand: cmd.Brand,
+            brandId: cmd.BrandId.HasValue ? BrandId.Create(cmd.BrandId.Value) : null,
             barcode: cmd.Barcode,
             colors: cmd.Colors,
             sizes: cmd.Sizes,

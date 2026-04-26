@@ -15,7 +15,7 @@ public record UpdateProductCommand(
     Currency Currency,
     decimal Discount,
     string Sku,
-    string Brand,
+    Guid? BrandId,
     string Colors,
     string Sizes,
     string Tags,

@@ -24,7 +24,7 @@ public class WishlistTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     {
         var request = new CreateProductRequest(
             name, "Short desc", "Full description", categoryId,
-            29.99m, 1, 0m, $"WL-{Guid.NewGuid().ToString()[..6]}", "WishBrand",
+            29.99m, 1, 0m, $"WL-{Guid.NewGuid().ToString()[..6]}", null,
             "White", "One Size", "wishlist", Guid.NewGuid().ToString()[..8], 50, null);
         var response = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products", request, TestContext.Current.CancellationToken);

@@ -1,6 +1,7 @@
 using ErrorOr;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 
@@ -40,10 +41,17 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
                 .ToList()
             : null;
 
+        var brandIds = query.BrandIds?.Any() == true
+            ? query.BrandIds
+                .Select(brandId => BrandId.Create(brandId))
+                .ToList()
+            : null;
+
         var (products, totalCount) = await _productRepository.GetProductsWithCountAsync(
             productIds,
             query.Name,
             categoryIds,
+            brandIds,
             query.AverageRating,
             query.MinPrice,
             query.MaxPrice,
@@ -53,6 +61,6 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageSize
         );
 
-        return new ProductsResult(products.ToList(), totalCount, (int)Math.Ceiling(totalCount/(1.0 * query.PageSize)), query.PageNumber);
+        return new ProductsResult(products.ToList(), totalCount, (int)Math.Ceiling(totalCount / (1.0 * query.PageSize)), query.PageNumber);
     }
 }

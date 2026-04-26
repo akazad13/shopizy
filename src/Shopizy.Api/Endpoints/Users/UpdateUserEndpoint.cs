@@ -14,7 +14,7 @@ public class UpdateUserEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("api/v1.0/users/{userId:guid}", async (Guid userId, UpdateUserRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateUserEndpoint> logger) =>
+        app.MapPatch("api/v1.0/users/{userId:guid}", async (Guid userId, UpdateUserRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateUserEndpoint> logger) =>
         {
             if (!user.IsAuthorized(userId))
             {

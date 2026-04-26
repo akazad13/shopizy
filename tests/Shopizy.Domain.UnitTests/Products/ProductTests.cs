@@ -20,7 +20,6 @@ public class ProductTests
         var sku = "SKU123";
         var price = Price.CreateNew(100, Currency.usd);
         decimal? discount = 10;
-        var brand = "Test Brand";
         var barcode = "123456789";
         var colors = "Red, Blue";
         var sizes = "M, L";
@@ -36,7 +35,7 @@ public class ProductTests
             100, // stockQuantity
             price,
             discount,
-            brand,
+            null,
             barcode,
             colors,
             sizes,
@@ -52,12 +51,12 @@ public class ProductTests
         product.SKU.ShouldBe(sku);
         product.UnitPrice.ShouldBe(price);
         product.Discount.ShouldBe(discount);
-        product.Brand.ShouldBe(brand);
+        product.BrandId.ShouldBeNull();
         product.Barcode.ShouldBe(barcode);
         product.Colors.ShouldBe(colors);
         product.Sizes.ShouldBe(sizes);
         product.Tags.ShouldBe(tags);
-        
+
         product.DomainEvents.ShouldContain(e => e is ProductCreatedDomainEvent);
     }
 
@@ -78,7 +77,7 @@ public class ProductTests
             product.SKU,
             newPrice,
             product.Discount,
-            product.Brand,
+            product.BrandId,
             product.Barcode,
             product.Colors,
             product.Sizes,
@@ -116,7 +115,7 @@ public class ProductTests
             100, // Default stock
             Price.CreateNew(10, Currency.usd),
             null,
-            "Brand",
+            null,
             "Barcode",
             "Colors",
             "Sizes",

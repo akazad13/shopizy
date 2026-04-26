@@ -11,7 +11,6 @@ public static class UpdateUserCommandUtils
             Constants.User.Id.Value,
             Constants.User.FirstName,
             Constants.User.LastName,
-            Constants.User.Email,
             "1234567890",
             Constants.User.Address.Street,
             Constants.User.Address.City,

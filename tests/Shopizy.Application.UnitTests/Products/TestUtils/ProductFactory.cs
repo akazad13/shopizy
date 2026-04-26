@@ -17,11 +17,11 @@ public static class ProductFactory
             50, // Default stock quantity for tests
             Constants.Product.Price,
             Constants.Product.Discount,
-            Constants.Product.Brand,
-            Constants.Product.Tags,
+            Constants.Product.BrandId,
+            Constants.Product.Barcode,
             Constants.Product.Colors,
             Constants.Product.Sizes,
-            Constants.Product.Barcode
+            Constants.Product.Tags
         );
     }
 

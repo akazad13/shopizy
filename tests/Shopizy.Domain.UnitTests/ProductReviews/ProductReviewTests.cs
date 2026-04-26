@@ -1,10 +1,6 @@
-using System;
-using System.Linq;
-
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.Events;
-using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 using Shouldly;

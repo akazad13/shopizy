@@ -1,4 +1,5 @@
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
@@ -16,82 +17,82 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     private readonly List<ProductImage> _productImages = [];
     private readonly List<ProductReview> _productReviews = [];
     private readonly List<ProductVariant> _productVariants = [];
-    
+
     /// <summary>
     /// Gets the product name.
     /// </summary>
     public string Name { get; private set; }
-    
+
     /// <summary>
     /// Gets the short description of the product.
     /// </summary>
     public string ShortDescription { get; private set; }
-    
+
     /// <summary>
     /// Gets the detailed description of the product.
     /// </summary>
     public string Description { get; private set; }
-    
+
     /// <summary>
     /// Gets the category ID this product belongs to.
     /// </summary>
     public CategoryId CategoryId { get; private set; }
-    
+
     /// <summary>
     /// Gets the stock keeping unit (SKU).
     /// </summary>
     public string SKU { get; private set; }
-    
+
     /// <summary>
     /// Gets the current stock quantity.
     /// </summary>
     public int StockQuantity { get; private set; }
-    
+
     /// <summary>
     /// Gets the unit price of the product.
     /// </summary>
     public Price UnitPrice { get; private set; }
-    
+
     /// <summary>
     /// Gets the discount percentage.
     /// </summary>
     public decimal? Discount { get; private set; }
-    
+
     /// <summary>
-    /// Gets the product brand.
+    /// Gets the product brand identifier.
     /// </summary>
-    public string Brand { get; private set; }
-    
+    public BrandId? BrandId { get; private set; }
+
     /// <summary>
     /// Gets the available colors (comma-separated).
     /// </summary>
     public string Colors { get; private set; }
-    
+
     /// <summary>
     /// Gets the available sizes (comma-separated).
     /// </summary>
     public string Sizes { get; private set; }
-    
+
     /// <summary>
     /// Gets the number of times this product has been favorited.
     /// </summary>
     public int Favourites { get; private set; }
-    
+
     /// <summary>
     /// Gets the product barcode.
     /// </summary>
     public string Barcode { get; private set; }
-    
+
     /// <summary>
     /// Gets the product tags (comma-separated).
     /// </summary>
     public string Tags { get; private set; }
-    
+
     /// <summary>
     /// Gets the average rating of the product.
     /// </summary>
     public AverageRating AverageRating { get; private set; }
-    
+
     /// <summary>
     /// Gets whether the product is active.
     /// </summary>
@@ -100,18 +101,18 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the product was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
 
     /// <summary>
     /// Gets the date and time when the product was last modified.
     /// </summary>
-    public DateTime? ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; }
 
     /// <summary>
     /// Gets the read-only list of product images.
     /// </summary>
     public IReadOnlyList<ProductImage> ProductImages => _productImages.AsReadOnly();
-    
+
     /// <summary>
     /// Gets the read-only list of product reviews.
     /// </summary>
@@ -133,7 +134,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <param name="stockQuantity">The initial stock quantity.</param>
     /// <param name="unitPrice">The unit price.</param>
     /// <param name="discount">The discount percentage.</param>
-    /// <param name="brand">The brand name.</param>
+    /// <param name="brandId">The brand identifier.</param>
     /// <param name="barcode">The product barcode.</param>
     /// <param name="colors">Available colors.</param>
     /// <param name="sizes">Available sizes.</param>
@@ -148,7 +149,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         int stockQuantity,
         Price unitPrice,
         decimal? discount,
-        string brand,
+        BrandId? brandId,
         string barcode,
         string colors,
         string sizes,
@@ -165,7 +166,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
             stockQuantity,
             unitPrice,
             discount,
-            brand,
+            brandId,
             barcode,
             colors,
             sizes,
@@ -188,11 +189,12 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <param name="sku">The stock keeping unit.</param>
     /// <param name="unitPrice">The unit price.</param>
     /// <param name="discount">The discount percentage.</param>
-    /// <param name="brand">The brand name.</param>
+    /// <param name="brandId">The brand identifier.</param>
     /// <param name="barcode">The product barcode.</param>
     /// <param name="colors">Available colors.</param>
     /// <param name="sizes">Available sizes.</param>
     /// <param name="tags">Product tags.</param>
+    /// <param name="stockQuantity">Product stock quantity.</param>
     public void Update(
         string name,
         string shortDescription,
@@ -201,7 +203,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         string sku,
         Price unitPrice,
         decimal? discount,
-        string brand,
+        BrandId? brandId,
         string barcode,
         string colors,
         string sizes,
@@ -216,7 +218,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         SKU = sku;
         UnitPrice = unitPrice;
         Discount = discount;
-        Brand = brand;
+        BrandId = brandId;
         Barcode = barcode;
         Colors = colors;
         Sizes = sizes;
@@ -351,7 +353,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         int stockQuantity,
         Price unitPrice,
         decimal? discount,
-        string brand,
+        BrandId? brandId,
         string barcode,
         string colors,
         string sizes,
@@ -368,7 +370,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         StockQuantity = stockQuantity;
         UnitPrice = unitPrice;
         Discount = discount;
-        Brand = brand;
+        BrandId = brandId;
         Barcode = barcode;
         Colors = colors;
         Sizes = sizes;

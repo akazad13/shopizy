@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Infrastructure.AuditLogs.Persistence;
+using Shopizy.Infrastructure.Brands.Persistence;
 using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -67,6 +68,7 @@ public static class PersistenceRegister
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services
+            .AddScoped<IBrandRepository, BrandRepository>()
             .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<ICartRepository, CartRepository>()
             .AddScoped<IOrderRepository, OrderRepository>()

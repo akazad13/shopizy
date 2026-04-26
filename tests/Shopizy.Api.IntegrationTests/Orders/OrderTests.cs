@@ -27,7 +27,7 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
             "/api/v1.0/admin/products",
             new CreateProductRequest(
                 $"Order Product {Guid.NewGuid().ToString()[..4]}", "Short", "Full desc", category!.Id,
-                75.00m, 1, 0m, $"ORD-{Guid.NewGuid().ToString()[..6]}", "OrderBrand",
+                75.00m, 1, 0m, $"ORD-{Guid.NewGuid().ToString()[..6]}", null,
                 "Blue", "M", "order", Guid.NewGuid().ToString()[..8], 200, null),
             TestContext.Current.CancellationToken);
         prodResponse.EnsureSuccessStatusCode();

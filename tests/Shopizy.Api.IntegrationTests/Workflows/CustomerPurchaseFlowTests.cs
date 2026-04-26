@@ -17,11 +17,11 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
     {
         // 1. Setup Phase: Admin creates Category and Product
         var (adminToken, adminUserId) = await AuthenticateAsAdminAsync();
-        
+
         var categoryRequest = new CreateCategoryRequest("Electronics", null);
         var categoryResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
         var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(cancellationToken: TestContext.Current.CancellationToken);
-        
+
         var productRequest = new CreateProductRequest(
             Name: "Smartphone X",
             ShortDescription: "Latest smartphone",
@@ -31,7 +31,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             Currency: 1, // USD
             Discount: 0m,
             Sku: "PHONE-X",
-            Brand: "GadgetCorp",
+            BrandId: null,
             Colors: "Midnight Blue",
             Sizes: "256GB",
             Tags: "phone,electronics",
@@ -41,13 +41,13 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         );
         var productResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(cancellationToken: TestContext.Current.CancellationToken);
-        
+
         ClearAuthToken();
 
         // 2. Customer Phase: Registration and Login
         var customerEmail = $"{Guid.NewGuid().ToString()[..8]}@customer.com";
         var (customerToken, customerUserId) = await AuthenticateAsNewUserAsync("John", "Customer", customerEmail);
-        
+
         // 3. User Journey: Browse Products
         var getProductsResponse = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
         getProductsResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -70,7 +70,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var deliveryCharge = new Price(10.00m, "USD");
         var orderItems = new List<OrderItemRequest> { new(product.ProductId, "Midnight Blue", "256GB", 1) };
         var createOrderRequest = new CreateOrderRequest("", 1, deliveryCharge, orderItems, shippingAddress);
-        
+
         var placeOrderResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", createOrderRequest, TestContext.Current.CancellationToken);
         placeOrderResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
         var order = await placeOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
@@ -86,7 +86,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             paymentMethodId,
             null
         );
-        
+
         // Payment uses [Route("api/v1.0/users/{userId:guid}/payments")]
         var paymentResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{customerUserId}/payments", paymentRequest, TestContext.Current.CancellationToken);
         paymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);

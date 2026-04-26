@@ -28,7 +28,7 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
             "/api/v1.0/admin/products",
             new CreateProductRequest(
                 $"WF Product {Guid.NewGuid().ToString()[..4]}", "Short", "Full desc", category!.Id,
-                50.00m, 1, 0m, $"WF-{Guid.NewGuid().ToString()[..6]}", "WFBrand",
+                50.00m, 1, 0m, $"WF-{Guid.NewGuid().ToString()[..6]}", null,
                 "Black", "L", "wf", Guid.NewGuid().ToString()[..8], stockQuantity, null),
             TestContext.Current.CancellationToken);
         prodResponse.EnsureSuccessStatusCode();

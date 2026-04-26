@@ -33,9 +33,6 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
         RuleFor(x => x.Discount)
             .GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.Brand)
-            .MaximumLength(50);
-
         RuleFor(x => x.Barcode)
             .MaximumLength(50);
 

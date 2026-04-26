@@ -2,6 +2,7 @@ using Moq;
 using Shouldly;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
@@ -25,16 +26,17 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenProductsExist_ShouldReturnProductList()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, null, 1, 10);
         var product = Product.Create(
             "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
-            Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
+            Price.CreateNew(10, Currency.usd), null, null, "B", "C", "S", "T");
         var products = new List<Product> { product };
 
         _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
+            It.IsAny<IReadOnlyList<BrandId>?>(),
             It.IsAny<decimal?>(),
             It.IsAny<decimal?>(),
             It.IsAny<decimal?>(),
@@ -57,12 +59,13 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenNoProductsFound_ShouldReturnEmptyList()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, null, 1, 10);
 
         _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
             It.IsAny<IReadOnlyList<ProductId>?>(),
             It.IsAny<string?>(),
             It.IsAny<IReadOnlyList<CategoryId>?>(),
+            It.IsAny<IReadOnlyList<BrandId>?>(),
             It.IsAny<decimal?>(),
             It.IsAny<decimal?>(),
             It.IsAny<decimal?>(),

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.Infrastructure.Outbox;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Domain.Models;
 

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Shopizy.Domain.Brands;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Entities;
@@ -31,7 +33,13 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.SKU).HasMaxLength(50);
         builder.Property(p => p.StockQuantity);
         builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
-        builder.Property(p => p.Brand).HasMaxLength(50).IsRequired(false);
+        builder
+            .Property(p => p.BrandId)
+            .HasConversion(
+                id => id == null ? (Guid?)null : id.Value,
+                value => value.HasValue ? BrandId.Create(value.Value) : null
+            )
+            .IsRequired(false);
         builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
         builder.Property(p => p.Colors).HasMaxLength(50).IsRequired();
         builder.Property(p => p.Sizes).HasMaxLength(20).IsRequired();
@@ -60,12 +68,18 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
             .Property(p => p.CategoryId)
             .HasConversion(id => id.Value, value => CategoryId.Create(value));
 
+        builder
+            .HasOne<Brand>()
+            .WithMany()
+            .HasForeignKey(p => p.BrandId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.Navigation(p => p.ProductImages).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviews).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductVariants).UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.HasIndex(p => p.CategoryId);
-        builder.HasIndex(p => p.Brand);
+        builder.HasIndex(p => p.BrandId);
         builder.HasIndex(p => p.StockQuantity);
         builder.HasIndex(p => p.IsActive);
         builder.HasIndex(p => p.CreatedOn);

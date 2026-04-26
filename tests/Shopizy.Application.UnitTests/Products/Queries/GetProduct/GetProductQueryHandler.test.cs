@@ -29,7 +29,7 @@ public class GetProductQueryHandlerTestsRefactored
         var productId = Guid.NewGuid();
         var product = Product.Create(
             "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
-            Price.CreateNew(10, Currency.usd), null, "B", "B", "C", "S", "T");
+            Price.CreateNew(10, Currency.usd), null, null, "B", "C", "S", "T");
         var query = new GetProductQuery(productId);
 
         _mockProductRepository.Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))

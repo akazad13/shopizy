@@ -18,7 +18,7 @@ public static class UpdateProductCommandUtils
             Constants.Product.Currency,
             Constants.Product.Discount,
             Constants.Product.Sku,
-            Constants.Product.Brand,
+            Constants.Product.BrandId.Value,
             Constants.Product.Colors,
             Constants.Product.Sizes,
             Constants.Product.Tags,

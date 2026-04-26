@@ -6,6 +6,8 @@ namespace Shopizy.Contracts.Product;
 /// <param name="ProductIds">Filter by product ids</param>
 /// <param name="Name">Filter by product name.</param>
 /// <param name="CategoryIds">Filter by category identifiers.</param>
+/// <param name="BrandIds">Filter by brand identifiers.</param>
+/// <param name="Colors">Filter by colors.</param>
 /// <param name="AverageRating">Filter by minimum average rating.</param>
 /// <param name="MinPrice">Filter by minimum price.</param>
 /// <param name="MaxPrice">Filter by maximum price.</param>
@@ -17,6 +19,7 @@ public record ProductsCriteria(
     Guid[]? ProductIds,
     string? Name,
     Guid[]? CategoryIds,
+    Guid[]? BrandIds,
     decimal? AverageRating,
     decimal? MinPrice,
     decimal? MaxPrice,

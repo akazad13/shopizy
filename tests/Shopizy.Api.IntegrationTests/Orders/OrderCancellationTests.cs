@@ -25,7 +25,7 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
             "/api/v1.0/admin/products",
             new CreateProductRequest(
                 $"CancelProd {Guid.NewGuid().ToString()[..4]}", "Short", "Full", category!.Id,
-                49.99m, 1, 0m, $"CXL-{Guid.NewGuid().ToString()[..6]}", "CancelBrand",
+                49.99m, 1, 0m, $"CXL-{Guid.NewGuid().ToString()[..6]}", null,
                 "Black", "S", "cancel", Guid.NewGuid().ToString()[..8], 100, null),
             TestContext.Current.CancellationToken);
         prodResponse.EnsureSuccessStatusCode();

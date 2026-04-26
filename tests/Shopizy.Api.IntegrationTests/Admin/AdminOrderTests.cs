@@ -26,7 +26,7 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
             "/api/v1.0/admin/products",
             new CreateProductRequest(
                 $"AdminOrd Prod {Guid.NewGuid().ToString()[..4]}", "Short", "Full", category!.Id,
-                99.00m, 1, 0m, $"AO-{Guid.NewGuid().ToString()[..6]}", "AO Brand",
+                99.00m, 1, 0m, $"AO-{Guid.NewGuid().ToString()[..6]}", null,
                 "Red", "M", "admin,order", Guid.NewGuid().ToString()[..8], 100, null),
             TestContext.Current.CancellationToken);
         prodResponse.EnsureSuccessStatusCode();

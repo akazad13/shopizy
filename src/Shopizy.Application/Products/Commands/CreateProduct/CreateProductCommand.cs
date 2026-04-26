@@ -18,7 +18,7 @@ namespace Shopizy.Application.Products.Commands.CreateProduct;
 /// <param name="Discount">The discount percentage.</param>
 /// <param name="Sku">The stock keeping unit.</param>
 /// <param name="StockQuantity">The initial stock quantity.</param>
-/// <param name="Brand">The brand name.</param>
+/// <param name="BrandId">The brand identifier.</param>
 /// <param name="Colors">Available colors (comma-separated).</param>
 /// <param name="Sizes">Available sizes (comma-separated).</param>
 /// <param name="Tags">Product tags (comma-separated).</param>
@@ -35,7 +35,7 @@ public record CreateProductCommand(
     decimal Discount,
     string Sku,
     int StockQuantity,
-    string Brand,
+    Guid? BrandId,
     string Colors,
     string Sizes,
     string Tags,

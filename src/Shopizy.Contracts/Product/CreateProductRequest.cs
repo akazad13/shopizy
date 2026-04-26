@@ -11,7 +11,7 @@ namespace Shopizy.Contracts.Product;
 /// <param name="Currency">The currency code (as integer).</param>
 /// <param name="Discount">The discount amount.</param>
 /// <param name="Sku">The stock keeping unit.</param>
-/// <param name="Brand">The brand name.</param>
+/// <param name="BrandId">The brand identifier.</param>
 /// <param name="Colors">Comma-separated list of colors.</param>
 /// <param name="Sizes">Comma-separated list of sizes.</param>
 /// <param name="Tags">Comma-separated list of tags.</param>
@@ -27,7 +27,7 @@ public record CreateProductRequest(
     int Currency,
     decimal Discount,
     string Sku,
-    string Brand,
+    Guid? BrandId,
     string Colors,
     string Sizes,
     string Tags,

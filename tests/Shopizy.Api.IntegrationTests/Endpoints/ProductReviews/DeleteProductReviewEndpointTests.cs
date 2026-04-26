@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Moq;
+﻿using Moq;
 using Shouldly;
-using Shopizy.Api.Endpoints.ProductReviews;
 using Xunit;
 
 

@@ -1,5 +1,5 @@
 using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Application.Products.Queries.GetBrands;
+using Shopizy.Application.Brands.Queries.ListBrands;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +15,15 @@ public class GetBrandsEndpoint : ApiEndpoint
         {
             return await HandleAsync(
                 mediator,
-                new GetBrandsQuery(),
-                brands => Results.Ok(brands.Select(b => new BrandResponse(b))),
+                new ListBrandsQuery(),
+                brands => Results.Ok(brands.Select(b => new BrandResponse(b.Id, b.Name, b.LogoUrl, b.Country))),
                 ex => logger.BrandsFetchError(ex)
             );
         })
         .AllowAnonymous()
-        .WithTags("Products")
+        .WithTags("Brands")
         .WithSummary("Get all brands")
-        .WithDescription("Retrieves a list of all unique product brands available in the catalog.")
+        .WithDescription("Retrieves a list of all brands available in the catalog.")
         .Produces<List<BrandResponse>>(StatusCodes.Status200OK)
         .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }

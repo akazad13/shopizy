@@ -27,7 +27,7 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
             100, // StockQuantity
             Price.CreateNew(100, Currency.usd),
             null,
-            Constants.Product.Brand,
+                null,
             Constants.Product.Barcode,
             Constants.Product.Colors,
             Constants.Product.Sizes,
@@ -55,36 +55,36 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         var category = Shopizy.Domain.Categories.Category.Create("Test Category", null);
         DbContext.Categories.Add(category);
 
-         var product1 = Shopizy.Domain.Products.Product.Create(
-            "Product A",
-            "Short Desc A",
-            "Desc A",
-            category.Id,
-            "SKU-A",
-            100, // StockQuantity
-            Price.CreateNew(50, Currency.usd),
-            null,
-            "BrandA",
-            "BarcodeA",
-            "Red",
-            "L",
-            "TagA"
-        );
-         var product2 = Shopizy.Domain.Products.Product.Create(
-            "Product B",
-            "Short Desc B",
-            "Desc B",
-            category.Id,
-            "SKU-B",
-            100, // StockQuantity
-            Price.CreateNew(150, Currency.usd),
-            null,
-            "BrandB",
-            "BarcodeB",
-            "Blue",
-            "M",
-            "TagB"
-        );
+        var product1 = Shopizy.Domain.Products.Product.Create(
+           "Product A",
+           "Short Desc A",
+           "Desc A",
+           category.Id,
+           "SKU-A",
+           100, // StockQuantity
+           Price.CreateNew(50, Currency.usd),
+           null,
+               null,
+           "BarcodeA",
+           "Red",
+           "L",
+           "TagA"
+       );
+        var product2 = Shopizy.Domain.Products.Product.Create(
+           "Product B",
+           "Short Desc B",
+           "Desc B",
+           category.Id,
+           "SKU-B",
+           100, // StockQuantity
+           Price.CreateNew(150, Currency.usd),
+           null,
+               null,
+           "BarcodeB",
+           "Blue",
+           "M",
+           "TagB"
+       );
 
         DbContext.Products.AddRange(product1, product2);
         await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

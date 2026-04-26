@@ -59,6 +59,33 @@ namespace Shopizy.Infrastructure.Migrations
                     b.ToTable("AuditLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Shopizy.Domain.Brands.Brand", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Brands", (string)null);
+                });
+
             modelBuilder.Entity("Shopizy.Domain.Carts.Cart", b =>
                 {
                     b.Property<Guid>("Id")
@@ -487,9 +514,8 @@ namespace Shopizy.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Brand")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<Guid?>("BrandId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -551,7 +577,7 @@ namespace Shopizy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Brand");
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
 
@@ -1152,6 +1178,11 @@ namespace Shopizy.Infrastructure.Migrations
 
             modelBuilder.Entity("Shopizy.Domain.Products.Product", b =>
                 {
+                    b.HasOne("Shopizy.Domain.Brands.Brand", null)
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Shopizy.Domain.Categories.Category", null)
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")

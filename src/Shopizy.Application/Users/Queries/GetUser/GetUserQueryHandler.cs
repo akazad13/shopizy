@@ -26,9 +26,11 @@ public class GetUserQueryHandler(
     /// <returns>The user data transfer object or an error if the user is not found.</returns>
     public async Task<ErrorOr<UserDto>> Handle(
         GetUserQuery request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
 
         if (user is null)

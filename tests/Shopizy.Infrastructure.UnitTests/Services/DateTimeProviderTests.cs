@@ -1,5 +1,3 @@
-using System;
-
 using Shopizy.Infrastructure.Services;
 using Shouldly;
 using Xunit;

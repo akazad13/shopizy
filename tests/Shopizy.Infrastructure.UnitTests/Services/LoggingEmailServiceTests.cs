@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Shouldly;
-using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Infrastructure.Services;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
 
 
-namespace Shopizy.Infrastructure.Services.UnitTests;
+namespace Shopizy.Infrastructure.UnitTests.Services;
 
 /// <summary>
 /// Unit tests for <see cref="LoggingEmailService"/>.
@@ -30,13 +26,13 @@ public class LoggingEmailServiceTests
         var body = "Test Body";
 
         // Act
-        var task = service.SendAsync(to, subject, body);
+        var task = service.SendAsync(to, subject, body, TestContext.Current.CancellationToken);
         await task;
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
+            static x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => true),
@@ -66,7 +62,7 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync(to, subject, body);
+        var task = service.SendAsync(to, subject, body, TestContext.Current.CancellationToken);
         await task;
 
         // Assert
@@ -102,7 +98,7 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync(to, subject, body);
+        var task = service.SendAsync(to, subject, body, TestContext.Current.CancellationToken);
         await task;
 
         // Assert
@@ -137,7 +133,7 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync(to, subject, body);
+        var task = service.SendAsync(to, subject, body, TestContext.Current.CancellationToken);
         await task;
 
         // Assert
@@ -164,7 +160,7 @@ public class LoggingEmailServiceTests
         var longString = new string('a', 10000);
 
         // Act
-        var task = service.SendAsync(longString, longString, longString);
+        var task = service.SendAsync(longString, longString, longString, TestContext.Current.CancellationToken);
         await task;
 
         // Assert
@@ -188,11 +184,10 @@ public class LoggingEmailServiceTests
         // Arrange
         var mockLogger = new Mock<ILogger<LoggingEmailService>>();
         var service = new LoggingEmailService(mockLogger.Object);
-        var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await new CancellationTokenSource().CancelAsync();
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body", cts.Token);
+        var task = service.SendAsync("to@example.com", "subject", "body", new CancellationTokenSource().Token);
         await task;
 
         // Assert
@@ -218,7 +213,7 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body");
+        var task = service.SendAsync("to@example.com", "subject", "body", TestContext.Current.CancellationToken);
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
@@ -236,7 +231,7 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body", default);
+        var task = service.SendAsync("to@example.com", "subject", "body", TestContext.Current.CancellationToken);
         await task;
 
         // Assert

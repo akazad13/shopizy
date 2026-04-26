@@ -1,14 +1,7 @@
 ﻿using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.ProductReviews.Commands.CreateProductReview;
-using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
-using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Domain.Users.ValueObjects;
 using Shouldly;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview.UnitTests;

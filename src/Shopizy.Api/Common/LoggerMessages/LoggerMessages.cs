@@ -364,4 +364,16 @@ public static partial class LoggerMessages
 
     [LoggerMessage(EventId = 1041, Level = LogLevel.Error, Message = "An error occurred while deleting promo code.")]
     public static partial void PromoCodeDeleteError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1051, Level = LogLevel.Error, Message = "An error occurred while fetching brand.")]
+    public static partial void BrandFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1052, Level = LogLevel.Error, Message = "An error occurred while creating brand.")]
+    public static partial void BrandCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1053, Level = LogLevel.Error, Message = "An error occurred while updating brand.")]
+    public static partial void BrandUpdateError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(EventId = 1054, Level = LogLevel.Error, Message = "An error occurred while deleting brand.")]
+    public static partial void BrandDeleteError(this ILogger logger, Exception ex);
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.Domain.AuditLogs;
+using Shopizy.Domain.Brands;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
 using Shopizy.SharedKernel.Domain.Models;
@@ -33,45 +34,50 @@ public class AppDbContext(
 ) : DbContext(options), IAppDbContext, IUnitOfWork
 {
     /// <summary>
+    /// Gets or sets the brands DbSet.
+    /// </summary>
+    public DbSet<Brand> Brands { get; set; }
+
+    /// <summary>
     /// Gets or sets the categories DbSet.
     /// </summary>
     public DbSet<Category> Categories { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the carts DbSet.
     /// </summary>
     public DbSet<Cart> Carts { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the orders DbSet.
     /// </summary>
     public DbSet<Order> Orders { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the payments DbSet.
     /// </summary>
     public DbSet<Payment> Payments { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the products DbSet.
     /// </summary>
     public DbSet<Product> Products { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the product reviews DbSet.
     /// </summary>
     public DbSet<ProductReview> ProductReviews { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the promo codes DbSet.
     /// </summary>
     public DbSet<PromoCode> PromoCodes { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the users DbSet.
     /// </summary>
     public DbSet<User> Users { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the permissions DbSet.
     /// </summary>
@@ -153,7 +159,7 @@ public class AppDbContext(
         modelBuilder
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-        
+
         var isSqlServer = Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer";
 
         foreach (var entity in modelBuilder.Model.GetEntityTypes())

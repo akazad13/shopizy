@@ -5,6 +5,8 @@ namespace Shopizy.Contracts.Product;
 /// </summary>
 /// <param name="Items">The products on the current page.</param>
 /// <param name="TotalCount">The total number of products matching the query.</param>
+/// <param name="TotalPages">The total number of pages.</param>
+/// <param name="PageNumber">Current page number.</param>
 public record ProductsPagedResponse(IReadOnlyList<ProductResponse> Items, int TotalCount, int TotalPages, int PageNumber);
 
 /// <summary>
@@ -17,7 +19,7 @@ public record ProductsPagedResponse(IReadOnlyList<ProductResponse> Items, int To
 /// <param name="CategoryId">The category identifier.</param>
 /// <param name="Price">The formatted price.</param>
 /// <param name="Discount">The discount amount.</param>
-/// <param name="Brand">The brand name.</param>
+/// <param name="BrandId">The brand identifier.</param>
 /// <param name="Sizes">Available sizes.</param>
 /// <param name="Colors">Available colors.</param>
 /// <param name="Tags">Product tags.</param>
@@ -33,7 +35,7 @@ public record ProductResponse(
     Guid CategoryId,
     string Price,
     decimal Discount,
-    string Brand,
+    Guid? BrandId,
     string Sizes,
     string Colors,
     string Tags,
@@ -54,7 +56,7 @@ public record ProductResponse(
 /// <param name="Price">The formatted price.</param>
 /// <param name="Discount">The discount amount.</param>
 /// <param name="Sku">The stock keeping unit.</param>
-/// <param name="Brand">The brand name.</param>
+/// <param name="BrandId">The brand identifier.</param>
 /// <param name="Sizes">Available sizes.</param>
 /// <param name="Colors">Available colors.</param>
 /// <param name="Tags">Product tags.</param>
@@ -74,7 +76,7 @@ public record ProductDetailResponse(
     string Price,
     decimal Discount,
     string Sku,
-    string Brand,
+    Guid? BrandId,
     string Sizes,
     string Colors,
     string Tags,

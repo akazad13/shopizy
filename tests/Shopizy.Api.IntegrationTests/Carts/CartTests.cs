@@ -25,7 +25,7 @@ public class CartTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTe
     {
         var request = new CreateProductRequest(
             name, "Short desc", "Full description", categoryId,
-            49.99m, 1, 0m, $"SKU-{Guid.NewGuid().ToString()[..6]}", "TestBrand",
+            49.99m, 1, 0m, $"SKU-{Guid.NewGuid().ToString()[..6]}", null,
             "Red,Blue", "S,M,L", "test", Guid.NewGuid().ToString()[..8], 100, null);
         var response = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products", request, TestContext.Current.CancellationToken);

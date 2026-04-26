@@ -14,13 +14,13 @@ public class GetDashboardMetricsQueryHandler(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<ErrorOr<DashboardMetricsDto>> Handle(GetDashboardMetricsQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<DashboardMetricsDto>> Handle(GetDashboardMetricsQuery query, CancellationToken cancellationToken = default)
     {
         var totalRevenue = await _orderRepository.GetTotalRevenueAsync();
         var totalOrders = await _orderRepository.GetTotalOrdersCountAsync();
         var totalUsers = await _userRepository.GetTotalUsersCountAsync();
         var totalProducts = await _productRepository.GetTotalProductCountAsync();
-        
+
         var lowStockProducts = await _productRepository.GetLowStockProductsAsync(5); // threshold of 5
 
         var dto = new DashboardMetricsDto(

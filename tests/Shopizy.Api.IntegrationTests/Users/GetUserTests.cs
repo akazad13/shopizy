@@ -48,10 +48,10 @@ public class GetUserTests : BaseIntegrationTest
     {
         // Arrange
         var (_, userId) = await AuthenticateAsNewUserAsync("Test", "User", "test@example.com");
-        var updateRequest = new UpdateUserRequest("Updated", "Name", "test@example.com", "1234567890", new UpdateAddressRequest { Street = "123 St" });
+        var updateRequest = new UpdateUserRequest("Updated", "Name", "1234567890", new UpdateAddressRequest { Street = "123 St" });
 
         // Act
-        var response = await HttpClient.PutAsJsonAsync($"/api/v1.0/users/{userId}", updateRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}", updateRequest, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

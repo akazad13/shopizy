@@ -1,4 +1,5 @@
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.TestUtils.Constants;
@@ -17,7 +18,9 @@ public static partial class Constants
         public const int Currency = 0;
         public const int Discount = 30;
         public const string Sku = "Product SKU";
-        public const string Brand = "Product Brand Name";
+        public static readonly BrandId BrandId = BrandId.Create(
+            new Guid("7d10f18a-5a12-4e7b-9162-cfb7160fe338")
+        );
         public const string Colors = "White,Red,Green,Blue";
         public const string Sizes = "S,M,L,XL";
         public const string Tags = "Product Tag";

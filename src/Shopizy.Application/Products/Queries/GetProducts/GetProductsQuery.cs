@@ -9,6 +9,8 @@ namespace Shopizy.Application.Products.Queries.GetProducts;
 /// <param name="ProductIds">Filter by product ids</param>
 /// <param name="Name">Optional product name filter.</param>
 /// <param name="CategoryIds">Optional list of category IDs to filter by.</param>
+/// <param name="BrandIds">Optional brand IDs to filter by.</param>
+/// <param name="Colors">Optional colors filter.</param>
 /// <param name="AverageRating">Optional minimum average rating filter.</param>
 /// <param name="MinPrice">Optional minimum price filter.</param>
 /// <param name="MaxPrice">Optional maximum price filter.</param>
@@ -20,6 +22,7 @@ public record GetProductsQuery(
     IReadOnlyList<Guid>? ProductIds,
     string? Name,
     IList<Guid>? CategoryIds,
+    IReadOnlyList<Guid>? BrandIds,
     decimal? AverageRating,
     decimal? MinPrice,
     decimal? MaxPrice,

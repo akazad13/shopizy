@@ -17,7 +17,7 @@ public static partial class ProductExtensions
         Assert.Equal(command.Currency, product.UnitPrice.Currency);
         Assert.Equal(command.Discount, product.Discount);
         Assert.Equal(command.Sku, product.SKU);
-        Assert.Equal(command.Brand, product.Brand);
+        Assert.Equal(command.BrandId, product.BrandId?.Value);
         Assert.Equal(command.Barcode, product.Barcode);
         Assert.Equal(command.StockQuantity, product.StockQuantity);
         Assert.Equal(command.Tags, product.Tags);
@@ -39,7 +39,7 @@ public static partial class ProductExtensions
         Assert.Equal(command.Currency, product.UnitPrice.Currency);
         Assert.Equal(command.Discount, product.Discount);
         Assert.Equal(command.Sku, product.SKU);
-        Assert.Equal(command.Brand, product.Brand);
+        Assert.Equal(command.BrandId, product.BrandId?.Value);
         Assert.Equal(command.Barcode, product.Barcode);
         Assert.Equal(command.Tags, product.Tags);
         Assert.IsType<CategoryId>(product.CategoryId);

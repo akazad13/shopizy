@@ -1,15 +1,8 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ErrorOr;
-using Moq;
+﻿using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Application.ProductReviews.Commands.DeleteProductReview;
-using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shouldly;
-using Xunit;
 
 
 namespace Shopizy.Application.ProductReviews.Commands.DeleteProductReview.UnitTests;
