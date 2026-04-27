@@ -6,8 +6,8 @@ namespace Shopizy.Domain.Orders.Entities;
 
 public sealed class Shipment : Entity<ShipmentId>
 {
-    public string Carrier { get; private set; }
-    public string TrackingNumber { get; private set; }
+    public string Carrier { get; private set; } = null!;
+    public string TrackingNumber { get; private set; } = null!;
     public DateTime? EstimatedDelivery { get; private set; }
     public ShipmentStatus Status { get; private set; }
     public DateTime CreatedOn { get; private set; }

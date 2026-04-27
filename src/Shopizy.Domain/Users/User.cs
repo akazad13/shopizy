@@ -22,17 +22,17 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the user's first name.
     /// </summary>
-    public string FirstName { get; private set; }
+    public string FirstName { get; private set; } = null!;
 
     /// <summary>
     /// Gets the user's last name.
     /// </summary>
-    public string LastName { get; private set; }
+    public string LastName { get; private set; } = null!;
 
     /// <summary>
     /// Gets the user's email address.
     /// </summary>
-    public string Email { get; private set; }
+    public string Email { get; private set; } = null!;
 
     /// <summary>
     /// Gets the user's role.
@@ -42,12 +42,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the user's profile image URL.
     /// </summary>
-    public string? ProfileImageUrl { get; private set;}
+    public string? ProfileImageUrl { get; private set; }
 
     /// <summary>
     /// Gets the user's phone number.
     /// </summary>
-    public string Phone { get; private set;}
+    public string Phone { get; private set; } = null!;
 
     /// <summary>
     /// Gets the credential information for this user (password, reset token, 2FA).

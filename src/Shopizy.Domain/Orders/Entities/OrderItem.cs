@@ -7,12 +7,12 @@ namespace Shopizy.Domain.Orders.Entities;
 
 public sealed class OrderItem : Entity<OrderItemId>
 {
-    public ProductId ProductId { get; private set; }
-    public string Name { get; private set; }
-    public string PictureUrl { get; private set; }
-    public Price UnitPrice { get; private set; }
-    public string Color { get; private set; }
-    public string Size { get; private set; }
+    public ProductId ProductId { get; private set; } = null!;
+    public string Name { get; private set; } = null!;
+    public string PictureUrl { get; private set; } = null!;
+    public Price UnitPrice { get; private set; } = null!;
+    public string Color { get; private set; } = null!;
+    public string Size { get; private set; } = null!;
     public int Quantity { get; private set; }
     public decimal Discount { get; private set; }
 

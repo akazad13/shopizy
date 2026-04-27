@@ -18,57 +18,57 @@ public sealed class Payment : Entity<PaymentId>, IAuditable
     /// Gets or sets the order associated with this payment.
     /// </summary>
     public Order Order { get; set; } = null!;
-    
+
     /// <summary>
     /// Gets or sets the order identifier.
     /// </summary>
-    public OrderId OrderId { get; set; }
-    
+    public OrderId OrderId { get; set; } = null!;
+
     /// <summary>
     /// Gets or sets the user who made the payment.
     /// </summary>
     public User User { get; set; } = null!;
-    
+
     /// <summary>
     /// Gets or sets the user identifier.
     /// </summary>
-    public UserId UserId { get; set; }
-    
+    public UserId UserId { get; set; } = null!;
+
     /// <summary>
     /// Gets the payment method type.
     /// </summary>
-    public string PaymentMethod { get; private set; }
-    
+    public string PaymentMethod { get; private set; } = null!;
+
     /// <summary>
     /// Gets the payment method identifier from the payment provider.
     /// </summary>
-    public string PaymentMethodId { get; private set; }
-    
+    public string PaymentMethodId { get; private set; } = null!;
+
     /// <summary>
     /// Gets the transaction identifier.
     /// </summary>
-    public string TransactionId { get; private set; }
-    
+    public string TransactionId { get; private set; } = null!;
+
     /// <summary>
     /// Gets the current payment status.
     /// </summary>
     public PaymentStatus PaymentStatus { get; private set; }
-    
+
     /// <summary>
     /// Gets the total payment amount.
     /// </summary>
     public Price Total { get; private set; }
-    
+
     /// <summary>
     /// Gets the billing address.
     /// </summary>
-    public Address BillingAddress { get; }
-    
+    public Address BillingAddress { get; } = null!;
+
     /// <summary>
     /// Gets the date and time when the payment was created.
     /// </summary>
     public DateTime CreatedOn { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the payment was last modified.
     /// </summary>

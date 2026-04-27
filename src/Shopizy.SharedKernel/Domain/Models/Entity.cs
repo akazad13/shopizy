@@ -8,12 +8,12 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
     where TId : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = [];
-    
+
     /// <summary>
     /// Gets the unique identifier of the entity.
     /// </summary>
-    public TId Id { get; protected set; }
-    
+    public TId Id { get; protected set; } = default!;
+
     /// <summary>
     /// Gets the read-only list of domain events raised by this entity.
     /// </summary>

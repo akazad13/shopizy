@@ -18,53 +18,53 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the user ID who placed the order.
     /// </summary>
-    public UserId UserId { get; private set; }
-    
+    public UserId UserId { get; private set; } = null!;
+
     /// <summary>
     /// Gets the delivery method.
     /// </summary>
     public DeliveryMethods DeliveryMethod { get; private set; }
-    
+
     /// <summary>
     /// Gets the delivery charge.
     /// </summary>
     public Price DeliveryCharge { get; private set; }
-    
+
     /// <summary>
     /// Gets the current order status.
     /// </summary>
     public OrderStatus OrderStatus { get; private set; }
-    
+
     /// <summary>
     /// Gets the reason for order cancellation, if applicable.
     /// </summary>
     public string? CancellationReason { get; private set; }
-    
+
     /// <summary>
     /// Gets the promotional code applied to the order.
     /// </summary>
-    public string PromoCode { get; private set; }
-    
+    public string PromoCode { get; private set; } = null!;
+
     /// <summary>
     /// Gets the shipping address.
     /// </summary>
-    public Address ShippingAddress { get; private set; }
-    
+    public Address ShippingAddress { get; private set; } = null!;
+
     /// <summary>
     /// Gets the payment status.
     /// </summary>
     public PaymentStatus PaymentStatus { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the order was last modified.
     /// </summary>
     public DateTime? ModifiedOn { get; }
-    
+
     /// <summary>
     /// Gets the date and time when the order was created.
     /// </summary>
     public DateTime CreatedOn { get; }
-    
+
     /// <summary>
     /// Gets the read-only list of order items.
     /// </summary>

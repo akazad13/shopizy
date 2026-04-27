@@ -11,7 +11,7 @@ public class Permission : AggregateRoot<PermissionId, Guid>
     /// <summary>
     /// Gets the permission name.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
 
     /// <summary>
     /// Creates a new permission.

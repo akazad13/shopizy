@@ -10,7 +10,7 @@ public sealed class Wishlist : AggregateRoot<WishlistId, Guid>, IAuditable
 {
     private readonly List<WishlistItem> _wishlistItems = [];
 
-    public UserId UserId { get; private set; }
+    public UserId UserId { get; private set; } = null!;
     public string? Name { get; private set; }
     public bool IsPublic { get; private set; }
     public DateTime CreatedOn { get; private set; }

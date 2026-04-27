@@ -10,17 +10,17 @@ namespace Shopizy.Domain.Categories;
 public class Category : AggregateRoot<CategoryId, Guid>
 {
     private readonly List<Product> _products = [];
-    
+
     /// <summary>
     /// Gets the category name.
     /// </summary>
-    public string Name { get; private set; }
-    
+    public string Name { get; private set; } = null!;
+
     /// <summary>
     /// Gets the parent category ID for hierarchical categories.
     /// </summary>
     public Guid? ParentId { get; private set; }
-    
+
     /// <summary>
     /// Gets the read-only list of products in this category.
     /// </summary>
@@ -36,7 +36,7 @@ public class Category : AggregateRoot<CategoryId, Guid>
     {
         var category = new Category(CategoryId.CreateUnique(), name, parentId);
         category.AddDomainEvent(new Events.CategoryCreatedDomainEvent(category));
-        
+
         return category;
     }
 
@@ -49,7 +49,7 @@ public class Category : AggregateRoot<CategoryId, Guid>
     {
         Name = name;
         ParentId = parentId;
-        
+
         this.AddDomainEvent(new Events.CategoryUpdatedDomainEvent(this));
     }
 

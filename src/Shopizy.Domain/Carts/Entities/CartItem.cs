@@ -8,9 +8,9 @@ namespace Shopizy.Domain.Carts.Entities;
 public sealed class CartItem : Entity<CartItemId>
 {
     public Product Product { get; private set; } = null!;
-    public ProductId ProductId { get; private set; }
-    public string Color { get; private set; }
-    public string Size { get; private set; }
+    public ProductId ProductId { get; private set; } = null!;
+    public string Color { get; private set; } = null!;
+    public string Size { get; private set; } = null!;
     public int Quantity { get; private set; }
 
     public static CartItem Create(ProductId productId, string color, string size, int quantity)

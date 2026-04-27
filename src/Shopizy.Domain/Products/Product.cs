@@ -21,27 +21,27 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the product name.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
 
     /// <summary>
     /// Gets the short description of the product.
     /// </summary>
-    public string ShortDescription { get; private set; }
+    public string ShortDescription { get; private set; } = null!;
 
     /// <summary>
     /// Gets the detailed description of the product.
     /// </summary>
-    public string Description { get; private set; }
+    public string Description { get; private set; } = null!;
 
     /// <summary>
     /// Gets the category ID this product belongs to.
     /// </summary>
-    public CategoryId CategoryId { get; private set; }
+    public CategoryId CategoryId { get; private set; } = null!;
 
     /// <summary>
     /// Gets the stock keeping unit (SKU).
     /// </summary>
-    public string SKU { get; private set; }
+    public string SKU { get; private set; } = null!;
 
     /// <summary>
     /// Gets the current stock quantity.
@@ -51,7 +51,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the unit price of the product.
     /// </summary>
-    public Price UnitPrice { get; private set; }
+    public Price UnitPrice { get; private set; } = null!;
 
     /// <summary>
     /// Gets the discount percentage.
@@ -66,12 +66,12 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the available colors (comma-separated).
     /// </summary>
-    public string Colors { get; private set; }
+    public string Colors { get; private set; } = null!;
 
     /// <summary>
     /// Gets the available sizes (comma-separated).
     /// </summary>
-    public string Sizes { get; private set; }
+    public string Sizes { get; private set; } = null!;
 
     /// <summary>
     /// Gets the number of times this product has been favorited.
@@ -81,17 +81,17 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the product barcode.
     /// </summary>
-    public string Barcode { get; private set; }
+    public string Barcode { get; private set; } = null!;
 
     /// <summary>
     /// Gets the product tags (comma-separated).
     /// </summary>
-    public string Tags { get; private set; }
+    public string Tags { get; private set; } = null!;
 
     /// <summary>
     /// Gets the average rating of the product.
     /// </summary>
-    public AverageRating AverageRating { get; private set; }
+    public AverageRating AverageRating { get; private set; } = null!;
 
     /// <summary>
     /// Gets whether the product is active.

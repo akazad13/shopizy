@@ -6,9 +6,9 @@ namespace Shopizy.Domain.Products.Entities;
 
 public sealed class ProductVariant : Entity<ProductVariantId>
 {
-    public string Name { get; private set; }
-    public string SKU { get; private set; }
-    public Price UnitPrice { get; private set; }
+    public string Name { get; private set; } = null!;
+    public string SKU { get; private set; } = null!;
+    public Price UnitPrice { get; private set; } = null!;
     public int StockQuantity { get; private set; }
     public bool IsActive { get; private set; }
 

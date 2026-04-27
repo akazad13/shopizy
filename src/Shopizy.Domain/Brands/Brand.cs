@@ -11,7 +11,7 @@ public sealed class Brand : AggregateRoot<BrandId, Guid>
     /// <summary>
     /// Gets the brand name.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
 
     /// <summary>
     /// Gets the brand logo URL.
@@ -21,7 +21,7 @@ public sealed class Brand : AggregateRoot<BrandId, Guid>
     /// <summary>
     /// Gets the brand country.
     /// </summary>
-    public string Country { get; private set; }
+    public string Country { get; private set; } = null!;
 
     /// <summary>
     /// Creates a new brand.

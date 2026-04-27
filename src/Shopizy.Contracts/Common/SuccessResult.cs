@@ -8,7 +8,7 @@ public class SuccessResult
     /// <summary>
     /// Gets or sets the success message.
     /// </summary>
-    public string Message { get; set; }
+    public string Message { get; set; } = null!;
 
     public SuccessResult() { }
 
