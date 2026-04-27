@@ -26,7 +26,7 @@ jobs:
         dotnet-version: 10.x.x
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: csharp
         queries: security-and-quality
@@ -35,6 +35,6 @@ jobs:
       run: dotnet build Shopizy.sln --configuration Release
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:csharp"
