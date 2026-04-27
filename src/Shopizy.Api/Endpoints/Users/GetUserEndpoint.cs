@@ -16,10 +16,7 @@ public class GetUserEndpoint : ApiEndpoint
     {
         app.MapGet("api/v1.0/users/{userId:guid}", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetUserEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId)) 
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this user's information.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this user's information") is { } forbidden) return forbidden;
 
             var query = mapper.Map<GetUserQuery>(userId);
 

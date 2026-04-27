@@ -1,45 +1,31 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
-using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Brands.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
 /// <summary>
-/// Represents a command to create a new product.
+/// Creates a new product. Carries domain value objects (<see cref="Price"/>, <see cref="CategoryId"/>,
+/// <see cref="BrandId"/>) instead of primitives — the mapping layer converts the contract DTO
+/// into typed inputs so handlers don't repeat construction logic.
 /// </summary>
-/// <param name="UserId">The user's unique identifier.</param>
-/// <param name="Name">The product name.</param>
-/// <param name="ShortDescription">A brief description of the product.</param>
-/// <param name="Description">The full product description.</param>
-/// <param name="CategoryId">The category's unique identifier.</param>
-/// <param name="UnitPrice">The unit price.</param>
-/// <param name="Currency">The currency.</param>
-/// <param name="Discount">The discount percentage.</param>
-/// <param name="Sku">The stock keeping unit.</param>
-/// <param name="StockQuantity">The initial stock quantity.</param>
-/// <param name="BrandId">The brand identifier.</param>
-/// <param name="Colors">Available colors (comma-separated).</param>
-/// <param name="Sizes">Available sizes (comma-separated).</param>
-/// <param name="Tags">Product tags (comma-separated).</param>
-/// <param name="Barcode">The product barcode.</param>
-/// <param name="SpecificationIds">Optional list of specification IDs.</param>
 public record CreateProductCommand(
     Guid UserId,
     string Name,
     string ShortDescription,
     string Description,
-    Guid CategoryId,
-    decimal UnitPrice,
-    Currency Currency,
+    CategoryId CategoryId,
+    Price UnitPrice,
     decimal Discount,
     string Sku,
     int StockQuantity,
-    Guid? BrandId,
+    BrandId? BrandId,
     string Colors,
     string Sizes,
     string Tags,
     string Barcode,
     IList<Guid>? SpecificationIds
 ) : ICommand<ErrorOr<Product>>;
-

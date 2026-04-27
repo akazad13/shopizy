@@ -21,6 +21,7 @@ public sealed class OutboxProcessor(
 {
     private static readonly TimeSpan s_pollingInterval = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan s_processingThreshold = TimeSpan.FromMinutes(5);
+    private const int DeadLetterBacklogThreshold = 10;
 
     // LoggerMessage delegates
     private static readonly Action<ILogger, int, Exception?> s_processingMessages =
@@ -59,6 +60,18 @@ public sealed class OutboxProcessor(
             new EventId(6, nameof(OutboxProcessor)),
             "Outbox processor encountered an unhandled error.");
 
+    private static readonly Action<ILogger, int, int, Exception?> s_deadLetterBacklog =
+        LoggerMessage.Define<int, int>(
+            LogLevel.Warning,
+            new EventId(7, nameof(OutboxProcessor)),
+            "Outbox dead-letter backlog has reached {Count} (threshold {Threshold}). Manual review required.");
+
+    private static readonly System.Diagnostics.Metrics.Meter s_meter = new("Shopizy.Outbox", "1.0");
+    private static readonly System.Diagnostics.Metrics.Counter<long> s_deadLettered =
+        s_meter.CreateCounter<long>("shopizy.outbox.dead_lettered", unit: "{messages}", description: "Number of outbox messages newly dead-lettered.");
+    private static readonly System.Diagnostics.Metrics.Counter<long> s_processed =
+        s_meter.CreateCounter<long>("shopizy.outbox.processed", unit: "{messages}", description: "Number of outbox messages successfully processed.");
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -76,13 +89,20 @@ public sealed class OutboxProcessor(
         }
     }
 
-    private async Task processPendingMessagesAsync(CancellationToken cancellationToken)     
+    private async Task processPendingMessagesAsync(CancellationToken cancellationToken)
     {
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var dispatcher = scope.ServiceProvider.GetRequiredService<IDispatcher>();
 
         var threshold = DateTime.UtcNow - s_processingThreshold;
+
+        var deadLetterCount = await dbContext.OutboxMessages
+            .CountAsync(m => m.DeadLetteredOn != null, cancellationToken);
+        if (deadLetterCount >= DeadLetterBacklogThreshold)
+        {
+            s_deadLetterBacklog(logger, deadLetterCount, DeadLetterBacklogThreshold, null);
+        }
 
         var pending = await dbContext.OutboxMessages
             .Where(m => m.ProcessedOn == null && m.DeadLetteredOn == null && m.OccurredOn <= threshold)
@@ -112,6 +132,7 @@ public sealed class OutboxProcessor(
                             s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
                                   .SetProperty(p => p.DeadLetterReason, reason),
                             cancellationToken);
+                    s_deadLettered.Add(1);
                     continue;
                 }
 
@@ -125,6 +146,7 @@ public sealed class OutboxProcessor(
                             s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
                                   .SetProperty(p => p.DeadLetterReason, reason),
                             cancellationToken);
+                    s_deadLettered.Add(1);
                     continue;
                 }
 
@@ -136,6 +158,7 @@ public sealed class OutboxProcessor(
                         s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow),
                         cancellationToken);
 
+                s_processed.Add(1);
                 s_processedMessage(logger, message.Id, eventType.Name, null);
             }
             catch (Exception ex)

@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Brands.ValueObjects;
-using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
@@ -14,43 +12,6 @@ namespace Shopizy.Infrastructure.Products.Persistence;
 public class ProductRepository(AppDbContext dbContext) : IProductRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
-
-    /// <summary>
-    /// Retrieves a paginated list of products based on search criteria.
-    /// </summary>
-    public async Task<IReadOnlyList<Product>?> GetProductsAsync(
-        IReadOnlyList<ProductId>? productIds,
-        string? name,
-        IReadOnlyList<CategoryId>? categoryIds,
-        IReadOnlyList<BrandId>? brandIds,
-        string? color,
-        decimal? averageRating,
-        decimal? minPrice,
-        decimal? maxPrice,
-        bool? inStockOnly,
-        string? sortBy,
-        int pageNumber,
-        int pageSize
-    )
-    {
-        var query = BuildProductCriteriaQuery(productIds, name, categoryIds, brandIds, averageRating, minPrice, maxPrice, inStockOnly);
-
-        query = sortBy switch
-        {
-            "price_asc" => query.OrderBy(p => p.UnitPrice.Amount),
-            "price_desc" => query.OrderByDescending(p => p.UnitPrice.Amount),
-            "newest" => query.OrderByDescending(p => p.CreatedOn),
-            "best_rated" => query.OrderByDescending(p => p.AverageRating.Value),
-            "most_reviewed" => query.OrderByDescending(p => p.AverageRating.NumRatings),
-            _ => query.OrderByDescending(p => p.CreatedOn)
-        };
-
-        return await query
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .AsNoTracking()
-            .ToListAsync();
-    }
 
     /// <summary>
     /// Retrieves a product by its unique identifier, including reviews.
@@ -67,7 +28,9 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
 
     public Task<Product?> GetProductByIdForUpdateAsync(ProductId id)
     {
-        return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        return _dbContext.Products
+            .Include(p => p.ProductImages)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     /// <summary>
@@ -93,52 +56,14 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return _dbContext.Products.AnyAsync(p => p.Id == id);
     }
 
-    /// <summary>
-    /// Retrieves a list of all distinct product brands.
-    /// </summary>
-    public async Task<IReadOnlyList<string>> GetBrandsAsync()
+    public async Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(ProductSearchCriteria criteria)
     {
-        return await _dbContext.Brands
-            .AsNoTracking()
-            .Select(b => b.Name)
-            .Distinct()
-            .ToListAsync();
-    }
+        ArgumentNullException.ThrowIfNull(criteria);
 
-    public Task<int> CountProductsAsync(
-        IReadOnlyList<ProductId>? productIds,
-        string? name,
-        IReadOnlyList<CategoryId>? categoryIds,
-        IReadOnlyList<BrandId>? brandIds,
-        string? color,
-        decimal? averageRating,
-        decimal? minPrice,
-        decimal? maxPrice,
-        bool? inStockOnly
-    )
-    {
-        return BuildProductCriteriaQuery(productIds, name, categoryIds, brandIds, averageRating, minPrice, maxPrice, inStockOnly)
-            .CountAsync();
-    }
-
-    public async Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(
-        IReadOnlyList<ProductId>? productIds,
-        string? name,
-        IReadOnlyList<CategoryId>? categoryIds,
-        IReadOnlyList<BrandId>? brandIds,
-        decimal? averageRating,
-        decimal? minPrice,
-        decimal? maxPrice,
-        bool? inStockOnly,
-        string? sortBy,
-        int pageNumber,
-        int pageSize
-    )
-    {
-        var query = BuildProductCriteriaQuery(productIds, name, categoryIds, brandIds, averageRating, minPrice, maxPrice, inStockOnly);
+        var query = BuildProductCriteriaQuery(criteria);
         var totalCount = await query.CountAsync();
 
-        var sortedQuery = sortBy switch
+        var sortedQuery = criteria.SortBy switch
         {
             "price_asc" => query.OrderBy(p => p.UnitPrice.Amount),
             "price_desc" => query.OrderByDescending(p => p.UnitPrice.Amount),
@@ -149,30 +74,12 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         };
 
         var products = await sortedQuery
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((criteria.PageNumber - 1) * criteria.PageSize)
+            .Take(criteria.PageSize)
             .AsNoTracking()
             .ToListAsync();
 
         return (products, totalCount);
-    }
-
-    /// <summary>
-    /// Gets the total count of products in the database.
-    /// </summary>
-    public Task<int> GetTotalProductCountAsync()
-    {
-        return _dbContext.Products.CountAsync();
-    }
-
-    public async Task<IReadOnlyList<Product>> GetLowStockProductsAsync(int threshold)
-    {
-        return await _dbContext.Products
-            .Where(p => p.StockQuantity <= threshold)
-            .OrderBy(p => p.StockQuantity)
-            .Take(10)
-            .AsNoTracking()
-            .ToListAsync();
     }
 
     /// <summary>
@@ -207,55 +114,46 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         _dbContext.RemoveRange(products);
     }
 
-    private IQueryable<Product> BuildProductCriteriaQuery(
-        IReadOnlyList<ProductId>? productIds,
-        string? name,
-        IReadOnlyList<CategoryId>? categoryIds,
-        IReadOnlyList<BrandId> brandIds,
-        decimal? averageRating,
-        decimal? minPrice,
-        decimal? maxPrice,
-        bool? inStockOnly
-    )
+    private IQueryable<Product> BuildProductCriteriaQuery(ProductSearchCriteria criteria)
     {
         var query = _dbContext.Products.Include(p => p.ProductImages).AsQueryable();
 
-        if (productIds is not null)
+        if (criteria.ProductIds is not null)
         {
-            query = query.Where(p => productIds.Contains(p.Id));
+            query = query.Where(p => criteria.ProductIds.Contains(p.Id));
         }
 
-        if (name is not null)
+        if (criteria.Name is not null)
         {
-            query = query.Where(p => p.Name.Contains(name));
+            query = query.Where(p => p.Name.Contains(criteria.Name));
         }
 
-        if (categoryIds is not null)
+        if (criteria.CategoryIds is not null)
         {
-            query = query.Where(p => categoryIds.Contains(p.CategoryId));
+            query = query.Where(p => criteria.CategoryIds.Contains(p.CategoryId));
         }
 
-        if (brandIds is not null)
+        if (criteria.BrandIds is not null)
         {
-            query = query.Where(p => brandIds.Contains(p.BrandId));
+            query = query.Where(p => criteria.BrandIds.Contains(p.BrandId));
         }
 
-        if (averageRating is not null)
+        if (criteria.AverageRating is not null)
         {
-            query = query.Where(p => p.AverageRating.Value >= averageRating);
+            query = query.Where(p => p.AverageRating.Value >= criteria.AverageRating);
         }
 
-        if (minPrice is not null)
+        if (criteria.MinPrice is not null)
         {
-            query = query.Where(p => p.UnitPrice.Amount >= minPrice);
+            query = query.Where(p => p.UnitPrice.Amount >= criteria.MinPrice);
         }
 
-        if (maxPrice is not null)
+        if (criteria.MaxPrice is not null)
         {
-            query = query.Where(p => p.UnitPrice.Amount <= maxPrice);
+            query = query.Where(p => p.UnitPrice.Amount <= criteria.MaxPrice);
         }
 
-        if (inStockOnly is true)
+        if (criteria.InStockOnly is true)
         {
             query = query.Where(p => p.StockQuantity > 0);
         }

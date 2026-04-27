@@ -1,6 +1,7 @@
 using Xunit;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Outbox;
 using System.Net.Http.Headers;
 using Shopizy.Contracts.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
@@ -29,6 +30,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         Sender = _scope.ServiceProvider.GetRequiredService<IDispatcher>();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
         HttpClient = factory.CreateClient();
+        HttpClient.DefaultRequestHeaders.Add("Idempotency-Key", Guid.NewGuid().ToString("N"));
     }
 
     /// <summary>
@@ -51,7 +53,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     {
         var loginRequest = new LoginRequest(email, password);
         var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            throw new InvalidOperationException($"Login failed ({(int)response.StatusCode}): {body}");
+        }
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
         return authResponse?.Token ?? throw new InvalidOperationException("Failed to get auth token");
@@ -111,7 +117,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
 
         var loginRequest = new LoginRequest(email, password);
         var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            throw new InvalidOperationException($"Admin login failed ({(int)response.StatusCode}): {body}");
+        }
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
         SetAuthToken(authResponse!.Token);
@@ -404,6 +414,17 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     #endregion
 
     #region User Helpers
+
+    /// <summary>
+    /// Drains all pending outbox messages synchronously. Use instead of polling/Sleep when a test
+    /// needs to assert on side-effects of background-dispatched domain events.
+    /// </summary>
+    protected async Task<int> DrainOutboxAsync(CancellationToken cancellationToken = default)
+    {
+        using var scope = _scope.ServiceProvider.CreateScope();
+        var drainer = scope.ServiceProvider.GetRequiredService<IOutboxDrainer>();
+        return await drainer.DrainAsync(cancellationToken);
+    }
 
     /// <summary>
     /// Extracts user ID from authentication token.

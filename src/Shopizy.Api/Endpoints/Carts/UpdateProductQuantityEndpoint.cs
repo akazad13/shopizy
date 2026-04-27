@@ -16,10 +16,7 @@ public class UpdateProductQuantityEndpoint : ApiEndpoint
     {
         app.MapPatch("api/v1.0/users/{userId:guid}/cart/items/{itemId:guid}", async (Guid userId, Guid itemId, UpdateProductQuantityRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateProductQuantityEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to update this cart.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this cart") is { } forbidden) return forbidden;
 
             var command = mapper.Map<UpdateProductQuantityCommand>((userId, itemId, request));
 

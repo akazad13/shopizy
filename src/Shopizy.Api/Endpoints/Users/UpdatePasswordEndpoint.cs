@@ -16,10 +16,7 @@ public class UpdatePasswordEndpoint : ApiEndpoint
     {
         app.MapPatch("api/v1.0/users/{userId:guid}/password", async (Guid userId, UpdatePasswordRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdatePasswordEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to update this user's password.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this user's password") is { } forbidden) return forbidden;
 
             var command = mapper.Map<UpdatePasswordCommand>((userId, request));
 

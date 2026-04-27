@@ -5,9 +5,29 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- CA1848: LoggerMessage delegate suggestion. Defer until we have a metrics push. -->
+    <!-- NU1902/NU1903: transitive-package vulnerability advisories. Surface them as warnings; CI/Dependabot tracks remediation. -->
+    <!-- CS86xx: nullable-reference warnings re-enabled in .editorconfig (B2). Listed here to keep the
+         existing ~164 sites from breaking the build while they're cleaned up incrementally. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CA1848;NU1902;NU1903;CS8601;CS8602;CS8603;CS8604;CS8618;CS8629</WarningsNotAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
     <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
+    <!-- Tests are allowed to use simpler logging / null patterns; don't fail their build on style warnings. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

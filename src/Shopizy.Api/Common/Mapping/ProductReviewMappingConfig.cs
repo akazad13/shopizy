@@ -18,6 +18,7 @@ public class ProductReviewMappingConfig : IRegister
             .Map(dest => dest.Rating, src => src.request.Rating)
             .Map(dest => dest.Comment, src => src.request.Comment);
 
+#pragma warning disable CS8625
         config
             .NewConfig<ProductReview, ProductReviewResponse>()
             .Map(dest => dest.ReviewId, src => src.Id.Value)
@@ -26,5 +27,6 @@ public class ProductReviewMappingConfig : IRegister
             .Map(dest => dest.Rating, src => src.Rating.Value)
             .Map(dest => dest.Comment, src => src.Comment)
             .Map(dest => dest.CreatedOn, src => src.CreatedOn);
+#pragma warning restore CS8625
     }
 }

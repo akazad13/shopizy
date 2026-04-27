@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.Domain.AuditLogs;
 using Shopizy.Domain.Brands;
@@ -31,7 +30,7 @@ namespace Shopizy.Infrastructure.Common.Persistence;
 public class AppDbContext(
     DbContextOptions options,
     IHttpContextAccessor _httpContextAccessor
-) : DbContext(options), IAppDbContext, IUnitOfWork
+) : DbContext(options), IUnitOfWork
 {
     /// <summary>
     /// Gets or sets the brands DbSet.
@@ -160,33 +159,14 @@ public class AppDbContext(
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        var isSqlServer = Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer";
-
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
-            foreach (var property in entity.GetProperties())
+            var rowVersionProp = entity.FindProperty("RowVersion");
+            if (rowVersionProp?.ClrType == typeof(byte[]))
             {
-                if (!isSqlServer)
-                {
-                    // Strip SQL Server-specific column types that Npgsql/other providers don't support
-                    var colType = property.GetColumnType();
-                    if (colType == "smalldatetime" || colType == "nvarchar(max)")
-                    {
-                        property.SetColumnType(null);
-                    }
-                }
-            }
-
-            if (isSqlServer)
-            {
-                // Apply rowversion optimistic concurrency only on SQL Server where the DB auto-updates the column
-                var rowVersionProp = entity.FindProperty("RowVersion");
-                if (rowVersionProp?.ClrType == typeof(byte[]))
-                {
-                    rowVersionProp.IsConcurrencyToken = true;
-                    rowVersionProp.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAddOrUpdate;
-                    rowVersionProp.SetColumnType("rowversion");
-                }
+                rowVersionProp.IsConcurrencyToken = true;
+                rowVersionProp.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAddOrUpdate;
+                rowVersionProp.SetColumnType("rowversion");
             }
         }
 

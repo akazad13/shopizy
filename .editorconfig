@@ -362,14 +362,36 @@ dotnet_diagnostic.CS8631.severity = warning     # CS8631 The type cannot be used
 dotnet_diagnostic.CS8634.severity = warning     # CS8634 The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
 dotnet_diagnostic.CS8765.severity = warning     # CS8765 Nullability of type doesn't match overridden member
 ###
-# TODO - enable these over time
+# CS86xx nullable warnings — re-enabled 2026-04-26 (audit B2).
+# Sites that haven't been migrated yet are listed in the project-wide WarningsNotAsErrors entry
+# in Directory.Build.props so the build stays green while individual files are cleaned up.
 ###
-dotnet_diagnostic.CS8618.severity = none        # CS8618 Non-nullable variable must contain a non-null value when exiting constructor. Consider declaring it as nullable.
-dotnet_diagnostic.CS8629.severity = none        # CS8629 Nullable value type may be null
-dotnet_diagnostic.CS8601.severity = none        # CS8601: Possible null reference assignment.
-dotnet_diagnostic.CS8602.severity = none        # CS8602 Dereference of a possibly null reference.
-dotnet_diagnostic.CS8603.severity = none        # CS8603: Possible null reference return.
-dotnet_diagnostic.CS8604.severity = none        # CS8604 Possible null reference argument for parameter.
+dotnet_diagnostic.CS8618.severity = warning     # Non-nullable field/property must contain a non-null value when exiting constructor.
+dotnet_diagnostic.CS8629.severity = warning     # Nullable value type may be null.
+dotnet_diagnostic.CS8601.severity = warning     # Possible null reference assignment.
+dotnet_diagnostic.CS8602.severity = warning     # Dereference of a possibly null reference.
+dotnet_diagnostic.CS8603.severity = warning     # Possible null reference return.
+dotnet_diagnostic.CS8604.severity = warning     # Possible null reference argument for parameter.
+
+###
+# Analyzer baseline — NetAnalyzers + Roslynator added 2026-04-26.
+# Default severity is suggestion so existing code keeps building; ramp specific rules to warning/error
+# as the codebase is cleaned up. (B9 from docs/ImprovementScope.md)
+###
+dotnet_analyzer_diagnostic.category-Performance.severity = suggestion
+dotnet_analyzer_diagnostic.category-Reliability.severity = suggestion
+dotnet_analyzer_diagnostic.category-Maintainability.severity = suggestion
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
+dotnet_analyzer_diagnostic.category-Usage.severity = suggestion
+dotnet_analyzer_diagnostic.category-Design.severity = suggestion
+dotnet_analyzer_diagnostic.category-Naming.severity = suggestion
+dotnet_analyzer_diagnostic.category-Documentation.severity = suggestion
+dotnet_analyzer_diagnostic.category-Globalization.severity = suggestion
+dotnet_analyzer_diagnostic.category-Roslynator.severity = suggestion
+# Security rules surface as warning (visible in PR reviews) but not error — opt the team in case-by-case.
+dotnet_analyzer_diagnostic.category-Security.severity = warning
+# CA5350: TOTP per RFC 6238 mandates HMACSHA1 — not a downgrade we can fix.
+dotnet_diagnostic.CA5350.severity = none
 
 
 # tests

@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Api.IntegrationTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.SharedKernel", "src\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj", "{F3B28A73-A0A1-495D-AFBB-C4E2B238ADDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Architecture.Tests", "tests\Shopizy.Architecture.Tests\Shopizy.Architecture.Tests.csproj", "{680EBF79-C25D-402D-9A9C-599E5E9D6C61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,18 @@ Global
 		{F3B28A73-A0A1-495D-AFBB-C4E2B238ADDC}.Release|x64.Build.0 = Release|Any CPU
 		{F3B28A73-A0A1-495D-AFBB-C4E2B238ADDC}.Release|x86.ActiveCfg = Release|Any CPU
 		{F3B28A73-A0A1-495D-AFBB-C4E2B238ADDC}.Release|x86.Build.0 = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|x64.Build.0 = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Debug|x86.Build.0 = Debug|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|x64.ActiveCfg = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|x64.Build.0 = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|x86.ActiveCfg = Release|Any CPU
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,5 +186,6 @@ Global
 		{A239657D-F0AE-4A7F-8D3A-03EE5C70EB37} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{4D9D2E32-C3DB-4DC2-886C-0A71EC3807D8} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{F3B28A73-A0A1-495D-AFBB-C4E2B238ADDC} = {D3BE26B7-E44C-49DD-ACE1-67965B890237}
+		{680EBF79-C25D-402D-9A9C-599E5E9D6C61} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

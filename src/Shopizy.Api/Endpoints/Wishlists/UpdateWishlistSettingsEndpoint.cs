@@ -25,12 +25,7 @@ public class UpdateWishlistSettingsEndpoint : ApiEndpoint
                 ILogger<UpdateWishlistSettingsEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to update this wishlist.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden) return forbidden;
 
                 var command = mapper.Map<UpdateWishlistSettingsCommand>((userId, request));
 

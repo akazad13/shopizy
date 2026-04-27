@@ -24,12 +24,7 @@ public class GetLoyaltyAccountEndpoint : ApiEndpoint
                 ILogger<GetLoyaltyAccountEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to view this loyalty account.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this loyalty account") is { } forbidden) return forbidden;
 
                 return await HandleAsync(
                     mediator,

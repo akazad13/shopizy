@@ -16,10 +16,7 @@ public class GetCartEndpoint : ApiEndpoint
     {
         app.MapGet("api/v1.0/users/{userId:guid}/cart", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetCartEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this cart.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this cart") is { } forbidden) return forbidden;
 
             var query = mapper.Map<GetCartQuery>(userId);
 

@@ -22,12 +22,7 @@ public class SetDefaultAddressEndpoint : ApiEndpoint
                 ILogger<SetDefaultAddressEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to set the default address.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this user's default address") is { } forbidden) return forbidden;
 
                 var command = new SetDefaultAddressCommand(userId, addressId);
 

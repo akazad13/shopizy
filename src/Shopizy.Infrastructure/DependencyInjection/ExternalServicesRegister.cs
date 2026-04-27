@@ -3,11 +3,14 @@ using Shopizy.Infrastructure.Common.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Infrastructure.Common.Caching;
+using Shopizy.Infrastructure.Common.Idempotency;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
+using Shopizy.Infrastructure.Security.RefreshTokens;
 using Shopizy.Infrastructure.Services;
 using StackExchange.Redis;
 using Stripe;
@@ -43,15 +46,19 @@ public static class ExternalServicesRegister
 
         services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
 
-        // Stripe
+        // Stripe — use a per-client API key instead of the global StripeConfiguration static.
         services.Configure<StripeSettings>(configuration.GetSection(StripeSettings.Section));
-        StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
-        StripeConfiguration.MaxNetworkRetries = 0; // retry logic is handled manually in StripeService
-        
+
+        services.AddSingleton<IStripeClient>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<StripeSettings>>().Value;
+            return new StripeClient(apiKey: settings.SecretKey);
+        });
+
         services.AddScoped<IPaymentService, StripeService>()
-            .AddScoped<CustomerService>()
-            .AddScoped<PaymentIntentService>()
-            .AddScoped<RefundService>();
+            .AddScoped(sp => new CustomerService(sp.GetRequiredService<IStripeClient>()))
+            .AddScoped(sp => new PaymentIntentService(sp.GetRequiredService<IStripeClient>()))
+            .AddScoped(sp => new RefundService(sp.GetRequiredService<IStripeClient>()));
 
         // Redis
         services.Configure<RedisSettings>(configuration.GetSection(RedisSettings.Section));
@@ -70,6 +77,11 @@ public static class ExternalServicesRegister
         });
 
         services.AddSingleton<ICacheHelper, RedisCacheHelper>();
+        services.AddSingleton<IIdempotencyStore, RedisIdempotencyStore>();
+
+        services.Configure<RefreshTokenSettings>(configuration.GetSection(RefreshTokenSettings.Section));
+        services.AddSingleton<IRefreshTokenStore, RedisRefreshTokenStore>();
+        services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
         services.AddHealthChecks().AddCheck<RedisHealthCheck>("redis");
 

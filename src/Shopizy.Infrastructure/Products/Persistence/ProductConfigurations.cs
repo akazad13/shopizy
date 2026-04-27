@@ -33,6 +33,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property(p => p.SKU).HasMaxLength(50);
         builder.Property(p => p.StockQuantity);
         builder.Property(p => p.Discount).HasPrecision(18, 2).IsRequired(false);
+#pragma warning disable CS8625
         builder
             .Property(p => p.BrandId)
             .HasConversion(
@@ -40,6 +41,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                 value => value.HasValue ? BrandId.Create(value.Value) : null
             )
             .IsRequired(false);
+#pragma warning restore CS8625
         builder.Property(p => p.Barcode).HasMaxLength(50).IsRequired(false);
         builder.Property(p => p.Colors).HasMaxLength(50).IsRequired();
         builder.Property(p => p.Sizes).HasMaxLength(20).IsRequired();
@@ -84,6 +86,8 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.HasIndex(p => p.IsActive);
         builder.HasIndex(p => p.CreatedOn);
         builder.HasIndex(p => new { p.CategoryId, p.IsActive });
+
+        builder.Property<byte[]>("RowVersion");
     }
 
     private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)

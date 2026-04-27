@@ -24,6 +24,7 @@ public class ProductQuestionMappingConfig : IRegister
             .Map(dest => dest.AnsweredByUserId, src => src.AnsweredByUserId)
             .Map(dest => dest.Answer, src => src.request.Answer);
 
+#pragma warning disable CS8625
         config
             .NewConfig<ProductQuestion, ProductQuestionResponse>()
             .Map(dest => dest.QuestionId, src => src.Id.Value)
@@ -31,5 +32,6 @@ public class ProductQuestionMappingConfig : IRegister
             .Map(dest => dest.IsAnswered, src => src.IsAnswered)
             .Map(dest => dest.Answer, src => src.Answer != null ? src.Answer.Answer : null)
             .Map(dest => dest.CreatedOn, src => src.CreatedOn);
+#pragma warning restore CS8625
     }
 }

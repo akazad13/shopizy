@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Shopizy.Application.Common.Validation;
 
 namespace Shopizy.Application.Auth.Commands.Register;
 
@@ -9,7 +10,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(register => register.FirstName).NotNull().NotEmpty().MaximumLength(50);
         RuleFor(register => register.LastName).NotNull().NotEmpty().MaximumLength(50);
         RuleFor(register => register.Email).NotNull().NotEmpty().MaximumLength(254).EmailAddress();
-        RuleFor(register => register.Password).NotNull().NotEmpty().MinimumLength(8);
+        RuleFor(register => register.Password).StrongPassword();
     }
 }
 

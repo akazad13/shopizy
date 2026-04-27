@@ -15,10 +15,7 @@ public class DbMigrationsHelper(ILogger<DbMigrationsHelper> logger, AppDbContext
     {
         try
         {
-            if (
-                _context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer"
-                && (await _context.Database.GetPendingMigrationsAsync()).Any()
-            )
+            if ((await _context.Database.GetPendingMigrationsAsync()).Any())
             {
                 await _context.Database.MigrateAsync();
             }

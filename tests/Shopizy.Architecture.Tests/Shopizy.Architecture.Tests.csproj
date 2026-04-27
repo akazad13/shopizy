@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Shopizy.Domain\Shopizy.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Shopizy.Application\Shopizy.Application.csproj" />
+    <ProjectReference Include="..\..\src\Shopizy.Infrastructure\Shopizy.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Shopizy.Api\Shopizy.Api.csproj" />
+    <ProjectReference Include="..\..\src\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Shopizy.Contracts\Shopizy.Contracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -16,10 +16,7 @@ public class UpdateUserEndpoint : ApiEndpoint
     {
         app.MapPatch("api/v1.0/users/{userId:guid}", async (Guid userId, UpdateUserRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<UpdateUserEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to update this user's information.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this user's information") is { } forbidden) return forbidden;
 
             var command = mapper.Map<UpdateUserCommand>((userId, request));
 

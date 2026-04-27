@@ -1,6 +1,7 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
@@ -22,5 +23,8 @@ public record UpdateProductCommand(
     string Barcode,
     int StockQuantity,
     IList<Guid>? SpecificationIds
-) : ICommand<ErrorOr<Success>>;
+) : ICommand<ErrorOr<Success>>, IInvalidateCache
+{
+    public IReadOnlyCollection<string> CacheKeysToInvalidate => [CacheKeys.Product(ProductId)];
+}
 

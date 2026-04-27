@@ -7,21 +7,21 @@ namespace Shopizy.Application.Admin.Queries.GetDashboardMetrics;
 public class GetDashboardMetricsQueryHandler(
     IOrderRepository orderRepository,
     IUserRepository userRepository,
-    IProductRepository productRepository)
+    IProductReader productReader)
     : IQueryHandler<GetDashboardMetricsQuery, ErrorOr<DashboardMetricsDto>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProductReader _productReader = productReader;
 
     public async Task<ErrorOr<DashboardMetricsDto>> Handle(GetDashboardMetricsQuery query, CancellationToken cancellationToken = default)
     {
         var totalRevenue = await _orderRepository.GetTotalRevenueAsync();
         var totalOrders = await _orderRepository.GetTotalOrdersCountAsync();
         var totalUsers = await _userRepository.GetTotalUsersCountAsync();
-        var totalProducts = await _productRepository.GetTotalProductCountAsync();
+        var totalProducts = await _productReader.GetTotalCountAsync(cancellationToken);
 
-        var lowStockProducts = await _productRepository.GetLowStockProductsAsync(5); // threshold of 5
+        var lowStockProducts = await _productReader.GetLowStockAsync(5, cancellationToken); // threshold of 5
 
         var dto = new DashboardMetricsDto(
             totalRevenue,

@@ -1,4 +1,5 @@
 using Mapster;
+using Shopizy.Application.Auth.Commands.RefreshToken;
 using Shopizy.Application.Auth.Commands.Register;
 using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Auth.Queries.login;
@@ -22,5 +23,6 @@ public class AuthenticationMappingConfig : IRegister
         config.NewConfig<AuthResult, AuthResponse>();
         config.NewConfig<LoginRequest, LoginQuery>();
         config.NewConfig<RegisterRequest, RegisterCommand>();
+        config.NewConfig<RefreshTokenRequest, RefreshTokenCommand>();
     }
 }

@@ -2,12 +2,10 @@ using Moq;
 using Shouldly;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
-using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProducts;
 
@@ -32,18 +30,7 @@ public class GetProductsQueryHandlerTestsRefactored
             Price.CreateNew(10, Currency.usd), null, null, "B", "C", "S", "T");
         var products = new List<Product> { product };
 
-        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
-            It.IsAny<IReadOnlyList<ProductId>?>(),
-            It.IsAny<string?>(),
-            It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<IReadOnlyList<BrandId>?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<bool?>(),
-            It.IsAny<string?>(),
-            It.IsAny<int>(),
-            It.IsAny<int>()))
+        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
             .ReturnsAsync(((IReadOnlyList<Product>)products, 1));
 
         // Act
@@ -61,18 +48,7 @@ public class GetProductsQueryHandlerTestsRefactored
         // Arrange
         var query = new GetProductsQuery(null, null, null, null, null, null, null, null, null, 1, 10);
 
-        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(
-            It.IsAny<IReadOnlyList<ProductId>?>(),
-            It.IsAny<string?>(),
-            It.IsAny<IReadOnlyList<CategoryId>?>(),
-            It.IsAny<IReadOnlyList<BrandId>?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<decimal?>(),
-            It.IsAny<bool?>(),
-            It.IsAny<string?>(),
-            It.IsAny<int>(),
-            It.IsAny<int>()))
+        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
             .ReturnsAsync(((IReadOnlyList<Product>)new List<Product>(), 0));
 
         // Act

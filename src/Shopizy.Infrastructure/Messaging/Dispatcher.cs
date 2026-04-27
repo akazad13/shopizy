@@ -26,7 +26,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
             });
 
         object? handler = _serviceProvider.GetService(handlerType) ??
-                          throw new InvalidOperationException($"No handler registered for {commandType.Name}");
+                          throw NoHandlerRegistered(commandType, responseType: null, handlerInterface: typeof(ICommandHandler<>));
 
         await ((Task)method.Invoke(handler, [command, cancellationToken])!).ConfigureAwait(false);
     }
@@ -43,7 +43,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
             });
 
         object? handler = _serviceProvider.GetService(handlerType) ??
-                          throw new InvalidOperationException($"No handler registered for {commandType.Name}");
+                          throw NoHandlerRegistered(commandType, typeof(TResponse), handlerInterface: typeof(ICommandHandler<,>));
 
         return await ((Task<TResponse>)method.Invoke(handler, [command, cancellationToken])!).ConfigureAwait(false);
     }
@@ -60,9 +60,19 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
             });
 
         object? handler = _serviceProvider.GetService(handlerType) ??
-                          throw new InvalidOperationException($"No handler registered for {queryType.Name}");
+                          throw NoHandlerRegistered(queryType, typeof(TResponse), handlerInterface: typeof(IQueryHandler<,>));
 
         return await ((Task<TResponse>)method.Invoke(handler, [query, cancellationToken])!).ConfigureAwait(false);
+    }
+
+    private static InvalidOperationException NoHandlerRegistered(Type messageType, Type? responseType, Type handlerInterface)
+    {
+        var signature = responseType is null
+            ? $"{handlerInterface.Name.TrimEnd('`', '1')}<{messageType.FullName}>"
+            : $"{handlerInterface.Name.TrimEnd('`', '2')}<{messageType.FullName}, {responseType.FullName}>";
+        return new InvalidOperationException(
+            $"No handler registered for {messageType.FullName}. Expected DI registration: {signature}. " +
+            "Verify the handler class is in an assembly scanned by Shopizy.Application.DependencyInjectionRegister and implements the corresponding handler interface.");
     }
 
     public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) where TEvent : IDomainEvent

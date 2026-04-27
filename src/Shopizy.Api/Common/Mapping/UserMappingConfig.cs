@@ -41,6 +41,7 @@ public class UserMappingConfig : IRegister
 
         config.NewConfig<UserDto, UserDetails>().Map(dest => dest.Id, src => src.Id.Value);
 
+#pragma warning disable CS8625
         config
             .NewConfig<User, UserDetails>()
             .Map(dest => dest.Id, src => src.Id.Value)
@@ -51,6 +52,7 @@ public class UserMappingConfig : IRegister
             .Map(dest => dest.TotalReviewed, src => src.ProductReviewIds.Count)
             .Map(dest => dest.TotalFavorites, src => 0)
             .Map(dest => dest.TotalReturns, src => 0);
+#pragma warning restore CS8625
 
         config
             .NewConfig<UserAddress, UserAddressResponse>()

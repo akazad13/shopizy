@@ -16,10 +16,7 @@ public class AddProductToCartEndpoint : ApiEndpoint
     {
         app.MapPatch("api/v1.0/users/{userId:guid}/cart/items", async (Guid userId, AddProductToCartRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<AddProductToCartEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to modify this cart.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this cart") is { } forbidden) return forbidden;
 
             var command = mapper.Map<AddProductToCartCommand>((userId, request));
 

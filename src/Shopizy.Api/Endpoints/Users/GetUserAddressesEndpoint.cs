@@ -24,12 +24,7 @@ public class GetUserAddressesEndpoint : ApiEndpoint
                 ILogger<GetUserAddressesEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to access these addresses.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this user's addresses") is { } forbidden) return forbidden;
 
                 var query = new GetUserAddressesQuery(userId);
 

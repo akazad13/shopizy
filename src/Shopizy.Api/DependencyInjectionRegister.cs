@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
+using Shopizy.Api.Common.Idempotency;
 using Shopizy.Api.Common.Mapping;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.RateLimiting;
@@ -41,6 +42,8 @@ public static class DependencyInjectionRegister
             options.IncludeXmlComments(contractsXmlPath);
         });
         services.AddMappings();
+
+        services.AddScoped<IdempotencyEndpointFilter>();
 
         services.AddExceptionHandler<Shopizy.Api.Common.Errors.GlobalExceptionHandler>();
         services.AddProblemDetails();

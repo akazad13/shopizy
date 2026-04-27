@@ -22,14 +22,27 @@ jobs:
         dotnet-version: 10.x.x
     - name: Restore dependencies
       run: dotnet restore Shopizy.sln
+    - name: Restore .NET tools
+      run: dotnet tool restore
+    - name: Verify formatting (csharpier)
+      run: dotnet csharpier check .
     - name: Build
       run: dotnet build Shopizy.sln --no-restore --configuration Release
     - name: Test with Coverage
-      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage;Format=cobertura;Exclude=[*.UnitTests]*,[*.IntegrationTests]*" --results-directory ./coverage
+      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage;Format=cobertura;Exclude=[*.UnitTests]*,[*.IntegrationTests]*,[*.Architecture.Tests]*" --results-directory ./coverage
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
       run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
+    - name: Enforce coverage threshold
+      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/summary -reporttypes:TextSummary,Cobertura
+      shell: bash
+    - name: Check coverage minimum (line ≥ 70%)
+      run: |
+        line=$(grep -oP 'Line coverage:\s*\K[0-9.]+' ./coverage/summary/Summary.txt | head -1)
+        echo "Line coverage: $line%"
+        awk -v c="$line" 'BEGIN { if (c+0 < 70) { print "Coverage below 70% threshold"; exit 1 } else { print "Coverage above threshold"; exit 0 } }'
+      shell: bash
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
       with:

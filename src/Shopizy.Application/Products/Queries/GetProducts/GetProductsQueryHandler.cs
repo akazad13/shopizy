@@ -47,7 +47,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
                 .ToList()
             : null;
 
-        var (products, totalCount) = await _productRepository.GetProductsWithCountAsync(
+        var criteria = new ProductSearchCriteria(
             productIds,
             query.Name,
             categoryIds,
@@ -60,6 +60,8 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query.PageNumber,
             query.PageSize
         );
+
+        var (products, totalCount) = await _productRepository.GetProductsWithCountAsync(criteria);
 
         return new ProductsResult(products.ToList(), totalCount, (int)Math.Ceiling(totalCount / (1.0 * query.PageSize)), query.PageNumber);
     }

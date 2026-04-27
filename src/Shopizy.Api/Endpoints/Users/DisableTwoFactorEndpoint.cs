@@ -21,12 +21,7 @@ public class DisableTwoFactorEndpoint : ApiEndpoint
                 ILogger<DisableTwoFactorEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to modify this user's two-factor settings.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this user's two-factor settings") is { } forbidden) return forbidden;
 
                 return await HandleAsync(
                     mediator,

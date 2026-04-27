@@ -34,6 +34,7 @@ public static class DependencyInjectionRegister
         services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandlerDecorator<,>));
         services.Decorate(typeof(IQueryHandler<,>), typeof(ValidationQueryHandlerDecorator<,>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerDecorator<,>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(CacheInvalidationCommandHandlerDecorator<,>));
         services.Decorate(typeof(IQueryHandler<,>), typeof(CachingQueryHandlerDecorator<,>));
 
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionRegister));

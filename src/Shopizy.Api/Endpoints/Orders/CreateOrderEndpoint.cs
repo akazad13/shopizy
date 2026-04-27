@@ -1,5 +1,6 @@
 using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.Api.Common.Idempotency;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Commands.CreateOrder;
 using Shopizy.Contracts.Common;
@@ -25,6 +26,7 @@ public class CreateOrderEndpoint : ApiEndpoint
                 ex => logger.OrderCreationError(ex)
             );
         })
+        .AddEndpointFilter<IdempotencyEndpointFilter>()
         .RequireAuthorization("Order.Create")
         .WithTags("Orders")
         .WithSummary("Create order (Checkout)")

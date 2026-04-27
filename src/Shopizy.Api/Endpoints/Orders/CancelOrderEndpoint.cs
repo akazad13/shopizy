@@ -26,12 +26,7 @@ public class CancelOrderEndpoint : ApiEndpoint
                 ILogger<CancelOrderEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to cancel this order.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this order") is { } forbidden) return forbidden;
 
                 var command = mapper.Map<CancelOrderCommand>((userId, orderId, request));
 

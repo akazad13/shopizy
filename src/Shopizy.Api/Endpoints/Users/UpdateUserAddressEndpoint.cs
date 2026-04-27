@@ -26,12 +26,7 @@ public class UpdateUserAddressEndpoint : ApiEndpoint
                 ILogger<UpdateUserAddressEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to update this address.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this address") is { } forbidden) return forbidden;
 
                 var command = new UpdateUserAddressCommand(
                     userId,

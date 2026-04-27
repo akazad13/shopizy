@@ -6,6 +6,10 @@ using Shopizy.Application.Products.Commands.UpdateProduct;
 using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Contracts.Product;
+using Shopizy.Domain.Brands.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.Entities;
@@ -44,8 +48,23 @@ public class ProductMappingConfig : IRegister
                 src.PageSize));
 
         config.NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest, src => src.request);
+            .MapWith(src => new CreateProductCommand(
+                src.UserId,
+                src.request.Name,
+                src.request.ShortDescription,
+                src.request.Description,
+                CategoryId.Create(src.request.CategoryId),
+                Price.CreateNew(src.request.UnitPrice, (Currency)src.request.Currency),
+                src.request.Discount,
+                src.request.Sku,
+                src.request.StockQuantity,
+                src.request.BrandId.HasValue ? BrandId.Create(src.request.BrandId.Value) : null,
+                src.request.Colors,
+                src.request.Sizes,
+                src.request.Tags,
+                src.request.Barcode,
+                src.request.SpecificationIds
+            ));
 
         config
             .NewConfig<(Guid UserId, Guid ProductId, UpdateProductRequest request), UpdateProductCommand>()
@@ -60,6 +79,7 @@ public class ProductMappingConfig : IRegister
 
         config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
 
+#pragma warning disable CS8625
         config
             .NewConfig<Product, ProductResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value)
@@ -74,6 +94,7 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.Sku, src => src.SKU)
             .Map(dest => dest.BrandId, src => src.BrandId == null ? (Guid?)null : src.BrandId.Value)
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
+#pragma warning restore CS8625
 
         config
             .NewConfig<ProductImage, ProductImageResponse>()

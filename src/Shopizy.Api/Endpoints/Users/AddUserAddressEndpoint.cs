@@ -25,12 +25,7 @@ public class AddUserAddressEndpoint : ApiEndpoint
                 ILogger<AddUserAddressEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to add an address for this user.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this user's addresses") is { } forbidden) return forbidden;
 
                 var command = new AddUserAddressCommand(
                     userId,

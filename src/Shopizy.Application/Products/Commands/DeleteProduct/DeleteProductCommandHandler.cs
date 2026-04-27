@@ -20,7 +20,7 @@ public class DeleteProductCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        Domain.Products.Product? product = await _productRepository.GetProductByIdAsync(
+        Domain.Products.Product? product = await _productRepository.GetProductByIdForUpdateAsync(
             ProductId.Create(cmd.ProductId)
         );
 

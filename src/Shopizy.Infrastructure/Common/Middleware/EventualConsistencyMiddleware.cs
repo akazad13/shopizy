@@ -8,6 +8,16 @@ using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Infrastructure.Common.Middleware;
 
+/// <summary>
+/// Wraps each mutation in a database transaction and dispatches collected domain events
+/// <b>inside</b> the same transaction. This makes the original aggregate write and any handler
+/// side-effects atomic — if a handler throws, the request fails and the transaction rolls back,
+/// preventing phantom orders / unmatched stock / cleared-but-not-checked-out carts.
+/// <para>
+/// <b>Handler contract:</b> see <c>docs/EventualConsistency.md</c>. Handlers must be DB-only
+/// (no out-of-band side effects without the outbox) and may be retried by the EF execution strategy.
+/// </para>
+/// </summary>
 public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<EventualConsistencyMiddleware> logger)
 {
     private readonly ILogger<EventualConsistencyMiddleware> _logger = logger;
@@ -21,71 +31,65 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
 
         if (!HttpMethods.IsGet(method: context.Request.Method))
         {
-            Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction =
-                await dbContext.Database.BeginTransactionAsync();
-
-            await Next(context);
-
-            await transaction.CommitAsync();
-
-            try
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
             {
-                if (
-                    context.Items.TryGetValue(DomainEventsKey, out object? value)
-                    && value is Queue<(IDomainEvent Event, Guid OutboxId)> domainEventsQueue
-                )
-                {
-                    while (domainEventsQueue.TryDequeue(out var entry))
-                    {
-                        var (nextEvent, outboxId) = entry;
-                        var published = false;
+                Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction =
+                    await dbContext.Database.BeginTransactionAsync();
 
-                        for (var attempt = 0; attempt < 3 && !published; attempt++)
-                        {
-                            try
-                            {
-                                await dispatcher.PublishAsync(nextEvent);
-                                published = true;
-                            }
-                            catch (Exception ex) when (attempt < 2)
-                            {
-                                _logger.DomainEventPublishingError(ex);
-                                await Task.Delay(TimeSpan.FromMilliseconds(Math.Pow(2, attempt) * 100));
-                            }
-                        }
+                await Next(context);
 
-                        if (published)
-                        {
-                            // Mark outbox message as processed so the background worker skips it
-                            await dbContext.OutboxMessages
-                                .Where(m => m.Id == outboxId)
-                                .ExecuteUpdateAsync(
-                                    s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow));
-                        }
-                        else
-                        {
-                            var eventType = nextEvent.GetType().Name;
-                            var payload = JsonSerializer.Serialize(nextEvent, nextEvent.GetType());
-                            _logger.DomainEventDeadLettered(eventType, payload);
-                            // OutboxMessage.ProcessedOn stays null → OutboxProcessor will retry
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.DomainEventPublishingError(ex);
-                // If publishing fails, data is already committed.
-                // OutboxProcessor will retry any unprocessed messages.
-            }
-            finally
-            {
+                // Dispatch domain events INSIDE the transaction so handler side-effects
+                // commit atomically with the original aggregate change. A handler that throws
+                // aborts the whole request; OutboxMessages roll back with the rest.
+                await DispatchPendingEventsAsync(context, dispatcher, dbContext);
+
+                await transaction.CommitAsync();
                 await transaction.DisposeAsync();
-            }
+            });
         }
         else
         {
             await Next(context);
+        }
+    }
+
+    private async Task DispatchPendingEventsAsync(
+        HttpContext context,
+        IDispatcher dispatcher,
+        AppDbContext dbContext)
+    {
+        if (!context.Items.TryGetValue(DomainEventsKey, out object? value)
+            || value is not Queue<(IDomainEvent Event, Guid OutboxId)> domainEventsQueue)
+        {
+            return;
+        }
+
+        // Handlers may call SaveChangesAsync, which can enqueue further events. Drain until empty.
+        while (domainEventsQueue.TryDequeue(out var entry))
+        {
+            var (nextEvent, outboxId) = entry;
+
+            try
+            {
+                await dispatcher.PublishAsync(nextEvent);
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow — failing inside the transaction rolls back the whole unit of work,
+                // so the caller sees a 500 and there is no phantom write. Dead-letter alerting is
+                // surfaced by OutboxProcessor for any pre-existing rows that survive a crash.
+                var eventType = nextEvent.GetType().Name;
+                var payload = JsonSerializer.Serialize(nextEvent, nextEvent.GetType());
+                _logger.DomainEventPublishingError(ex);
+                _logger.DomainEventDeadLettered(eventType, payload);
+                throw;
+            }
+
+            await dbContext.OutboxMessages
+                .Where(m => m.Id == outboxId)
+                .ExecuteUpdateAsync(
+                    s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow));
         }
     }
 }

@@ -32,13 +32,15 @@ public sealed class GiftCardConfigurations : IEntityTypeConfiguration<GiftCard>
         builder.Property(gc => gc.IsActive).HasDefaultValue(true);
         builder.Property(gc => gc.ExpiresOn).HasColumnType("smalldatetime").IsRequired(false);
 
+#pragma warning disable CS8625
         builder
             .Property(gc => gc.RedeemedByUserId)
             .HasConversion(
-                id => id != null ? id.Value : (Guid?)null,
+                id => id == null ? (Guid?)null : id.Value,
                 value => value.HasValue ? UserId.Create(value.Value) : null
             )
             .IsRequired(false);
+#pragma warning restore CS8625
 
         builder.Property(gc => gc.RedeemedOn).HasColumnType("smalldatetime").IsRequired(false);
         builder.Property(gc => gc.CreatedOn).HasColumnType("smalldatetime");

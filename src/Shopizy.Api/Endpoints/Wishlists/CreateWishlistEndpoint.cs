@@ -25,12 +25,7 @@ public class CreateWishlistEndpoint : ApiEndpoint
                 ILogger<CreateWishlistEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to create this wishlist.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden) return forbidden;
 
                 var command = mapper.Map<CreateWishlistCommand>((userId, request));
 

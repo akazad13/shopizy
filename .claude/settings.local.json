@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir *)",
+      "PowerShell(dotnet test *)",
+      "PowerShell(dotnet build *)",
+      "PowerShell(dotnet sln *)"
+    ]
+  }
+}

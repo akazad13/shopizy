@@ -67,8 +67,10 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
 
     public async Task<decimal> GetTotalRevenueAsync()
     {
-        var orders = await _dbContext.Orders.Include(o => o.OrderItems).AsNoTracking().ToListAsync();
-        return orders.Sum(o => o.GetTotal().Amount);
+        return await _dbContext.Orders
+            .AsSingleQuery()
+            .SelectMany(o => o.OrderItems)
+            .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
     }
 
     public Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end)
@@ -81,6 +83,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end)
     {
         return await _dbContext.Orders
+            .AsSingleQuery()
             .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
             .SelectMany(o => o.OrderItems)
             .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
@@ -89,6 +92,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count)
     {
         return await _dbContext.Orders
+            .AsSingleQuery()
             .SelectMany(o => o.OrderItems)
             .GroupBy(item => item.Name)
             .Select(g => new TopProductDto(
@@ -104,6 +108,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     public async Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count)
     {
         var customerSpend = await _dbContext.Orders
+            .AsSingleQuery()
             .GroupBy(o => o.UserId)
             .Select(g => new
             {

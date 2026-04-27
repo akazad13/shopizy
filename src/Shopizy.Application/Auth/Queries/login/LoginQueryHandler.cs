@@ -16,6 +16,8 @@ public class LoginQueryHandler(
     IUserRepository userRepository,
     IPermissionRepository permissionRepository,
     IJwtTokenGenerator jwtTokenGenerator,
+    IRefreshTokenGenerator refreshTokenGenerator,
+    IRefreshTokenStore refreshTokenStore,
     IPasswordManager passwordManager,
     ICartRepository cartRepository,
     IUnitOfWork unitOfWork
@@ -24,6 +26,8 @@ public class LoginQueryHandler(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPermissionRepository _permissionRepository = permissionRepository;
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator = refreshTokenGenerator;
+    private readonly IRefreshTokenStore _refreshTokenStore = refreshTokenStore;
     private readonly IPasswordManager _passwordManager = passwordManager;
     private readonly ICartRepository _cartRepository = cartRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -63,6 +67,11 @@ public class LoginQueryHandler(
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
 
+        var refreshToken = _refreshTokenGenerator.Generate();
+        var refreshLifetime = _refreshTokenGenerator.Lifetime;
+        await _refreshTokenStore.StoreAsync(refreshToken, user.Id, refreshLifetime, cancellationToken);
+        var refreshExpiresAt = DateTime.UtcNow.Add(refreshLifetime);
+
         var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
 
         if (cart is null)
@@ -72,6 +81,14 @@ public class LoginQueryHandler(
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        return new AuthResult(user.Id.Value, user.FirstName, user.LastName, user.Email, user.Role.ToString(), token);
+        return new AuthResult(
+            user.Id.Value,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.Role.ToString(),
+            token,
+            refreshToken,
+            refreshExpiresAt);
     }
 }

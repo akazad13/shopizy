@@ -1,4 +1,5 @@
 using FluentValidation;
+using Shopizy.Application.Common.Validation;
 
 namespace Shopizy.Application.Users.Commands.ResetPassword;
 
@@ -7,6 +8,6 @@ public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordComm
     public ResetPasswordCommandValidator()
     {
         RuleFor(x => x.Token).NotEmpty();
-        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8);
+        RuleFor(x => x.NewPassword).StrongPassword();
     }
 }

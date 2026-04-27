@@ -25,12 +25,7 @@ public class GetShipmentEndpoint : ApiEndpoint
                 ILogger<GetShipmentEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to access this shipment.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this shipment") is { } forbidden) return forbidden;
 
                 var query = new GetShipmentQuery(userId, orderId);
 

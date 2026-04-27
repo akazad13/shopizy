@@ -19,6 +19,8 @@ public class LoginQueryHandlerTests
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IPermissionRepository> _mockPermissionRepository;
     private readonly Mock<IJwtTokenGenerator> _mockJwtTokenGenerator;
+    private readonly Mock<IRefreshTokenGenerator> _mockRefreshTokenGenerator;
+    private readonly Mock<IRefreshTokenStore> _mockRefreshTokenStore;
     private readonly Mock<IPasswordManager> _mockPasswordManager;
     private readonly Mock<ICartRepository> _mockCartRepository;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
@@ -29,14 +31,21 @@ public class LoginQueryHandlerTests
         _mockUserRepository = new Mock<IUserRepository>();
         _mockPermissionRepository = new Mock<IPermissionRepository>();
         _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
+        _mockRefreshTokenGenerator = new Mock<IRefreshTokenGenerator>();
+        _mockRefreshTokenStore = new Mock<IRefreshTokenStore>();
         _mockPasswordManager = new Mock<IPasswordManager>();
         _mockCartRepository = new Mock<ICartRepository>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
+
+        _mockRefreshTokenGenerator.Setup(g => g.Generate()).Returns("refresh-token");
+        _mockRefreshTokenGenerator.Setup(g => g.Lifetime).Returns(TimeSpan.FromDays(30));
 
         _handler = new LoginQueryHandler(
             _mockUserRepository.Object,
             _mockPermissionRepository.Object,
             _mockJwtTokenGenerator.Object,
+            _mockRefreshTokenGenerator.Object,
+            _mockRefreshTokenStore.Object,
             _mockPasswordManager.Object,
             _mockCartRepository.Object,
             _mockUnitOfWork.Object
@@ -110,17 +119,13 @@ public class LoginQueryHandlerTests
 
         // Assert
         Assert.False(result.IsError);
-        Assert.Equal(
-            new AuthResult(
-                user.Id.Value,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.Role.ToString(),
-                expectedToken
-            ),
-            result.Value
-        );
+        Assert.Equal(user.Id.Value, result.Value.Id);
+        Assert.Equal(user.FirstName, result.Value.FirstName);
+        Assert.Equal(user.LastName, result.Value.LastName);
+        Assert.Equal(user.Email, result.Value.Email);
+        Assert.Equal(user.Role.ToString(), result.Value.Role);
+        Assert.Equal(expectedToken, result.Value.Token);
+        Assert.Equal("refresh-token", result.Value.RefreshToken);
         _mockJwtTokenGenerator.Verify(
             j =>
                 j.GenerateToken(

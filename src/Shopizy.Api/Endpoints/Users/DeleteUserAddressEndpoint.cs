@@ -22,12 +22,7 @@ public class DeleteUserAddressEndpoint : ApiEndpoint
                 ILogger<DeleteUserAddressEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to delete this address.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this address") is { } forbidden) return forbidden;
 
                 var command = new DeleteUserAddressCommand(userId, addressId);
 

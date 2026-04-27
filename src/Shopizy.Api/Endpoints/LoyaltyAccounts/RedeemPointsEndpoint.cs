@@ -25,12 +25,7 @@ public class RedeemPointsEndpoint : ApiEndpoint
                 ILogger<RedeemPointsEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to redeem points for this user.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this loyalty account") is { } forbidden) return forbidden;
 
                 var command = mapper.Map<RedeemPointsCommand>((request, userId));
 

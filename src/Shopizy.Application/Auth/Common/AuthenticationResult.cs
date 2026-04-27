@@ -1,3 +1,11 @@
 namespace Shopizy.Application.Auth.Common;
 
-public record AuthResult(Guid Id, string FirstName, string LastName, string Email, string Role, string Token);
+public record AuthResult(
+    Guid Id,
+    string FirstName,
+    string LastName,
+    string Email,
+    string Role,
+    string Token,
+    string RefreshToken,
+    DateTime RefreshTokenExpiresAt);

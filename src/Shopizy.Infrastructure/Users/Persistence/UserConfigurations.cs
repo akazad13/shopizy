@@ -66,6 +66,8 @@ public sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Navigation(p => p.OrderIds).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(p => p.ProductReviewIds).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Property<byte[]>("RowVersion");
     }
 
     private static void ConfigureUserPermissionsTable(EntityTypeBuilder<User> builder)

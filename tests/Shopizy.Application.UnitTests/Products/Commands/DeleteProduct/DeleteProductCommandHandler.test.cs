@@ -34,7 +34,7 @@ public class DeleteProductCommandHandlerTests
         var product = ProductFactory.CreateProduct();
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
+            .Setup(p => p.GetProductByIdForUpdateAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync(product);
 
         _mockProductRepository.Setup(p => p.Remove(It.IsAny<Product>()));
@@ -56,7 +56,7 @@ public class DeleteProductCommandHandlerTests
         var command = DeleteProductCommandUtils.CreateCommand();
 
         _mockProductRepository
-            .Setup(p => p.GetProductByIdAsync(ProductId.Create(command.ProductId)))
+            .Setup(p => p.GetProductByIdForUpdateAsync(ProductId.Create(command.ProductId)))
             .ReturnsAsync((Product?)null);
 
         // Act
@@ -66,7 +66,7 @@ public class DeleteProductCommandHandlerTests
         Assert.True(result.IsError);
         Assert.Equal(CustomErrors.Product.ProductNotFound, result.FirstError);
 
-        _mockProductRepository.Verify(x => x.GetProductByIdAsync(It.IsAny<ProductId>()), Times.Once);
+        _mockProductRepository.Verify(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()), Times.Once);
         _mockProductRepository.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
     }
 }

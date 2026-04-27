@@ -33,34 +33,28 @@ public static class PersistenceRegister
         IConfiguration configuration
     )
     {
-        services.AddScoped<IAppDbContext, AppDbContext>()
+        services
             .AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>())
-            .AddScoped<DbMigrationsHelper>()
-            .AddScoped<UpdateAuditableEntitiesInterceptor>();
+            .AddTransient<DbMigrationsHelper>()
+            .AddScoped<UpdateAuditableEntitiesInterceptor>()
+            .AddSingleton<IPermissionLookup, PermissionLookup>();
 
-        if (configuration.GetValue<bool>("UsePostgreSql"))
+        services.AddDbContext<AppDbContext>((sp, options) =>
         {
-            services.AddDbContext<AppDbContext>((sp, options) =>
-            {
-                var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                    .AddInterceptors(interceptor);
-            });
-        }
-        else
-        {
-            services.AddDbContext<AppDbContext>((sp, options) =>
-            {
-                var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                    .AddInterceptors(interceptor);
-            });
-        }
+            var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                    o =>
+                    {
+                        o.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    })
+                .AddInterceptors(interceptor);
+        });
 
         services.AddHealthChecks().AddCheck<DbHealthCheck>("database");
+        services.AddHostedService<DbMigrationsHostedService>();
         services.AddHostedService<OutboxProcessor>();
+        services.AddScoped<IOutboxDrainer, OutboxDrainer>();
 
         return services.AddRepositories();
     }
@@ -75,6 +69,7 @@ public static class PersistenceRegister
             .AddScoped<IPaymentRepository, PaymentRepository>()
             .AddScoped<IProductReviewRepository, ProductReviewRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
+            .AddScoped<IProductReader, ProductReader>()
             .AddScoped<IPromoCodeRepository, PromoCodeRepository>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IPermissionRepository, PermissionRepository>()

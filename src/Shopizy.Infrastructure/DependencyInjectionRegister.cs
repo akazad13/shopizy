@@ -26,8 +26,8 @@ public static class DependencyInjectionRegister
                 {
                     builder
                         .WithOrigins(Origins(configuration))
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
+                        .WithHeaders(AllowedHeaders(configuration))
+                        .WithMethods(AllowedMethods(configuration))
                         .AllowCredentials();
                 }
             );
@@ -47,5 +47,21 @@ public static class DependencyInjectionRegister
     private static string[] Origins(IConfiguration configuration)
     {
         return configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>() ?? [];
+    }
+
+    private static readonly string[] DefaultAllowedHeaders =
+        ["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "Idempotency-Key"];
+
+    private static readonly string[] DefaultAllowedMethods =
+        ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
+
+    private static string[] AllowedHeaders(IConfiguration configuration)
+    {
+        return configuration.GetSection("CorsSettings:AllowedHeaders").Get<string[]>() ?? DefaultAllowedHeaders;
+    }
+
+    private static string[] AllowedMethods(IConfiguration configuration)
+    {
+        return configuration.GetSection("CorsSettings:AllowedMethods").Get<string[]>() ?? DefaultAllowedMethods;
     }
 }

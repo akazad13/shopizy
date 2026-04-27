@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MapsterMapper;
 using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Api.Common.Extensions;
+using Shopizy.Api.Common.Idempotency;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
 using Shopizy.Application.Payments.Commands.CashOnDeliverySale;
@@ -17,10 +18,7 @@ public class PayEndpoint : ApiEndpoint
     {
         app.MapPost("api/v1.0/users/{userId:guid}/payments", async (Guid userId, CardNotPresentSaleRequest request, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<PayEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to make a payment for this user.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this payment") is { } forbidden) return forbidden;
 
             if (request.PaymentMethod.ToLower() == "card")
             {
@@ -45,6 +43,7 @@ public class PayEndpoint : ApiEndpoint
                 );
             }
         })
+        .AddEndpointFilter<IdempotencyEndpointFilter>()
         .RequireAuthorization("Order.Create")
         .WithTags("Payments")
         .WithSummary("Process payment")

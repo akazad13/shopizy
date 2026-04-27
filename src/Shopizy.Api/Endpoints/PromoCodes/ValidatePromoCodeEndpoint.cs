@@ -25,12 +25,7 @@ public class ValidatePromoCodeEndpoint : ApiEndpoint
                 ILogger<ValidatePromoCodeEndpoint> logger
             ) =>
             {
-                if (!user.IsAuthorized(userId))
-                {
-                    return CustomResults.Problem(
-                        [ErrorOr.Error.Forbidden(description: "You are not authorized to validate promo codes for this user.")]
-                    );
-                }
+                if (user.AuthorizeOwner(userId, "this user's promo codes") is { } forbidden) return forbidden;
 
                 return await HandleAsync(
                     mediator,

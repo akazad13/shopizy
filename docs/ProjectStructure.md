@@ -1,6 +1,6 @@
 # Shopizy Project Structure Reference
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 This document is a quick map of the repository to guide safe, targeted changes.
 Use it before editing to choose the right layer and keep boundaries clear.
@@ -87,11 +87,11 @@ Cross-cutting shared abstractions used by multiple projects.
 
 ### `tests/Shopizy.Api.IntegrationTests`
 
-End-to-end API behavior with test host setup.
+End-to-end API behavior using `WebApplicationFactory<Program>` and a Testcontainers-managed SQL Server 2022 container. `IntegrationTestWebAppFactory` runs real EF migrations on startup, mocks `IPaymentService` / `IMediaUploader`, and registers in-memory replacements for the Redis-backed cache, idempotency store, and refresh-token store.
 
-- `BaseIntegrationTest.cs`
-- `IntegrationTestWebAppFactory.cs`
-- Feature-oriented test folders (`Products/`, `Orders/`, etc.)
+- `BaseIntegrationTest.cs` — auth helpers, default `Idempotency-Key` header
+- `IntegrationTestWebAppFactory.cs` — container + DI overrides
+- Feature-oriented test folders (`Products/`, `Orders/`, `Auth/`, etc.)
 
 ### `tests/Shopizy.Application.UnitTests`
 
@@ -105,6 +105,10 @@ Unit tests for domain behavior and invariants.
 
 Unit tests for infrastructure services, security, and integrations.
 
+### `tests/Shopizy.Architecture.Tests`
+
+Architecture/dependency-direction tests via `NetArchTest.Rules`, plus a Mapster compile smoke-test. Asserts: Domain depends on no outer layer; Application stays out of Infrastructure/Api; Infrastructure stays out of Api; Contracts stays standalone.
+
 ## API Collections (`Bruno/`)
 
 ### `Bruno/Shopizy`
@@ -115,9 +119,12 @@ Unit tests for infrastructure services, security, and integrations.
 
 ## Existing Docs (`docs/`)
 
-- `Api.md`: API-focused notes.
+- `Api.md`: Pointer to the live Swagger UI.
 - `Domain.md`: Domain-focused notes.
+- `EventualConsistency.md`: Outbox / domain-event design and contributor rules.
+- `ImprovementScope.md`: 2026-04-26 audit and roadmap.
 - `ProjectStructure.md`: This structure guide.
+- `ThreatModel.md`: STRIDE-style review of the API surface.
 
 ## Change Routing Checklist
 

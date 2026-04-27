@@ -16,10 +16,7 @@ public class RemoveItemFromCartEndpoint : ApiEndpoint
     {
         app.MapDelete("api/v1.0/users/{userId:guid}/cart/items/{itemId:guid}", async (Guid userId, Guid itemId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<RemoveItemFromCartEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to remove items from this cart.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this cart") is { } forbidden) return forbidden;
 
             var command = mapper.Map<RemoveProductFromCartCommand>((userId, itemId));
 

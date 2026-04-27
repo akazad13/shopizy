@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Shopizy.Application.Products.Commands.CreateProduct;
 
@@ -19,13 +19,15 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .MaximumLength(200);
 
         RuleFor(x => x.CategoryId)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Sku)
             .NotEmpty().MaximumLength(50);
 
         RuleFor(x => x.UnitPrice)
-            .GreaterThan(0);
+            .NotNull()
+            .Must(p => p is not null && p.Amount > 0)
+            .WithMessage("Unit price must be greater than zero.");
 
         RuleFor(x => x.StockQuantity)
             .GreaterThanOrEqualTo(0);
@@ -43,4 +45,3 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .MaximumLength(200);
     }
 }
-

@@ -16,10 +16,7 @@ public class GetOrderEndpoint : ApiEndpoint
     {
         app.MapGet("api/v1.0/users/{userId:guid}/orders/{orderId:guid}", async (Guid userId, Guid orderId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetOrderEndpoint> logger) =>
         {
-            if (!user.IsAuthorized(userId))
-            {
-                return CustomResults.Problem([ErrorOr.Error.Forbidden(description: "You are not authorized to access this order.")]);
-            }
+            if (user.AuthorizeOwner(userId, "this order") is { } forbidden) return forbidden;
 
             var query = mapper.Map<GetOrderQuery>((userId, orderId));
 
