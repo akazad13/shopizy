@@ -1,9 +1,9 @@
 using Shopizy.Api;
 using Shopizy.Api.Common.Middleware;
 using Shopizy.Api.Common.Telemetry;
+using Shopizy.Api.Endpoints;
 using Shopizy.Application;
 using Shopizy.Infrastructure;
-using Shopizy.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +20,8 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
     options.ValueLengthLimit = (int)Math.Min(MaxRequestBytes, int.MaxValue);
 });
 
-builder.Services
-    .AddPresentation()
+builder
+    .Services.AddPresentation()
     .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration)
     .AddTelemetry(builder.Configuration, builder.Environment)
@@ -54,8 +54,6 @@ if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"
     app.UseHttpsRedirection();
 }
 
-app.UseAuthentication()
-   .UseAuthorization()
-   .UseRateLimiter();
+app.UseAuthentication().UseAuthorization().UseRateLimiter();
 
 await app.RunAsync();

@@ -8,8 +8,4 @@ public record DashboardMetricsDto(
     IReadOnlyList<StockAlertDto> StockAlerts
 );
 
-public record StockAlertDto(
-    Guid ProductId,
-    string ProductName,
-    int CurrentStock
-);
+public record StockAlertDto(Guid ProductId, string ProductName, int CurrentStock);

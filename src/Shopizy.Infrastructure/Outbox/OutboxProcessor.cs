@@ -28,49 +28,67 @@ public sealed class OutboxProcessor(
         LoggerMessage.Define<int>(
             LogLevel.Information,
             new EventId(1, nameof(OutboxProcessor)),
-            "Outbox: processing {Count} pending message(s).");
+            "Outbox: processing {Count} pending message(s)."
+        );
 
     private static readonly Action<ILogger, Guid, string, Exception?> s_deadLetteringMessageType =
         LoggerMessage.Define<Guid, string>(
             LogLevel.Warning,
             new EventId(2, nameof(OutboxProcessor)),
-            "Outbox: dead-lettering message {Id} — {Reason}");
+            "Outbox: dead-lettering message {Id} — {Reason}"
+        );
 
-    private static readonly Action<ILogger, Guid, string, Exception?> s_deadLetteringMessageDeserialize =
-        LoggerMessage.Define<Guid, string>(
-            LogLevel.Warning,
-            new EventId(3, nameof(OutboxProcessor)),
-            "Outbox: dead-lettering message {Id} — {Reason}");
+    private static readonly Action<
+        ILogger,
+        Guid,
+        string,
+        Exception?
+    > s_deadLetteringMessageDeserialize = LoggerMessage.Define<Guid, string>(
+        LogLevel.Warning,
+        new EventId(3, nameof(OutboxProcessor)),
+        "Outbox: dead-lettering message {Id} — {Reason}"
+    );
 
     private static readonly Action<ILogger, Guid, string, Exception?> s_processedMessage =
         LoggerMessage.Define<Guid, string>(
             LogLevel.Information,
             new EventId(4, nameof(OutboxProcessor)),
-            "Outbox: processed message {Id} ({Type}).");
+            "Outbox: processed message {Id} ({Type})."
+        );
 
     private static readonly Action<ILogger, Guid, string, Exception?> s_failedToProcessMessage =
         LoggerMessage.Define<Guid, string>(
             LogLevel.Error,
             new EventId(5, nameof(OutboxProcessor)),
-            "Outbox: failed to process message {Id} ({Type}).");
+            "Outbox: failed to process message {Id} ({Type})."
+        );
 
-    private static readonly Action<ILogger, Exception?> s_unhandledError =
-        LoggerMessage.Define(
-            LogLevel.Error,
-            new EventId(6, nameof(OutboxProcessor)),
-            "Outbox processor encountered an unhandled error.");
+    private static readonly Action<ILogger, Exception?> s_unhandledError = LoggerMessage.Define(
+        LogLevel.Error,
+        new EventId(6, nameof(OutboxProcessor)),
+        "Outbox processor encountered an unhandled error."
+    );
 
     private static readonly Action<ILogger, int, int, Exception?> s_deadLetterBacklog =
         LoggerMessage.Define<int, int>(
             LogLevel.Warning,
             new EventId(7, nameof(OutboxProcessor)),
-            "Outbox dead-letter backlog has reached {Count} (threshold {Threshold}). Manual review required.");
+            "Outbox dead-letter backlog has reached {Count} (threshold {Threshold}). Manual review required."
+        );
 
     private static readonly System.Diagnostics.Metrics.Meter s_meter = new("Shopizy.Outbox", "1.0");
     private static readonly System.Diagnostics.Metrics.Counter<long> s_deadLettered =
-        s_meter.CreateCounter<long>("shopizy.outbox.dead_lettered", unit: "{messages}", description: "Number of outbox messages newly dead-lettered.");
+        s_meter.CreateCounter<long>(
+            "shopizy.outbox.dead_lettered",
+            unit: "{messages}",
+            description: "Number of outbox messages newly dead-lettered."
+        );
     private static readonly System.Diagnostics.Metrics.Counter<long> s_processed =
-        s_meter.CreateCounter<long>("shopizy.outbox.processed", unit: "{messages}", description: "Number of outbox messages successfully processed.");
+        s_meter.CreateCounter<long>(
+            "shopizy.outbox.processed",
+            unit: "{messages}",
+            description: "Number of outbox messages successfully processed."
+        );
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -97,15 +115,19 @@ public sealed class OutboxProcessor(
 
         var threshold = DateTime.UtcNow - s_processingThreshold;
 
-        var deadLetterCount = await dbContext.OutboxMessages
-            .CountAsync(m => m.DeadLetteredOn != null, cancellationToken);
+        var deadLetterCount = await dbContext.OutboxMessages.CountAsync(
+            m => m.DeadLetteredOn != null,
+            cancellationToken
+        );
         if (deadLetterCount >= DeadLetterBacklogThreshold)
         {
             s_deadLetterBacklog(logger, deadLetterCount, DeadLetterBacklogThreshold, null);
         }
 
-        var pending = await dbContext.OutboxMessages
-            .Where(m => m.ProcessedOn == null && m.DeadLetteredOn == null && m.OccurredOn <= threshold)
+        var pending = await dbContext
+            .OutboxMessages.Where(m =>
+                m.ProcessedOn == null && m.DeadLetteredOn == null && m.OccurredOn <= threshold
+            )
             .OrderBy(m => m.OccurredOn)
             .Take(50)
             .ToListAsync(cancellationToken);
@@ -126,37 +148,45 @@ public sealed class OutboxProcessor(
                 {
                     var reason = $"Cannot resolve type '{message.Type}'.";
                     s_deadLetteringMessageType(logger, message.Id, reason, null);
-                    await dbContext.OutboxMessages
-                        .Where(m => m.Id == message.Id)
+                    await dbContext
+                        .OutboxMessages.Where(m => m.Id == message.Id)
                         .ExecuteUpdateAsync(
-                            s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
-                                  .SetProperty(p => p.DeadLetterReason, reason),
-                            cancellationToken);
+                            s =>
+                                s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
+                                    .SetProperty(p => p.DeadLetterReason, reason),
+                            cancellationToken
+                        );
                     s_deadLettered.Add(1);
                     continue;
                 }
 
-                if (JsonSerializer.Deserialize(message.Content, eventType) is not IDomainEvent domainEvent)
+                if (
+                    JsonSerializer.Deserialize(message.Content, eventType)
+                    is not IDomainEvent domainEvent
+                )
                 {
                     var reason = $"Cannot deserialize content as '{eventType.Name}'.";
                     s_deadLetteringMessageDeserialize(logger, message.Id, reason, null);
-                    await dbContext.OutboxMessages
-                        .Where(m => m.Id == message.Id)
+                    await dbContext
+                        .OutboxMessages.Where(m => m.Id == message.Id)
                         .ExecuteUpdateAsync(
-                            s => s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
-                                  .SetProperty(p => p.DeadLetterReason, reason),
-                            cancellationToken);
+                            s =>
+                                s.SetProperty(p => p.DeadLetteredOn, DateTime.UtcNow)
+                                    .SetProperty(p => p.DeadLetterReason, reason),
+                            cancellationToken
+                        );
                     s_deadLettered.Add(1);
                     continue;
                 }
 
                 await dispatcher.PublishAsync(domainEvent, cancellationToken);
 
-                await dbContext.OutboxMessages
-                    .Where(m => m.Id == message.Id)
+                await dbContext
+                    .OutboxMessages.Where(m => m.Id == message.Id)
                     .ExecuteUpdateAsync(
                         s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow),
-                        cancellationToken);
+                        cancellationToken
+                    );
 
                 s_processed.Add(1);
                 s_processedMessage(logger, message.Id, eventType.Name, null);

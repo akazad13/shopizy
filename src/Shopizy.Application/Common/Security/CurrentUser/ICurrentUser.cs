@@ -11,4 +11,3 @@ public interface ICurrentUser
     /// </summary>
     bool TryGetCurrentUserId(out Guid userId);
 }
-

@@ -2,7 +2,8 @@ using FluentValidation;
 
 namespace Shopizy.Application.Products.Commands.BulkUpdateProductStatus;
 
-public class BulkUpdateProductStatusCommandValidator : AbstractValidator<BulkUpdateProductStatusCommand>
+public class BulkUpdateProductStatusCommandValidator
+    : AbstractValidator<BulkUpdateProductStatusCommand>
 {
     public BulkUpdateProductStatusCommandValidator()
     {

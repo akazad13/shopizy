@@ -18,12 +18,18 @@ public class ResetPasswordCommandHandler(
         var user = await userRepository.GetUserByResetTokenAsync(request.Token);
         if (user is null)
         {
-            return Error.NotFound("PasswordReset.InvalidToken", "Invalid or expired password reset token.");
+            return Error.NotFound(
+                "PasswordReset.InvalidToken",
+                "Invalid or expired password reset token."
+            );
         }
 
         if (!user.IsPasswordResetTokenValid(request.Token))
         {
-            return Error.Validation("PasswordReset.ExpiredToken", "The password reset token has expired.");
+            return Error.Validation(
+                "PasswordReset.ExpiredToken",
+                "The password reset token has expired."
+            );
         }
 
         var hashedPassword = passwordManager.CreateHashString(request.NewPassword);

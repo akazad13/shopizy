@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -5,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Domain.Users.ValueObjects;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.Security.TokenGenerator;
 
@@ -29,10 +29,10 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
         ArgumentNullException.ThrowIfNull(Permissions);
         ArgumentNullException.ThrowIfNull(userId);
 
-        var claims = new List<Claim> 
-        { 
+        var claims = new List<Claim>
+        {
             new("id", userId.Value.ToString()),
-            new(ClaimTypes.Role, role)
+            new(ClaimTypes.Role, role),
         };
 
         foreach (string permission in Permissions)

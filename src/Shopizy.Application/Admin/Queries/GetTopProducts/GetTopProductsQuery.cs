@@ -1,6 +1,6 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Admin.Queries.GetSalesReport;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Admin.Queries.GetTopProducts;
 

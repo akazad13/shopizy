@@ -1,6 +1,6 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Customers;
 
@@ -18,12 +18,12 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
     /// Gets or sets the customer's address.
     /// </summary>
     public Address Address { get; set; }
-    
+
     /// <summary>
     /// Gets the date and time when the customer was created.
     /// </summary>
     public DateTime CreatedOn { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the customer was last modified.
     /// </summary>
@@ -37,18 +37,11 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
     /// <returns>A new <see cref="Customer"/> instance.</returns>
     public static Customer Create(string? profileImageUrl, Address address)
     {
-        return new Customer(
-            CustomerId.CreateUnique(),
-            profileImageUrl,
-            address
-        );
+        return new Customer(CustomerId.CreateUnique(), profileImageUrl, address);
     }
 
-    private Customer(
-        CustomerId customerId,
-        string? profileImageUrl,
-        Address address
-    ) : base(customerId)
+    private Customer(CustomerId customerId, string? profileImageUrl, Address address)
+        : base(customerId)
     {
         ProfileImageUrl = profileImageUrl;
         Address = address;

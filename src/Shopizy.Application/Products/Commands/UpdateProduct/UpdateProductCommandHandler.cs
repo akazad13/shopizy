@@ -1,11 +1,11 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Commands.UpdateProduct;
 
@@ -21,7 +21,9 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
     {
         ArgumentNullException.ThrowIfNull(cmd);
 
-        var product = await _productRepository.GetProductByIdForUpdateAsync(ProductId.Create(cmd.ProductId));
+        var product = await _productRepository.GetProductByIdForUpdateAsync(
+            ProductId.Create(cmd.ProductId)
+        );
 
         if (product is null)
         {

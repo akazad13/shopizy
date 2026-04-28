@@ -15,18 +15,27 @@ public static class TelemetryRegister
     public static IServiceCollection AddTelemetry(
         this IServiceCollection services,
         IConfiguration configuration,
-        IHostEnvironment environment)
+        IHostEnvironment environment
+    )
     {
-        var resource = ResourceBuilder.CreateDefault()
-            .AddService(ServiceName, serviceVersion: typeof(TelemetryRegister).Assembly.GetName().Version?.ToString() ?? "1.0.0")
-            .AddAttributes(new KeyValuePair<string, object>[]
-            {
-                new("deployment.environment", environment.EnvironmentName)
-            });
+        var resource = ResourceBuilder
+            .CreateDefault()
+            .AddService(
+                ServiceName,
+                serviceVersion: typeof(TelemetryRegister).Assembly.GetName().Version?.ToString()
+                    ?? "1.0.0"
+            )
+            .AddAttributes(
+                new KeyValuePair<string, object>[]
+                {
+                    new("deployment.environment", environment.EnvironmentName),
+                }
+            );
 
         var otlpEndpoint = configuration["OpenTelemetry:OtlpEndpoint"];
 
-        services.AddOpenTelemetry()
+        services
+            .AddOpenTelemetry()
             .ConfigureResource(_ => _.AddService(ServiceName))
             .WithTracing(tracing =>
             {
@@ -56,7 +65,11 @@ public static class TelemetryRegister
         return services;
     }
 
-    private static void ConfigureExporter(TracerProviderBuilder tracing, string? otlpEndpoint, IHostEnvironment environment)
+    private static void ConfigureExporter(
+        TracerProviderBuilder tracing,
+        string? otlpEndpoint,
+        IHostEnvironment environment
+    )
     {
         if (!string.IsNullOrWhiteSpace(otlpEndpoint))
         {
@@ -68,7 +81,11 @@ public static class TelemetryRegister
         }
     }
 
-    private static void ConfigureMeterExporter(MeterProviderBuilder metrics, string? otlpEndpoint, IHostEnvironment environment)
+    private static void ConfigureMeterExporter(
+        MeterProviderBuilder metrics,
+        string? otlpEndpoint,
+        IHostEnvironment environment
+    )
     {
         if (!string.IsNullOrWhiteSpace(otlpEndpoint))
         {

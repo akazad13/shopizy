@@ -1,12 +1,12 @@
 using MapsterMapper;
-using Shopizy.SharedKernel.Application.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.LoggerMessages;
-using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Application.Common.Security.CurrentUser;
+using Shopizy.Application.Products.Commands.CreateProduct;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Product;
+using Shopizy.SharedKernel.Application.Messaging;
 
-using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Products;
 
 /// <summary>
@@ -16,25 +16,38 @@ public class CreateProductEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/v1.0/admin/products", async (CreateProductRequest request, [FromServices] ICurrentUser currentUser, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<CreateProductEndpoint> logger) =>
-        {
-            var command = mapper.Map<CreateProductCommand>((currentUser.GetCurrentUserId(), request));
+        app.MapPost(
+                "api/v1.0/admin/products",
+                async (
+                    CreateProductRequest request,
+                    [FromServices] ICurrentUser currentUser,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<CreateProductEndpoint> logger
+                ) =>
+                {
+                    var command = mapper.Map<CreateProductCommand>(
+                        (currentUser.GetCurrentUserId(), request)
+                    );
 
-            return await HandleAsync(
-                mediator,
-                command,
-                product => Results.Ok(mapper.Map<ProductResponse>(product)),
-                ex => logger.ProductCreationError(ex)
-            );
-        })
-        .RequireAuthorization("Product.Create")
-        .WithTags("Products")
-        .WithSummary("Creates a new product")
-        .WithDescription("This endpoint allows a seller or admin to create a new product in the system.")
-        .Produces<ProductResponse>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status409Conflict)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        command,
+                        product => Results.Ok(mapper.Map<ProductResponse>(product)),
+                        ex => logger.ProductCreationError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("Product.Create")
+            .WithTags("Products")
+            .WithSummary("Creates a new product")
+            .WithDescription(
+                "This endpoint allows a seller or admin to create a new product in the system."
+            )
+            .Produces<ProductResponse>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status409Conflict)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

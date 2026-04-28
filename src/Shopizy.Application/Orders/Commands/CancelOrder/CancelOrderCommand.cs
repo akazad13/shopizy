@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Orders.Commands.CancelOrder;
 
@@ -11,4 +11,3 @@ namespace Shopizy.Application.Orders.Commands.CancelOrder;
 /// <param name="Reason">The reason for cancellation.</param>
 public record CancelOrderCommand(Guid UserId, Guid OrderId, string Reason)
     : ICommand<ErrorOr<Success>>;
-

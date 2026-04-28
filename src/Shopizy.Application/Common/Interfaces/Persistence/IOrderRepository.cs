@@ -19,7 +19,12 @@ public interface IOrderRepository
         OrderType orderType = OrderType.Ascending
     );
     Task<int> GetTotalOrdersCountAsync();
-    Task<int> GetOrdersCountAsync(UserId? customerId, DateTime? startDate, DateTime? endDate, OrderStatus? status);
+    Task<int> GetOrdersCountAsync(
+        UserId? customerId,
+        DateTime? startDate,
+        DateTime? endDate,
+        OrderStatus? status
+    );
     Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end);
     Task<decimal> GetTotalRevenueAsync();
     Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end);
@@ -27,8 +32,10 @@ public interface IOrderRepository
     Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count);
     Task<IReadOnlyList<Order>> GetOrdersByIdsAsync(IList<OrderId> ids);
     Task<Order?> GetOrderByIdAsync(OrderId id);
-    Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(UserId userId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(
+        UserId userId,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Order order);
     void Update(Order order);
 }
-

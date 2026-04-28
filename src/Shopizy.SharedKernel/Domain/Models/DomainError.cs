@@ -35,14 +35,15 @@ public readonly struct DomainError
         new(DomainErrorType.Unauthorized, code, description);
 
     /// <summary>Converts to the Application-layer <see cref="ErrorOr.Error"/> type.</summary>
-    public Error ToError() => ErrorType switch
-    {
-        DomainErrorType.NotFound => Error.NotFound(Code, Description),
-        DomainErrorType.Validation => Error.Validation(Code, Description),
-        DomainErrorType.Conflict => Error.Conflict(Code, Description),
-        DomainErrorType.Unauthorized => Error.Unauthorized(Code, Description),
-        _ => Error.Failure(Code, Description),
-    };
+    public Error ToError() =>
+        ErrorType switch
+        {
+            DomainErrorType.NotFound => Error.NotFound(Code, Description),
+            DomainErrorType.Validation => Error.Validation(Code, Description),
+            DomainErrorType.Conflict => Error.Conflict(Code, Description),
+            DomainErrorType.Unauthorized => Error.Unauthorized(Code, Description),
+            _ => Error.Failure(Code, Description),
+        };
 
     public static implicit operator Error(DomainError d) => d.ToError();
 }

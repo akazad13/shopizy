@@ -8,9 +8,8 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview;
 
-public class CreateProductReviewCommandHandler(
-    IProductReviewRepository productReviewRepository
-) : ICommandHandler<CreateProductReviewCommand, ErrorOr<ProductReview>>
+public class CreateProductReviewCommandHandler(IProductReviewRepository productReviewRepository)
+    : ICommandHandler<CreateProductReviewCommand, ErrorOr<ProductReview>>
 {
     private readonly IProductReviewRepository _productReviewRepository = productReviewRepository;
 

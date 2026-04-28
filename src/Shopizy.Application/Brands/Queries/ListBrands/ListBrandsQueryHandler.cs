@@ -16,7 +16,12 @@ public class ListBrandsQueryHandler(IBrandRepository brandRepository)
     {
         var brands = await _brandRepository.GetAsync();
         return brands
-            .Select(brand => new BrandItem(brand.Id.Value, brand.Name, brand.LogoUrl, brand.Country))
+            .Select(brand => new BrandItem(
+                brand.Id.Value,
+                brand.Name,
+                brand.LogoUrl,
+                brand.Country
+            ))
             .ToList();
     }
 }

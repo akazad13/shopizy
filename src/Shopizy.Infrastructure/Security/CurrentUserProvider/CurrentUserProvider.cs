@@ -1,13 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.Security.CurrentUserProvider;
 
 [ExcludeFromCodeCoverage]
 public partial class CurrentUserProvider(
     IHttpContextAccessor httpContextAccessor,
-    ILogger<CurrentUserProvider> logger) : ICurrentUserProvider
+    ILogger<CurrentUserProvider> logger
+) : ICurrentUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly ILogger<CurrentUserProvider> _logger = logger;
@@ -18,7 +19,10 @@ public partial class CurrentUserProvider(
     [LoggerMessage(Level = LogLevel.Warning, Message = "Invalid or missing 'id' claim")]
     static partial void LogInvalidIdClaim(ILogger logger);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Error extracting current user from HttpContext")]
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error extracting current user from HttpContext"
+    )]
     static partial void LogUserExtractionError(ILogger logger, Exception ex);
 
     public CurrentUser? GetCurrentUser()
@@ -27,8 +31,10 @@ public partial class CurrentUserProvider(
         {
             ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
 
-            if (_httpContextAccessor.HttpContext?.User?.Claims == null || 
-                !_httpContextAccessor.HttpContext.User.Claims.Any())
+            if (
+                _httpContextAccessor.HttpContext?.User?.Claims == null
+                || !_httpContextAccessor.HttpContext.User.Claims.Any()
+            )
             {
                 LogNoClaimsFound(_logger);
                 return null;
@@ -54,14 +60,13 @@ public partial class CurrentUserProvider(
 
     private List<string> GetClaimValues(string claimType) =>
         _httpContextAccessor
-            .HttpContext?.User?.Claims
-            .Where(claim => claim.Type == claimType)
+            .HttpContext?.User?.Claims.Where(claim => claim.Type == claimType)
             .Select(claim => claim.Value)
-            .ToList() ?? [];
+            .ToList()
+        ?? [];
 
     private string? GetSingleClaimValue(string claimType) =>
         _httpContextAccessor
-            .HttpContext?.User?.Claims
-            .FirstOrDefault(claim => claim.Type == claimType)
+            .HttpContext?.User?.Claims.FirstOrDefault(claim => claim.Type == claimType)
             ?.Value;
 }

@@ -10,8 +10,11 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
     {
         ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
 
-        var idClaim = _httpContextAccessor.HttpContext!.User.FindFirst("id")?.Value
-            ?? _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var idClaim =
+            _httpContextAccessor.HttpContext!.User.FindFirst("id")?.Value
+            ?? _httpContextAccessor
+                .HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                ?.Value;
 
         if (idClaim == null)
         {
@@ -30,8 +33,11 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
             return false;
         }
 
-        var idClaim = _httpContextAccessor.HttpContext.User.FindFirst("id")?.Value
-            ?? _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var idClaim =
+            _httpContextAccessor.HttpContext.User.FindFirst("id")?.Value
+            ?? _httpContextAccessor
+                .HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                ?.Value;
 
         if (idClaim is null || !Guid.TryParse(idClaim, out userId))
         {
@@ -41,4 +47,3 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
         return true;
     }
 }
-

@@ -18,7 +18,8 @@ namespace Shopizy.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(50)",
-                oldMaxLength: 50);
+                oldMaxLength: 50
+            );
         }
 
         /// <inheritdoc />
@@ -32,7 +33,8 @@ namespace Shopizy.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(254)",
-                oldMaxLength: 254);
+                oldMaxLength: 254
+            );
         }
     }
 }

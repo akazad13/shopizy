@@ -4,8 +4,5 @@ using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Orders.Events;
 
-public record PaymentCompletedDomainEvent(
-    OrderId OrderId,
-    UserId UserId,
-    string CustomerId
-) : IDomainEvent;
+public record PaymentCompletedDomainEvent(OrderId OrderId, UserId UserId, string CustomerId)
+    : IDomainEvent;

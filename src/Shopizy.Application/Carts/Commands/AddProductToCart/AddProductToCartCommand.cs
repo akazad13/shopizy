@@ -1,6 +1,6 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.Domain.Carts;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
@@ -19,4 +19,3 @@ public record AddProductToCartCommand(
     string Size,
     int Quantity
 ) : ICommand<ErrorOr<Cart>>;
-

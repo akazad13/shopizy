@@ -1,6 +1,6 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Queries.GetUser;
 
@@ -13,4 +13,3 @@ public record GetUserQuery(Guid UserId) : IQuery<ErrorOr<UserDto>>, ICachableReq
     public string CacheKey => $"user-{UserId}";
     public TimeSpan? Expiration => TimeSpan.FromMinutes(60);
 }
-

@@ -27,4 +27,3 @@ public record UpdateProductCommand(
 {
     public IReadOnlyCollection<string> CacheKeysToInvalidate => [CacheKeys.Product(ProductId)];
 }
-

@@ -1,6 +1,6 @@
-using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.SharedKernel.Application.Caching;
 using ErrorOr;
+using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Queries.GetBrands;
 

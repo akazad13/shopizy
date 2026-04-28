@@ -69,5 +69,4 @@ public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
     {
         _dbContext.Remove(category);
     }
-
 }

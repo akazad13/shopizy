@@ -1,5 +1,5 @@
-using Shopizy.SharedKernel.Application.Messaging;
 using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Admin.Queries.GetDashboardMetrics;
 

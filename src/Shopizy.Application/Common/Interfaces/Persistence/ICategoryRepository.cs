@@ -13,4 +13,3 @@ public interface ICategoryRepository
 
     void Remove(Category category);
 }
-

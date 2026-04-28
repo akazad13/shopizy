@@ -1,7 +1,7 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
@@ -49,4 +49,3 @@ public record AddressCommand(
     string Country,
     string ZipCode
 );
-

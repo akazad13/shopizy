@@ -17,20 +17,19 @@ public class PasswordManager : IPasswordManager
         public KeyDerivationPrf KeyDerivation { get; set; }
     }
 
-    private readonly Dictionary<short, HashVersion> _versions =
-        new()
+    private readonly Dictionary<short, HashVersion> _versions = new()
+    {
         {
+            1,
+            new HashVersion
             {
-                1,
-                new HashVersion
-                {
-                    Version = 1,
-                    KeyDerivation = KeyDerivationPrf.HMACSHA512,
-                    HashSize = 256 / 8,
-                    SaltSize = 128 / 8,
-                }
-            },
-        };
+                Version = 1,
+                KeyDerivation = KeyDerivationPrf.HMACSHA512,
+                HashSize = 256 / 8,
+                SaltSize = 128 / 8,
+            }
+        },
+    };
 
     private HashVersion DefaultVersion => _versions[1];
 

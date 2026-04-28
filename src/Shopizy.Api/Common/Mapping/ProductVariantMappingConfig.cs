@@ -38,7 +38,10 @@ public class ProductVariantMappingConfig : IRegister
             ));
 
         config
-            .NewConfig<(Guid ProductId, Guid VariantId, UpdateVariantRequest req), UpdateVariantCommand>()
+            .NewConfig<
+                (Guid ProductId, Guid VariantId, UpdateVariantRequest req),
+                UpdateVariantCommand
+            >()
             .MapWith(src => new UpdateVariantCommand(
                 src.ProductId,
                 src.VariantId,

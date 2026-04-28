@@ -11,9 +11,18 @@ public sealed class LoyaltyTransaction : Entity<LoyaltyTransactionId>
     public string Description { get; private set; } = null!;
     public DateTime CreatedOn { get; private set; }
 
-    public static LoyaltyTransaction Create(int points, LoyaltyTransactionType type, string description)
+    public static LoyaltyTransaction Create(
+        int points,
+        LoyaltyTransactionType type,
+        string description
+    )
     {
-        return new LoyaltyTransaction(LoyaltyTransactionId.CreateUnique(), points, type, description);
+        return new LoyaltyTransaction(
+            LoyaltyTransactionId.CreateUnique(),
+            points,
+            type,
+            description
+        );
     }
 
     private LoyaltyTransaction(
@@ -21,7 +30,8 @@ public sealed class LoyaltyTransaction : Entity<LoyaltyTransactionId>
         int points,
         LoyaltyTransactionType type,
         string description
-    ) : base(id)
+    )
+        : base(id)
     {
         Points = points;
         Type = type;

@@ -15,7 +15,10 @@ public class RefreshTokenCommandHandler(
     IRefreshTokenStore refreshTokenStore
 ) : ICommandHandler<RefreshTokenCommand, ErrorOr<AuthResult>>
 {
-    public async Task<ErrorOr<AuthResult>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<AuthResult>> Handle(
+        RefreshTokenCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -37,7 +40,11 @@ public class RefreshTokenCommandHandler(
             .Select(p => p.Name)
             .ToList();
 
-        var accessToken = jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
+        var accessToken = jwtTokenGenerator.GenerateToken(
+            user.Id,
+            user.Role.ToString(),
+            assignedPermissions
+        );
 
         var newRefresh = refreshTokenGenerator.Generate();
         var lifetime = refreshTokenGenerator.Lifetime;
@@ -52,6 +59,7 @@ public class RefreshTokenCommandHandler(
             user.Role.ToString(),
             accessToken,
             newRefresh,
-            expiresAt);
+            expiresAt
+        );
     }
 }

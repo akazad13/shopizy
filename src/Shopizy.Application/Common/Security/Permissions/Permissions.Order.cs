@@ -10,4 +10,3 @@ public static partial class Permissions
         public const string Delete = "delete:order";
     }
 }
-

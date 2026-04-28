@@ -20,6 +20,4 @@ namespace Shopizy.Contracts.V1;
 /// </list>
 /// </para>
 /// </remarks>
-internal static class PlaceholderV1
-{
-}
+internal static class PlaceholderV1 { }

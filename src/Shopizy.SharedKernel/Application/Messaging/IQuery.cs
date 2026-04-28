@@ -1,5 +1,3 @@
 namespace Shopizy.SharedKernel.Application.Messaging;
 
-public interface IQuery<out TResponse>
-{
-}
+public interface IQuery<out TResponse> { }

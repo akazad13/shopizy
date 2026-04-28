@@ -4,4 +4,5 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Queries.GetProductVariants;
 
-public record GetProductVariantsQuery(Guid ProductId) : IQuery<ErrorOr<IReadOnlyList<ProductVariant>>>;
+public record GetProductVariantsQuery(Guid ProductId)
+    : IQuery<ErrorOr<IReadOnlyList<ProductVariant>>>;

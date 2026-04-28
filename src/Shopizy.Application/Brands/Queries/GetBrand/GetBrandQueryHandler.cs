@@ -12,7 +12,10 @@ public class GetBrandQueryHandler(IBrandRepository brandRepository)
 {
     private readonly IBrandRepository _brandRepository = brandRepository;
 
-    public async Task<ErrorOr<Brand>> Handle(GetBrandQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Brand>> Handle(
+        GetBrandQuery query,
+        CancellationToken cancellationToken
+    )
     {
         var brand = await _brandRepository.GetByIdAsync(BrandId.Create(query.BrandId));
         if (brand is null)

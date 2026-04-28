@@ -1,6 +1,6 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.Domain.Orders;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Orders.Queries.GetOrder;
 
@@ -10,4 +10,3 @@ namespace Shopizy.Application.Orders.Queries.GetOrder;
 /// <param name="UserId">The user's unique identifier.</param>
 /// <param name="OrderId">The order's unique identifier.</param>
 public record GetOrderQuery(Guid UserId, Guid OrderId) : IQuery<ErrorOr<Order>>;
-

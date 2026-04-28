@@ -13,10 +13,18 @@ public sealed class Shipment : Entity<ShipmentId>
     public DateTime CreatedOn { get; private set; }
     public DateTime? ModifiedOn { get; private set; }
 
-    public static Shipment Create(string carrier, string trackingNumber, DateTime? estimatedDelivery)
-        => new Shipment(ShipmentId.CreateUnique(), carrier, trackingNumber, estimatedDelivery);
+    public static Shipment Create(
+        string carrier,
+        string trackingNumber,
+        DateTime? estimatedDelivery
+    ) => new Shipment(ShipmentId.CreateUnique(), carrier, trackingNumber, estimatedDelivery);
 
-    public void Update(string carrier, string trackingNumber, DateTime? estimatedDelivery, ShipmentStatus status)
+    public void Update(
+        string carrier,
+        string trackingNumber,
+        DateTime? estimatedDelivery,
+        ShipmentStatus status
+    )
     {
         Carrier = carrier;
         TrackingNumber = trackingNumber;

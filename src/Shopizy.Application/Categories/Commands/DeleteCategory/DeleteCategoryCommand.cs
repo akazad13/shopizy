@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 
@@ -9,4 +9,3 @@ namespace Shopizy.Application.Categories.Commands.DeleteCategory;
 /// <param name="UserId">The ID of the admin user performing the action.</param>
 /// <param name="CategoryId">The category's unique identifier to delete.</param>
 public record DeleteCategoryCommand(Guid UserId, Guid CategoryId) : ICommand<ErrorOr<Success>>;
-

@@ -12,7 +12,10 @@ public static partial class CustomErrors
                 description: "Category with the same name is already in use."
             );
         public static DomainError CategoryNotFound =>
-            DomainError.NotFound(code: "Category.CategoryNotFound", description: "Category is not found.");
+            DomainError.NotFound(
+                code: "Category.CategoryNotFound",
+                description: "Category is not found."
+            );
         public static DomainError CategoryNotCreated =>
             DomainError.Failure(
                 code: "Category.CategoryNotCreated",

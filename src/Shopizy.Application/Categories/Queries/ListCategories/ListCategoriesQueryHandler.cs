@@ -1,6 +1,6 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Categories.Queries.ListCategories;
 
@@ -15,8 +15,6 @@ public class ListCategoriesQueryHandler(ICategoryRepository categoryRepository)
     )
     {
         var categories = await _categoryRepository.GetCategoriesAsync();
-        return categories
-            .Select(c => new CategoryItem(c.Id.Value, c.Name, c.ParentId))
-            .ToList();
+        return categories.Select(c => new CategoryItem(c.Id.Value, c.Name, c.ParentId)).ToList();
     }
 }

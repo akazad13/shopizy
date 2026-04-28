@@ -1,10 +1,10 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Orders;
 
@@ -192,7 +192,11 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Adds a shipment to the order.
     /// </summary>
-    public DomainResult<Shipment> AddShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery)
+    public DomainResult<Shipment> AddShipment(
+        string carrier,
+        string trackingNumber,
+        DateTime? estimatedDelivery
+    )
     {
         if (Shipment is not null)
         {
@@ -206,7 +210,12 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Updates the shipment associated with the order.
     /// </summary>
-    public DomainResult<bool> UpdateShipment(string carrier, string trackingNumber, DateTime? estimatedDelivery, ShipmentStatus status)
+    public DomainResult<bool> UpdateShipment(
+        string carrier,
+        string trackingNumber,
+        DateTime? estimatedDelivery,
+        ShipmentStatus status
+    )
     {
         if (Shipment is null)
         {

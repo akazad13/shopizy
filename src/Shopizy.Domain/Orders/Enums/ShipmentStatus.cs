@@ -5,5 +5,5 @@ public enum ShipmentStatus
     Pending,
     InTransit,
     Delivered,
-    Returned
+    Returned,
 }

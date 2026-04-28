@@ -1,6 +1,9 @@
 namespace Shopizy.Api.Common.Middleware;
 
-public sealed class CorrelationIdMiddleware(RequestDelegate next, ILogger<CorrelationIdMiddleware> logger)
+public sealed class CorrelationIdMiddleware(
+    RequestDelegate next,
+    ILogger<CorrelationIdMiddleware> logger
+)
 {
     public const string HeaderName = "X-Correlation-ID";
 
@@ -8,9 +11,11 @@ public sealed class CorrelationIdMiddleware(RequestDelegate next, ILogger<Correl
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        var correlationId = context.Request.Headers.TryGetValue(HeaderName, out var incoming) && !string.IsNullOrWhiteSpace(incoming)
-            ? incoming.ToString()
-            : Guid.NewGuid().ToString("N");
+        var correlationId =
+            context.Request.Headers.TryGetValue(HeaderName, out var incoming)
+            && !string.IsNullOrWhiteSpace(incoming)
+                ? incoming.ToString()
+                : Guid.NewGuid().ToString("N");
 
         context.TraceIdentifier = correlationId;
         context.Response.OnStarting(() =>
@@ -19,12 +24,16 @@ public sealed class CorrelationIdMiddleware(RequestDelegate next, ILogger<Correl
             return Task.CompletedTask;
         });
 
-        using var _ = logger.BeginScope(new Dictionary<string, object>
-        {
-            ["CorrelationId"] = correlationId,
-            ["RequestPath"] = context.Request.Path.HasValue ? context.Request.Path.Value! : string.Empty,
-            ["RequestMethod"] = context.Request.Method
-        });
+        using var _ = logger.BeginScope(
+            new Dictionary<string, object>
+            {
+                ["CorrelationId"] = correlationId,
+                ["RequestPath"] = context.Request.Path.HasValue
+                    ? context.Request.Path.Value!
+                    : string.Empty,
+                ["RequestMethod"] = context.Request.Method,
+            }
+        );
 
         await next(context);
     }

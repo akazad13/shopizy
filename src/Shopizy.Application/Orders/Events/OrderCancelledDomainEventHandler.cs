@@ -30,7 +30,10 @@ public class OrderCancelledDomainEventHandler(
             return;
         }
 
-        var refundResult = await paymentService.CreateRefundAsync(payment.TransactionId, cancellationToken);
+        var refundResult = await paymentService.CreateRefundAsync(
+            payment.TransactionId,
+            cancellationToken
+        );
 
         if (refundResult.IsError)
         {

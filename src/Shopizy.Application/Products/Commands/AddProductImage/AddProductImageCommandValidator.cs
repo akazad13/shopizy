@@ -11,4 +11,3 @@ public class AddProductImageCommandValidator : AbstractValidator<AddProductImage
         RuleFor(x => x.File).NotNull();
     }
 }
-

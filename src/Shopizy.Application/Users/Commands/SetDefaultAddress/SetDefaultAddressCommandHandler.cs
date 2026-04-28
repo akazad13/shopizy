@@ -21,7 +21,8 @@ public class SetDefaultAddressCommandHandler(IUserRepository userRepository)
         }
 
         var result = user.SetDefaultAddress(UserAddressId.Create(request.AddressId));
-        if (result.IsError) return result.Error.ToError();
+        if (result.IsError)
+            return result.Error.ToError();
 
         return Result.Success;
     }

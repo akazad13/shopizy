@@ -1,9 +1,9 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.UpdateUser;
 
@@ -28,7 +28,7 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
     )
     {
         ArgumentNullException.ThrowIfNull(request);
-        
+
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
         if (user is null)
         {
@@ -37,8 +37,13 @@ public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelp
 
         user.UpdateUserName(request.FirstName, request.LastName);
 
-        if (request.Street is not null || request.City is not null || request.State is not null ||
-            request.Country is not null || request.ZipCode is not null)
+        if (
+            request.Street is not null
+            || request.City is not null
+            || request.State is not null
+            || request.Country is not null
+            || request.ZipCode is not null
+        )
         {
             user.UpdateAddress(
                 request.Street ?? string.Empty,

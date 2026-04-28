@@ -12,4 +12,3 @@ public interface IPaymentRepository
     Task AddAsync(Payment payment);
     void Update(Payment payment);
 }
-

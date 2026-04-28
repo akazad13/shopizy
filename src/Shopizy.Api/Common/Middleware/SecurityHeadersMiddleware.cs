@@ -12,8 +12,10 @@ public sealed class SecurityHeadersMiddleware(RequestDelegate next)
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         headers["Cross-Origin-Opener-Policy"] = "same-origin";
         headers["Cross-Origin-Resource-Policy"] = "same-origin";
-        headers["Permissions-Policy"] = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()";
-        headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
+        headers["Permissions-Policy"] =
+            "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()";
+        headers["Content-Security-Policy"] =
+            "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
 
         headers.Remove("X-Powered-By");
         headers.Remove("Server");

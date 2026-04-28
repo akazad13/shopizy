@@ -58,7 +58,8 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
         ModifiedOn = DateTime.UtcNow;
     }
 
-    private GiftCard(GiftCardId id, string code, decimal initialBalance, DateTime? expiresOn) : base(id)
+    private GiftCard(GiftCardId id, string code, decimal initialBalance, DateTime? expiresOn)
+        : base(id)
     {
         Code = code;
         InitialBalance = initialBalance;

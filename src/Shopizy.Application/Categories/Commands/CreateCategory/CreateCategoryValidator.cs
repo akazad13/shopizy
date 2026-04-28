@@ -9,4 +9,3 @@ public class CreateCategoryValidator : AbstractValidator<CreateCategoryCommand>
         RuleFor(category => category.Name).NotEmpty().MaximumLength(100);
     }
 }
-

@@ -1,17 +1,17 @@
 using CloudinaryDotNet;
-using Shopizy.Infrastructure.Common.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Infrastructure.Common.Caching;
+using Shopizy.Infrastructure.Common.HealthChecks;
 using Shopizy.Infrastructure.Common.Idempotency;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
 using Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 using Shopizy.Infrastructure.Security.RefreshTokens;
 using Shopizy.Infrastructure.Services;
+using Shopizy.SharedKernel.Application.Caching;
 using StackExchange.Redis;
 using Stripe;
 
@@ -55,7 +55,8 @@ public static class ExternalServicesRegister
             return new StripeClient(apiKey: settings.SecretKey);
         });
 
-        services.AddScoped<IPaymentService, StripeService>()
+        services
+            .AddScoped<IPaymentService, StripeService>()
             .AddScoped(sp => new CustomerService(sp.GetRequiredService<IStripeClient>()))
             .AddScoped(sp => new PaymentIntentService(sp.GetRequiredService<IStripeClient>()))
             .AddScoped(sp => new RefundService(sp.GetRequiredService<IStripeClient>()));
@@ -71,7 +72,7 @@ public static class ExternalServicesRegister
                 EndPoints = { { settings.Endpoint, settings.Port } },
                 User = settings.Username,
                 Password = settings.Password,
-                AbortOnConnectFail = false
+                AbortOnConnectFail = false,
             };
             return ConnectionMultiplexer.Connect(configurationOptions);
         });
@@ -79,7 +80,9 @@ public static class ExternalServicesRegister
         services.AddSingleton<ICacheHelper, RedisCacheHelper>();
         services.AddSingleton<IIdempotencyStore, RedisIdempotencyStore>();
 
-        services.Configure<RefreshTokenSettings>(configuration.GetSection(RefreshTokenSettings.Section));
+        services.Configure<RefreshTokenSettings>(
+            configuration.GetSection(RefreshTokenSettings.Section)
+        );
         services.AddSingleton<IRefreshTokenStore, RedisRefreshTokenStore>();
         services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>();
 

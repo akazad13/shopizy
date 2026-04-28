@@ -13,32 +13,41 @@ public class DisableTwoFactorEndpoint : ApiEndpoint
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete(
-            "api/v1.0/users/{userId:guid}/two-factor",
-            async (
-                Guid userId,
-                ClaimsPrincipal user,
-                [FromServices] IDispatcher mediator,
-                ILogger<DisableTwoFactorEndpoint> logger
-            ) =>
-            {
-                if (user.AuthorizeOwner(userId, "this user's two-factor settings") is { } forbidden) return forbidden;
+                "api/v1.0/users/{userId:guid}/two-factor",
+                async (
+                    Guid userId,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    ILogger<DisableTwoFactorEndpoint> logger
+                ) =>
+                {
+                    if (
+                        user.AuthorizeOwner(userId, "this user's two-factor settings") is
+                        { } forbidden
+                    )
+                        return forbidden;
 
-                return await HandleAsync(
-                    mediator,
-                    new DisableTwoFactorCommand(userId),
-                    _ => Results.Ok(SuccessResult.Success("Two-factor authentication has been disabled.")),
-                    ex => logger.UserUpdateError(ex)
-                );
-            }
-        )
-        .RequireAuthorization("User.Modify")
-        .WithTags("Users")
-        .WithSummary("Disable two-factor authentication")
-        .WithDescription("Disables two-factor authentication for the specified user.")
-        .Produces<SuccessResult>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status404NotFound)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        new DisableTwoFactorCommand(userId),
+                        _ =>
+                            Results.Ok(
+                                SuccessResult.Success(
+                                    "Two-factor authentication has been disabled."
+                                )
+                            ),
+                        ex => logger.UserUpdateError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("User.Modify")
+            .WithTags("Users")
+            .WithSummary("Disable two-factor authentication")
+            .WithDescription("Disables two-factor authentication for the specified user.")
+            .Produces<SuccessResult>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status404NotFound)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

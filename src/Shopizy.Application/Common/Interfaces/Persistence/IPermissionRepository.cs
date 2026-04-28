@@ -10,4 +10,3 @@ public interface IPermissionRepository
     Task AddAsync(Permission user);
     void Update(Permission user);
 }
-

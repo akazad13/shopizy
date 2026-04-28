@@ -15,14 +15,19 @@ public class WishlistMappingConfig : IRegister
     {
         ArgumentNullException.ThrowIfNull(config);
 
-        config.NewConfig<Guid, CreateWishlistCommand>()
+        config
+            .NewConfig<Guid, CreateWishlistCommand>()
             .MapWith(userId => new CreateWishlistCommand(userId));
 
-        config.NewConfig<(Guid UserId, CreateWishlistRequest? request), CreateWishlistCommand>()
-            .MapWith(src => new CreateWishlistCommand(src.UserId, src.request != null ? src.request.Name : null, src.request != null ? src.request.IsPublic : false));
+        config
+            .NewConfig<(Guid UserId, CreateWishlistRequest? request), CreateWishlistCommand>()
+            .MapWith(src => new CreateWishlistCommand(
+                src.UserId,
+                src.request != null ? src.request.Name : null,
+                src.request != null ? src.request.IsPublic : false
+            ));
 
-        config.NewConfig<Guid, GetWishlistQuery>()
-            .MapWith(userId => new GetWishlistQuery(userId));
+        config.NewConfig<Guid, GetWishlistQuery>().MapWith(userId => new GetWishlistQuery(userId));
 
         config
             .NewConfig<(Guid UserId, UpdateWishlistRequest request), UpdateWishlistCommand>()
@@ -37,7 +42,10 @@ public class WishlistMappingConfig : IRegister
             );
 
         config
-            .NewConfig<(Guid UserId, UpdateWishlistSettingsRequest request), UpdateWishlistSettingsCommand>()
+            .NewConfig<
+                (Guid UserId, UpdateWishlistSettingsRequest request),
+                UpdateWishlistSettingsCommand
+            >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.Name, src => src.request.Name)
             .Map(dest => dest.IsPublic, src => src.request.IsPublic);

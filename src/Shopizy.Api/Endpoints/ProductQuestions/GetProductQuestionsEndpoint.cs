@@ -13,29 +13,32 @@ public class GetProductQuestionsEndpoint : ApiEndpoint
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(
-            "api/v1.0/products/{productId:guid}/questions",
-            async (
-                Guid productId,
-                [FromQuery] int pageNumber,
-                [FromQuery] int pageSize,
-                [FromServices] IDispatcher mediator,
-                IMapper mapper,
-                ILogger<GetProductQuestionsEndpoint> logger
-            ) =>
-            {
-                return await HandleAsync(
-                    mediator,
-                    new GetProductQuestionsQuery(productId, pageNumber, pageSize),
-                    questions => Results.Ok(mapper.Map<IReadOnlyList<ProductQuestionResponse>>(questions)),
-                    ex => logger.ProductQuestionFetchError(ex)
-                );
-            }
-        )
-        .AllowAnonymous()
-        .WithTags("ProductQuestions")
-        .WithSummary("Get product questions")
-        .WithDescription("Returns a paginated list of questions and answers for a product.")
-        .Produces<IReadOnlyList<ProductQuestionResponse>>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                "api/v1.0/products/{productId:guid}/questions",
+                async (
+                    Guid productId,
+                    [FromQuery] int pageNumber,
+                    [FromQuery] int pageSize,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<GetProductQuestionsEndpoint> logger
+                ) =>
+                {
+                    return await HandleAsync(
+                        mediator,
+                        new GetProductQuestionsQuery(productId, pageNumber, pageSize),
+                        questions =>
+                            Results.Ok(
+                                mapper.Map<IReadOnlyList<ProductQuestionResponse>>(questions)
+                            ),
+                        ex => logger.ProductQuestionFetchError(ex)
+                    );
+                }
+            )
+            .AllowAnonymous()
+            .WithTags("ProductQuestions")
+            .WithSummary("Get product questions")
+            .WithDescription("Returns a paginated list of questions and answers for a product.")
+            .Produces<IReadOnlyList<ProductQuestionResponse>>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

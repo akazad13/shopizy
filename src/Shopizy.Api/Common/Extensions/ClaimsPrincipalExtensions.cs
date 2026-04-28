@@ -12,8 +12,8 @@ public static class ClaimsPrincipalExtensions
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        var currentUserIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
-            ?? user.FindFirst("id")?.Value;
+        var currentUserIdClaim =
+            user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? user.FindFirst("id")?.Value;
 
         return (currentUserIdClaim != null) && currentUserIdClaim == userId.ToString();
     }
@@ -26,10 +26,18 @@ public static class ClaimsPrincipalExtensions
     /// if (user.AuthorizeOwner(userId, "this order") is { } forbidden) return forbidden;
     /// </code>
     /// </summary>
-    public static IResult? AuthorizeOwner(this ClaimsPrincipal user, Guid userId, string resourceName)
+    public static IResult? AuthorizeOwner(
+        this ClaimsPrincipal user,
+        Guid userId,
+        string resourceName
+    )
     {
         return user.IsAuthorized(userId)
             ? null
-            : CustomResults.Problem([ErrorOr.Error.Forbidden(description: $"You are not authorized to access {resourceName}.")]);
+            : CustomResults.Problem([
+                ErrorOr.Error.Forbidden(
+                    description: $"You are not authorized to access {resourceName}."
+                ),
+            ]);
     }
 }

@@ -3,8 +3,8 @@ using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shopizy.Domain.Users.Entities;
-using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Users.Enums;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Users;
@@ -128,7 +128,15 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         IList<PermissionId> permissionIds
     )
     {
-        var user = new User(UserId.CreateUnique(), firstName, lastName, email, password, role, permissionIds);
+        var user = new User(
+            UserId.CreateUnique(),
+            firstName,
+            lastName,
+            email,
+            password,
+            role,
+            permissionIds
+        );
         user.AddDomainEvent(new Events.UserRegisteredDomainEvent(user));
 
         return user;
@@ -185,10 +193,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// </summary>
     /// <param name="firstName">The user's first name.</param>
     /// <param name="lastName">The user's last name.</param>
-    public void UpdateUserName(
-        string firstName,
-        string lastName
-    )
+    public void UpdateUserName(string firstName, string lastName)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -254,7 +259,8 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     {
         if (isDefault)
         {
-            foreach (var a in _addresses) a.SetDefault(false);
+            foreach (var a in _addresses)
+                a.SetDefault(false);
         }
 
         var address = UserAddress.Create(street, city, state, country, zipCode, isDefault);
@@ -275,7 +281,8 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     )
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
-        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
+        if (address is null)
+            return CustomErrors.UserAddress.AddressNotFound;
         address.Update(street, city, state, country, zipCode);
         return address;
     }
@@ -286,7 +293,8 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public DomainResult<bool> RemoveAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
-        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
+        if (address is null)
+            return CustomErrors.UserAddress.AddressNotFound;
         _addresses.Remove(address);
         return true;
     }
@@ -297,17 +305,21 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     public DomainResult<bool> SetDefaultAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
-        if (address is null) return CustomErrors.UserAddress.AddressNotFound;
-        foreach (var a in _addresses) a.SetDefault(false);
+        if (address is null)
+            return CustomErrors.UserAddress.AddressNotFound;
+        foreach (var a in _addresses)
+            a.SetDefault(false);
         address.SetDefault(true);
         return true;
     }
 
     /// <summary>Sets the password reset token and expiry.</summary>
-    public void SetPasswordResetToken(string token, DateTime expiry) => Credentials.SetPasswordResetToken(token, expiry);
+    public void SetPasswordResetToken(string token, DateTime expiry) =>
+        Credentials.SetPasswordResetToken(token, expiry);
 
     /// <summary>Returns true when the reset token matches and has not expired.</summary>
-    public bool IsPasswordResetTokenValid(string token) => Credentials.IsPasswordResetTokenValid(token);
+    public bool IsPasswordResetTokenValid(string token) =>
+        Credentials.IsPasswordResetTokenValid(token);
 
     /// <summary>Clears the password reset token after use.</summary>
     public void ClearPasswordResetToken() => Credentials.ClearPasswordResetToken();

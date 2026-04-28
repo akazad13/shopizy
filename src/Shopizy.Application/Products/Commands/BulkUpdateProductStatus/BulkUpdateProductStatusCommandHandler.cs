@@ -1,7 +1,7 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Commands.BulkUpdateProductStatus;
 
@@ -10,10 +10,14 @@ public class BulkUpdateProductStatusCommandHandler(IProductRepository productRep
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<ErrorOr<Success>> Handle(BulkUpdateProductStatusCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(
+        BulkUpdateProductStatusCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var products = await _productRepository.GetProductsByIdsAsync(
-            request.ProductIds.Select(ProductId.Create).ToList());
+            request.ProductIds.Select(ProductId.Create).ToList()
+        );
 
         foreach (var product in products)
         {

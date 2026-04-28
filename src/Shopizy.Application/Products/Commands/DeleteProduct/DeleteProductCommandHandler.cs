@@ -1,9 +1,9 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Commands.DeleteProduct;
 

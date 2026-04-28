@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.UpdateUser;
 
@@ -26,4 +26,3 @@ public record UpdateUserCommand(
     string? Country,
     string? ZipCode
 ) : ICommand<ErrorOr<Success>>;
-

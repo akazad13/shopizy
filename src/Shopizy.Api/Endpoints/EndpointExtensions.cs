@@ -1,13 +1,17 @@
-using Asp.Versioning;
 using System.Reflection;
+using Asp.Versioning;
 
 namespace Shopizy.Api.Endpoints;
 
 public static class EndpointExtensions
 {
-    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddEndpoints(
+        this IServiceCollection services,
+        Assembly assembly
+    )
     {
-        var endpointTypes = assembly.GetTypes()
+        var endpointTypes = assembly
+            .GetTypes()
             .Where(t => typeof(IEndpoint).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
         foreach (var endpointType in endpointTypes)

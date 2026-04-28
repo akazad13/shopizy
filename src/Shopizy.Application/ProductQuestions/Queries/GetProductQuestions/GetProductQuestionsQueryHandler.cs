@@ -9,7 +9,8 @@ namespace Shopizy.Application.ProductQuestions.Queries.GetProductQuestions;
 public class GetProductQuestionsQueryHandler(IProductQuestionRepository productQuestionRepository)
     : IQueryHandler<GetProductQuestionsQuery, ErrorOr<IReadOnlyList<ProductQuestion>>>
 {
-    private readonly IProductQuestionRepository _productQuestionRepository = productQuestionRepository;
+    private readonly IProductQuestionRepository _productQuestionRepository =
+        productQuestionRepository;
 
     public async Task<ErrorOr<IReadOnlyList<ProductQuestion>>> Handle(
         GetProductQuestionsQuery request,

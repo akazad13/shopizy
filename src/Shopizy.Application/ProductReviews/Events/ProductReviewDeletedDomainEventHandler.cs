@@ -10,7 +10,10 @@ public class ProductReviewDeletedDomainEventHandler(
     IUnitOfWork unitOfWork
 ) : IDomainEventHandler<ProductReviewDeletedDomainEvent>
 {
-    public async Task Handle(ProductReviewDeletedDomainEvent domainEvent, CancellationToken cancellationToken = default)
+    public async Task Handle(
+        ProductReviewDeletedDomainEvent domainEvent,
+        CancellationToken cancellationToken = default
+    )
     {
         var product = await productRepository.GetProductByIdForUpdateAsync(domainEvent.ProductId);
         if (product is null)

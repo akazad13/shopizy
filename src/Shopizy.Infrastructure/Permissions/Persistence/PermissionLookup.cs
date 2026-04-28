@@ -18,7 +18,8 @@ public sealed class PermissionLookup(IServiceScopeFactory scopeFactory) : IPermi
 
     public async Task<IReadOnlyList<PermissionId>> GetIdsByNamesAsync(
         IEnumerable<string> names,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(names);
 
@@ -39,7 +40,8 @@ public sealed class PermissionLookup(IServiceScopeFactory scopeFactory) : IPermi
     public void Invalidate() => _byName = null;
 
     private async Task<IReadOnlyDictionary<string, PermissionId>> LoadAsync(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -52,8 +54,8 @@ public sealed class PermissionLookup(IServiceScopeFactory scopeFactory) : IPermi
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var rows = await dbContext.Permissions
-                .AsNoTracking()
+            var rows = await dbContext
+                .Permissions.AsNoTracking()
                 .Select(p => new { p.Name, p.Id })
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);

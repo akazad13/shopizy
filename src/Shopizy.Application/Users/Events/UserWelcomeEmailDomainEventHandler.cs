@@ -4,9 +4,8 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Events;
 
-public class UserWelcomeEmailDomainEventHandler(
-    IEmailService emailService
-) : IDomainEventHandler<UserRegisteredDomainEvent>
+public class UserWelcomeEmailDomainEventHandler(IEmailService emailService)
+    : IDomainEventHandler<UserRegisteredDomainEvent>
 {
     public async Task Handle(
         UserRegisteredDomainEvent domainEvent,

@@ -1,6 +1,6 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Categories.Queries.CategoriesTree;
 
@@ -16,18 +16,16 @@ public class CategoriesTreeQueryHandler(ICategoryRepository categoryRepository)
     {
         var categories = await _categoryRepository.GetCategoriesAsync();
 
-        var categoriesTree = BuildCategoryTree(
-            [
-                .. categories
-                    .AsQueryable()
-                    .Select(category => new CategoryTree()
-                    {
-                        Id = category.Id.Value,
-                        Name = category.Name,
-                        ParentId = category.ParentId,
-                    }),
-            ]
-        );
+        var categoriesTree = BuildCategoryTree([
+            .. categories
+                .AsQueryable()
+                .Select(category => new CategoryTree()
+                {
+                    Id = category.Id.Value,
+                    Name = category.Name,
+                    ParentId = category.ParentId,
+                }),
+        ]);
 
         return categoriesTree;
     }

@@ -1,9 +1,9 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Brands.ValueObjects;
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Queries.GetProducts;
 
@@ -29,23 +29,20 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
             query = query with { PageSize = 10 };
         }
 
-        var categoryIds = query.CategoryIds?.Any() == true
-            ? query.CategoryIds
-                .Select(categoryId => CategoryId.Create(categoryId))
-                .ToList()
-            : null;
+        var categoryIds =
+            query.CategoryIds?.Any() == true
+                ? query.CategoryIds.Select(categoryId => CategoryId.Create(categoryId)).ToList()
+                : null;
 
-        var productIds = query.ProductIds?.Any() == true
-            ? query.ProductIds
-                .Select(productId => ProductId.Create(productId))
-                .ToList()
-            : null;
+        var productIds =
+            query.ProductIds?.Any() == true
+                ? query.ProductIds.Select(productId => ProductId.Create(productId)).ToList()
+                : null;
 
-        var brandIds = query.BrandIds?.Any() == true
-            ? query.BrandIds
-                .Select(brandId => BrandId.Create(brandId))
-                .ToList()
-            : null;
+        var brandIds =
+            query.BrandIds?.Any() == true
+                ? query.BrandIds.Select(brandId => BrandId.Create(brandId)).ToList()
+                : null;
 
         var criteria = new ProductSearchCriteria(
             productIds,
@@ -63,6 +60,11 @@ public class GetProductsQueryHandler(IProductRepository productRepository)
 
         var (products, totalCount) = await _productRepository.GetProductsWithCountAsync(criteria);
 
-        return new ProductsResult(products.ToList(), totalCount, (int)Math.Ceiling(totalCount / (1.0 * query.PageSize)), query.PageNumber);
+        return new ProductsResult(
+            products.ToList(),
+            totalCount,
+            (int)Math.Ceiling(totalCount / (1.0 * query.PageSize)),
+            query.PageNumber
+        );
     }
 }

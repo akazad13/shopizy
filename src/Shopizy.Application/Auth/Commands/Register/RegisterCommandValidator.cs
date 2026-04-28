@@ -13,4 +13,3 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(register => register.Password).StrongPassword();
     }
 }
-

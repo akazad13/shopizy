@@ -6,22 +6,22 @@ using Shopizy.Infrastructure.AuditLogs.Persistence;
 using Shopizy.Infrastructure.Brands.Persistence;
 using Shopizy.Infrastructure.Carts.Persistence;
 using Shopizy.Infrastructure.Categories.Persistence;
+using Shopizy.Infrastructure.Common.HealthChecks;
 using Shopizy.Infrastructure.Common.Persistence;
 using Shopizy.Infrastructure.Common.Persistence.Interceptors;
+using Shopizy.Infrastructure.GiftCards.Persistence;
+using Shopizy.Infrastructure.LoyaltyAccounts.Persistence;
 using Shopizy.Infrastructure.Orders.Persistence;
+using Shopizy.Infrastructure.Outbox;
 using Shopizy.Infrastructure.Payments.Persistence;
 using Shopizy.Infrastructure.Permissions.Persistence;
+using Shopizy.Infrastructure.ProductQuestions.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
-using Shopizy.Infrastructure.Users.Persistence;
-using Shopizy.Infrastructure.GiftCards.Persistence;
-using Shopizy.Infrastructure.LoyaltyAccounts.Persistence;
-using Shopizy.Infrastructure.ProductQuestions.Persistence;
-using Shopizy.Infrastructure.Wishlists.Persistence;
-using Shopizy.Infrastructure.Common.HealthChecks;
-using Shopizy.Infrastructure.Outbox;
 using Shopizy.Infrastructure.Services;
+using Shopizy.Infrastructure.Users.Persistence;
+using Shopizy.Infrastructure.Wishlists.Persistence;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
 namespace Shopizy.Infrastructure.DependencyInjection;
@@ -39,17 +39,26 @@ public static class PersistenceRegister
             .AddScoped<UpdateAuditableEntitiesInterceptor>()
             .AddSingleton<IPermissionLookup, PermissionLookup>();
 
-        services.AddDbContext<AppDbContext>((sp, options) =>
-        {
-            var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                    o =>
-                    {
-                        o.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                    })
-                .AddInterceptors(interceptor);
-        });
+        services.AddDbContext<AppDbContext>(
+            (sp, options) =>
+            {
+                var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
+                options
+                    .UseSqlServer(
+                        configuration.GetConnectionString("DefaultConnection"),
+                        o =>
+                        {
+                            o.EnableRetryOnFailure(
+                                maxRetryCount: 3,
+                                maxRetryDelay: TimeSpan.FromSeconds(30),
+                                errorNumbersToAdd: null
+                            );
+                            o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                        }
+                    )
+                    .AddInterceptors(interceptor);
+            }
+        );
 
         services.AddHealthChecks().AddCheck<DbHealthCheck>("database");
         services.AddHostedService<DbMigrationsHostedService>();

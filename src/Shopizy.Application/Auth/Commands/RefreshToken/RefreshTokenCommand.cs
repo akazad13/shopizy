@@ -1,6 +1,6 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Auth.Common;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Auth.Commands.RefreshToken;
 

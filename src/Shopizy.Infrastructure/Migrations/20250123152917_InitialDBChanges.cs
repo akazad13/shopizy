@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore.Migrations;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -32,11 +32,7 @@ public partial class InitialDBChanges : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                Name = table.Column<string>(
-                    type: "nvarchar(100)",
-                    maxLength: 100,
-                    nullable: false
-                ),
+                Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                 ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
             },
             constraints: table =>
@@ -110,11 +106,7 @@ public partial class InitialDBChanges : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                Name = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: false
-                ),
+                Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
             },
             constraints: table =>
             {
@@ -127,11 +119,7 @@ public partial class InitialDBChanges : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                Code = table.Column<string>(
-                    type: "nvarchar(15)",
-                    maxLength: 15,
-                    nullable: false
-                ),
+                Code = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                 Description = table.Column<string>(
                     type: "nvarchar(100)",
                     maxLength: 100,
@@ -149,11 +137,7 @@ public partial class InitialDBChanges : Migration
                     defaultValue: true
                 ),
                 IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                NumOfTimeUsed = table.Column<int>(
-                    type: "int",
-                    nullable: false,
-                    defaultValue: 0
-                ),
+                NumOfTimeUsed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                 CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
                 ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
             },
@@ -178,17 +162,9 @@ public partial class InitialDBChanges : Migration
                     maxLength: 50,
                     nullable: false
                 ),
-                Email = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: false
-                ),
+                Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                 ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                Phone = table.Column<string>(
-                    type: "nvarchar(15)",
-                    maxLength: 15,
-                    nullable: true
-                ),
+                Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                 Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 CustomerId = table.Column<string>(
                     type: "nvarchar(256)",
@@ -234,11 +210,7 @@ public partial class InitialDBChanges : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                Name = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: false
-                ),
+                Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                 ShortDescription = table.Column<string>(
                     type: "nvarchar(100)",
                     maxLength: 100,
@@ -250,11 +222,7 @@ public partial class InitialDBChanges : Migration
                     nullable: false
                 ),
                 CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                SKU = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: false
-                ),
+                SKU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                 StockQuantity = table.Column<int>(type: "int", nullable: false),
                 UnitPrice_Amount = table.Column<decimal>(
                     type: "decimal(18,2)",
@@ -269,32 +237,12 @@ public partial class InitialDBChanges : Migration
                     scale: 2,
                     nullable: true
                 ),
-                Brand = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: true
-                ),
-                Colors = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: false
-                ),
-                Sizes = table.Column<string>(
-                    type: "nvarchar(20)",
-                    maxLength: 20,
-                    nullable: false
-                ),
+                Brand = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                Colors = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                Sizes = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                 Favourites = table.Column<int>(type: "int", nullable: false),
-                Barcode = table.Column<string>(
-                    type: "nvarchar(50)",
-                    maxLength: 50,
-                    nullable: true
-                ),
-                Tags = table.Column<string>(
-                    type: "nvarchar(200)",
-                    maxLength: 200,
-                    nullable: true
-                ),
+                Barcode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                Tags = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                 AverageRating_Value = table.Column<decimal>(
                     type: "decimal(18,2)",
                     precision: 18,
@@ -323,11 +271,7 @@ public partial class InitialDBChanges : Migration
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                Name = table.Column<string>(
-                    type: "nvarchar(100)",
-                    maxLength: 100,
-                    nullable: false
-                ),
+                Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                 PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 UnitPrice_Amount = table.Column<decimal>(
                     type: "decimal(18,2)",
@@ -617,11 +561,7 @@ public partial class InitialDBChanges : Migration
 
         migrationBuilder.CreateIndex(name: "IX_Carts_UserId", table: "Carts", column: "UserId");
 
-        migrationBuilder.CreateIndex(
-            name: "IX_OrderIds_UseId",
-            table: "OrderIds",
-            column: "UseId"
-        );
+        migrationBuilder.CreateIndex(name: "IX_OrderIds_UseId", table: "OrderIds", column: "UseId");
 
         migrationBuilder.CreateIndex(
             name: "IX_OrderItems_OrderId",

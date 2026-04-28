@@ -17,7 +17,9 @@ public class RedeemPointsCommandHandler(ILoyaltyAccountRepository loyaltyAccount
         CancellationToken cancellationToken
     )
     {
-        var account = await _loyaltyAccountRepository.GetByUserIdAsync(UserId.Create(request.UserId));
+        var account = await _loyaltyAccountRepository.GetByUserIdAsync(
+            UserId.Create(request.UserId)
+        );
 
         if (account is null)
         {

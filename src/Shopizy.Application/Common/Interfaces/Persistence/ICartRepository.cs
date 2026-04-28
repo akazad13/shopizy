@@ -14,4 +14,3 @@ public interface ICartRepository
     void Update(Cart cart);
     void Remove(Cart cart);
 }
-

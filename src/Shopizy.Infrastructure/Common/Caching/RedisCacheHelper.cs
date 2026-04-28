@@ -15,7 +15,7 @@ public class RedisCacheHelper(
 {
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
-        Converters = { new ErrorOrConverterFactory() }
+        Converters = { new ErrorOrConverterFactory() },
     };
 
     private readonly IConnectionMultiplexer _connectionMultiplexer = connectionMultiplexer;
@@ -31,7 +31,7 @@ public class RedisCacheHelper(
         {
             var db = _connectionMultiplexer.GetDatabase();
             var data = await db.StringGetAsync(key);
-            
+
             if (!data.HasValue)
             {
                 return CacheResult<T>.Miss();
@@ -67,11 +67,23 @@ public class RedisCacheHelper(
             var serializedValue = JsonSerializer.Serialize(value, _jsonOptions);
             if (expiration.HasValue)
             {
-                await db.StringSetAsync(key, serializedValue, expiry: expiration.Value, when: When.Always, flags: CommandFlags.None);
+                await db.StringSetAsync(
+                    key,
+                    serializedValue,
+                    expiry: expiration.Value,
+                    when: When.Always,
+                    flags: CommandFlags.None
+                );
             }
             else
             {
-                await db.StringSetAsync(key, serializedValue, expiry: null, when: When.Always, flags: CommandFlags.None);
+                await db.StringSetAsync(
+                    key,
+                    serializedValue,
+                    expiry: null,
+                    when: When.Always,
+                    flags: CommandFlags.None
+                );
             }
         }
         catch (RedisConnectionException)

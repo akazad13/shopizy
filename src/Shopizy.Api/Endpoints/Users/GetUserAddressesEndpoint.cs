@@ -15,35 +15,36 @@ public class GetUserAddressesEndpoint : ApiEndpoint
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(
-            "api/v1.0/users/{userId:guid}/addresses",
-            async (
-                Guid userId,
-                ClaimsPrincipal user,
-                [FromServices] IDispatcher mediator,
-                IMapper mapper,
-                ILogger<GetUserAddressesEndpoint> logger
-            ) =>
-            {
-                if (user.AuthorizeOwner(userId, "this user's addresses") is { } forbidden) return forbidden;
+                "api/v1.0/users/{userId:guid}/addresses",
+                async (
+                    Guid userId,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<GetUserAddressesEndpoint> logger
+                ) =>
+                {
+                    if (user.AuthorizeOwner(userId, "this user's addresses") is { } forbidden)
+                        return forbidden;
 
-                var query = new GetUserAddressesQuery(userId);
+                    var query = new GetUserAddressesQuery(userId);
 
-                return await HandleAsync(
-                    mediator,
-                    query,
-                    addresses => Results.Ok(mapper.Map<List<UserAddressResponse>>(addresses)),
-                    ex => logger.UserFetchError(ex)
-                );
-            }
-        )
-        .RequireAuthorization("User.Get")
-        .WithTags("Users")
-        .WithSummary("Get user addresses")
-        .WithDescription("Retrieves all addresses for the authorized user.")
-        .Produces<List<UserAddressResponse>>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status404NotFound)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        query,
+                        addresses => Results.Ok(mapper.Map<List<UserAddressResponse>>(addresses)),
+                        ex => logger.UserFetchError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("User.Get")
+            .WithTags("Users")
+            .WithSummary("Get user addresses")
+            .WithDescription("Retrieves all addresses for the authorized user.")
+            .Produces<List<UserAddressResponse>>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status404NotFound)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

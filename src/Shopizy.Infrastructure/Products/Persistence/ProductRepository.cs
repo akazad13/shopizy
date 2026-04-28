@@ -21,15 +21,15 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return _dbContext
             .Products.Include(p => p.ProductImages)
             .Include(p => p.ProductReviews)
-            .ThenInclude(p => p.User)
+                .ThenInclude(p => p.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public Task<Product?> GetProductByIdForUpdateAsync(ProductId id)
     {
-        return _dbContext.Products
-            .Include(p => p.ProductImages)
+        return _dbContext
+            .Products.Include(p => p.ProductImages)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -38,17 +38,17 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// </summary>
     public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids)
     {
-        return await _dbContext.Products
-            .Where(p => ids.Contains(p.Id))
+        return await _dbContext
+            .Products.Where(p => ids.Contains(p.Id))
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<IReadOnlyList<Product>> GetProductsByIdsForUpdateAsync(IReadOnlyList<ProductId> ids)
+    public async Task<IReadOnlyList<Product>> GetProductsByIdsForUpdateAsync(
+        IReadOnlyList<ProductId> ids
+    )
     {
-        return await _dbContext.Products
-            .Where(p => ids.Contains(p.Id))
-            .ToListAsync();
+        return await _dbContext.Products.Where(p => ids.Contains(p.Id)).ToListAsync();
     }
 
     public Task<bool> IsProductExistAsync(ProductId id)
@@ -56,7 +56,9 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
         return _dbContext.Products.AnyAsync(p => p.Id == id);
     }
 
-    public async Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(ProductSearchCriteria criteria)
+    public async Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(
+        ProductSearchCriteria criteria
+    )
     {
         ArgumentNullException.ThrowIfNull(criteria);
 
@@ -70,7 +72,7 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             "newest" => query.OrderByDescending(p => p.CreatedOn),
             "best_rated" => query.OrderByDescending(p => p.AverageRating.Value),
             "most_reviewed" => query.OrderByDescending(p => p.AverageRating.NumRatings),
-            _ => query.OrderByDescending(p => p.CreatedOn)
+            _ => query.OrderByDescending(p => p.CreatedOn),
         };
 
         var products = await sortedQuery

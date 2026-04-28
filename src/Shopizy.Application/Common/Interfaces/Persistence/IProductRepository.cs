@@ -5,7 +5,9 @@ namespace Shopizy.Application.Common.Interfaces.Persistence;
 
 public interface IProductRepository
 {
-    Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(ProductSearchCriteria criteria);
+    Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(
+        ProductSearchCriteria criteria
+    );
     Task<Product?> GetProductByIdAsync(ProductId id);
     Task<Product?> GetProductByIdForUpdateAsync(ProductId id);
     Task<bool> IsProductExistAsync(ProductId id);

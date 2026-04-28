@@ -1,20 +1,23 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Admin.Queries.GetDashboardMetrics;
 
 public class GetDashboardMetricsQueryHandler(
     IOrderRepository orderRepository,
     IUserRepository userRepository,
-    IProductReader productReader)
-    : IQueryHandler<GetDashboardMetricsQuery, ErrorOr<DashboardMetricsDto>>
+    IProductReader productReader
+) : IQueryHandler<GetDashboardMetricsQuery, ErrorOr<DashboardMetricsDto>>
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IProductReader _productReader = productReader;
 
-    public async Task<ErrorOr<DashboardMetricsDto>> Handle(GetDashboardMetricsQuery query, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<DashboardMetricsDto>> Handle(
+        GetDashboardMetricsQuery query,
+        CancellationToken cancellationToken = default
+    )
     {
         var totalRevenue = await _orderRepository.GetTotalRevenueAsync();
         var totalOrders = await _orderRepository.GetTotalOrdersCountAsync();
@@ -28,11 +31,9 @@ public class GetDashboardMetricsQueryHandler(
             totalOrders,
             totalUsers,
             totalProducts,
-            lowStockProducts.Select(p => new StockAlertDto(
-                p.Id.Value,
-                p.Name,
-                p.StockQuantity
-            )).ToList()
+            lowStockProducts
+                .Select(p => new StockAlertDto(p.Id.Value, p.Name, p.StockQuantity))
+                .ToList()
         );
 
         return dto.ToErrorOr();

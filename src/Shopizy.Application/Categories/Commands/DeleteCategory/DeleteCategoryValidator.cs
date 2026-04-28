@@ -9,4 +9,3 @@ public class DeleteCategoryValidator : AbstractValidator<DeleteCategoryCommand>
         RuleFor(x => x.CategoryId).NotEmpty();
     }
 }
-

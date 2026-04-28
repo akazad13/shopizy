@@ -18,12 +18,19 @@ namespace Shopizy.Infrastructure.Common.Middleware;
 /// (no out-of-band side effects without the outbox) and may be retried by the EF execution strategy.
 /// </para>
 /// </summary>
-public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<EventualConsistencyMiddleware> logger)
+public class EventualConsistencyMiddleware(
+    RequestDelegate Next,
+    ILogger<EventualConsistencyMiddleware> logger
+)
 {
     private readonly ILogger<EventualConsistencyMiddleware> _logger = logger;
     public const string DomainEventsKey = "DomainEventsKey";
 
-    public async Task InvokeAsync(HttpContext context, IDispatcher dispatcher, AppDbContext dbContext)
+    public async Task InvokeAsync(
+        HttpContext context,
+        IDispatcher dispatcher,
+        AppDbContext dbContext
+    )
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(dispatcher);
@@ -57,10 +64,13 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
     private async Task DispatchPendingEventsAsync(
         HttpContext context,
         IDispatcher dispatcher,
-        AppDbContext dbContext)
+        AppDbContext dbContext
+    )
     {
-        if (!context.Items.TryGetValue(DomainEventsKey, out object? value)
-            || value is not Queue<(IDomainEvent Event, Guid OutboxId)> domainEventsQueue)
+        if (
+            !context.Items.TryGetValue(DomainEventsKey, out object? value)
+            || value is not Queue<(IDomainEvent Event, Guid OutboxId)> domainEventsQueue
+        )
         {
             return;
         }
@@ -86,10 +96,9 @@ public class EventualConsistencyMiddleware(RequestDelegate Next, ILogger<Eventua
                 throw;
             }
 
-            await dbContext.OutboxMessages
-                .Where(m => m.Id == outboxId)
-                .ExecuteUpdateAsync(
-                    s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow));
+            await dbContext
+                .OutboxMessages.Where(m => m.Id == outboxId)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.ProcessedOn, DateTime.UtcNow));
         }
     }
 }

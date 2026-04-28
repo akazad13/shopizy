@@ -15,7 +15,10 @@ public class GetPromoCodesQueryHandler(IPromoCodeRepository promoCodeRepository)
         CancellationToken cancellationToken
     )
     {
-        var promoCodes = await _promoCodeRepository.GetPromoCodesAsync(request.PageNumber, request.PageSize);
+        var promoCodes = await _promoCodeRepository.GetPromoCodesAsync(
+            request.PageNumber,
+            request.PageSize
+        );
         return promoCodes.ToList();
     }
 }

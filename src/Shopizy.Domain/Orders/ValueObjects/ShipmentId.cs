@@ -12,6 +12,7 @@ public sealed class ShipmentId : AggregateRootId<Guid>
     }
 
     public static ShipmentId CreateUnique() => new(Guid.NewGuid());
+
     public static ShipmentId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()

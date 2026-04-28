@@ -15,26 +15,24 @@ namespace Shopizy.Infrastructure.Migrations
                 table: "Orders",
                 type: "rowversion",
                 rowVersion: true,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
                 table: "Carts",
                 type: "rowversion",
                 rowVersion: true,
-                nullable: true);
+                nullable: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "RowVersion",
-                table: "Orders");
+            migrationBuilder.DropColumn(name: "RowVersion", table: "Orders");
 
-            migrationBuilder.DropColumn(
-                name: "RowVersion",
-                table: "Carts");
+            migrationBuilder.DropColumn(name: "RowVersion", table: "Carts");
         }
     }
 }

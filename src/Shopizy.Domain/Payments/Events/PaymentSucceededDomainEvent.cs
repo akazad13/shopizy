@@ -1,5 +1,5 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Payments.Events;
 

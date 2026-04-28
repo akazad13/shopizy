@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Logging;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.SharedKernel.Application.Behaviors;
 
 public class CachingQueryHandlerDecorator<TQuery, TResponse>(
     IQueryHandler<TQuery, TResponse> innerHandler,
     ICacheHelper cacheHelper,
-    ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> logger)
-    : IQueryHandler<TQuery, TResponse>
+    ILogger<CachingQueryHandlerDecorator<TQuery, TResponse>> logger
+) : IQueryHandler<TQuery, TResponse>
     where TQuery : IQuery<TResponse>
 {
     public async Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken = default)

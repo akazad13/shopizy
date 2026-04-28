@@ -17,12 +17,13 @@ public partial class AddWishlists : Migration
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
             },
             constraints: table =>
             {
                 table.PrimaryKey("PK_Wishlists", x => x.Id);
-            });
+            }
+        );
 
         migrationBuilder.CreateTable(
             name: "WishlistItems",
@@ -30,7 +31,7 @@ public partial class AddWishlists : Migration
             {
                 Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 WishlistId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
             },
             constraints: table =>
             {
@@ -40,28 +41,30 @@ public partial class AddWishlists : Migration
                     column: x => x.WishlistId,
                     principalTable: "Wishlists",
                     principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-            });
+                    onDelete: ReferentialAction.Cascade
+                );
+            }
+        );
 
         migrationBuilder.CreateIndex(
             name: "IX_WishlistItems_WishlistId",
             table: "WishlistItems",
-            column: "WishlistId");
+            column: "WishlistId"
+        );
 
         migrationBuilder.CreateIndex(
             name: "IX_Wishlists_UserId",
             table: "Wishlists",
             column: "UserId",
-            unique: true);
+            unique: true
+        );
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropTable(
-            name: "WishlistItems");
+        migrationBuilder.DropTable(name: "WishlistItems");
 
-        migrationBuilder.DropTable(
-            name: "Wishlists");
+        migrationBuilder.DropTable(name: "Wishlists");
     }
 }

@@ -1,40 +1,50 @@
 using System.Security.Claims;
 using MapsterMapper;
-using Shopizy.SharedKernel.Application.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Contracts.Cart;
 using Shopizy.Contracts.Common;
+using Shopizy.SharedKernel.Application.Messaging;
 
-using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Carts;
 
 public class GetCartEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/users/{userId:guid}/cart", async (Guid userId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetCartEndpoint> logger) =>
-        {
-            if (user.AuthorizeOwner(userId, "this cart") is { } forbidden) return forbidden;
+        app.MapGet(
+                "api/v1.0/users/{userId:guid}/cart",
+                async (
+                    Guid userId,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<GetCartEndpoint> logger
+                ) =>
+                {
+                    if (user.AuthorizeOwner(userId, "this cart") is { } forbidden)
+                        return forbidden;
 
-            var query = mapper.Map<GetCartQuery>(userId);
+                    var query = mapper.Map<GetCartQuery>(userId);
 
-            return await HandleAsync(
-                mediator,
-                query,
-                cart => Results.Ok(mapper.Map<CartResponse>(cart)),
-                ex => logger.CartFetchError(ex)
-            );
-        })
-        .RequireAuthorization("Cart.Get")
-        .WithTags("Cart")
-        .WithSummary("Get shopping cart")
-        .WithDescription("Retrieves the current shopping cart for the authorized user.")
-        .Produces<CartResponse>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        query,
+                        cart => Results.Ok(mapper.Map<CartResponse>(cart)),
+                        ex => logger.CartFetchError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("Cart.Get")
+            .WithTags("Cart")
+            .WithSummary("Get shopping cart")
+            .WithDescription("Retrieves the current shopping cart for the authorized user.")
+            .Produces<CartResponse>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

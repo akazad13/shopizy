@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.UpdatePassword;
 
@@ -11,4 +11,3 @@ namespace Shopizy.Application.Users.Commands.UpdatePassword;
 /// <param name="NewPassword">The new password.</param>
 public record UpdatePasswordCommand(Guid UserId, string OldPassword, string NewPassword)
     : ICommand<ErrorOr<Success>>;
-

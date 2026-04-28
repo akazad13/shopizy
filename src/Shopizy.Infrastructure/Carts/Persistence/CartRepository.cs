@@ -43,7 +43,7 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     {
         return _dbContext
             .Carts.Include(c => c.CartItems)
-            .ThenInclude(li => li.Product)
+                .ThenInclude(li => li.Product)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.UserId == id);
     }
@@ -55,9 +55,7 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
     /// <returns>The cart if found; otherwise, null.</returns>
     public Task<Cart?> GetCartByUserIdForUpdateAsync(UserId id)
     {
-        return _dbContext
-            .Carts.Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.UserId == id);
+        return _dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == id);
     }
 
     /// <summary>

@@ -1,8 +1,8 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Products.Commands.BulkDeleteProducts;
 
@@ -11,10 +11,14 @@ public class BulkDeleteProductsCommandHandler(IProductRepository productReposito
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<ErrorOr<Deleted>> Handle(BulkDeleteProductsCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Deleted>> Handle(
+        BulkDeleteProductsCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var products = await _productRepository.GetProductsByIdsAsync(
-            request.ProductIds.Select(ProductId.Create).ToList());
+            request.ProductIds.Select(ProductId.Create).ToList()
+        );
 
         if (products.Count == 0)
         {

@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Infrastructure.DependencyInjection;
 using Shopizy.Infrastructure.Security.Totp;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure;
 
@@ -50,18 +50,34 @@ public static class DependencyInjectionRegister
     }
 
     private static readonly string[] DefaultAllowedHeaders =
-        ["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "Idempotency-Key"];
+    [
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+        "Idempotency-Key",
+    ];
 
     private static readonly string[] DefaultAllowedMethods =
-        ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
+    [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS",
+    ];
 
     private static string[] AllowedHeaders(IConfiguration configuration)
     {
-        return configuration.GetSection("CorsSettings:AllowedHeaders").Get<string[]>() ?? DefaultAllowedHeaders;
+        return configuration.GetSection("CorsSettings:AllowedHeaders").Get<string[]>()
+            ?? DefaultAllowedHeaders;
     }
 
     private static string[] AllowedMethods(IConfiguration configuration)
     {
-        return configuration.GetSection("CorsSettings:AllowedMethods").Get<string[]>() ?? DefaultAllowedMethods;
+        return configuration.GetSection("CorsSettings:AllowedMethods").Get<string[]>()
+            ?? DefaultAllowedMethods;
     }
 }

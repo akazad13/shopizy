@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
 
@@ -28,4 +28,3 @@ public record CardNotPresentSaleCommand(
     int CardExpiryYear,
     string LastDigits
 ) : ICommand<ErrorOr<Success>>;
-

@@ -15,7 +15,8 @@ public sealed class ProductAnswer : Entity<ProductAnswerId>
         return new ProductAnswer(ProductAnswerId.CreateUnique(), answeredByUserId, answer);
     }
 
-    private ProductAnswer(ProductAnswerId id, UserId answeredByUserId, string answer) : base(id)
+    private ProductAnswer(ProductAnswerId id, UserId answeredByUserId, string answer)
+        : base(id)
     {
         AnsweredByUserId = answeredByUserId;
         Answer = answer;

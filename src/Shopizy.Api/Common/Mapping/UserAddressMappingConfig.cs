@@ -23,7 +23,10 @@ public class UserAddressMappingConfig : IRegister
             .Map(dest => dest.IsDefault, src => src.request.IsDefault);
 
         config
-            .NewConfig<(Guid UserId, Guid AddressId, UpdateUserAddressRequest request), UpdateUserAddressCommand>()
+            .NewConfig<
+                (Guid UserId, Guid AddressId, UpdateUserAddressRequest request),
+                UpdateUserAddressCommand
+            >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.AddressId, src => src.AddressId)
             .Map(dest => dest.Street, src => src.request.Street)

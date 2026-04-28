@@ -1,12 +1,10 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.Domain.AuditLogs;
 using Shopizy.Domain.Brands;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Categories;
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.GiftCards;
 using Shopizy.Domain.LoyaltyAccounts;
 using Shopizy.Domain.Orders;
@@ -20,6 +18,8 @@ using Shopizy.Domain.Users;
 using Shopizy.Domain.Wishlists;
 using Shopizy.Infrastructure.Common.Middleware;
 using Shopizy.Infrastructure.Outbox;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Infrastructure.Common.Persistence;
 
@@ -27,10 +27,9 @@ namespace Shopizy.Infrastructure.Common.Persistence;
 /// The application's database context for Entity Framework Core.
 /// Handles domain events and eventual consistency.
 /// </summary>
-public class AppDbContext(
-    DbContextOptions options,
-    IHttpContextAccessor _httpContextAccessor
-) : DbContext(options), IUnitOfWork
+public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor)
+    : DbContext(options),
+        IUnitOfWork
 {
     /// <summary>
     /// Gets or sets the brands DbSet.
@@ -141,13 +140,15 @@ public class AppDbContext(
     /// </summary>
     private List<OutboxMessage> WriteEventsToOutbox(List<IDomainEvent> domainEvents)
     {
-        var messages = domainEvents.Select(e => new OutboxMessage
-        {
-            Id = Guid.NewGuid(),
-            OccurredOn = DateTime.UtcNow,
-            Type = e.GetType().AssemblyQualifiedName!,
-            Content = JsonSerializer.Serialize(e, e.GetType()),
-        }).ToList();
+        var messages = domainEvents
+            .Select(e => new OutboxMessage
+            {
+                Id = Guid.NewGuid(),
+                OccurredOn = DateTime.UtcNow,
+                Type = e.GetType().AssemblyQualifiedName!,
+                Content = JsonSerializer.Serialize(e, e.GetType()),
+            })
+            .ToList();
 
         OutboxMessages.AddRange(messages);
         return messages;
@@ -165,7 +166,11 @@ public class AppDbContext(
             if (rowVersionProp?.ClrType == typeof(byte[]))
             {
                 rowVersionProp.IsConcurrencyToken = true;
-                rowVersionProp.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAddOrUpdate;
+                rowVersionProp.ValueGenerated = Microsoft
+                    .EntityFrameworkCore
+                    .Metadata
+                    .ValueGenerated
+                    .OnAddOrUpdate;
                 rowVersionProp.SetColumnType("rowversion");
             }
         }
@@ -177,7 +182,8 @@ public class AppDbContext(
 
     private void AddDomainEventsToOfflineProcessingQueue(
         List<IDomainEvent> domainEvents,
-        List<OutboxMessage> outboxMessages)
+        List<OutboxMessage> outboxMessages
+    )
     {
         // Get pending domain events from session (carries outbox IDs for post-dispatch marking)
         Queue<(IDomainEvent Event, Guid OutboxId)> queue =
@@ -193,6 +199,7 @@ public class AppDbContext(
             queue.Enqueue((domainEvents[i], outboxMessages[i].Id));
         }
 
-        _httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] = queue;
+        _httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] =
+            queue;
     }
 }

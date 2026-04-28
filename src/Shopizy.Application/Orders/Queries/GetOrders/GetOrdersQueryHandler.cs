@@ -1,8 +1,8 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Orders.Queries.GetOrders;
 
@@ -38,6 +38,11 @@ public class GetOrdersQueryHandler(IOrderRepository orderRepository)
             .Select(o => new OrderDto(o.Id, o.UserId, o.GetTotal(), o.OrderStatus, o.CreatedOn))
             .ToList();
 
-        return new PagedResult<OrderDto>(orderList, request.PageNumber, request.PageSize, totalCount);
+        return new PagedResult<OrderDto>(
+            orderList,
+            request.PageNumber,
+            request.PageSize,
+            totalCount
+        );
     }
 }

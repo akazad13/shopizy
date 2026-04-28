@@ -45,9 +45,19 @@ public class UserMappingConfig : IRegister
         config
             .NewConfig<User, UserDetails>()
             .Map(dest => dest.Id, src => src.Id.Value)
-            .Map(dest => dest.Address, src => src.Address == null
-                ? null
-                : new Address(src.Address.Street, src.Address.City, src.Address.State, src.Address.Country, src.Address.ZipCode))
+            .Map(
+                dest => dest.Address,
+                src =>
+                    src.Address == null
+                        ? null
+                        : new Address(
+                            src.Address.Street,
+                            src.Address.City,
+                            src.Address.State,
+                            src.Address.Country,
+                            src.Address.ZipCode
+                        )
+            )
             .Map(dest => dest.TotalOrders, src => src.OrderIds.Count)
             .Map(dest => dest.TotalReviewed, src => src.ProductReviewIds.Count)
             .Map(dest => dest.TotalFavorites, src => 0)

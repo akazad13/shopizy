@@ -12,6 +12,7 @@ public sealed class UserAddressId : AggregateRootId<Guid>
     }
 
     public static UserAddressId CreateUnique() => new(Guid.NewGuid());
+
     public static UserAddressId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()

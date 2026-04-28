@@ -22,7 +22,15 @@ public sealed class AuditLog : Entity<AuditLogId>
         string? newValues
     )
     {
-        return new AuditLog(AuditLogId.CreateUnique(), userId, action, entityName, entityId, oldValues, newValues);
+        return new AuditLog(
+            AuditLogId.CreateUnique(),
+            userId,
+            action,
+            entityName,
+            entityId,
+            oldValues,
+            newValues
+        );
     }
 
     private AuditLog(
@@ -33,7 +41,8 @@ public sealed class AuditLog : Entity<AuditLogId>
         string entityId,
         string? oldValues,
         string? newValues
-    ) : base(id)
+    )
+        : base(id)
     {
         UserId = userId;
         Action = action;

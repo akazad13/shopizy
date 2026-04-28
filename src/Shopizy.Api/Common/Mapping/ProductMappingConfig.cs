@@ -29,11 +29,13 @@ public class ProductMappingConfig : IRegister
     {
         ArgumentNullException.ThrowIfNull(config);
 
-        config.NewConfig<ProductsResult, ProductsPagedResponse>()
+        config
+            .NewConfig<ProductsResult, ProductsPagedResponse>()
             .Map(dest => dest.Items, src => src.Products)
             .Map(dest => dest.TotalCount, src => src.TotalCount);
 
-        config.NewConfig<ProductsCriteria, GetProductsQuery>()
+        config
+            .NewConfig<ProductsCriteria, GetProductsQuery>()
             .MapWith(src => new GetProductsQuery(
                 src.ProductIds,
                 src.Name,
@@ -45,9 +47,11 @@ public class ProductMappingConfig : IRegister
                 src.InStockOnly,
                 src.SortBy,
                 src.PageNumber,
-                src.PageSize));
+                src.PageSize
+            ));
 
-        config.NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
+        config
+            .NewConfig<(Guid UserId, CreateProductRequest request), CreateProductCommand>()
             .MapWith(src => new CreateProductCommand(
                 src.UserId,
                 src.request.Name,
@@ -67,7 +71,10 @@ public class ProductMappingConfig : IRegister
             ));
 
         config
-            .NewConfig<(Guid UserId, Guid ProductId, UpdateProductRequest request), UpdateProductCommand>()
+            .NewConfig<
+                (Guid UserId, Guid ProductId, UpdateProductRequest request),
+                UpdateProductCommand
+            >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.ProductId, src => src.ProductId)
             .Map(dest => dest, src => src.request);

@@ -1,5 +1,4 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
@@ -8,6 +7,7 @@ using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Orders.Commands.CreateOrder;
 
@@ -34,7 +34,9 @@ public class CreateOrderCommandHandler(
 
         foreach (var product in products)
         {
-            var requestedItem = request.OrderItems.FirstOrDefault(i => i.ProductId == product.Id.Value);
+            var requestedItem = request.OrderItems.FirstOrDefault(i =>
+                i.ProductId == product.Id.Value
+            );
             if (requestedItem != null && product.StockQuantity < requestedItem.Quantity)
             {
                 return (Error)CustomErrors.Product.InsufficientStock;

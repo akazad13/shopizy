@@ -1,11 +1,11 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 
@@ -43,7 +43,11 @@ public class AddProductToCartCommandHandler(
             return (Error)CustomErrors.Cart.CartNotFound;
         }
 
-        if (cart.CartItems.Any(li => li.ProductId == productId && li.Color == cmd.Color && li.Size == cmd.Size))
+        if (
+            cart.CartItems.Any(li =>
+                li.ProductId == productId && li.Color == cmd.Color && li.Size == cmd.Size
+            )
+        )
         {
             return (Error)CustomErrors.Cart.ProductAlreadyExistInCart;
         }

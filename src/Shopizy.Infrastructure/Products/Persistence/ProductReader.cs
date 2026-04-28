@@ -19,20 +19,23 @@ public sealed class ProductReader(AppDbContext dbContext) : IProductReader
 
     public async Task<IReadOnlyList<Product>> GetLowStockAsync(
         int threshold,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _dbContext.Products
-            .AsNoTracking()
+        return await _dbContext
+            .Products.AsNoTracking()
             .Where(p => p.StockQuantity <= threshold)
             .OrderBy(p => p.StockQuantity)
             .Take(10)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<string>> GetBrandNamesAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<string>> GetBrandNamesAsync(
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _dbContext.Brands
-            .AsNoTracking()
+        return await _dbContext
+            .Brands.AsNoTracking()
             .Select(b => b.Name)
             .Distinct()
             .ToListAsync(cancellationToken);

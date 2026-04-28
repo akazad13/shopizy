@@ -6,4 +6,8 @@ namespace Shopizy.Contracts.Order;
 /// <param name="Carrier">Shipping carrier (e.g., UPS, FedEx).</param>
 /// <param name="TrackingNumber">Carrier-issued tracking number.</param>
 /// <param name="EstimatedDelivery">Optional estimated delivery date.</param>
-public record AddShipmentRequest(string Carrier, string TrackingNumber, DateTime? EstimatedDelivery);
+public record AddShipmentRequest(
+    string Carrier,
+    string TrackingNumber,
+    DateTime? EstimatedDelivery
+);

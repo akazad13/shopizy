@@ -7,21 +7,29 @@ namespace Shopizy.Infrastructure.Common.Idempotency;
 
 public sealed class RedisIdempotencyStore(
     IConnectionMultiplexer connection,
-    ILogger<RedisIdempotencyStore> logger) : IIdempotencyStore
+    ILogger<RedisIdempotencyStore> logger
+) : IIdempotencyStore
 {
     private const string KeyPrefix = "idempotency:";
 
-    private static readonly Action<ILogger, string, Exception?> _redisReadUnavailable = LoggerMessage.Define<string>(
-        LogLevel.Warning,
-        new EventId(1, nameof(RedisIdempotencyStore)),
-        "Redis unavailable while reading idempotency key {Key}");
+    private static readonly Action<ILogger, string, Exception?> _redisReadUnavailable =
+        LoggerMessage.Define<string>(
+            LogLevel.Warning,
+            new EventId(1, nameof(RedisIdempotencyStore)),
+            "Redis unavailable while reading idempotency key {Key}"
+        );
 
-    private static readonly Action<ILogger, string, Exception?> _redisStoreUnavailable = LoggerMessage.Define<string>(
-        LogLevel.Warning,
-        new EventId(2, nameof(RedisIdempotencyStore)),
-        "Redis unavailable while storing idempotency key {Key}");
+    private static readonly Action<ILogger, string, Exception?> _redisStoreUnavailable =
+        LoggerMessage.Define<string>(
+            LogLevel.Warning,
+            new EventId(2, nameof(RedisIdempotencyStore)),
+            "Redis unavailable while storing idempotency key {Key}"
+        );
 
-    public async Task<IdempotencyRecord?> TryGetAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<IdempotencyRecord?> TryGetAsync(
+        string key,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -38,7 +46,12 @@ public sealed class RedisIdempotencyStore(
         }
     }
 
-    public async Task StoreAsync(string key, IdempotencyRecord record, TimeSpan ttl, CancellationToken cancellationToken = default)
+    public async Task StoreAsync(
+        string key,
+        IdempotencyRecord record,
+        TimeSpan ttl,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {

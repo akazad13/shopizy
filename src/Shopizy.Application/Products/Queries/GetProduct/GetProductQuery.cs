@@ -1,7 +1,7 @@
 using ErrorOr;
+using Shopizy.Domain.Products;
 using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Domain.Products;
 
 namespace Shopizy.Application.Products.Queries.GetProduct;
 

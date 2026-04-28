@@ -30,7 +30,8 @@ public class UpdateUserAddressCommandHandler(IUserRepository userRepository)
             request.ZipCode
         );
 
-        if (result.IsError) return result.Error.ToError();
+        if (result.IsError)
+            return result.Error.ToError();
 
         return result.Value;
     }

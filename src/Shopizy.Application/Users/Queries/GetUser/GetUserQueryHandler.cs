@@ -1,19 +1,17 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Queries.GetUser;
 
 /// <summary>
 /// Handles the <see cref="GetUserQuery"/> to retrieve user information.
 /// </summary>
-public class GetUserQueryHandler(
-    IUserRepository userRepository,
-    IOrderRepository orderRepository
-) : IQueryHandler<GetUserQuery, ErrorOr<UserDto>>
+public class GetUserQueryHandler(IUserRepository userRepository, IOrderRepository orderRepository)
+    : IQueryHandler<GetUserQuery, ErrorOr<UserDto>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
@@ -38,11 +36,12 @@ public class GetUserQueryHandler(
             return (Error)CustomErrors.User.UserNotFound;
         }
 
-        var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(user.Id, cancellationToken);
+        var userOrdersList = await _orderRepository.GetOrdersByUserIdAsync(
+            user.Id,
+            cancellationToken
+        );
 
-        var userOrders = userOrdersList
-            .Select(o => new { o.Id, o.OrderStatus })
-            .ToList();
+        var userOrders = userOrdersList.Select(o => new { o.Id, o.OrderStatus }).ToList();
 
         var totalOrders = userOrders.Count;
         var totalRefundedOrders = userOrders.Count(o => o.OrderStatus == OrderStatus.Refunded);

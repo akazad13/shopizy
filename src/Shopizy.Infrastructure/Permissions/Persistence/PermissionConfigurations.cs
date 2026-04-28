@@ -59,8 +59,10 @@ public sealed class PermissionConfigurations : IEntityTypeConfiguration<Permissi
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
             null,
             new[] { typeof(PermissionId), typeof(string) },
-            null);
+            null
+        );
 
-        return (Permission)constructor!.Invoke(new object[] { PermissionId.Create(new Guid(id)), name });
+        return (Permission)
+            constructor!.Invoke(new object[] { PermissionId.Create(new Guid(id)), name });
     }
 }

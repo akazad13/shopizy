@@ -9,39 +9,29 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 {
     public CreateProductCommandValidator()
     {
-        RuleFor(x => x.Name)
-            .NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
 
-        RuleFor(x => x.ShortDescription)
-            .MaximumLength(100);
+        RuleFor(x => x.ShortDescription).MaximumLength(100);
 
-        RuleFor(x => x.Description)
-            .MaximumLength(200);
+        RuleFor(x => x.Description).MaximumLength(200);
 
-        RuleFor(x => x.CategoryId)
-            .NotNull();
+        RuleFor(x => x.CategoryId).NotNull();
 
-        RuleFor(x => x.Sku)
-            .NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Sku).NotEmpty().MaximumLength(50);
 
         RuleFor(x => x.UnitPrice)
             .NotNull()
             .Must(p => p is not null && p.Amount > 0)
             .WithMessage("Unit price must be greater than zero.");
 
-        RuleFor(x => x.StockQuantity)
-            .GreaterThanOrEqualTo(0);
+        RuleFor(x => x.StockQuantity).GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.Barcode)
-            .MaximumLength(50);
+        RuleFor(x => x.Barcode).MaximumLength(50);
 
-        RuleFor(x => x.Colors)
-            .NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Colors).NotEmpty().MaximumLength(50);
 
-        RuleFor(x => x.Sizes)
-            .NotEmpty().MaximumLength(20);
+        RuleFor(x => x.Sizes).NotEmpty().MaximumLength(20);
 
-        RuleFor(x => x.Tags)
-            .MaximumLength(200);
+        RuleFor(x => x.Tags).MaximumLength(200);
     }
 }

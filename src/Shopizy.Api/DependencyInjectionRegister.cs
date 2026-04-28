@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.RateLimiting;
 using Asp.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
 using Shopizy.Api.Common.Idempotency;
 using Shopizy.Api.Common.Mapping;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.RateLimiting;
 
 namespace Shopizy.Api;
 
@@ -31,16 +31,19 @@ public static class DependencyInjectionRegister
             );
         });
 
-        services.AddEndpointsApiExplorer().AddSwaggerGen(options =>
-        {
-            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+        services
+            .AddEndpointsApiExplorer()
+            .AddSwaggerGen(options =>
+            {
+                var xmlFile =
+                    $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
 
-            var contractsXmlFile = "Shopizy.Contracts.xml";
-            var contractsXmlPath = Path.Combine(AppContext.BaseDirectory, contractsXmlFile);
-            options.IncludeXmlComments(contractsXmlPath);
-        });
+                var contractsXmlFile = "Shopizy.Contracts.xml";
+                var contractsXmlPath = Path.Combine(AppContext.BaseDirectory, contractsXmlFile);
+                options.IncludeXmlComments(contractsXmlPath);
+            });
         services.AddMappings();
 
         services.AddScoped<IdempotencyEndpointFilter>();
@@ -53,23 +56,29 @@ public static class DependencyInjectionRegister
         services.AddRateLimiter(options =>
         {
             // Fixed window for auth endpoints - 5 requests per minute per IP
-            options.AddFixedWindowLimiter("auth", limiter =>
-            {
-                limiter.Window = TimeSpan.FromMinutes(1);
-                limiter.PermitLimit = 5;
-                limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                limiter.QueueLimit = 0;
-            });
+            options.AddFixedWindowLimiter(
+                "auth",
+                limiter =>
+                {
+                    limiter.Window = TimeSpan.FromMinutes(1);
+                    limiter.PermitLimit = 5;
+                    limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    limiter.QueueLimit = 0;
+                }
+            );
 
             // Sliding window for general API - 100 requests per minute per user
-            options.AddSlidingWindowLimiter("api", limiter =>
-            {
-                limiter.Window = TimeSpan.FromMinutes(1);
-                limiter.SegmentsPerWindow = 6;
-                limiter.PermitLimit = 100;
-                limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                limiter.QueueLimit = 0;
-            });
+            options.AddSlidingWindowLimiter(
+                "api",
+                limiter =>
+                {
+                    limiter.Window = TimeSpan.FromMinutes(1);
+                    limiter.SegmentsPerWindow = 6;
+                    limiter.PermitLimit = 100;
+                    limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    limiter.QueueLimit = 0;
+                }
+            );
 
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });

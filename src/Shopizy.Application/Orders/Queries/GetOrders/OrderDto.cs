@@ -12,4 +12,3 @@ public record OrderDto(
     OrderStatus OrderStatus,
     DateTime CreatedOn
 );
-

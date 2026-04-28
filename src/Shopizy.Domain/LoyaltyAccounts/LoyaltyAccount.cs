@@ -24,7 +24,11 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
 
     public void EarnPoints(int points, string description)
     {
-        var transaction = LoyaltyTransaction.Create(points, LoyaltyTransactionType.Earn, description);
+        var transaction = LoyaltyTransaction.Create(
+            points,
+            LoyaltyTransactionType.Earn,
+            description
+        );
         _transactions.Add(transaction);
         TotalPoints += points;
         ModifiedOn = DateTime.UtcNow;
@@ -37,7 +41,11 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
             return CustomErrors.LoyaltyAccount.InsufficientPoints;
         }
 
-        var transaction = LoyaltyTransaction.Create(points, LoyaltyTransactionType.Redeem, description);
+        var transaction = LoyaltyTransaction.Create(
+            points,
+            LoyaltyTransactionType.Redeem,
+            description
+        );
         _transactions.Add(transaction);
         TotalPoints -= points;
         ModifiedOn = DateTime.UtcNow;
@@ -47,13 +55,18 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
 
     public void AdjustPoints(int points, string description)
     {
-        var transaction = LoyaltyTransaction.Create(points, LoyaltyTransactionType.Adjustment, description);
+        var transaction = LoyaltyTransaction.Create(
+            points,
+            LoyaltyTransactionType.Adjustment,
+            description
+        );
         _transactions.Add(transaction);
         TotalPoints += points;
         ModifiedOn = DateTime.UtcNow;
     }
 
-    private LoyaltyAccount(LoyaltyAccountId id, UserId userId) : base(id)
+    private LoyaltyAccount(LoyaltyAccountId id, UserId userId)
+        : base(id)
     {
         UserId = userId;
         TotalPoints = 0;

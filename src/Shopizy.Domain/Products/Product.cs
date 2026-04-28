@@ -1,5 +1,5 @@
-using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Brands.ValueObjects;
+using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.ProductReviews;

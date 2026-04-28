@@ -15,40 +15,42 @@ public class CreateWishlistEndpoint : ApiEndpoint
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(
-            "api/v1.0/users/{userId:guid}/wishlist",
-            async (
-                Guid userId,
-                [FromBody] CreateWishlistRequest? request,
-                ClaimsPrincipal user,
-                [FromServices] IDispatcher mediator,
-                IMapper mapper,
-                ILogger<CreateWishlistEndpoint> logger
-            ) =>
-            {
-                if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden) return forbidden;
+                "api/v1.0/users/{userId:guid}/wishlist",
+                async (
+                    Guid userId,
+                    [FromBody] CreateWishlistRequest? request,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<CreateWishlistEndpoint> logger
+                ) =>
+                {
+                    if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden)
+                        return forbidden;
 
-                var command = mapper.Map<CreateWishlistCommand>((userId, request));
+                    var command = mapper.Map<CreateWishlistCommand>((userId, request));
 
-                return await HandleAsync(
-                    mediator,
-                    command,
-                    wishlist => Results.Created(
-                        $"api/v1.0/users/{userId}/wishlist",
-                        mapper.Map<WishlistResponse>(wishlist)
-                    ),
-                    ex => logger.WishlistCreationError(ex)
-                );
-            }
-        )
-        .RequireAuthorization("Wishlist.Create")
-        .WithTags("Wishlist")
-        .WithSummary("Create wishlist")
-        .WithDescription("Creates a new wishlist for the authorized user.")
-        .Produces<WishlistResponse>(StatusCodes.Status201Created)
-        .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status409Conflict)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        command,
+                        wishlist =>
+                            Results.Created(
+                                $"api/v1.0/users/{userId}/wishlist",
+                                mapper.Map<WishlistResponse>(wishlist)
+                            ),
+                        ex => logger.WishlistCreationError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("Wishlist.Create")
+            .WithTags("Wishlist")
+            .WithSummary("Create wishlist")
+            .WithDescription("Creates a new wishlist for the authorized user.")
+            .Produces<WishlistResponse>(StatusCodes.Status201Created)
+            .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status409Conflict)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

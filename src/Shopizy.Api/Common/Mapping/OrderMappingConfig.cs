@@ -23,11 +23,16 @@ public class OrderMappingConfig : IRegister
     {
         ArgumentNullException.ThrowIfNull(config);
 
-        config.NewConfig<Shopizy.Domain.Common.ValueObjects.Price, Shopizy.Contracts.Order.Price>()
+        config
+            .NewConfig<Shopizy.Domain.Common.ValueObjects.Price, Shopizy.Contracts.Order.Price>()
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Currency, src => src.Currency.ToString());
 
-        config.NewConfig<Shopizy.Domain.Orders.ValueObjects.Address, Shopizy.Contracts.Order.Address>()
+        config
+            .NewConfig<
+                Shopizy.Domain.Orders.ValueObjects.Address,
+                Shopizy.Contracts.Order.Address
+            >()
             .Map(dest => dest, src => src);
 
         config
@@ -51,9 +56,10 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderItems, src => src.request.OrderItems)
             .Map(dest => dest.ShippingAddress, src => src.request.ShippingAddress);
 
-        config.NewConfig<(Guid UserId, Guid OrderId) , GetOrderQuery>()
-            .Map(dest=> dest.UserId, src => src.UserId)
-            .Map(dest=> dest.OrderId, src => src.OrderId);
+        config
+            .NewConfig<(Guid UserId, Guid OrderId), GetOrderQuery>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.OrderId, src => src.OrderId);
 
         config
             .NewConfig<Order, OrderDetailResponse>()
@@ -70,7 +76,10 @@ public class OrderMappingConfig : IRegister
             .Map(dest => dest.OrderItemId, src => src.Id.Value);
 
         config
-            .NewConfig<(Guid UserId, Guid OrderId, CancelOrderRequest request), CancelOrderCommand>()
+            .NewConfig<
+                (Guid UserId, Guid OrderId, CancelOrderRequest request),
+                CancelOrderCommand
+            >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.OrderId, src => src.OrderId)
             .Map(dest => dest.Reason, src => src.request.Reason);

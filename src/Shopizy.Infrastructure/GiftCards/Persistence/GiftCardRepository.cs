@@ -12,7 +12,8 @@ public class GiftCardRepository(AppDbContext dbContext) : IGiftCardRepository
 
     public async Task<IReadOnlyList<GiftCard>> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.Set<GiftCard>()
+        return await _dbContext
+            .Set<GiftCard>()
             .AsNoTracking()
             .OrderByDescending(gc => gc.CreatedOn)
             .Skip((pageNumber - 1) * pageSize)

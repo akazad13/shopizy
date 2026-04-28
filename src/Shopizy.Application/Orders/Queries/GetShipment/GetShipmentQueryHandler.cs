@@ -24,7 +24,10 @@ public class GetShipmentQueryHandler(IOrderRepository orderRepository)
 
         if (order.UserId != UserId.Create(request.UserId))
         {
-            return Error.Forbidden("Order.Forbidden", "You are not authorized to access this order.");
+            return Error.Forbidden(
+                "Order.Forbidden",
+                "You are not authorized to access this order."
+            );
         }
 
         if (order.Shipment is null)

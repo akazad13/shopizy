@@ -1,8 +1,8 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Orders.Commands.UpdateOrderStatus;
 

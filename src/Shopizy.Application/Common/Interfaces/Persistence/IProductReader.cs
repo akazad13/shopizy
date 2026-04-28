@@ -20,7 +20,8 @@ public interface IProductReader
     /// </summary>
     Task<IReadOnlyList<Product>> GetLowStockAsync(
         int threshold,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Returns the distinct brand names referenced by products, suitable for filter UIs.

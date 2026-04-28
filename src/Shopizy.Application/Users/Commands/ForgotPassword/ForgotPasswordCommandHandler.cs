@@ -1,7 +1,7 @@
+using System.Security.Cryptography;
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Messaging;
-using System.Security.Cryptography;
 
 namespace Shopizy.Application.Users.Commands.ForgotPassword;
 

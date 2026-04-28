@@ -7,4 +7,9 @@ namespace Shopizy.Contracts.Admin;
 /// <param name="FirstName">Customer first name.</param>
 /// <param name="LastName">Customer last name.</param>
 /// <param name="TotalSpend">Lifetime spend across all paid orders.</param>
-public record TopCustomerResponse(Guid UserId, string FirstName, string LastName, decimal TotalSpend);
+public record TopCustomerResponse(
+    Guid UserId,
+    string FirstName,
+    string LastName,
+    decimal TotalSpend
+);

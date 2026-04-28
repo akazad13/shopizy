@@ -10,9 +10,11 @@ public sealed class RequestBufferingMiddleware(RequestDelegate next)
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        if (HttpMethods.IsPost(context.Request.Method)
+        if (
+            HttpMethods.IsPost(context.Request.Method)
             || HttpMethods.IsPut(context.Request.Method)
-            || HttpMethods.IsPatch(context.Request.Method))
+            || HttpMethods.IsPatch(context.Request.Method)
+        )
         {
             context.Request.EnableBuffering();
         }

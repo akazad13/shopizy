@@ -7,10 +7,8 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.VerifyTwoFactor;
 
-public class VerifyTwoFactorCommandHandler(
-    IUserRepository userRepository,
-    ITotpHelper totpHelper
-) : ICommandHandler<VerifyTwoFactorCommand, ErrorOr<Success>>
+public class VerifyTwoFactorCommandHandler(IUserRepository userRepository, ITotpHelper totpHelper)
+    : ICommandHandler<VerifyTwoFactorCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         VerifyTwoFactorCommand request,
@@ -25,7 +23,10 @@ public class VerifyTwoFactorCommandHandler(
 
         if (string.IsNullOrEmpty(user.TwoFactorSecret))
         {
-            return Error.Validation("TwoFactor.NotSetup", "Two-factor authentication has not been set up.");
+            return Error.Validation(
+                "TwoFactor.NotSetup",
+                "Two-factor authentication has not been set up."
+            );
         }
 
         if (!totpHelper.VerifyCode(user.TwoFactorSecret, request.Code))

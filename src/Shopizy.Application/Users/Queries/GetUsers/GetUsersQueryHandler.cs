@@ -1,8 +1,8 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Domain.Users;
+using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Users.Queries.GetUsers;
 
@@ -11,7 +11,10 @@ public class GetUsersQueryHandler(IUserRepository userRepository)
 {
     private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<ErrorOr<PagedResult<User>>> Handle(GetUsersQuery query, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<PagedResult<User>>> Handle(
+        GetUsersQuery query,
+        CancellationToken cancellationToken = default
+    )
     {
         var users = await _userRepository.ListUsersAsync(query.PageNumber, query.PageSize);
         var totalCount = await _userRepository.GetTotalUsersCountAsync();

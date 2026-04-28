@@ -22,8 +22,4 @@ public record DashboardMetricsResponse(
 /// <param name="ProductId">Identifier of the product.</param>
 /// <param name="ProductName">Display name of the product.</param>
 /// <param name="CurrentStock">Current on-hand quantity.</param>
-public record StockAlertResponse(
-    Guid ProductId,
-    string ProductName,
-    int CurrentStock
-);
+public record StockAlertResponse(Guid ProductId, string ProductName, int CurrentStock);

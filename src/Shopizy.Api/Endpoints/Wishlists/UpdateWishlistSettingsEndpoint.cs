@@ -15,37 +15,38 @@ public class UpdateWishlistSettingsEndpoint : ApiEndpoint
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPatch(
-            "api/v1.0/users/{userId:guid}/wishlist/settings",
-            async (
-                Guid userId,
-                UpdateWishlistSettingsRequest request,
-                ClaimsPrincipal user,
-                [FromServices] IDispatcher mediator,
-                IMapper mapper,
-                ILogger<UpdateWishlistSettingsEndpoint> logger
-            ) =>
-            {
-                if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden) return forbidden;
+                "api/v1.0/users/{userId:guid}/wishlist/settings",
+                async (
+                    Guid userId,
+                    UpdateWishlistSettingsRequest request,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<UpdateWishlistSettingsEndpoint> logger
+                ) =>
+                {
+                    if (user.AuthorizeOwner(userId, "this wishlist") is { } forbidden)
+                        return forbidden;
 
-                var command = mapper.Map<UpdateWishlistSettingsCommand>((userId, request));
+                    var command = mapper.Map<UpdateWishlistSettingsCommand>((userId, request));
 
-                return await HandleAsync(
-                    mediator,
-                    command,
-                    wishlist => Results.Ok(mapper.Map<WishlistResponse>(wishlist)),
-                    ex => logger.WishlistUpdateError(ex)
-                );
-            }
-        )
-        .RequireAuthorization("Wishlist.Modify")
-        .WithTags("Wishlist")
-        .WithSummary("Update wishlist settings")
-        .WithDescription("Updates the name and visibility settings for the user's wishlist.")
-        .Produces<WishlistResponse>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status404NotFound)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        command,
+                        wishlist => Results.Ok(mapper.Map<WishlistResponse>(wishlist)),
+                        ex => logger.WishlistUpdateError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("Wishlist.Modify")
+            .WithTags("Wishlist")
+            .WithSummary("Update wishlist settings")
+            .WithDescription("Updates the name and visibility settings for the user's wishlist.")
+            .Produces<WishlistResponse>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status404NotFound)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

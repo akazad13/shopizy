@@ -1,6 +1,6 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
 using Shopizy.Domain.Carts;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Carts.Queries.GetCart;
 
@@ -9,4 +9,3 @@ namespace Shopizy.Application.Carts.Queries.GetCart;
 /// </summary>
 /// <param name="UserId">The user's unique identifier.</param>
 public record GetCartQuery(Guid UserId) : IQuery<ErrorOr<Cart>>;
-

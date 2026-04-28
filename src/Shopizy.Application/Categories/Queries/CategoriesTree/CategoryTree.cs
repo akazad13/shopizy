@@ -7,4 +7,3 @@ public class CategoryTree
     public Guid? ParentId { get; set; }
     public IReadOnlyList<CategoryTree>? Children { get; set; }
 }
-

@@ -9,10 +9,12 @@ namespace Shopizy.Infrastructure.Services;
 /// </summary>
 public class LoggingEmailService(ILogger<LoggingEmailService> logger) : IEmailService
 {
-    private static readonly Action<ILogger, string, string, string> _emailLogged = LoggerMessage.Define<string, string, string>(
-        LogLevel.Information,
-        new EventId(1, nameof(LoggingEmailService)),
-        "Email → To: {To} | Subject: {Subject} | Body: {Body}");
+    private static readonly Action<ILogger, string, string, string, Exception?> s_emailLogged =
+        LoggerMessage.Define<string, string, string>(
+            LogLevel.Information,
+            new EventId(1, nameof(LoggingEmailService)),
+            "Email → To: {To} | Subject: {Subject} | Body: {Body}"
+        );
 
     public Task SendAsync(
         string to,
@@ -21,7 +23,7 @@ public class LoggingEmailService(ILogger<LoggingEmailService> logger) : IEmailSe
         CancellationToken cancellationToken = default
     )
     {
-        _emailLogged(logger, to, subject, body);
+        s_emailLogged(logger, to, subject, body, null);
         return Task.CompletedTask;
     }
 }

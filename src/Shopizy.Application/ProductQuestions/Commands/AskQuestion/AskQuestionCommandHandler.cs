@@ -13,7 +13,8 @@ public class AskQuestionCommandHandler(
     IProductRepository productRepository
 ) : ICommandHandler<AskQuestionCommand, ErrorOr<ProductQuestion>>
 {
-    private readonly IProductQuestionRepository _productQuestionRepository = productQuestionRepository;
+    private readonly IProductQuestionRepository _productQuestionRepository =
+        productQuestionRepository;
     private readonly IProductRepository _productRepository = productRepository;
 
     public async Task<ErrorOr<ProductQuestion>> Handle(

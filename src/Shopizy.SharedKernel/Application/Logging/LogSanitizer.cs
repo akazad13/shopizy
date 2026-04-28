@@ -14,7 +14,10 @@ public static partial class LogSanitizer
     private const string s_tokenMask = "[token]";
     private const string s_cardMask = "[card]";
 
-    [GeneratedRegex(@"[\w.+-]+@[\w-]+\.[\w.-]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(
+        @"[\w.+-]+@[\w-]+\.[\w.-]+",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
+    )]
     private static partial Regex EmailRegex();
 
     [GeneratedRegex(@"\+?\d[\d\s().-]{8,}\d", RegexOptions.CultureInvariant)]
@@ -23,7 +26,10 @@ public static partial class LogSanitizer
     [GeneratedRegex(@"\b(?:\d[ -]?){13,19}\b", RegexOptions.CultureInvariant)]
     private static partial Regex CardRegex();
 
-    [GeneratedRegex(@"(?i)\b(bearer|token|apikey|api_key|authorization)[=:\s]+([A-Za-z0-9._\-]+)", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(
+        @"(?i)\b(bearer|token|apikey|api_key|authorization)[=:\s]+([A-Za-z0-9._\-]+)",
+        RegexOptions.CultureInvariant
+    )]
     private static partial Regex TokenRegex();
 
     /// <summary>

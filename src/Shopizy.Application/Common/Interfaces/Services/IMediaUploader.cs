@@ -12,4 +12,3 @@ public interface IMediaUploader
     );
     Task<ErrorOr<Success>> DeletePhotoAsync(string publicId);
 }
-

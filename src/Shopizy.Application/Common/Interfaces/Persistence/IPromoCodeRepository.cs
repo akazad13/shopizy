@@ -12,4 +12,3 @@ public interface IPromoCodeRepository
     void Update(PromoCode promoCode);
     void Remove(PromoCode promoCode);
 }
-

@@ -1,8 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Models;
 using Stripe;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 
@@ -51,7 +51,8 @@ public class StripeService(
 
                 return new CustomerResource(customer.Id, customer.Email, customer.Name);
             }
-            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            catch (StripeException ex)
+                when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
             {
                 await Task.Delay(
                     TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),
@@ -111,7 +112,8 @@ public class StripeService(
                     PaymentMethodTypes = response.PaymentMethodTypes,
                 };
             }
-            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            catch (StripeException ex)
+                when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)));
             }
@@ -140,7 +142,10 @@ public class StripeService(
     /// <param name="chargeId">The Stripe charge ID to refund.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Success if the refund was created; otherwise, an error.</returns>
-    public async Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> CreateRefundAsync(
+        string chargeId,
+        CancellationToken cancellationToken
+    )
     {
         var maxAttempts = 3;
         for (var attempt = 0; attempt < maxAttempts; attempt++)
@@ -151,7 +156,8 @@ public class StripeService(
                 await _refundService.CreateAsync(options, cancellationToken: cancellationToken);
                 return Result.Success;
             }
-            catch (StripeException ex) when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
+            catch (StripeException ex)
+                when (IsTransientStripeError(ex) && attempt < maxAttempts - 1)
             {
                 await Task.Delay(
                     TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),
@@ -167,7 +173,10 @@ public class StripeService(
             }
         }
 
-        return Error.Failure(code: "500", description: "Stripe refund failed after maximum retry attempts.");
+        return Error.Failure(
+            code: "500",
+            description: "Stripe refund failed after maximum retry attempts."
+        );
     }
 
     private static string FormatStripeException(StripeException e)

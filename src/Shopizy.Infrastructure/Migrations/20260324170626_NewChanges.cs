@@ -15,55 +15,63 @@ namespace Shopizy.Infrastructure.Migrations
             migrationBuilder.RenameColumn(
                 name: "IsPerchantage",
                 table: "PromoCodes",
-                newName: "IsPercentage");
+                newName: "IsPercentage"
+            );
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsPublic",
                 table: "Wishlists",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "Name",
                 table: "Wishlists",
                 type: "nvarchar(100)",
                 maxLength: 100,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsTwoFactorEnabled",
                 table: "Users",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "PasswordResetToken",
                 table: "Users",
                 type: "nvarchar(256)",
                 maxLength: 256,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "PasswordResetTokenExpiry",
                 table: "Users",
                 type: "datetime2",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "TwoFactorSecret",
                 table: "Users",
                 type: "nvarchar(64)",
                 maxLength: 64,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsActive",
                 table: "Products",
                 type: "bit",
                 nullable: false,
-                defaultValue: true);
+                defaultValue: true
+            );
 
             migrationBuilder.CreateTable(
                 name: "AuditLogs",
@@ -71,37 +79,65 @@ namespace Shopizy.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EntityId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Action = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    EntityName = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    EntityId = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
                     OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Timestamp = table.Column<DateTime>(type: "smalldatetime", nullable: false)
+                    Timestamp = table.Column<DateTime>(type: "smalldatetime", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuditLogs", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "GiftCards",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    InitialBalance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    RemainingBalance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Code = table.Column<string>(
+                        type: "nvarchar(50)",
+                        maxLength: 50,
+                        nullable: false
+                    ),
+                    InitialBalance = table.Column<decimal>(
+                        type: "decimal(18,2)",
+                        precision: 18,
+                        scale: 2,
+                        nullable: false
+                    ),
+                    RemainingBalance = table.Column<decimal>(
+                        type: "decimal(18,2)",
+                        precision: 18,
+                        scale: 2,
+                        nullable: false
+                    ),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     ExpiresOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                     RedeemedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     RedeemedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GiftCards", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "LoyaltyAccounts",
@@ -111,12 +147,13 @@ namespace Shopizy.Infrastructure.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TotalPoints = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LoyaltyAccounts", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "ProductQuestions",
@@ -125,15 +162,24 @@ namespace Shopizy.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AskedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Question = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsAnswered = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Question = table.Column<string>(
+                        type: "nvarchar(500)",
+                        maxLength: 500,
+                        nullable: false
+                    ),
+                    IsAnswered = table.Column<bool>(
+                        type: "bit",
+                        nullable: false,
+                        defaultValue: false
+                    ),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductQuestions", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "ProductVariants",
@@ -141,12 +187,25 @@ namespace Shopizy.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SKU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UnitPrice_Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Name = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    SKU = table.Column<string>(
+                        type: "nvarchar(50)",
+                        maxLength: 50,
+                        nullable: false
+                    ),
+                    UnitPrice_Amount = table.Column<decimal>(
+                        type: "decimal(18,2)",
+                        precision: 18,
+                        scale: 2,
+                        nullable: false
+                    ),
                     UnitPrice_Currency = table.Column<int>(type: "int", nullable: false),
                     StockQuantity = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                 },
                 constraints: table =>
                 {
@@ -156,8 +215,10 @@ namespace Shopizy.Infrastructure.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Shipments",
@@ -165,12 +226,20 @@ namespace Shopizy.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Carrier = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    TrackingNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Carrier = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    TrackingNumber = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
                     EstimatedDelivery = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -180,8 +249,10 @@ namespace Shopizy.Infrastructure.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserAddresses",
@@ -189,14 +260,38 @@ namespace Shopizy.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    State = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Street = table.Column<string>(
+                        type: "nvarchar(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    City = table.Column<string>(
+                        type: "nvarchar(50)",
+                        maxLength: 50,
+                        nullable: false
+                    ),
+                    State = table.Column<string>(
+                        type: "nvarchar(50)",
+                        maxLength: 50,
+                        nullable: false
+                    ),
+                    Country = table.Column<string>(
+                        type: "nvarchar(50)",
+                        maxLength: 50,
+                        nullable: false
+                    ),
+                    ZipCode = table.Column<string>(
+                        type: "nvarchar(10)",
+                        maxLength: 10,
+                        nullable: false
+                    ),
+                    IsDefault = table.Column<bool>(
+                        type: "bit",
+                        nullable: false,
+                        defaultValue: false
+                    ),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -206,40 +301,64 @@ namespace Shopizy.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "LoyaltyTransactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoyaltyAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoyaltyAccountId = table.Column<Guid>(
+                        type: "uniqueidentifier",
+                        nullable: false
+                    ),
                     Points = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false)
+                    Description = table.Column<string>(
+                        type: "nvarchar(200)",
+                        maxLength: 200,
+                        nullable: false
+                    ),
+                    CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoyaltyTransactions", x => new { x.Id, x.LoyaltyAccountId });
+                    table.PrimaryKey(
+                        "PK_LoyaltyTransactions",
+                        x => new { x.Id, x.LoyaltyAccountId }
+                    );
                     table.ForeignKey(
                         name: "FK_LoyaltyTransactions_LoyaltyAccounts_LoyaltyAccountId",
                         column: x => x.LoyaltyAccountId,
                         principalTable: "LoyaltyAccounts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "ProductAnswers",
                 columns: table => new
                 {
-                    ProductQuestionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AnsweredByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Answer = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    ProductQuestionId = table.Column<Guid>(
+                        type: "uniqueidentifier",
+                        nullable: false
+                    ),
+                    AnsweredByUserId = table.Column<Guid>(
+                        type: "uniqueidentifier",
+                        nullable: false
+                    ),
+                    Answer = table.Column<string>(
+                        type: "nvarchar(1000)",
+                        maxLength: 1000,
+                        nullable: false
+                    ),
                     CreatedOn = table.Column<DateTime>(type: "smalldatetime", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -249,8 +368,10 @@ namespace Shopizy.Infrastructure.Migrations
                         column: x => x.ProductQuestionId,
                         principalTable: "ProductQuestions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.InsertData(
                 table: "Permissions",
@@ -258,104 +379,89 @@ namespace Shopizy.Infrastructure.Migrations
                 values: new object[,]
                 {
                     { new Guid("a7b2c9d4-5e3f-4a1b-9c8d-2f6e0b4a7d91"), "get:review" },
-                    { new Guid("c3a1e8f2-4d7b-4e9a-b123-8f5d2e6a1c34"), "create:review" }
-                });
+                    { new Guid("c3a1e8f2-4d7b-4e9a-b123-8f5d2e6a1c34"), "create:review" },
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_GiftCards_Code",
                 table: "GiftCards",
                 column: "Code",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_LoyaltyTransactions_LoyaltyAccountId",
                 table: "LoyaltyTransactions",
-                column: "LoyaltyAccountId");
+                column: "LoyaltyAccountId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shipments_OrderId",
                 table: "Shipments",
                 column: "OrderId",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAddresses_UserId",
                 table: "UserAddresses",
-                column: "UserId");
+                column: "UserId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AuditLogs");
+            migrationBuilder.DropTable(name: "AuditLogs");
 
-            migrationBuilder.DropTable(
-                name: "GiftCards");
+            migrationBuilder.DropTable(name: "GiftCards");
 
-            migrationBuilder.DropTable(
-                name: "LoyaltyTransactions");
+            migrationBuilder.DropTable(name: "LoyaltyTransactions");
 
-            migrationBuilder.DropTable(
-                name: "ProductAnswers");
+            migrationBuilder.DropTable(name: "ProductAnswers");
 
-            migrationBuilder.DropTable(
-                name: "ProductVariants");
+            migrationBuilder.DropTable(name: "ProductVariants");
 
-            migrationBuilder.DropTable(
-                name: "Shipments");
+            migrationBuilder.DropTable(name: "Shipments");
 
-            migrationBuilder.DropTable(
-                name: "UserAddresses");
+            migrationBuilder.DropTable(name: "UserAddresses");
 
-            migrationBuilder.DropTable(
-                name: "LoyaltyAccounts");
+            migrationBuilder.DropTable(name: "LoyaltyAccounts");
 
-            migrationBuilder.DropTable(
-                name: "ProductQuestions");
+            migrationBuilder.DropTable(name: "ProductQuestions");
 
             migrationBuilder.DeleteData(
                 table: "Permissions",
                 keyColumn: "Id",
-                keyValue: new Guid("a7b2c9d4-5e3f-4a1b-9c8d-2f6e0b4a7d91"));
+                keyValue: new Guid("a7b2c9d4-5e3f-4a1b-9c8d-2f6e0b4a7d91")
+            );
 
             migrationBuilder.DeleteData(
                 table: "Permissions",
                 keyColumn: "Id",
-                keyValue: new Guid("c3a1e8f2-4d7b-4e9a-b123-8f5d2e6a1c34"));
+                keyValue: new Guid("c3a1e8f2-4d7b-4e9a-b123-8f5d2e6a1c34")
+            );
 
-            migrationBuilder.DropColumn(
-                name: "IsPublic",
-                table: "Wishlists");
+            migrationBuilder.DropColumn(name: "IsPublic", table: "Wishlists");
 
-            migrationBuilder.DropColumn(
-                name: "Name",
-                table: "Wishlists");
+            migrationBuilder.DropColumn(name: "Name", table: "Wishlists");
 
-            migrationBuilder.DropColumn(
-                name: "IsTwoFactorEnabled",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "IsTwoFactorEnabled", table: "Users");
 
-            migrationBuilder.DropColumn(
-                name: "PasswordResetToken",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "PasswordResetToken", table: "Users");
 
-            migrationBuilder.DropColumn(
-                name: "PasswordResetTokenExpiry",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "PasswordResetTokenExpiry", table: "Users");
 
-            migrationBuilder.DropColumn(
-                name: "TwoFactorSecret",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "TwoFactorSecret", table: "Users");
 
-            migrationBuilder.DropColumn(
-                name: "IsActive",
-                table: "Products");
+            migrationBuilder.DropColumn(name: "IsActive", table: "Products");
 
             migrationBuilder.RenameColumn(
                 name: "IsPercentage",
                 table: "PromoCodes",
-                newName: "IsPerchantage");
+                newName: "IsPerchantage"
+            );
         }
     }
 }

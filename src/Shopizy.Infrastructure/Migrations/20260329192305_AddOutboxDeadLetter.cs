@@ -15,18 +15,21 @@ namespace Shopizy.Infrastructure.Migrations
                 table: "OutboxMessages",
                 type: "nvarchar(1000)",
                 maxLength: 1000,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "DeadLetteredOn",
                 table: "OutboxMessages",
                 type: "datetime2",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_DeadLetteredOn",
                 table: "OutboxMessages",
-                column: "DeadLetteredOn");
+                column: "DeadLetteredOn"
+            );
         }
 
         /// <inheritdoc />
@@ -34,15 +37,12 @@ namespace Shopizy.Infrastructure.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_OutboxMessages_DeadLetteredOn",
-                table: "OutboxMessages");
+                table: "OutboxMessages"
+            );
 
-            migrationBuilder.DropColumn(
-                name: "DeadLetterReason",
-                table: "OutboxMessages");
+            migrationBuilder.DropColumn(name: "DeadLetterReason", table: "OutboxMessages");
 
-            migrationBuilder.DropColumn(
-                name: "DeadLetteredOn",
-                table: "OutboxMessages");
+            migrationBuilder.DropColumn(name: "DeadLetteredOn", table: "OutboxMessages");
         }
     }
 }

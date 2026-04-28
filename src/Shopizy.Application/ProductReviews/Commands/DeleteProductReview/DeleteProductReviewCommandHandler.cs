@@ -6,9 +6,8 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.ProductReviews.Commands.DeleteProductReview;
 
-public class DeleteProductReviewCommandHandler(
-    IProductReviewRepository productReviewRepository
-) : ICommandHandler<DeleteProductReviewCommand, ErrorOr<Deleted>>
+public class DeleteProductReviewCommandHandler(IProductReviewRepository productReviewRepository)
+    : ICommandHandler<DeleteProductReviewCommand, ErrorOr<Deleted>>
 {
     private readonly IProductReviewRepository _productReviewRepository = productReviewRepository;
 

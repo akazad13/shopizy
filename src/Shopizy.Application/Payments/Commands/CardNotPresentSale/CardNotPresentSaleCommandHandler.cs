@@ -1,13 +1,13 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
+using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Payments.Commands.CardNotPresentSale;
 
@@ -37,9 +37,7 @@ public class CardNotPresentSaleCommandHandler(
 
         var total = order.GetTotal();
 
-        var user = await _userRepository.GetUserByIdAsync(
-            UserId.Create(request.UserId)
-        );
+        var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId));
 
         if (user is null)
         {

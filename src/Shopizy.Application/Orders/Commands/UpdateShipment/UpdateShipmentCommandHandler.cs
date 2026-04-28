@@ -28,7 +28,8 @@ public class UpdateShipmentCommandHandler(IOrderRepository orderRepository)
             (ShipmentStatus)request.Status
         );
 
-        if (result.IsError) return result.Error.ToError();
+        if (result.IsError)
+            return result.Error.ToError();
 
         return Result.Success;
     }

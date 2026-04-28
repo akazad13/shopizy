@@ -49,8 +49,7 @@ public sealed class ProductQuestionConfigurations : IEntityTypeConfiguration<Pro
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductAnswerId.Create(value));
 
-                ab
-                    .Property(a => a.AnsweredByUserId)
+                ab.Property(a => a.AnsweredByUserId)
                     .HasConversion(id => id.Value, value => UserId.Create(value));
 
                 ab.Property(a => a.Answer).HasMaxLength(1000).IsRequired();

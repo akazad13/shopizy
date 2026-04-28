@@ -17,14 +17,16 @@ namespace Shopizy.Infrastructure.Migrations
                 table: "Products",
                 type: "rowversion",
                 rowVersion: true,
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
                 table: "Users",
                 type: "rowversion",
                 rowVersion: true,
-                nullable: true);
+                nullable: true
+            );
         }
 
         /// <inheritdoc />
@@ -32,13 +34,9 @@ namespace Shopizy.Infrastructure.Migrations
         {
             ArgumentNullException.ThrowIfNull(migrationBuilder);
 
-            migrationBuilder.DropColumn(
-                name: "RowVersion",
-                table: "Products");
+            migrationBuilder.DropColumn(name: "RowVersion", table: "Products");
 
-            migrationBuilder.DropColumn(
-                name: "RowVersion",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "RowVersion", table: "Users");
         }
     }
 }

@@ -7,7 +7,12 @@ namespace Shopizy.Contracts.Product;
 /// <param name="TotalCount">The total number of products matching the query.</param>
 /// <param name="TotalPages">The total number of pages.</param>
 /// <param name="PageNumber">Current page number.</param>
-public record ProductsPagedResponse(IReadOnlyList<ProductResponse> Items, int TotalCount, int TotalPages, int PageNumber);
+public record ProductsPagedResponse(
+    IReadOnlyList<ProductResponse> Items,
+    int TotalCount,
+    int TotalPages,
+    int PageNumber
+);
 
 /// <summary>
 /// Represents a summary of a product.

@@ -1,40 +1,51 @@
 using System.Security.Claims;
 using MapsterMapper;
-using Shopizy.SharedKernel.Application.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.Extensions;
 using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Orders.Queries.GetOrder;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
+using Shopizy.SharedKernel.Application.Messaging;
 
-using Microsoft.AspNetCore.Mvc;
 namespace Shopizy.Api.Endpoints.Orders;
 
 public class GetOrderEndpoint : ApiEndpoint
 {
     public override void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/v1.0/users/{userId:guid}/orders/{orderId:guid}", async (Guid userId, Guid orderId, ClaimsPrincipal user, [FromServices] IDispatcher mediator, IMapper mapper, ILogger<GetOrderEndpoint> logger) =>
-        {
-            if (user.AuthorizeOwner(userId, "this order") is { } forbidden) return forbidden;
+        app.MapGet(
+                "api/v1.0/users/{userId:guid}/orders/{orderId:guid}",
+                async (
+                    Guid userId,
+                    Guid orderId,
+                    ClaimsPrincipal user,
+                    [FromServices] IDispatcher mediator,
+                    IMapper mapper,
+                    ILogger<GetOrderEndpoint> logger
+                ) =>
+                {
+                    if (user.AuthorizeOwner(userId, "this order") is { } forbidden)
+                        return forbidden;
 
-            var query = mapper.Map<GetOrderQuery>((userId, orderId));
+                    var query = mapper.Map<GetOrderQuery>((userId, orderId));
 
-            return await HandleAsync(
-                mediator,
-                query,
-                order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
-                ex => logger.OrderFetchError(ex)
-            );
-        })
-        .RequireAuthorization("Order.Get")
-        .WithTags("Orders")
-        .WithSummary("Get order by ID")
-        .WithDescription("Retrieves details of a specific order for the authorized user.")
-        .Produces<OrderDetailResponse>(StatusCodes.Status200OK)
-        .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
-        .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
-        .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
-        .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
+                    return await HandleAsync(
+                        mediator,
+                        query,
+                        order => Results.Ok(mapper.Map<OrderDetailResponse>(order)),
+                        ex => logger.OrderFetchError(ex)
+                    );
+                }
+            )
+            .RequireAuthorization("Order.Get")
+            .WithTags("Orders")
+            .WithSummary("Get order by ID")
+            .WithDescription("Retrieves details of a specific order for the authorized user.")
+            .Produces<OrderDetailResponse>(StatusCodes.Status200OK)
+            .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
+            .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
     }
 }

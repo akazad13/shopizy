@@ -9,32 +9,49 @@ namespace Shopizy.Infrastructure.Security.RefreshTokens;
 
 public sealed class RedisRefreshTokenStore(
     IConnectionMultiplexer connection,
-    ILogger<RedisRefreshTokenStore> logger) : IRefreshTokenStore
+    ILogger<RedisRefreshTokenStore> logger
+) : IRefreshTokenStore
 {
     private const string KeyPrefix = "refresh:";
     private const string UserIndexPrefix = "refresh-user:";
 
-    private static readonly Action<ILogger, string, Exception?> _redisStoreRefreshTokenUnavailable = LoggerMessage.Define<string>(
-        LogLevel.Warning,
-        new EventId(1, nameof(RedisRefreshTokenStore)),
-        "Redis unavailable while storing refresh token for {UserId}");
+    private static readonly Action<ILogger, string, Exception?> _redisStoreRefreshTokenUnavailable =
+        LoggerMessage.Define<string>(
+            LogLevel.Warning,
+            new EventId(1, nameof(RedisRefreshTokenStore)),
+            "Redis unavailable while storing refresh token for {UserId}"
+        );
 
-    private static readonly Action<ILogger, Exception?> _redisConsumeRefreshTokenUnavailable = LoggerMessage.Define(
-        LogLevel.Warning,
-        new EventId(2, nameof(RedisRefreshTokenStore)),
-        "Redis unavailable while consuming refresh token");
+    private static readonly Action<ILogger, Exception?> _redisConsumeRefreshTokenUnavailable =
+        LoggerMessage.Define(
+            LogLevel.Warning,
+            new EventId(2, nameof(RedisRefreshTokenStore)),
+            "Redis unavailable while consuming refresh token"
+        );
 
-    private static readonly Action<ILogger, Exception?> _redisRevokeRefreshTokenUnavailable = LoggerMessage.Define(
-        LogLevel.Warning,
-        new EventId(3, nameof(RedisRefreshTokenStore)),
-        "Redis unavailable while revoking refresh token");
+    private static readonly Action<ILogger, Exception?> _redisRevokeRefreshTokenUnavailable =
+        LoggerMessage.Define(
+            LogLevel.Warning,
+            new EventId(3, nameof(RedisRefreshTokenStore)),
+            "Redis unavailable while revoking refresh token"
+        );
 
-    private static readonly Action<ILogger, string, Exception?> _redisRevokeAllRefreshTokensUnavailable = LoggerMessage.Define<string>(
+    private static readonly Action<
+        ILogger,
+        string,
+        Exception?
+    > _redisRevokeAllRefreshTokensUnavailable = LoggerMessage.Define<string>(
         LogLevel.Warning,
         new EventId(4, nameof(RedisRefreshTokenStore)),
-        "Redis unavailable while revoking refresh tokens for {UserId}");
+        "Redis unavailable while revoking refresh tokens for {UserId}"
+    );
 
-    public async Task StoreAsync(string token, UserId userId, TimeSpan ttl, CancellationToken cancellationToken = default)
+    public async Task StoreAsync(
+        string token,
+        UserId userId,
+        TimeSpan ttl,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(userId);
         var hash = Hash(token);
@@ -42,7 +59,12 @@ public sealed class RedisRefreshTokenStore(
         {
             var db = connection.GetDatabase();
             var batch = db.CreateBatch();
-            var setTask = batch.StringSetAsync(KeyPrefix + hash, userId.Value.ToString(), ttl, when: When.Always);
+            var setTask = batch.StringSetAsync(
+                KeyPrefix + hash,
+                userId.Value.ToString(),
+                ttl,
+                when: When.Always
+            );
             var indexTask = batch.SetAddAsync(UserIndexPrefix + userId.Value, hash);
             var indexExpireTask = batch.KeyExpireAsync(UserIndexPrefix + userId.Value, ttl);
             batch.Execute();
@@ -56,7 +78,10 @@ public sealed class RedisRefreshTokenStore(
         }
     }
 
-    public async Task<UserId?> ConsumeAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<UserId?> ConsumeAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    )
     {
         var hash = Hash(token);
         try
@@ -91,7 +116,10 @@ public sealed class RedisRefreshTokenStore(
         }
     }
 
-    public async Task RevokeAllForUserAsync(UserId userId, CancellationToken cancellationToken = default)
+    public async Task RevokeAllForUserAsync(
+        UserId userId,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(userId);
         try

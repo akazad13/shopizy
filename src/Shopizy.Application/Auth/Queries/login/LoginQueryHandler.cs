@@ -1,11 +1,11 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Auth.Common;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Auth.Queries.login;
 
@@ -65,11 +65,20 @@ public class LoginQueryHandler(
             .Select(p => p.Name)
             .ToList();
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Role.ToString(), assignedPermissions);
+        var token = _jwtTokenGenerator.GenerateToken(
+            user.Id,
+            user.Role.ToString(),
+            assignedPermissions
+        );
 
         var refreshToken = _refreshTokenGenerator.Generate();
         var refreshLifetime = _refreshTokenGenerator.Lifetime;
-        await _refreshTokenStore.StoreAsync(refreshToken, user.Id, refreshLifetime, cancellationToken);
+        await _refreshTokenStore.StoreAsync(
+            refreshToken,
+            user.Id,
+            refreshLifetime,
+            cancellationToken
+        );
         var refreshExpiresAt = DateTime.UtcNow.Add(refreshLifetime);
 
         var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
@@ -89,6 +98,7 @@ public class LoginQueryHandler(
             user.Role.ToString(),
             token,
             refreshToken,
-            refreshExpiresAt);
+            refreshExpiresAt
+        );
     }
 }

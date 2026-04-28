@@ -8,19 +8,26 @@ public sealed class IdempotencyEndpointFilter(IIdempotencyStore store) : IEndpoi
     private const string HeaderName = "Idempotency-Key";
     private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(24);
 
-    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    public async ValueTask<object?> InvokeAsync(
+        EndpointFilterInvocationContext context,
+        EndpointFilterDelegate next
+    )
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(next);
 
         var http = context.HttpContext;
 
-        if (!http.Request.Headers.TryGetValue(HeaderName, out var headerValue) || string.IsNullOrWhiteSpace(headerValue))
+        if (
+            !http.Request.Headers.TryGetValue(HeaderName, out var headerValue)
+            || string.IsNullOrWhiteSpace(headerValue)
+        )
         {
             return Results.Problem(
                 title: "Missing Idempotency-Key header",
                 detail: $"This endpoint requires an '{HeaderName}' request header.",
-                statusCode: StatusCodes.Status400BadRequest);
+                statusCode: StatusCodes.Status400BadRequest
+            );
         }
 
         var idempotencyKey = headerValue.ToString();
@@ -35,7 +42,8 @@ public sealed class IdempotencyEndpointFilter(IIdempotencyStore store) : IEndpoi
                 return Results.Problem(
                     title: "Idempotency-Key conflict",
                     detail: "This Idempotency-Key was reused with a different request body.",
-                    statusCode: StatusCodes.Status409Conflict);
+                    statusCode: StatusCodes.Status409Conflict
+                );
             }
             return new ReplayResult(existing);
         }
@@ -65,7 +73,8 @@ public sealed class IdempotencyEndpointFilter(IIdempotencyStore store) : IEndpoi
                     RequestHash: requestHash,
                     StatusCode: http.Response.StatusCode,
                     ContentType: http.Response.ContentType ?? "application/json",
-                    Body: bytes);
+                    Body: bytes
+                );
                 await store.StoreAsync(scopedKey, record, DefaultTtl, http.RequestAborted);
             }
 
@@ -80,9 +89,11 @@ public sealed class IdempotencyEndpointFilter(IIdempotencyStore store) : IEndpoi
 
     private static string ScopeKey(HttpContext http, string idempotencyKey)
     {
-        var userId = http.User?.Identity?.IsAuthenticated == true
-            ? http.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "anon"
-            : "anon";
+        var userId =
+            http.User?.Identity?.IsAuthenticated == true
+                ? http.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                    ?? "anon"
+                : "anon";
         var path = http.Request.Path.HasValue ? http.Request.Path.Value!.ToLowerInvariant() : "/";
         return $"{userId}:{path}:{idempotencyKey}";
     }
@@ -119,6 +130,7 @@ public sealed class IdempotencyEndpointFilter(IIdempotencyStore store) : IEndpoi
     private sealed class EmptyHttpResult : IResult
     {
         public static readonly EmptyHttpResult Instance = new();
+
         public Task ExecuteAsync(HttpContext httpContext) => Task.CompletedTask;
     }
 }

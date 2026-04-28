@@ -21,7 +21,8 @@ public class DeleteUserAddressCommandHandler(IUserRepository userRepository)
         }
 
         var result = user.RemoveAddress(UserAddressId.Create(request.AddressId));
-        if (result.IsError) return result.Error.ToError();
+        if (result.IsError)
+            return result.Error.ToError();
 
         return Result.Deleted;
     }

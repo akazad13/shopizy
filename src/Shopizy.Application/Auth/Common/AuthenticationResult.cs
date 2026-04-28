@@ -8,4 +8,5 @@ public record AuthResult(
     string Role,
     string Token,
     string RefreshToken,
-    DateTime RefreshTokenExpiresAt);
+    DateTime RefreshTokenExpiresAt
+);

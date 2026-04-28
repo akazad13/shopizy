@@ -18,4 +18,3 @@ public record UserDto(
     DateTime CreatedOn,
     DateTime? ModifiedOn
 );
-

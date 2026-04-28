@@ -1,10 +1,10 @@
 using ErrorOr;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Users.Enums;
-using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Permissions.ValueObjects;
+using Shopizy.Domain.Users.Enums;
+using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.UpdateUserRole;
 
@@ -13,7 +13,10 @@ public class UpdateUserRoleCommandHandler(IUserRepository userRepository)
 {
     private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<ErrorOr<Success>> Handle(UpdateUserRoleCommand command, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Success>> Handle(
+        UpdateUserRoleCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         var user = await _userRepository.GetUserByIdAsync(UserId.Create(command.UserId));
         if (user is null)

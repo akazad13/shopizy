@@ -43,8 +43,8 @@ public sealed class UserCredential
     }
 
     /// <summary>Returns true when <paramref name="token"/> matches and has not expired.</summary>
-    public bool IsPasswordResetTokenValid(string token)
-        => PasswordResetToken == token && PasswordResetTokenExpiry > DateTime.UtcNow;
+    public bool IsPasswordResetTokenValid(string token) =>
+        PasswordResetToken == token && PasswordResetTokenExpiry > DateTime.UtcNow;
 
     /// <summary>Clears the password reset token after use.</summary>
     public void ClearPasswordResetToken()
@@ -88,8 +88,10 @@ public sealed class UserCredential
         {
             int byteCount = Math.Min(5, data.Length - i);
             ulong buffer = 0;
-            for (int j = 0; j < byteCount; j++) buffer |= ((ulong)data[i + j]) << (8 * (4 - j));
-            for (int j = 7; j >= 0 - (5 - byteCount) * 2; j--) result.Append(alphabet[(int)((buffer >> (j * 5)) & 0x1F)]);
+            for (int j = 0; j < byteCount; j++)
+                buffer |= ((ulong)data[i + j]) << (8 * (4 - j));
+            for (int j = 7; j >= 0 - (5 - byteCount) * 2; j--)
+                result.Append(alphabet[(int)((buffer >> (j * 5)) & 0x1F)]);
         }
         return result.ToString();
     }

@@ -13,4 +13,3 @@ public interface IPaymentService
     Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request);
     Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken);
 }
-

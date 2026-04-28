@@ -12,12 +12,15 @@ namespace Shopizy.SharedKernel.Application.Behaviors;
 /// </summary>
 public class CacheInvalidationCommandHandlerDecorator<TCommand, TResponse>(
     ICommandHandler<TCommand, TResponse> innerHandler,
-    ICacheHelper cacheHelper)
-    : ICommandHandler<TCommand, TResponse>
+    ICacheHelper cacheHelper
+) : ICommandHandler<TCommand, TResponse>
     where TCommand : ICommand<TResponse>
     where TResponse : IErrorOr
 {
-    public async Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken = default)
+    public async Task<TResponse> Handle(
+        TCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await innerHandler.Handle(command, cancellationToken);
 

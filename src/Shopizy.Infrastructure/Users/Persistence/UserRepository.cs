@@ -20,7 +20,9 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     /// <returns>The user if found; otherwise, null.</returns>
     public Task<User?> GetUserByEmailAsync(string email)
     {
-        return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Email == email);
+        return _dbContext
+            .Users.Include(u => u.PermissionIds)
+            .SingleOrDefaultAsync(u => u.Email == email);
     }
 
     /// <summary>
@@ -45,8 +47,8 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task<IReadOnlyList<User>> ListUsersAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.Users
-            .Include(u => u.PermissionIds)
+        return await _dbContext
+            .Users.Include(u => u.PermissionIds)
             .OrderByDescending(u => u.FirstName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

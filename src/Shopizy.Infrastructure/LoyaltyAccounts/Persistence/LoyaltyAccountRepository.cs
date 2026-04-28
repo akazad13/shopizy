@@ -12,8 +12,7 @@ public class LoyaltyAccountRepository(AppDbContext dbContext) : ILoyaltyAccountR
 
     public Task<LoyaltyAccount?> GetByUserIdAsync(UserId userId)
     {
-        return _dbContext.Set<LoyaltyAccount>()
-            .FirstOrDefaultAsync(la => la.UserId == userId);
+        return _dbContext.Set<LoyaltyAccount>().FirstOrDefaultAsync(la => la.UserId == userId);
     }
 
     public async Task AddAsync(LoyaltyAccount account)

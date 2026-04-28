@@ -16,10 +16,14 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
         return await _dbContext.ProductReviews.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IReadOnlyList<ProductReview>> GetReviewsByProductIdAsync(ProductId productId, int pageNumber, int pageSize)
+    public async Task<IReadOnlyList<ProductReview>> GetReviewsByProductIdAsync(
+        ProductId productId,
+        int pageNumber,
+        int pageSize
+    )
     {
-        return await _dbContext.ProductReviews
-            .AsNoTracking()
+        return await _dbContext
+            .ProductReviews.AsNoTracking()
             .Include(r => r.User)
             .Where(r => r.ProductId == productId)
             .OrderByDescending(r => r.CreatedOn)

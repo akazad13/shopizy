@@ -10,33 +10,28 @@ public partial class FixMisspelledUserIdColumns : Migration
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropForeignKey(
-            name: "FK_OrderIds_Users_UseId",
-            table: "OrderIds");
+        migrationBuilder.DropForeignKey(name: "FK_OrderIds_Users_UseId", table: "OrderIds");
 
         migrationBuilder.DropForeignKey(
             name: "FK_ProductReviewIds_Users_UseId",
-            table: "ProductReviewIds");
+            table: "ProductReviewIds"
+        );
 
-        migrationBuilder.RenameColumn(
-            name: "UseId",
-            table: "ProductReviewIds",
-            newName: "UserId");
+        migrationBuilder.RenameColumn(name: "UseId", table: "ProductReviewIds", newName: "UserId");
 
         migrationBuilder.RenameIndex(
             name: "IX_ProductReviewIds_UseId",
             table: "ProductReviewIds",
-            newName: "IX_ProductReviewIds_UserId");
+            newName: "IX_ProductReviewIds_UserId"
+        );
 
-        migrationBuilder.RenameColumn(
-            name: "UseId",
-            table: "OrderIds",
-            newName: "UserId");
+        migrationBuilder.RenameColumn(name: "UseId", table: "OrderIds", newName: "UserId");
 
         migrationBuilder.RenameIndex(
             name: "IX_OrderIds_UseId",
             table: "OrderIds",
-            newName: "IX_OrderIds_UserId");
+            newName: "IX_OrderIds_UserId"
+        );
 
         migrationBuilder.AddForeignKey(
             name: "FK_OrderIds_Users_UserId",
@@ -44,7 +39,8 @@ public partial class FixMisspelledUserIdColumns : Migration
             column: "UserId",
             principalTable: "Users",
             principalColumn: "Id",
-            onDelete: ReferentialAction.Cascade);
+            onDelete: ReferentialAction.Cascade
+        );
 
         migrationBuilder.AddForeignKey(
             name: "FK_ProductReviewIds_Users_UserId",
@@ -52,39 +48,35 @@ public partial class FixMisspelledUserIdColumns : Migration
             column: "UserId",
             principalTable: "Users",
             principalColumn: "Id",
-            onDelete: ReferentialAction.Cascade);
+            onDelete: ReferentialAction.Cascade
+        );
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropForeignKey(
-            name: "FK_OrderIds_Users_UserId",
-            table: "OrderIds");
+        migrationBuilder.DropForeignKey(name: "FK_OrderIds_Users_UserId", table: "OrderIds");
 
         migrationBuilder.DropForeignKey(
             name: "FK_ProductReviewIds_Users_UserId",
-            table: "ProductReviewIds");
+            table: "ProductReviewIds"
+        );
 
-        migrationBuilder.RenameColumn(
-            name: "UserId",
-            table: "ProductReviewIds",
-            newName: "UseId");
+        migrationBuilder.RenameColumn(name: "UserId", table: "ProductReviewIds", newName: "UseId");
 
         migrationBuilder.RenameIndex(
             name: "IX_ProductReviewIds_UserId",
             table: "ProductReviewIds",
-            newName: "IX_ProductReviewIds_UseId");
+            newName: "IX_ProductReviewIds_UseId"
+        );
 
-        migrationBuilder.RenameColumn(
-            name: "UserId",
-            table: "OrderIds",
-            newName: "UseId");
+        migrationBuilder.RenameColumn(name: "UserId", table: "OrderIds", newName: "UseId");
 
         migrationBuilder.RenameIndex(
             name: "IX_OrderIds_UserId",
             table: "OrderIds",
-            newName: "IX_OrderIds_UseId");
+            newName: "IX_OrderIds_UseId"
+        );
 
         migrationBuilder.AddForeignKey(
             name: "FK_OrderIds_Users_UseId",
@@ -92,7 +84,8 @@ public partial class FixMisspelledUserIdColumns : Migration
             column: "UseId",
             principalTable: "Users",
             principalColumn: "Id",
-            onDelete: ReferentialAction.Cascade);
+            onDelete: ReferentialAction.Cascade
+        );
 
         migrationBuilder.AddForeignKey(
             name: "FK_ProductReviewIds_Users_UseId",
@@ -100,6 +93,7 @@ public partial class FixMisspelledUserIdColumns : Migration
             column: "UseId",
             principalTable: "Users",
             principalColumn: "Id",
-            onDelete: ReferentialAction.Cascade);
+            onDelete: ReferentialAction.Cascade
+        );
     }
 }

@@ -4,12 +4,7 @@ namespace Shopizy.Contracts.Common;
 /// A generic wrapper for paginated list responses.
 /// </summary>
 /// <typeparam name="T">The item type.</typeparam>
-public record PagedResponse<T>(
-    IReadOnlyList<T> Items,
-    int PageNumber,
-    int PageSize,
-    int TotalCount
-)
+public record PagedResponse<T>(IReadOnlyList<T> Items, int PageNumber, int PageSize, int TotalCount)
 {
     /// <summary>Total number of pages based on TotalCount and PageSize.</summary>
     public int TotalPages => PageSize > 0 ? (int)Math.Ceiling(TotalCount / (double)PageSize) : 0;

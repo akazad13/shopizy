@@ -15,7 +15,8 @@ namespace Shopizy.Infrastructure.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("d99cab25-5af2-4b9c-9fad-385e4715d7f2"),
                 column: "Name",
-                value: "create:wishlist");
+                value: "create:wishlist"
+            );
         }
 
         /// <inheritdoc />
@@ -26,7 +27,8 @@ namespace Shopizy.Infrastructure.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("d99cab25-5af2-4b9c-9fad-385e4715d7f2"),
                 column: "Name",
-                value: "delete:wishlist");
+                value: "delete:wishlist"
+            );
         }
     }
 }

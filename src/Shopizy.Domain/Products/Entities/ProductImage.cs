@@ -1,5 +1,5 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Products.Entities;
 

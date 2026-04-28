@@ -12,8 +12,8 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 
     public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.PromoCodes
-            .AsNoTracking()
+        return await _dbContext
+            .PromoCodes.AsNoTracking()
             .OrderByDescending(pc => pc.CreatedOn)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

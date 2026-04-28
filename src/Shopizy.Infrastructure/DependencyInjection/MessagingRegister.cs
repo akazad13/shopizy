@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using Shopizy.SharedKernel.Application.Messaging;
 using Shopizy.Infrastructure.Messaging;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Infrastructure.DependencyInjection;
 

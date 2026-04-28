@@ -11,7 +11,8 @@ namespace Shopizy.Application.ProductQuestions.Commands.AnswerQuestion;
 public class AnswerQuestionCommandHandler(IProductQuestionRepository productQuestionRepository)
     : ICommandHandler<AnswerQuestionCommand, ErrorOr<ProductQuestion>>
 {
-    private readonly IProductQuestionRepository _productQuestionRepository = productQuestionRepository;
+    private readonly IProductQuestionRepository _productQuestionRepository =
+        productQuestionRepository;
 
     public async Task<ErrorOr<ProductQuestion>> Handle(
         AnswerQuestionCommand request,

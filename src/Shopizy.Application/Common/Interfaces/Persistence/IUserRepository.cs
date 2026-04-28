@@ -13,4 +13,3 @@ public interface IUserRepository
     Task AddAsync(User user);
     void Update(User user);
 }
-

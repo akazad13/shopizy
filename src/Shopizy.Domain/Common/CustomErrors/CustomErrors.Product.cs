@@ -12,7 +12,10 @@ public static partial class CustomErrors
                 description: "Product with the same name is already in use."
             );
         public static DomainError ProductNotFound =>
-            DomainError.NotFound(code: "Product.ProductNotFound", description: "Product is not found.");
+            DomainError.NotFound(
+                code: "Product.ProductNotFound",
+                description: "Product is not found."
+            );
         public static DomainError ProductNotCreated =>
             DomainError.Failure(
                 code: "Product.ProductNotCreated",

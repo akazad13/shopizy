@@ -1,7 +1,7 @@
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Carts.ValueObjects;
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Carts;
 
@@ -11,22 +11,22 @@ namespace Shopizy.Domain.Carts;
 public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
 {
     private readonly List<CartItem> _cartItems = [];
-    
+
     /// <summary>
     /// Gets the user ID who owns this cart.
     /// </summary>
     public UserId UserId { get; }
-    
+
     /// <summary>
     /// Gets the date and time when the cart was created.
     /// </summary>
     public DateTime CreatedOn { get; private set; }
-    
+
     /// <summary>
     /// Gets the date and time when the cart was last modified.
     /// </summary>
     public DateTime? ModifiedOn { get; private set; }
-    
+
     /// <summary>
     /// Gets the read-only list of items in the cart.
     /// </summary>

@@ -10,4 +10,3 @@ public interface IDateTimeProvider
     /// </summary>
     DateTime UtcNow { get; }
 }
-

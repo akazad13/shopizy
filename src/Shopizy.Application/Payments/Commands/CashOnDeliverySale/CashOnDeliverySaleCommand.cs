@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Payments.Commands.CashOnDeliverySale;
 
@@ -18,4 +18,3 @@ public record CashOnDeliverySaleCommand(
     string Currency,
     string PaymentMethod
 ) : ICommand<ErrorOr<Success>>;
-

@@ -1,5 +1,3 @@
-
-
 namespace Shopizy.SharedKernel.Domain.Models;
 
-public interface IDomainEvent  { }
+public interface IDomainEvent { }

@@ -13,7 +13,8 @@ public interface IPermissionLookup
     /// </summary>
     Task<IReadOnlyList<PermissionId>> GetIdsByNamesAsync(
         IEnumerable<string> names,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Drops the in-memory cache so the next call refreshes from the database.

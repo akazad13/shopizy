@@ -1,5 +1,5 @@
-﻿using Shopizy.SharedKernel.Application.Messaging;
-using ErrorOr;
+﻿using ErrorOr;
+using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Categories.Commands.UpdateCategory;
 
@@ -12,4 +12,3 @@ namespace Shopizy.Application.Categories.Commands.UpdateCategory;
 /// <param name="ParentId">The new parent category ID (null for root categories).</param>
 public record UpdateCategoryCommand(Guid UserId, Guid CategoryId, string Name, Guid? ParentId)
     : ICommand<ErrorOr<Success>>;
-

@@ -1,5 +1,5 @@
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.PromoCodes.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.PromoCodes;
 
@@ -12,17 +12,17 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
     /// Gets or sets the promo code string.
     /// </summary>
     public string Code { get; set; } = null!;
-    
+
     /// <summary>
     /// Gets or sets the description of the promo code.
     /// </summary>
     public string Description { get; set; } = null!;
-    
+
     /// <summary>
     /// Gets or sets the discount value.
     /// </summary>
     public decimal Discount { get; set; }
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether the discount is a percentage.
     /// </summary>
@@ -32,17 +32,17 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
     /// Gets or sets a value indicating whether the promo code is active.
     /// </summary>
     public bool IsActive { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the number of times this promo code has been used.
     /// </summary>
     public int NumOfTimeUsed { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the date and time when the promo code was created.
     /// </summary>
     public DateTime CreatedOn { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the date and time when the promo code was last modified.
     /// </summary>
@@ -75,7 +75,13 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
         );
     }
 
-    public void Update(string code, string description, decimal discount, bool isPercentage, bool isActive)
+    public void Update(
+        string code,
+        string description,
+        decimal discount,
+        bool isPercentage,
+        bool isActive
+    )
     {
         Code = code;
         Description = description;
@@ -91,7 +97,8 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
         decimal discount,
         bool isPercentage,
         bool isActive
-    ) : base(promoCodeId)
+    )
+        : base(promoCodeId)
     {
         Code = code;
         Description = description;

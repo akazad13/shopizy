@@ -1,7 +1,7 @@
 using Shopizy.Domain.Carts.ValueObjects;
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Carts.Entities;
 

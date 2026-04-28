@@ -6,15 +6,18 @@ namespace Shopizy.SharedKernel.Application.Behaviors;
 
 public class ValidationCommandHandlerDecorator<TCommand, TResponse>(
     ICommandHandler<TCommand, TResponse> innerHandler,
-    IValidator<TCommand>? validator = null)
-    : ICommandHandler<TCommand, TResponse>
+    IValidator<TCommand>? validator = null
+) : ICommandHandler<TCommand, TResponse>
     where TCommand : ICommand<TResponse>
     where TResponse : IErrorOr
 {
     private readonly ICommandHandler<TCommand, TResponse> _innerHandler = innerHandler;
     private readonly IValidator<TCommand>? _validator = validator;
 
-    public async Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken = default)
+    public async Task<TResponse> Handle(
+        TCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         if (_validator is null)
         {
@@ -38,8 +41,8 @@ public class ValidationCommandHandlerDecorator<TCommand, TResponse>(
 
 public class ValidationQueryHandlerDecorator<TQuery, TResponse>(
     IQueryHandler<TQuery, TResponse> innerHandler,
-    IValidator<TQuery>? validator = null)
-    : IQueryHandler<TQuery, TResponse>
+    IValidator<TQuery>? validator = null
+) : IQueryHandler<TQuery, TResponse>
     where TQuery : IQuery<TResponse>
     where TResponse : IErrorOr
 {

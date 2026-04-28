@@ -17,15 +17,13 @@ public abstract class ApiEndpoint : IEndpoint
         IDispatcher dispatcher,
         ICommand<ErrorOr<TResponse>> command,
         Func<TResponse, IResult> onSuccess,
-        Action<Exception> onError)
+        Action<Exception> onError
+    )
     {
         try
         {
             var result = await dispatcher.SendAsync(command);
-            return result.Match(
-                onSuccess,
-                errors => CustomResults.Problem(errors)
-            );
+            return result.Match(onSuccess, errors => CustomResults.Problem(errors));
         }
         catch (Exception ex)
         {
@@ -41,15 +39,13 @@ public abstract class ApiEndpoint : IEndpoint
         IDispatcher dispatcher,
         IQuery<ErrorOr<TResponse>> query,
         Func<TResponse, IResult> onSuccess,
-        Action<Exception> onError)
+        Action<Exception> onError
+    )
     {
         try
         {
             var result = await dispatcher.SendAsync(query);
-            return result.Match(
-                onSuccess,
-                errors => CustomResults.Problem(errors)
-            );
+            return result.Match(onSuccess, errors => CustomResults.Problem(errors));
         }
         catch (Exception ex)
         {

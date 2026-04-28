@@ -27,7 +27,11 @@ public class GetProductReviewsQueryHandler(
             return (Error)CustomErrors.Product.ProductNotFound;
         }
 
-        var reviews = await _productReviewRepository.GetReviewsByProductIdAsync(productId, request.PageNumber, request.PageSize);
+        var reviews = await _productReviewRepository.GetReviewsByProductIdAsync(
+            productId,
+            request.PageNumber,
+            request.PageSize
+        );
         return reviews.ToList();
     }
 }

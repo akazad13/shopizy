@@ -4,7 +4,12 @@ namespace Shopizy.Application.Common.Interfaces.Authentication;
 
 public interface IRefreshTokenStore
 {
-    Task StoreAsync(string token, UserId userId, TimeSpan ttl, CancellationToken cancellationToken = default);
+    Task StoreAsync(
+        string token,
+        UserId userId,
+        TimeSpan ttl,
+        CancellationToken cancellationToken = default
+    );
 
     Task<UserId?> ConsumeAsync(string token, CancellationToken cancellationToken = default);
 

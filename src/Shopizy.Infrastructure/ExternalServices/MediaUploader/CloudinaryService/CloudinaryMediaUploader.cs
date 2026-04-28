@@ -52,9 +52,10 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
                     _ => ErrorOr.Error.Failure(description: uploadResult.Error.Message),
                 };
             }
-            catch (Exception ex) when (
-                ex is HttpRequestException or TaskCanceledException or TimeoutException
-                && attempt < maxAttempts - 1)
+            catch (Exception ex)
+                when (ex is HttpRequestException or TaskCanceledException or TimeoutException
+                    && attempt < maxAttempts - 1
+                )
             {
                 await Task.Delay(
                     TimeSpan.FromMilliseconds(500 * Math.Pow(2, attempt)),

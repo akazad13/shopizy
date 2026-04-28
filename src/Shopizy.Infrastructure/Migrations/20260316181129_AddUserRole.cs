@@ -16,14 +16,13 @@ public partial class AddUserRole : Migration
             type: "nvarchar(20)",
             maxLength: 20,
             nullable: false,
-            defaultValue: "");
+            defaultValue: ""
+        );
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropColumn(
-            name: "Role",
-            table: "Users");
+        migrationBuilder.DropColumn(name: "Role", table: "Users");
     }
 }

@@ -19,7 +19,12 @@ public sealed class ProductQuestion : AggregateRoot<ProductQuestionId, Guid>, IA
 
     public static ProductQuestion Create(ProductId productId, UserId askedByUserId, string question)
     {
-        return new ProductQuestion(ProductQuestionId.CreateUnique(), productId, askedByUserId, question);
+        return new ProductQuestion(
+            ProductQuestionId.CreateUnique(),
+            productId,
+            askedByUserId,
+            question
+        );
     }
 
     public DomainResult<bool> AddAnswer(UserId answeredByUserId, string answer)
@@ -41,7 +46,8 @@ public sealed class ProductQuestion : AggregateRoot<ProductQuestionId, Guid>, IA
         ProductId productId,
         UserId askedByUserId,
         string question
-    ) : base(id)
+    )
+        : base(id)
     {
         ProductId = productId;
         AskedByUserId = askedByUserId;

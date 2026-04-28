@@ -1,6 +1,6 @@
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.SharedKernel.Domain.Models;
 using Shopizy.Domain.Products;
+using Shopizy.SharedKernel.Domain.Models;
 
 namespace Shopizy.Domain.Categories;
 
@@ -53,7 +53,8 @@ public class Category : AggregateRoot<CategoryId, Guid>
         this.AddDomainEvent(new Events.CategoryUpdatedDomainEvent(this));
     }
 
-    private Category(CategoryId categoryId, string name, Guid? parentId) : base(categoryId)
+    private Category(CategoryId categoryId, string name, Guid? parentId)
+        : base(categoryId)
     {
         Name = name;
         ParentId = parentId;

@@ -7,4 +7,3 @@ public interface IPasswordManager
     bool IsLatestHastversion(byte[] data);
     public bool IsLatestHastversion(string data);
 }
-

@@ -300,7 +300,11 @@ public static partial class LoggerMessages
         Level = LogLevel.Error,
         Message = "An unhandled exception has occurred: {Message}"
     )]
-    public static partial void UnhandledExceptionError(this ILogger logger, Exception ex, string message);
+    public static partial void UnhandledExceptionError(
+        this ILogger logger,
+        Exception ex,
+        string message
+    );
 
     [LoggerMessage(
         EventId = 1025,
@@ -323,57 +327,129 @@ public static partial class LoggerMessages
     )]
     public static partial void WishlistUpdateError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1028, Level = LogLevel.Error, Message = "An error occurred while fetching dashboard metrics.")]
+    [LoggerMessage(
+        EventId = 1028,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching dashboard metrics."
+    )]
     public static partial void DashboardMetricsFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1029, Level = LogLevel.Error, Message = "An error occurred while fetching admin orders list.")]
+    [LoggerMessage(
+        EventId = 1029,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching admin orders list."
+    )]
     public static partial void AdminOrdersListFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1030, Level = LogLevel.Error, Message = "An error occurred while fetching admin order detail.")]
+    [LoggerMessage(
+        EventId = 1030,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching admin order detail."
+    )]
     public static partial void AdminOrderDetailFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1031, Level = LogLevel.Error, Message = "An error occurred while updating order status.")]
+    [LoggerMessage(
+        EventId = 1031,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating order status."
+    )]
     public static partial void OrderStatusUpdateError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1032, Level = LogLevel.Error, Message = "An error occurred while updating user role.")]
+    [LoggerMessage(
+        EventId = 1032,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating user role."
+    )]
     public static partial void UserRoleUpdateError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1033, Level = LogLevel.Error, Message = "An error occurred while fetching users list.")]
+    [LoggerMessage(
+        EventId = 1033,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching users list."
+    )]
     public static partial void UsersListFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1034, Level = LogLevel.Error, Message = "An error occurred while fetching brands.")]
+    [LoggerMessage(
+        EventId = 1034,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching brands."
+    )]
     public static partial void BrandsFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1035, Level = LogLevel.Error, Message = "An error occurred while fetching product reviews.")]
+    [LoggerMessage(
+        EventId = 1035,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching product reviews."
+    )]
     public static partial void ProductReviewFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1036, Level = LogLevel.Error, Message = "An error occurred while creating product review.")]
+    [LoggerMessage(
+        EventId = 1036,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating product review."
+    )]
     public static partial void ProductReviewCreationError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1037, Level = LogLevel.Error, Message = "An error occurred while deleting product review.")]
+    [LoggerMessage(
+        EventId = 1037,
+        Level = LogLevel.Error,
+        Message = "An error occurred while deleting product review."
+    )]
     public static partial void ProductReviewDeleteError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1038, Level = LogLevel.Error, Message = "An error occurred while fetching promo codes.")]
+    [LoggerMessage(
+        EventId = 1038,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching promo codes."
+    )]
     public static partial void PromoCodeFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1039, Level = LogLevel.Error, Message = "An error occurred while creating promo code.")]
+    [LoggerMessage(
+        EventId = 1039,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating promo code."
+    )]
     public static partial void PromoCodeCreationError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1040, Level = LogLevel.Error, Message = "An error occurred while updating promo code.")]
+    [LoggerMessage(
+        EventId = 1040,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating promo code."
+    )]
     public static partial void PromoCodeUpdateError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1041, Level = LogLevel.Error, Message = "An error occurred while deleting promo code.")]
+    [LoggerMessage(
+        EventId = 1041,
+        Level = LogLevel.Error,
+        Message = "An error occurred while deleting promo code."
+    )]
     public static partial void PromoCodeDeleteError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1051, Level = LogLevel.Error, Message = "An error occurred while fetching brand.")]
+    [LoggerMessage(
+        EventId = 1051,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching brand."
+    )]
     public static partial void BrandFetchError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1052, Level = LogLevel.Error, Message = "An error occurred while creating brand.")]
+    [LoggerMessage(
+        EventId = 1052,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating brand."
+    )]
     public static partial void BrandCreationError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1053, Level = LogLevel.Error, Message = "An error occurred while updating brand.")]
+    [LoggerMessage(
+        EventId = 1053,
+        Level = LogLevel.Error,
+        Message = "An error occurred while updating brand."
+    )]
     public static partial void BrandUpdateError(this ILogger logger, Exception ex);
 
-    [LoggerMessage(EventId = 1054, Level = LogLevel.Error, Message = "An error occurred while deleting brand.")]
+    [LoggerMessage(
+        EventId = 1054,
+        Level = LogLevel.Error,
+        Message = "An error occurred while deleting brand."
+    )]
     public static partial void BrandDeleteError(this ILogger logger, Exception ex);
 }
