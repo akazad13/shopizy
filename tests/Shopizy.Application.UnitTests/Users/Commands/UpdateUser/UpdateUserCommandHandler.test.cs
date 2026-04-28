@@ -1,12 +1,12 @@
 using ErrorOr;
 using Moq;
-using Shopizy.SharedKernel.Application.Caching;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.UpdateUser;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Caching;
 
 namespace Shopizy.Application.UnitTests.Users.Commands.UpdateUser;
 
@@ -20,10 +20,7 @@ public class UpdateUserCommandHandlerTests
     {
         _mockUserRepository = new Mock<IUserRepository>();
         _mockCacheHelper = new Mock<ICacheHelper>();
-        _sut = new UpdateUserCommandHandler(
-            _mockUserRepository.Object,
-            _mockCacheHelper.Object
-        );
+        _sut = new UpdateUserCommandHandler(_mockUserRepository.Object, _mockCacheHelper.Object);
     }
 
     [Fact]
@@ -48,7 +45,10 @@ public class UpdateUserCommandHandlerTests
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
 
-        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(
+            x => x.GetUserByIdAsync(UserId.Create(command.UserId)),
+            Times.Once
+        );
         _mockUserRepository.Verify(x => x.Update(user), Times.Never);
         _mockCacheHelper.Verify(c => c.RemoveAsync($"user-{user.Id.Value}"), Times.Once);
     }
@@ -71,7 +71,10 @@ public class UpdateUserCommandHandlerTests
         Assert.NotEmpty(result.Errors);
         Assert.Equal(CustomErrors.User.UserNotFound, result.Errors[0]);
 
-        _mockUserRepository.Verify(x => x.GetUserByIdAsync(UserId.Create(command.UserId)), Times.Once);
+        _mockUserRepository.Verify(
+            x => x.GetUserByIdAsync(UserId.Create(command.UserId)),
+            Times.Once
+        );
         _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         _mockCacheHelper.Verify(c => c.RemoveAsync(It.IsAny<string>()), Times.Never);
     }

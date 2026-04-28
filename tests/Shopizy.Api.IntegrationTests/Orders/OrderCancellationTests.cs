@@ -8,7 +8,8 @@ using Xunit;
 
 namespace Shopizy.Api.IntegrationTests.Orders;
 
-public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class OrderCancellationTests(IntegrationTestWebAppFactory factory)
+    : BaseIntegrationTest(factory)
 {
     private async Task<(Guid UserId, Guid OrderId)> SetupOrderAsync()
     {
@@ -17,30 +18,56 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
         var catResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             new CreateCategoryRequest($"CancelCat {Guid.NewGuid().ToString()[..4]}", null),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         catResponse.EnsureSuccessStatusCode();
-        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(TestContext.Current.CancellationToken);
+        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var prodResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             new CreateProductRequest(
-                $"CancelProd {Guid.NewGuid().ToString()[..4]}", "Short", "Full", category!.Id,
-                49.99m, 1, 0m, $"CXL-{Guid.NewGuid().ToString()[..6]}", null,
-                "Black", "S", "cancel", Guid.NewGuid().ToString()[..8], 100, null),
-            TestContext.Current.CancellationToken);
+                $"CancelProd {Guid.NewGuid().ToString()[..4]}",
+                "Short",
+                "Full",
+                category!.Id,
+                49.99m,
+                1,
+                0m,
+                $"CXL-{Guid.NewGuid().ToString()[..6]}",
+                null,
+                "Black",
+                "S",
+                "cancel",
+                Guid.NewGuid().ToString()[..8],
+                100,
+                null
+            ),
+            TestContext.Current.CancellationToken
+        );
         prodResponse.EnsureSuccessStatusCode();
-        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(TestContext.Current.CancellationToken);
+        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var (_, userId) = await AuthenticateAsNewUserAsync("Cancel", "Customer");
 
         var orderResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/orders/checkout",
-            new CreateOrderRequest("", 1, new Price(0m, "USD"),
+            new CreateOrderRequest(
+                "",
+                1,
+                new Price(0m, "USD"),
                 [new OrderItemRequest(product!.ProductId, "Black", "S", 1)],
-                new Address("1 Cancel St", "City", "ST", "Country", "00001")),
-            TestContext.Current.CancellationToken);
+                new Address("1 Cancel St", "City", "ST", "Country", "00001")
+            ),
+            TestContext.Current.CancellationToken
+        );
         orderResponse.EnsureSuccessStatusCode();
-        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         return (userId, order!.OrderId);
     }
@@ -55,11 +82,14 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{userId}/orders/{orderId}/cancel",
             new CancelOrderRequest("Changed my mind"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(
+            TestContext.Current.CancellationToken
+        );
         result.ShouldNotBeNull();
         result.Message.ShouldNotBeNullOrEmpty();
     }
@@ -75,7 +105,8 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{anotherUserId}/orders/{orderId}/cancel",
             new CancelOrderRequest("Wrong user in route"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -91,7 +122,8 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{Guid.NewGuid()}/orders/{Guid.NewGuid()}/cancel",
             new CancelOrderRequest("No auth"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -109,7 +141,8 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory) : Base
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{userId}/orders/{Guid.NewGuid()}/cancel",
             new CancelOrderRequest("No such order"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);

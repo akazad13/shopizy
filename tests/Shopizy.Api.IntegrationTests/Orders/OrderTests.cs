@@ -19,19 +19,38 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         var catResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             new CreateCategoryRequest($"Order Cat {Guid.NewGuid().ToString()[..4]}", null),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         catResponse.EnsureSuccessStatusCode();
-        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(TestContext.Current.CancellationToken);
+        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var prodResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             new CreateProductRequest(
-                $"Order Product {Guid.NewGuid().ToString()[..4]}", "Short", "Full desc", category!.Id,
-                75.00m, 1, 0m, $"ORD-{Guid.NewGuid().ToString()[..6]}", null,
-                "Blue", "M", "order", Guid.NewGuid().ToString()[..8], 200, null),
-            TestContext.Current.CancellationToken);
+                $"Order Product {Guid.NewGuid().ToString()[..4]}",
+                "Short",
+                "Full desc",
+                category!.Id,
+                75.00m,
+                1,
+                0m,
+                $"ORD-{Guid.NewGuid().ToString()[..6]}",
+                null,
+                "Blue",
+                "M",
+                "order",
+                Guid.NewGuid().ToString()[..8],
+                200,
+                null
+            ),
+            TestContext.Current.CancellationToken
+        );
         prodResponse.EnsureSuccessStatusCode();
-        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(TestContext.Current.CancellationToken);
+        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         return (category.Id, product!.ProductId);
     }
@@ -47,9 +66,14 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         );
 
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/orders/checkout",
+            orderRequest,
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
-        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         return order!.OrderId;
     }
 
@@ -67,16 +91,27 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Blue", "M", 2)],
-            ShippingAddress: new Address("42 Commerce Rd", "Capital City", "CC", "Testland", "99999")
+            ShippingAddress: new Address(
+                "42 Commerce Rd",
+                "Capital City",
+                "CC",
+                "Testland",
+                "99999"
+            )
         );
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/orders/checkout",
+            orderRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         order.ShouldNotBeNull();
         order.UserId.ShouldBe(userId);
         order.OrderItems.ShouldNotBeEmpty();
@@ -90,13 +125,19 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         // Arrange
         ClearAuthToken();
         var orderRequest = new CreateOrderRequest(
-            "", 1, new Price(0m, "USD"),
+            "",
+            1,
+            new Price(0m, "USD"),
             [new OrderItemRequest(Guid.NewGuid(), "Red", "S", 1)],
-            new Address("1 St", "City", "ST", "Country", "00000"));
+            new Address("1 St", "City", "ST", "Country", "00000")
+        );
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/orders/checkout",
+            orderRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -112,11 +153,15 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{userId}/orders", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/orders",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         paged.Items.ShouldNotBeEmpty();
         paged.Items.All(o => o.UserId == userId).ShouldBeTrue();
@@ -132,7 +177,9 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{user1Id}/orders", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{user1Id}/orders",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -146,7 +193,9 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{Guid.NewGuid()}/orders", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{Guid.NewGuid()}/orders",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -162,11 +211,15 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{userId}/orders/{orderId}", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/orders/{orderId}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         order.ShouldNotBeNull();
         order.OrderId.ShouldBe(orderId);
         order.UserId.ShouldBe(userId);
@@ -182,7 +235,9 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{user1Id}/orders/{Guid.NewGuid()}", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{user1Id}/orders/{Guid.NewGuid()}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -198,11 +253,15 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act — filter by Pending status
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{userId}/orders?status=1", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/orders?status=1",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         paged.Items.ShouldNotBeEmpty();
         paged.Items.All(o => o.UserId == userId).ShouldBeTrue();
@@ -218,8 +277,12 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Get order details to obtain item price
         var orderResponse = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{userId}/orders/{orderId}", TestContext.Current.CancellationToken);
-        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/orders/{orderId}",
+            TestContext.Current.CancellationToken
+        );
+        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var paymentRequest = new Shopizy.Contracts.Payment.CardNotPresentSaleRequest(
             orderId,
@@ -232,11 +295,16 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/payments", paymentRequest, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/payments",
+            paymentRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(
+            TestContext.Current.CancellationToken
+        );
         result.ShouldNotBeNull();
         result.Message.ShouldNotBeNullOrEmpty();
     }

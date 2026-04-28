@@ -1,6 +1,6 @@
 using Mapster;
-using Shouldly;
 using Shopizy.Api.Common.Mapping;
+using Shouldly;
 using Xunit;
 
 namespace Shopizy.Architecture.Tests;

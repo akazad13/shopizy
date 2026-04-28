@@ -3,7 +3,6 @@ using Xunit;
 
 namespace Shopizy.Domain.ProductReviews.ValueObjects.UnitTests;
 
-
 public sealed class ProductReviewIdTests
 {
     /// <summary>
@@ -88,7 +87,7 @@ public sealed class ProductReviewIdTests
             Guid.NewGuid(),
             new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
             new Guid("00000000-0000-0000-0000-000000000001"),
-            new Guid("12345678-1234-1234-1234-123456789012")
+            new Guid("12345678-1234-1234-1234-123456789012"),
         };
     }
 
@@ -101,7 +100,9 @@ public sealed class ProductReviewIdTests
     [InlineData("00000000-0000-0000-0000-000000000000")] // Guid.Empty
     [InlineData("d8f3c2a1-4b6e-4f3a-9c7d-1e2f3a4b5c6d")] // Specific GUID
     [InlineData("12345678-1234-1234-1234-123456789012")] // Another specific GUID
-    public void GetEqualityComponents_WithVariousGuids_ShouldReturnEnumerableContainingValue(string guidValue)
+    public void GetEqualityComponents_WithVariousGuids_ShouldReturnEnumerableContainingValue(
+        string guidValue
+    )
     {
         // Arrange
         var guid = Guid.Parse(guidValue);

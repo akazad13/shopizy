@@ -9,7 +9,8 @@ using Xunit;
 
 namespace Shopizy.Api.IntegrationTests.Orders;
 
-public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory)
+    : BaseIntegrationTest(factory)
 {
     private const string OrderEndpoint = "/api/v1.0/orders/checkout";
 
@@ -20,19 +21,38 @@ public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory) : BaseI
         var catResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             new CreateCategoryRequest($"Idem Cat {Guid.NewGuid().ToString()[..4]}", null),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         catResponse.EnsureSuccessStatusCode();
-        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(TestContext.Current.CancellationToken);
+        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var prodResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             new CreateProductRequest(
-                $"Idem Product {Guid.NewGuid().ToString()[..4]}", "Short", "Full desc", category!.Id,
-                75.00m, 1, 0m, $"IDEM-{Guid.NewGuid().ToString()[..6]}", null,
-                "Blue", "M", "idem", Guid.NewGuid().ToString()[..8], 200, null),
-            TestContext.Current.CancellationToken);
+                $"Idem Product {Guid.NewGuid().ToString()[..4]}",
+                "Short",
+                "Full desc",
+                category!.Id,
+                75.00m,
+                1,
+                0m,
+                $"IDEM-{Guid.NewGuid().ToString()[..6]}",
+                null,
+                "Blue",
+                "M",
+                "idem",
+                Guid.NewGuid().ToString()[..8],
+                200,
+                null
+            ),
+            TestContext.Current.CancellationToken
+        );
         prodResponse.EnsureSuccessStatusCode();
-        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(TestContext.Current.CancellationToken);
+        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(
+            TestContext.Current.CancellationToken
+        );
         return product!.ProductId;
     }
 
@@ -45,11 +65,14 @@ public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory) : BaseI
             ShippingAddress: new Address("1 Test St", "Test City", "TS", "Test Country", "12345")
         );
 
-    private async Task<HttpResponseMessage> PostOrderAsync(CreateOrderRequest order, string? idempotencyKey)
+    private async Task<HttpResponseMessage> PostOrderAsync(
+        CreateOrderRequest order,
+        string? idempotencyKey
+    )
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, OrderEndpoint)
         {
-            Content = JsonContent.Create(order)
+            Content = JsonContent.Create(order),
         };
         request.Headers.Authorization = HttpClient.DefaultRequestHeaders.Authorization;
         if (idempotencyKey is not null)
@@ -87,11 +110,15 @@ public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory) : BaseI
 
         var first = await PostOrderAsync(order, idempotencyKey: key);
         first.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var firstBody = await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var firstBody = await first.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         var second = await PostOrderAsync(order, idempotencyKey: key);
         second.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var secondBody = await second.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var secondBody = await second.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken
+        );
 
         secondBody.ShouldBe(firstBody);
     }

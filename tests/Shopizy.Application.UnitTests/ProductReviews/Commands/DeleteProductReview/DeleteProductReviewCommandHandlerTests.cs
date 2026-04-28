@@ -4,7 +4,6 @@ using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
 using Shouldly;
 
-
 namespace Shopizy.Application.ProductReviews.Commands.DeleteProductReview.UnitTests;
 
 /// <summary>
@@ -27,7 +26,9 @@ public class DeleteProductReviewCommandHandlerTests
         var mockRepository = new Mock<IProductReviewRepository>();
 
         mockRepository
-            .Setup(x => x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId)))
+            .Setup(x =>
+                x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId))
+            )
             .ReturnsAsync((ProductReview?)null);
 
         var handler = new DeleteProductReviewCommandHandler(mockRepository.Object);
@@ -59,7 +60,9 @@ public class DeleteProductReviewCommandHandlerTests
         var mockRepository = new Mock<IProductReviewRepository>();
 
         mockRepository
-            .Setup(x => x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId)))
+            .Setup(x =>
+                x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId))
+            )
             .ReturnsAsync((ProductReview?)null);
 
         var handler = new DeleteProductReviewCommandHandler(mockRepository.Object);
@@ -70,7 +73,8 @@ public class DeleteProductReviewCommandHandlerTests
         // Assert
         mockRepository.Verify(
             x => x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == Guid.Empty)),
-            Times.Once);
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -81,7 +85,9 @@ public class DeleteProductReviewCommandHandlerTests
     [InlineData("00000000-0000-0000-0000-000000000000")]
     [InlineData("12345678-1234-1234-1234-123456789012")]
     [InlineData("ffffffff-ffff-ffff-ffff-ffffffffffff")]
-    public async Task Handle_VariousGuids_CallsRepositoryWithCorrectProductReviewId(string guidString)
+    public async Task Handle_VariousGuids_CallsRepositoryWithCorrectProductReviewId(
+        string guidString
+    )
     {
         // Arrange
         var reviewId = Guid.Parse(guidString);
@@ -102,6 +108,7 @@ public class DeleteProductReviewCommandHandlerTests
         // Assert
         mockRepository.Verify(
             x => x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId)),
-            Times.Once);
+            Times.Once
+        );
     }
 }

@@ -66,7 +66,10 @@ public class DeleteProductCommandHandlerTests
         Assert.True(result.IsError);
         Assert.Equal(CustomErrors.Product.ProductNotFound, result.FirstError);
 
-        _mockProductRepository.Verify(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()), Times.Once);
+        _mockProductRepository.Verify(
+            x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()),
+            Times.Once
+        );
         _mockProductRepository.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
     }
 }

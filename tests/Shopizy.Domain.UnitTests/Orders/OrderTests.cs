@@ -1,15 +1,15 @@
-using Xunit;
-using Shouldly;
+using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders;
-using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.Events;
+using Shopizy.Domain.Orders.ValueObjects;
+using Shopizy.Domain.Payments.Enums;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Common.Enums;
-using Shopizy.Domain.Payments.Enums;
+using Shouldly;
+using Xunit;
 
 namespace Shopizy.Domain.UnitTests.Orders;
 
@@ -26,11 +26,27 @@ public class OrderTests
         var shippingAddress = Address.CreateNew("Street", "City", "State", "Country", "12345");
         var orderItems = new List<OrderItem>
         {
-            OrderItem.Create(ProductId.CreateUnique(), "Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
+            OrderItem.Create(
+                ProductId.CreateUnique(),
+                "Product 1",
+                "url1",
+                Price.CreateNew(50, Currency.usd),
+                2,
+                "Red",
+                "M",
+                10
+            ),
         };
 
         // Act
-        var order = Order.Create(userId, promoCode, deliveryMethod, deliveryCharge, shippingAddress, orderItems);
+        var order = Order.Create(
+            userId,
+            promoCode,
+            deliveryMethod,
+            deliveryCharge,
+            shippingAddress,
+            orderItems
+        );
 
         // Assert
         order.ShouldNotBeNull();
@@ -66,10 +82,25 @@ public class OrderTests
         var deliveryCharge = Price.CreateNew(10, Currency.usd);
         var orderItems = new List<OrderItem>
         {
-            OrderItem.Create(ProductId.CreateUnique(), "Product 1", "url1", Price.CreateNew(50, Currency.usd), 2, "Red", "M", 10)
+            OrderItem.Create(
+                ProductId.CreateUnique(),
+                "Product 1",
+                "url1",
+                Price.CreateNew(50, Currency.usd),
+                2,
+                "Red",
+                "M",
+                10
+            ),
         };
-        var order = Order.Create(UserId.CreateUnique(), "", (int)DeliveryMethods.Standard, deliveryCharge, 
-            Address.CreateNew("S", "C", "ST", "CO", "Z"), orderItems);
+        var order = Order.Create(
+            UserId.CreateUnique(),
+            "",
+            (int)DeliveryMethods.Standard,
+            deliveryCharge,
+            Address.CreateNew("S", "C", "ST", "CO", "Z"),
+            orderItems
+        );
 
         // Act
         var total = order.GetTotal();

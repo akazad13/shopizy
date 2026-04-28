@@ -11,16 +11,30 @@ public class UpdateOrderStatusCommandValidatorTests
     [Fact]
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
-        var command = new UpdateOrderStatusCommand(Guid.Empty, Guid.NewGuid(), OrderStatus.Processing);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var command = new UpdateOrderStatusCommand(
+            Guid.Empty,
+            Guid.NewGuid(),
+            OrderStatus.Processing
+        );
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
     [Fact]
     public async Task Should_HaveError_When_OrderIdIsEmpty()
     {
-        var command = new UpdateOrderStatusCommand(Guid.NewGuid(), Guid.Empty, OrderStatus.Processing);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var command = new UpdateOrderStatusCommand(
+            Guid.NewGuid(),
+            Guid.Empty,
+            OrderStatus.Processing
+        );
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.OrderId);
     }
 
@@ -28,7 +42,10 @@ public class UpdateOrderStatusCommandValidatorTests
     public async Task Should_HaveError_When_StatusIsInvalidEnumValue()
     {
         var command = new UpdateOrderStatusCommand(Guid.NewGuid(), Guid.NewGuid(), (OrderStatus)99);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Status);
     }
 
@@ -42,7 +59,10 @@ public class UpdateOrderStatusCommandValidatorTests
     public async Task Should_NotHaveErrors_When_StatusIsValidEnumValue(OrderStatus status)
     {
         var command = new UpdateOrderStatusCommand(Guid.NewGuid(), Guid.NewGuid(), status);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

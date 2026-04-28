@@ -1,10 +1,10 @@
 using ErrorOr;
 using Moq;
-using Shouldly;
 using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory;
 

@@ -19,11 +19,15 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/users?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/users?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         paged.Items.ShouldNotBeEmpty();
     }
@@ -36,7 +40,9 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/users?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/users?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -50,7 +56,9 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/users?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/users?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -64,11 +72,15 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/users?pageNumber=1&pageSize=5", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/users?pageNumber=1&pageSize=5",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<UserDetails>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         paged.Items.Count.ShouldBeLessThanOrEqualTo(5);
     }
@@ -81,10 +93,16 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
         await AuthenticateAsAdminAsync();
 
         // Fetch all permission IDs so we can assign customer permissions
-        var allPermissions = await DbContext.Permissions.ToListAsync(TestContext.Current.CancellationToken);
+        var allPermissions = await DbContext.Permissions.ToListAsync(
+            TestContext.Current.CancellationToken
+        );
         var customerPermissionIds = allPermissions
-            .Where(p => p.Name.StartsWith("User.") || p.Name.StartsWith("Cart.") ||
-                        p.Name.StartsWith("Order.") || p.Name.StartsWith("Wishlist."))
+            .Where(p =>
+                p.Name.StartsWith("User.")
+                || p.Name.StartsWith("Cart.")
+                || p.Name.StartsWith("Order.")
+                || p.Name.StartsWith("Wishlist.")
+            )
             .Select(p => p.Id.Value)
             .ToList();
 
@@ -92,11 +110,16 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.PatchAsJsonAsync(
-            $"/api/v1.0/admin/users/{customerId}/role", updateRoleRequest, TestContext.Current.CancellationToken);
+            $"/api/v1.0/admin/users/{customerId}/role",
+            updateRoleRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(
+            TestContext.Current.CancellationToken
+        );
         result.ShouldNotBeNull();
         result.Message.ShouldNotBeNullOrEmpty();
     }
@@ -108,14 +131,19 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
         var (_, customerId) = await AuthenticateAsNewUserAsync("ToAdmin", "User");
         await AuthenticateAsAdminAsync();
 
-        var allPermissions = await DbContext.Permissions.ToListAsync(TestContext.Current.CancellationToken);
+        var allPermissions = await DbContext.Permissions.ToListAsync(
+            TestContext.Current.CancellationToken
+        );
         var allPermissionIds = allPermissions.Select(p => p.Id.Value).ToList();
 
         var updateRoleRequest = new UpdateUserRoleRequest("Admin", allPermissionIds);
 
         // Act
         var response = await HttpClient.PatchAsJsonAsync(
-            $"/api/v1.0/admin/users/{customerId}/role", updateRoleRequest, TestContext.Current.CancellationToken);
+            $"/api/v1.0/admin/users/{customerId}/role",
+            updateRoleRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -133,7 +161,8 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/admin/users/{targetUserId}/role",
             new UpdateUserRoleRequest("Admin", []),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -149,7 +178,8 @@ public class AdminUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/admin/users/{Guid.NewGuid()}/role",
             new UpdateUserRoleRequest("Admin", []),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);

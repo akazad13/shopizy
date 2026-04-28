@@ -14,7 +14,10 @@ public class UpdateWishlistCommandValidatorTests
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = ValidCommand() with { UserId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -22,7 +25,10 @@ public class UpdateWishlistCommandValidatorTests
     public async Task Should_HaveError_When_ProductIdIsEmpty()
     {
         var command = ValidCommand() with { ProductId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.ProductId);
     }
 
@@ -30,7 +36,10 @@ public class UpdateWishlistCommandValidatorTests
     public async Task Should_HaveError_When_ActionIsInvalidEnumValue()
     {
         var command = ValidCommand() with { Action = (WishlistAction)99 };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Action);
     }
 
@@ -40,7 +49,10 @@ public class UpdateWishlistCommandValidatorTests
     public async Task Should_NotHaveErrors_When_AllFieldsAreValid(WishlistAction action)
     {
         var command = ValidCommand() with { Action = action };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

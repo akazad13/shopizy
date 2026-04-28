@@ -1,8 +1,8 @@
 using System.Net;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Contracts.Product;
-using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
 using Shouldly;
 using Xunit;
 
@@ -27,7 +27,7 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
             100, // StockQuantity
             Price.CreateNew(100, Currency.usd),
             null,
-                null,
+            null,
             Constants.Product.Barcode,
             Constants.Product.Colors,
             Constants.Product.Sizes,
@@ -38,11 +38,16 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/products/{product.Id.Value}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/products/{product.Id.Value}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var productResponse = await response.Content.ReadFromJsonAsync<ProductDetailResponse>(TestContext.Current.CancellationToken);
+        var productResponse = await response.Content.ReadFromJsonAsync<ProductDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         productResponse.ShouldNotBeNull();
         productResponse.ProductId.ShouldBe(product.Id.Value);
         productResponse.Name.ShouldBe(Constants.Product.Name);
@@ -56,49 +61,53 @@ public class ProductTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         DbContext.Categories.Add(category);
 
         var product1 = Shopizy.Domain.Products.Product.Create(
-           "Product A",
-           "Short Desc A",
-           "Desc A",
-           category.Id,
-           "SKU-A",
-           100, // StockQuantity
-           Price.CreateNew(50, Currency.usd),
-           null,
-               null,
-           "BarcodeA",
-           "Red",
-           "L",
-           "TagA"
-       );
+            "Product A",
+            "Short Desc A",
+            "Desc A",
+            category.Id,
+            "SKU-A",
+            100, // StockQuantity
+            Price.CreateNew(50, Currency.usd),
+            null,
+            null,
+            "BarcodeA",
+            "Red",
+            "L",
+            "TagA"
+        );
         var product2 = Shopizy.Domain.Products.Product.Create(
-           "Product B",
-           "Short Desc B",
-           "Desc B",
-           category.Id,
-           "SKU-B",
-           100, // StockQuantity
-           Price.CreateNew(150, Currency.usd),
-           null,
-               null,
-           "BarcodeB",
-           "Blue",
-           "M",
-           "TagB"
-       );
+            "Product B",
+            "Short Desc B",
+            "Desc B",
+            category.Id,
+            "SKU-B",
+            100, // StockQuantity
+            Price.CreateNew(150, Currency.usd),
+            null,
+            null,
+            "BarcodeB",
+            "Blue",
+            "M",
+            "TagB"
+        );
 
         DbContext.Products.AddRange(product1, product2);
         await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
-        var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            "/api/v1.0/products",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var pagedResult = await response.Content.ReadFromJsonAsync<ProductsPagedResponse>(TestContext.Current.CancellationToken);
+        var pagedResult = await response.Content.ReadFromJsonAsync<ProductsPagedResponse>(
+            TestContext.Current.CancellationToken
+        );
         pagedResult.ShouldNotBeNull();
         pagedResult.TotalCount.ShouldBeGreaterThanOrEqualTo(2);
         pagedResult.Items.ShouldContain(p => p.ProductId == product1.Id.Value);
         pagedResult.Items.ShouldContain(p => p.ProductId == product2.Id.Value);
     }
 }
-

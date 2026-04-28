@@ -18,14 +18,13 @@ public class AddProductImageCommandValidatorTests
     public async Task Should_HaveError_When_FileIsNull()
     {
         // Arrange
-        var command = new AddProductImageCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            null!
-        );
+        var command = new AddProductImageCommand(Guid.NewGuid(), Guid.NewGuid(), null!);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.File);
@@ -39,14 +38,13 @@ public class AddProductImageCommandValidatorTests
         mockFile.Setup(f => f.Length).Returns(1024);
         mockFile.Setup(f => f.FileName).Returns("test.jpg");
 
-        var command = new AddProductImageCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            mockFile.Object
-        );
+        var command = new AddProductImageCommand(Guid.NewGuid(), Guid.NewGuid(), mockFile.Object);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.File);
@@ -61,14 +59,13 @@ public class AddProductImageCommandValidatorTests
         mockFile.Setup(f => f.FileName).Returns("product-image.png");
         mockFile.Setup(f => f.ContentType).Returns("image/png");
 
-        var command = new AddProductImageCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            mockFile.Object
-        );
+        var command = new AddProductImageCommand(Guid.NewGuid(), Guid.NewGuid(), mockFile.Object);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();

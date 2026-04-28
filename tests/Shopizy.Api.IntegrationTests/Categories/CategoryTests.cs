@@ -31,11 +31,14 @@ public class CategoryTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var categoryId = await CreateCategoryAsync("DeleteMe");
 
         // Act
-        var response = await HttpClient.DeleteAsync($"/api/v1.0/admin/categories/{categoryId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.DeleteAsync(
+            $"/api/v1.0/admin/categories/{categoryId}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        
+
         var categories = await ListCategoriesAsync();
         categories.Any(c => c.Id == categoryId).ShouldBeFalse();
     }
@@ -49,7 +52,11 @@ public class CategoryTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var updateRequest = new UpdateCategoryRequest("NewName", null);
 
         // Act
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/admin/categories/{categoryId}", updateRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/admin/categories/{categoryId}",
+            updateRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -63,7 +70,10 @@ public class CategoryTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var categoryId = await CreateCategoryAsync("GetMe");
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/categories/{categoryId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/categories/{categoryId}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

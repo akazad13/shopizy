@@ -1,8 +1,8 @@
-using Xunit;
-using Shouldly;
 using Shopizy.Domain.Carts.Entities;
 using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
+using Shouldly;
+using Xunit;
 
 namespace Shopizy.Domain.UnitTests.Carts;
 

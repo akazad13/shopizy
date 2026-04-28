@@ -11,7 +11,10 @@ public class CreateWishlistCommandValidatorTests
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = new CreateWishlistCommand(Guid.Empty);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -19,7 +22,10 @@ public class CreateWishlistCommandValidatorTests
     public async Task Should_NotHaveErrors_When_UserIdIsValid()
     {
         var command = new CreateWishlistCommand(Guid.NewGuid());
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -27,7 +33,10 @@ public class CreateWishlistCommandValidatorTests
     public async Task Should_NotHaveErrors_When_OptionalFieldsAreProvided()
     {
         var command = new CreateWishlistCommand(Guid.NewGuid(), "My Wishlist", IsPublic: true);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

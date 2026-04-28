@@ -17,11 +17,16 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/loyalty/earn", request, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/loyalty/earn",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(TestContext.Current.CancellationToken);
+        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(
+            TestContext.Current.CancellationToken
+        );
         account.ShouldNotBeNull();
         account.TotalPoints.ShouldBe(100);
     }
@@ -35,7 +40,10 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/loyalty/earn", request, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/loyalty/earn",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -50,7 +58,10 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty/earn", request, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty/earn",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -65,7 +76,8 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
         await HttpClient.PostAsJsonAsync(
             $"/api/v1.0/users/{userId}/loyalty/earn",
             new EarnPointsRequest(200, "Initial credit"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Switch back to user token to redeem
         SetAuthToken(userToken);
@@ -73,11 +85,16 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/loyalty/redeem", redeemRequest, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/loyalty/redeem",
+            redeemRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(TestContext.Current.CancellationToken);
+        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(
+            TestContext.Current.CancellationToken
+        );
         account.ShouldNotBeNull();
         account.TotalPoints.ShouldBe(150);
     }
@@ -91,7 +108,10 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty/redeem", request, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty/redeem",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -109,7 +129,8 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
         var response = await HttpClient.PostAsJsonAsync(
             $"/api/v1.0/users/{user1Id}/loyalty/redeem",
             new RedeemPointsRequest(10, "Test"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -124,17 +145,22 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
         await HttpClient.PostAsJsonAsync(
             $"/api/v1.0/users/{userId}/loyalty/earn",
             new EarnPointsRequest(75, "Test credit"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         SetAuthToken(userToken);
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{userId}/loyalty", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/loyalty",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(TestContext.Current.CancellationToken);
+        var account = await response.Content.ReadFromJsonAsync<LoyaltyAccountResponse>(
+            TestContext.Current.CancellationToken
+        );
         account.ShouldNotBeNull();
         account.TotalPoints.ShouldBe(75);
         account.Transactions.ShouldNotBeEmpty();
@@ -148,7 +174,9 @@ public class LoyaltyPointsTests(IntegrationTestWebAppFactory factory) : BaseInte
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty", TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{Guid.NewGuid()}/loyalty",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);

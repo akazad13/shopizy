@@ -11,18 +11,22 @@ public class CachingQueryHandlerDecoratorTests
 {
     private readonly Mock<IQueryHandler<TestCachableQuery, TestCacheResponse>> _mockInnerHandler;
     private readonly Mock<ICacheHelper> _mockCacheHelper;
-    private readonly Mock<ILogger<CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse>>> _mockLogger;
+    private readonly Mock<
+        ILogger<CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse>>
+    > _mockLogger;
     private readonly CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse> _sut;
 
     public CachingQueryHandlerDecoratorTests()
     {
         _mockInnerHandler = new Mock<IQueryHandler<TestCachableQuery, TestCacheResponse>>();
         _mockCacheHelper = new Mock<ICacheHelper>();
-        _mockLogger = new Mock<ILogger<CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse>>>();
+        _mockLogger =
+            new Mock<ILogger<CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse>>>();
         _sut = new CachingQueryHandlerDecorator<TestCachableQuery, TestCacheResponse>(
             _mockInnerHandler.Object,
             _mockCacheHelper.Object,
-            _mockLogger.Object);
+            _mockLogger.Object
+        );
     }
 
     [Fact]
@@ -41,8 +45,19 @@ public class CachingQueryHandlerDecoratorTests
         // Assert
         result.ShouldBe(cachedResponse);
         result.Value.ShouldBe("cached");
-        _mockInnerHandler.Verify(x => x.Handle(It.IsAny<TestCachableQuery>(), It.IsAny<CancellationToken>()), Times.Never);
-        _mockCacheHelper.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<TestCacheResponse>(), It.IsAny<TimeSpan?>()), Times.Never);
+        _mockInnerHandler.Verify(
+            x => x.Handle(It.IsAny<TestCachableQuery>(), It.IsAny<CancellationToken>()),
+            Times.Never
+        );
+        _mockCacheHelper.Verify(
+            x =>
+                x.SetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<TestCacheResponse>(),
+                    It.IsAny<TimeSpan?>()
+                ),
+            Times.Never
+        );
     }
 
     [Fact]
@@ -68,18 +83,25 @@ public class CachingQueryHandlerDecoratorTests
         result.ShouldBe(handlerResponse);
         result.Value.ShouldBe("from-source");
         _mockInnerHandler.Verify(x => x.Handle(query, It.IsAny<CancellationToken>()), Times.Once);
-        _mockCacheHelper.Verify(x => x.SetAsync(query.CacheKey, handlerResponse, query.Expiration), Times.Once);
+        _mockCacheHelper.Verify(
+            x => x.SetAsync(query.CacheKey, handlerResponse, query.Expiration),
+            Times.Once
+        );
     }
 
     [Fact]
     public async Task Handle_WhenQueryIsNotCachable_ShouldPassThroughToInnerHandlerWithNoCacheInteraction()
     {
         // Arrange
-        var nonCachableHandlerMock = new Mock<IQueryHandler<TestNonCachableQuery, TestCacheResponse>>();
+        var nonCachableHandlerMock =
+            new Mock<IQueryHandler<TestNonCachableQuery, TestCacheResponse>>();
         var sut = new CachingQueryHandlerDecorator<TestNonCachableQuery, TestCacheResponse>(
             nonCachableHandlerMock.Object,
             _mockCacheHelper.Object,
-            new Mock<ILogger<CachingQueryHandlerDecorator<TestNonCachableQuery, TestCacheResponse>>>().Object);
+            new Mock<
+                ILogger<CachingQueryHandlerDecorator<TestNonCachableQuery, TestCacheResponse>>
+            >().Object
+        );
 
         var query = new TestNonCachableQuery();
         var handlerResponse = new TestCacheResponse { Value = "direct" };
@@ -93,9 +115,23 @@ public class CachingQueryHandlerDecoratorTests
         // Assert
         result.ShouldBe(handlerResponse);
         result.Value.ShouldBe("direct");
-        nonCachableHandlerMock.Verify(x => x.Handle(query, It.IsAny<CancellationToken>()), Times.Once);
-        _mockCacheHelper.Verify(x => x.GetAsync<TestCacheResponse>(It.IsAny<string>()), Times.Never);
-        _mockCacheHelper.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<TestCacheResponse>(), It.IsAny<TimeSpan?>()), Times.Never);
+        nonCachableHandlerMock.Verify(
+            x => x.Handle(query, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
+        _mockCacheHelper.Verify(
+            x => x.GetAsync<TestCacheResponse>(It.IsAny<string>()),
+            Times.Never
+        );
+        _mockCacheHelper.Verify(
+            x =>
+                x.SetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<TestCacheResponse>(),
+                    It.IsAny<TimeSpan?>()
+                ),
+            Times.Never
+        );
     }
 
     // Cachable query: implements both IQuery and ICachableRequest

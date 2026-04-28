@@ -15,11 +15,15 @@ public class DashboardTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/dashboard/metrics", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/dashboard/metrics",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var metrics = await response.Content.ReadFromJsonAsync<DashboardMetricsResponse>(TestContext.Current.CancellationToken);
+        var metrics = await response.Content.ReadFromJsonAsync<DashboardMetricsResponse>(
+            TestContext.Current.CancellationToken
+        );
         metrics.ShouldNotBeNull();
         metrics.TotalUsers.ShouldBeGreaterThanOrEqualTo(0);
         metrics.TotalOrders.ShouldBeGreaterThanOrEqualTo(0);
@@ -36,7 +40,9 @@ public class DashboardTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/dashboard/metrics", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/dashboard/metrics",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -50,7 +56,9 @@ public class DashboardTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/dashboard/metrics", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/dashboard/metrics",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -65,11 +73,15 @@ public class DashboardTests(IntegrationTestWebAppFactory factory) : BaseIntegrat
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/dashboard/metrics", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/dashboard/metrics",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var metrics = await response.Content.ReadFromJsonAsync<DashboardMetricsResponse>(TestContext.Current.CancellationToken);
+        var metrics = await response.Content.ReadFromJsonAsync<DashboardMetricsResponse>(
+            TestContext.Current.CancellationToken
+        );
         metrics.ShouldNotBeNull();
         // At minimum, the admin user and the DashData user exist
         metrics.TotalUsers.ShouldBeGreaterThanOrEqualTo(1);

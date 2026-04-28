@@ -20,19 +20,38 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
         var catResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             new CreateCategoryRequest($"WF Cat {Guid.NewGuid().ToString()[..4]}", null),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         catResponse.EnsureSuccessStatusCode();
-        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(TestContext.Current.CancellationToken);
+        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var prodResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             new CreateProductRequest(
-                $"WF Product {Guid.NewGuid().ToString()[..4]}", "Short", "Full desc", category!.Id,
-                50.00m, 1, 0m, $"WF-{Guid.NewGuid().ToString()[..6]}", null,
-                "Black", "L", "wf", Guid.NewGuid().ToString()[..8], stockQuantity, null),
-            TestContext.Current.CancellationToken);
+                $"WF Product {Guid.NewGuid().ToString()[..4]}",
+                "Short",
+                "Full desc",
+                category!.Id,
+                50.00m,
+                1,
+                0m,
+                $"WF-{Guid.NewGuid().ToString()[..6]}",
+                null,
+                "Black",
+                "L",
+                "wf",
+                Guid.NewGuid().ToString()[..8],
+                stockQuantity,
+                null
+            ),
+            TestContext.Current.CancellationToken
+        );
         prodResponse.EnsureSuccessStatusCode();
-        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(TestContext.Current.CancellationToken);
+        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         return (category.Id, product!.ProductId);
     }
@@ -52,7 +71,8 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
         var addResponse = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{userId}/cart/items",
             new AddProductToCartRequest(productId, "Black", "L", 1),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         addResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Verify cart has the item before placing order
@@ -69,7 +89,10 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
             ShippingAddress: new Address("1 Workflow St", "Testville", "TV", "Testland", "00001")
         );
         var placeResponse = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/orders/checkout",
+            orderRequest,
+            TestContext.Current.CancellationToken
+        );
         placeResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Assert — cart should be empty after order is placed
@@ -98,9 +121,14 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
             ShippingAddress: new Address("2 Payment Ave", "Testville", "TV", "Testland", "00002")
         );
         var placeResponse = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/orders/checkout", orderRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/orders/checkout",
+            orderRequest,
+            TestContext.Current.CancellationToken
+        );
         placeResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var order = await placeResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await placeResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         order.ShouldNotBeNull();
         order.OrderStatus.ShouldBe("Pending");
         order.PaymentStatus.ShouldBe("Pending");
@@ -115,7 +143,10 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
             CardInfo: null
         );
         var paymentResponse = await HttpClient.PostAsJsonAsync(
-            $"/api/v1.0/users/{userId}/payments", paymentRequest, TestContext.Current.CancellationToken);
+            $"/api/v1.0/users/{userId}/payments",
+            paymentRequest,
+            TestContext.Current.CancellationToken
+        );
         paymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Assert — order status should be Processing and payment status Payed

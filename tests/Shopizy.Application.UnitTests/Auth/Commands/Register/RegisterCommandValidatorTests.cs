@@ -46,11 +46,11 @@ public class RegisterCommandValidatorTests
     }
 
     [Theory]
-    [InlineData("short")]              // too short
-    [InlineData("alllowercase!1a")]    // no uppercase
-    [InlineData("ALLUPPERCASE!1A")]    // no lowercase
-    [InlineData("NoDigitsHere!aa")]    // no digit
-    [InlineData("NoSpecialChar1aa")]   // no special character
+    [InlineData("short")] // too short
+    [InlineData("alllowercase!1a")] // no uppercase
+    [InlineData("ALLUPPERCASE!1A")] // no lowercase
+    [InlineData("NoDigitsHere!aa")] // no digit
+    [InlineData("NoSpecialChar1aa")] // no special character
     public void Should_HaveError_WhenPasswordIsWeak(string weakPassword)
     {
         var command = new RegisterCommand("First", "Last", "test@test.com", weakPassword);
@@ -69,7 +69,12 @@ public class RegisterCommandValidatorTests
     [Fact]
     public void Should_HaveError_WhenFirstNameExceedsMaxLength()
     {
-        var command = new RegisterCommand(new string('a', 51), "Last", "test@test.com", ValidPassword);
+        var command = new RegisterCommand(
+            new string('a', 51),
+            "Last",
+            "test@test.com",
+            ValidPassword
+        );
         var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.FirstName);
     }
@@ -77,7 +82,12 @@ public class RegisterCommandValidatorTests
     [Fact]
     public void Should_HaveError_WhenEmailExceedsMaxLength()
     {
-        var command = new RegisterCommand("First", "Last", new string('a', 246) + "@test.com", ValidPassword);
+        var command = new RegisterCommand(
+            "First",
+            "Last",
+            new string('a', 246) + "@test.com",
+            ValidPassword
+        );
         var result = _validator.TestValidate(command);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }

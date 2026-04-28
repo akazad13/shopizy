@@ -1,11 +1,11 @@
 using Moq;
-using Shouldly;
-using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Products;
+using Shopizy.Application.Products.Queries.GetProducts;
 using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Products;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProducts;
 
@@ -24,13 +24,38 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenProductsExist_ShouldReturnProductList()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1,
+            10
+        );
         var product = Product.Create(
-            "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
-            Price.CreateNew(10, Currency.usd), null, null, "B", "C", "S", "T");
+            "Name",
+            "Short",
+            "Long",
+            CategoryId.CreateUnique(),
+            "SKU",
+            100,
+            Price.CreateNew(10, Currency.usd),
+            null,
+            null,
+            "B",
+            "C",
+            "S",
+            "T"
+        );
         var products = new List<Product> { product };
 
-        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
+        _mockProductRepository
+            .Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
             .ReturnsAsync(((IReadOnlyList<Product>)products, 1));
 
         // Act
@@ -46,9 +71,22 @@ public class GetProductsQueryHandlerTestsRefactored
     public async Task Handle_WhenNoProductsFound_ShouldReturnEmptyList()
     {
         // Arrange
-        var query = new GetProductsQuery(null, null, null, null, null, null, null, null, null, 1, 10);
+        var query = new GetProductsQuery(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1,
+            10
+        );
 
-        _mockProductRepository.Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
+        _mockProductRepository
+            .Setup(r => r.GetProductsWithCountAsync(It.IsAny<ProductSearchCriteria>()))
             .ReturnsAsync(((IReadOnlyList<Product>)new List<Product>(), 0));
 
         // Act

@@ -10,7 +10,8 @@ using Xunit;
 
 namespace Shopizy.Api.IntegrationTests.Workflows;
 
-public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory)
+    : BaseIntegrationTest(factory)
 {
     [Fact]
     public async Task CustomerPurchaseWorkflow_FullJourney_Succeeds()
@@ -19,8 +20,14 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         var (adminToken, adminUserId) = await AuthenticateAsAdminAsync();
 
         var categoryRequest = new CreateCategoryRequest("Electronics", null);
-        var categoryResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", categoryRequest, cancellationToken: TestContext.Current.CancellationToken);
-        var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var categoryResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/categories",
+            categoryRequest,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+        var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         var productRequest = new CreateProductRequest(
             Name: "Smartphone X",
@@ -39,41 +46,86 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
             StockQuantity: 100,
             SpecificationIds: null
         );
-        var productResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", productRequest, cancellationToken: TestContext.Current.CancellationToken);
-        var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var productResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/products",
+            productRequest,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+        var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         ClearAuthToken();
 
         // 2. Customer Phase: Registration and Login
         var customerEmail = $"{Guid.NewGuid().ToString()[..8]}@customer.com";
-        var (customerToken, customerUserId) = await AuthenticateAsNewUserAsync("John", "Customer", customerEmail);
+        var (customerToken, customerUserId) = await AuthenticateAsNewUserAsync(
+            "John",
+            "Customer",
+            customerEmail
+        );
 
         // 3. User Journey: Browse Products
-        var getProductsResponse = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
+        var getProductsResponse = await HttpClient.GetAsync(
+            "/api/v1.0/products",
+            TestContext.Current.CancellationToken
+        );
         getProductsResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var pagedResult = await getProductsResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var pagedResult =
+            await getProductsResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(
+                cancellationToken: TestContext.Current.CancellationToken
+            );
         pagedResult!.Items.ShouldContain(p => p.ProductId == product!.ProductId);
 
         // 4. User Journey: Add to Cart
-        var addToCartRequest = new AddProductToCartRequest(product!.ProductId, "Midnight Blue", "256GB", 1);
-        var addToCartResponse = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{customerUserId}/cart/items", addToCartRequest, TestContext.Current.CancellationToken);
+        var addToCartRequest = new AddProductToCartRequest(
+            product!.ProductId,
+            "Midnight Blue",
+            "256GB",
+            1
+        );
+        var addToCartResponse = await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/users/{customerUserId}/cart/items",
+            addToCartRequest,
+            TestContext.Current.CancellationToken
+        );
         addToCartResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // 5. User Journey: Review Cart
-        var getCartResponse = await HttpClient.GetAsync($"/api/v1.0/users/{customerUserId}/cart", TestContext.Current.CancellationToken);
+        var getCartResponse = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{customerUserId}/cart",
+            TestContext.Current.CancellationToken
+        );
         getCartResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var cart = await getCartResponse.Content.ReadFromJsonAsync<CartResponse>(TestContext.Current.CancellationToken);
+        var cart = await getCartResponse.Content.ReadFromJsonAsync<CartResponse>(
+            TestContext.Current.CancellationToken
+        );
         cart!.CartItems.ShouldContain(i => i.ProductId == product.ProductId);
 
         // 6. User Journey: Place Order
         var shippingAddress = new Address("123 Main St", "New York", "NY", "USA", "10001");
         var deliveryCharge = new Price(10.00m, "USD");
-        var orderItems = new List<OrderItemRequest> { new(product.ProductId, "Midnight Blue", "256GB", 1) };
-        var createOrderRequest = new CreateOrderRequest("", 1, deliveryCharge, orderItems, shippingAddress);
+        var orderItems = new List<OrderItemRequest>
+        {
+            new(product.ProductId, "Midnight Blue", "256GB", 1),
+        };
+        var createOrderRequest = new CreateOrderRequest(
+            "",
+            1,
+            deliveryCharge,
+            orderItems,
+            shippingAddress
+        );
 
-        var placeOrderResponse = await HttpClient.PostAsJsonAsync("/api/v1.0/orders/checkout", createOrderRequest, TestContext.Current.CancellationToken);
+        var placeOrderResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/orders/checkout",
+            createOrderRequest,
+            TestContext.Current.CancellationToken
+        );
         placeOrderResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var order = await placeOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await placeOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         order.ShouldNotBeNull();
 
         // 7. User Journey: Process Payment
@@ -88,15 +140,26 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory) : B
         );
 
         // Payment uses [Route("api/v1.0/users/{userId:guid}/payments")]
-        var paymentResponse = await HttpClient.PostAsJsonAsync($"/api/v1.0/users/{customerUserId}/payments", paymentRequest, TestContext.Current.CancellationToken);
+        var paymentResponse = await HttpClient.PostAsJsonAsync(
+            $"/api/v1.0/users/{customerUserId}/payments",
+            paymentRequest,
+            TestContext.Current.CancellationToken
+        );
         paymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paymentResult = await paymentResponse.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
+        var paymentResult = await paymentResponse.Content.ReadFromJsonAsync<SuccessResult>(
+            TestContext.Current.CancellationToken
+        );
         paymentResult!.Message.ShouldNotBeNullOrEmpty();
 
         // 8. User Journey: Verify Order Status
-        var getOrderResponse = await HttpClient.GetAsync($"/api/v1.0/users/{customerUserId}/orders/{order.OrderId}", TestContext.Current.CancellationToken);
+        var getOrderResponse = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{customerUserId}/orders/{order.OrderId}",
+            TestContext.Current.CancellationToken
+        );
         getOrderResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var updatedOrder = await getOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var updatedOrder = await getOrderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         // Status should be Paid or Processing
         updatedOrder!.OrderStatus.ShouldNotBeNullOrEmpty();
         updatedOrder!.OrderStatus.ShouldNotBe("Pending");

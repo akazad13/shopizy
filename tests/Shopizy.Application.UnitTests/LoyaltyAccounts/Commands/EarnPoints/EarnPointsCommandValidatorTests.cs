@@ -7,14 +7,16 @@ public class EarnPointsCommandValidatorTests
 {
     private readonly EarnPointsCommandValidator _validator = new();
 
-    private static EarnPointsCommand ValidCommand() =>
-        new(Guid.NewGuid(), 100, "Welcome bonus");
+    private static EarnPointsCommand ValidCommand() => new(Guid.NewGuid(), 100, "Welcome bonus");
 
     [Fact]
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = ValidCommand() with { UserId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -24,7 +26,10 @@ public class EarnPointsCommandValidatorTests
     public async Task Should_HaveError_When_PointsIsNotPositive(int points)
     {
         var command = ValidCommand() with { Points = points };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Points);
     }
 
@@ -32,7 +37,10 @@ public class EarnPointsCommandValidatorTests
     public async Task Should_HaveError_When_DescriptionExceedsMaxLength()
     {
         var command = ValidCommand() with { Description = new string('A', 501) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
 
@@ -40,7 +48,10 @@ public class EarnPointsCommandValidatorTests
     public async Task Should_NotHaveErrors_When_AllFieldsAreValid()
     {
         var command = ValidCommand();
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -48,7 +59,10 @@ public class EarnPointsCommandValidatorTests
     public async Task Should_NotHaveError_When_DescriptionIsAtMaxLength()
     {
         var command = ValidCommand() with { Description = new string('A', 500) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveValidationErrorFor(x => x.Description);
     }
 }

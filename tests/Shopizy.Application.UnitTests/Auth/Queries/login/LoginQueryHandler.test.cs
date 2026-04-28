@@ -112,7 +112,9 @@ public class LoginQueryHandlerTests
             )
             .Returns(expectedToken);
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockUnitOfWork.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockUnitOfWork
+            .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
@@ -150,14 +152,18 @@ public class LoginQueryHandlerTests
 
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
         _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(true);
-        _mockPermissionRepository.Setup(r => r.GetAsync()).ReturnsAsync(new List<Permission>().AsReadOnly());
+        _mockPermissionRepository
+            .Setup(r => r.GetAsync())
+            .ReturnsAsync(new List<Permission>().AsReadOnly());
         _mockJwtTokenGenerator
             .Setup(j =>
                 j.GenerateToken(user.Id, user.Role.ToString(), It.IsAny<IEnumerable<string>>())
             )
             .Returns("generatedToken");
         _mockCartRepository.Setup(r => r.AddAsync(It.IsAny<Cart>())).Returns(Task.CompletedTask);
-        _mockUnitOfWork.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        _mockUnitOfWork
+            .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);
@@ -194,8 +200,8 @@ public class LoginQueryHandlerTests
         await cancellationTokenSource.CancelAsync();
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(
-            () => _handler.Handle(query, cancellationTokenSource.Token)
+        await Assert.ThrowsAsync<OperationCanceledException>(() =>
+            _handler.Handle(query, cancellationTokenSource.Token)
         );
 
         cancellationTokenSource.Dispose();

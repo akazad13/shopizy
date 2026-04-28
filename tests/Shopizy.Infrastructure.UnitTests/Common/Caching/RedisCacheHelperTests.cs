@@ -1,10 +1,10 @@
-using Xunit;
-using Moq;
-using Shouldly;
-using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using Shopizy.Infrastructure.Common.Caching;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Shopizy.Infrastructure.Common.Caching;
+using Shouldly;
+using StackExchange.Redis;
+using Xunit;
 
 namespace Shopizy.Infrastructure.UnitTests.Common.Caching;
 
@@ -21,7 +21,8 @@ public class RedisCacheHelperTests
         _mockDatabase = new Mock<IDatabase>();
         _mockLogger = new Mock<ILogger<RedisCacheHelper>>();
 
-        _mockMultiplexer.Setup(m => m.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
+        _mockMultiplexer
+            .Setup(m => m.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
             .Returns(_mockDatabase.Object);
 
         _cacheHelper = new RedisCacheHelper(_mockMultiplexer.Object, _mockLogger.Object);
@@ -34,7 +35,8 @@ public class RedisCacheHelperTests
         var key = "test-key";
         var value = new TestDto { Name = "Test" };
         var serializedValue = JsonSerializer.Serialize(value);
-        _mockDatabase.Setup(db => db.StringGetAsync(key, It.IsAny<CommandFlags>()))
+        _mockDatabase
+            .Setup(db => db.StringGetAsync(key, It.IsAny<CommandFlags>()))
             .ReturnsAsync(serializedValue);
 
         // Act
@@ -50,7 +52,8 @@ public class RedisCacheHelperTests
     public async Task GetAsync_WhenKeyDoesNotExist_ShouldReturnDefault()
     {
         // Arrange
-        _mockDatabase.Setup(db => db.StringGetAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()))
+        _mockDatabase
+            .Setup(db => db.StringGetAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()))
             .ReturnsAsync(RedisValue.Null);
 
         // Act
@@ -68,21 +71,29 @@ public class RedisCacheHelperTests
         var key = "set-key";
         var value = new TestDto { Name = "Set" };
 
-        _mockDatabase.Setup(db => db.StringSetAsync(
-            It.IsAny<RedisKey>(),
-            It.IsAny<RedisValue>(),
-            It.IsAny<TimeSpan?>(),
-            It.IsAny<bool>(),
-            It.IsAny<When>(),
-            It.IsAny<CommandFlags>()))
+        _mockDatabase
+            .Setup(db =>
+                db.StringSetAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<RedisValue>(),
+                    It.IsAny<TimeSpan?>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<When>(),
+                    It.IsAny<CommandFlags>()
+                )
+            )
             .ReturnsAsync(true);
 
-        _mockDatabase.Setup(db => db.StringSetAsync(
-            It.IsAny<RedisKey>(),
-            It.IsAny<RedisValue>(),
-            It.IsAny<TimeSpan?>(),
-            It.IsAny<When>(),
-            It.IsAny<CommandFlags>()))
+        _mockDatabase
+            .Setup(db =>
+                db.StringSetAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<RedisValue>(),
+                    It.IsAny<TimeSpan?>(),
+                    It.IsAny<When>(),
+                    It.IsAny<CommandFlags>()
+                )
+            )
             .ReturnsAsync(true);
 
         // Act
@@ -91,14 +102,35 @@ public class RedisCacheHelperTests
         // Assert
         // Explicitly cast to IDatabaseAsync to ensure we're verifying the interface member correctly
         var databaseAsync = _mockDatabase.As<IDatabaseAsync>();
-        
-        try 
+
+        try
         {
-            databaseAsync.Verify(db => db.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan?>(), It.IsAny<bool>(), It.IsAny<When>(), It.IsAny<CommandFlags>()), Times.Once);
-        } 
-        catch 
+            databaseAsync.Verify(
+                db =>
+                    db.StringSetAsync(
+                        It.IsAny<RedisKey>(),
+                        It.IsAny<RedisValue>(),
+                        It.IsAny<TimeSpan?>(),
+                        It.IsAny<bool>(),
+                        It.IsAny<When>(),
+                        It.IsAny<CommandFlags>()
+                    ),
+                Times.Once
+            );
+        }
+        catch
         {
-            databaseAsync.Verify(db => db.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan?>(), It.IsAny<When>(), It.IsAny<CommandFlags>()), Times.Once);
+            databaseAsync.Verify(
+                db =>
+                    db.StringSetAsync(
+                        It.IsAny<RedisKey>(),
+                        It.IsAny<RedisValue>(),
+                        It.IsAny<TimeSpan?>(),
+                        It.IsAny<When>(),
+                        It.IsAny<CommandFlags>()
+                    ),
+                Times.Once
+            );
         }
     }
 

@@ -1,7 +1,6 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using Shouldly;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Commands.AddProductImage;
@@ -11,6 +10,7 @@ using Shopizy.Application.UnitTests.TestUtils.Constants;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.ValueObjects;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Products.Commands.AddProductImage;
 
@@ -34,7 +34,11 @@ public class AddProductImageCommandHandlerTests
     public async Task Should_ThrowException_WhenFileIsNull()
     {
         // Arrange
-        var command = new AddProductImageCommand(Constants.User.Id.Value, Constants.Product.Id.Value, null);
+        var command = new AddProductImageCommand(
+            Constants.User.Id.Value,
+            Constants.Product.Id.Value,
+            null
+        );
 
         // Act
         var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
@@ -49,7 +53,10 @@ public class AddProductImageCommandHandlerTests
     public async Task Should_ReturnErrorResponse_WhenProductIsNotFound()
     {
         // Arrange
-        var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, Constants.Product.Id.Value);
+        var command = AddProductImageCommandUtils.CreateCommand(
+            Constants.User.Id.Value,
+            Constants.Product.Id.Value
+        );
 
         _mockProductRepository
             .Setup(x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()))
@@ -72,7 +79,10 @@ public class AddProductImageCommandHandlerTests
         var productImage = ProductFactory.CreateProductImage();
         product.AddProductImage(productImage);
 
-        var command = AddProductImageCommandUtils.CreateCommand(Constants.User.Id.Value, product.Id.Value);
+        var command = AddProductImageCommandUtils.CreateCommand(
+            Constants.User.Id.Value,
+            product.Id.Value
+        );
 
         _mockProductRepository
             .Setup(p => p.GetProductByIdForUpdateAsync(ProductId.Create(command.ProductId)))
@@ -81,10 +91,11 @@ public class AddProductImageCommandHandlerTests
         _mockMediaUploader
             .Setup(cl => cl.UploadPhotoAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
-                (ErrorOr<PhotoUploadResult>)new PhotoUploadResult(
-                    Constants.ProductImage.ImageUrl,
-                    Constants.ProductImage.PublicId
-                )
+                (ErrorOr<PhotoUploadResult>)
+                    new PhotoUploadResult(
+                        Constants.ProductImage.ImageUrl,
+                        Constants.ProductImage.PublicId
+                    )
             );
 
         _mockProductRepository.Setup(p => p.Update(product));

@@ -2,7 +2,6 @@ using ErrorOr;
 using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.Common.Interfaces.Services;
-using Shopizy.SharedKernel.Application.Models;
 using Shopizy.Application.Payments.Commands.CardNotPresentSale;
 using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.TestUtils.Constants;
@@ -10,6 +9,7 @@ using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.SharedKernel.Application.Models;
 using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Payments.Commands.CardNotPresentSale;
@@ -42,7 +42,8 @@ public class CardNotPresentSaleCommandHandlerTests
     {
         // Arrange
         var command = CreateCommand();
-        _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
             .ReturnsAsync((Shopizy.Domain.Orders.Order?)null);
 
         // Act
@@ -62,9 +63,12 @@ public class CardNotPresentSaleCommandHandlerTests
         var user = UserFactory.CreateUser();
         user.UpdateCustomerId("cus_123");
 
-        _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+            .ReturnsAsync(order);
         _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
-        _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
+        _mockPaymentService
+            .Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(Error.Failure("payment.failed", "Failed to collect the payment."));
 
         // Act
@@ -84,9 +88,12 @@ public class CardNotPresentSaleCommandHandlerTests
         var user = UserFactory.CreateUser();
         user.UpdateCustomerId("cus_123");
 
-        _mockOrderRepository.Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>())).ReturnsAsync(order);
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+            .ReturnsAsync(order);
         _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
-        _mockPaymentService.Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
+        _mockPaymentService
+            .Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
             .ReturnsAsync(new CreateSaleResponse { ChargeId = "ch_123" });
 
         // Act

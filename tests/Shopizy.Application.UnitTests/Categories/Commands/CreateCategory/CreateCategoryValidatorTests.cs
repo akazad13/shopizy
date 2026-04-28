@@ -19,7 +19,10 @@ public class CreateCategoryValidatorTests
         var command = new CreateCategoryCommand(Guid.NewGuid(), "", null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -32,7 +35,10 @@ public class CreateCategoryValidatorTests
         var command = new CreateCategoryCommand(Guid.NewGuid(), null!, null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -46,7 +52,10 @@ public class CreateCategoryValidatorTests
         var command = new CreateCategoryCommand(Guid.NewGuid(), longName, null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -59,7 +68,10 @@ public class CreateCategoryValidatorTests
         var command = new CreateCategoryCommand(Guid.NewGuid(), "Electronics", null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -73,7 +85,10 @@ public class CreateCategoryValidatorTests
         var command = new CreateCategoryCommand(Guid.NewGuid(), maxLengthName, null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -83,14 +98,13 @@ public class CreateCategoryValidatorTests
     public async Task Should_NotHaveError_When_AllFieldsAreValid()
     {
         // Arrange
-        var command = new CreateCategoryCommand(
-            Guid.NewGuid(),
-            "Electronics",
-            Guid.NewGuid()
-        );
+        var command = new CreateCategoryCommand(Guid.NewGuid(), "Electronics", Guid.NewGuid());
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();

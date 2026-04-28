@@ -19,7 +19,10 @@ public class DeleteCategoryValidatorTests
         var command = new DeleteCategoryCommand(Guid.NewGuid(), Guid.NewGuid());
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -32,7 +35,10 @@ public class DeleteCategoryValidatorTests
         var command = new DeleteCategoryCommand(Guid.Empty, Guid.NewGuid());
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -45,7 +51,10 @@ public class DeleteCategoryValidatorTests
         var command = new DeleteCategoryCommand(Guid.NewGuid(), Guid.Empty);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.CategoryId);
@@ -58,7 +67,10 @@ public class DeleteCategoryValidatorTests
         var command = new DeleteCategoryCommand(Guid.Empty, Guid.Empty);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.CategoryId);

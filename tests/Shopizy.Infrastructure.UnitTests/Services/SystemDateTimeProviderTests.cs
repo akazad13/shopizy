@@ -1,7 +1,6 @@
 ﻿using Shouldly;
 using Xunit;
 
-
 namespace Shopizy.Infrastructure.Services.UnitTests;
 
 public class SystemDateTimeProviderTests

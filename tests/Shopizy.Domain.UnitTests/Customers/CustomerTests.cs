@@ -1,7 +1,7 @@
-using Shouldly;
-using Xunit;
 using Shopizy.Domain.Customers;
 using Shopizy.Domain.Orders.ValueObjects;
+using Shouldly;
+using Xunit;
 
 namespace Shopizy.Domain.UnitTests.Customers;
 

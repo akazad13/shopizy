@@ -1,7 +1,7 @@
+using Shopizy.Contracts.Category;
+using Shopizy.Contracts.Product;
 using Shouldly;
 using Xunit;
-using Shopizy.Contracts.Product;
-using Shopizy.Contracts.Category;
 
 namespace Shopizy.Api.IntegrationTests.Workflows;
 
@@ -22,15 +22,21 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
         var categoryResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             categoryRequest,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         if (!categoryResponse.IsSuccessStatusCode)
         {
-            var errorContent = await categoryResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            throw new InvalidOperationException($"Category creation failed with status {categoryResponse.StatusCode}. Error: {errorContent}");
+            var errorContent = await categoryResponse.Content.ReadAsStringAsync(
+                TestContext.Current.CancellationToken
+            );
+            throw new InvalidOperationException(
+                $"Category creation failed with status {categoryResponse.StatusCode}. Error: {errorContent}"
+            );
         }
 
         var category = await categoryResponse.Content.ReadFromJsonAsync<CategoryResponse>(
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         category.ShouldNotBeNull();
         category.Name.ShouldBe("Electronics");
 
@@ -56,11 +62,13 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
         var productResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             productRequest,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         productResponse.EnsureSuccessStatusCode();
 
         var product = await productResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         product.ShouldNotBeNull();
         product.Name.ShouldBe("Laptop Pro");
         product.CategoryId.ShouldBe(category.Id);
@@ -68,22 +76,27 @@ public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseInte
         // 5. Retrieve the product
         var getProductResponse = await HttpClient.GetAsync(
             $"/api/v1.0/products/{product.ProductId}",
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         getProductResponse.EnsureSuccessStatusCode();
 
-        var retrievedProduct = await getProductResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(
-            TestContext.Current.CancellationToken);
+        var retrievedProduct =
+            await getProductResponse.Content.ReadFromJsonAsync<ProductDetailResponse>(
+                TestContext.Current.CancellationToken
+            );
         retrievedProduct.ShouldNotBeNull();
         retrievedProduct.Name.ShouldBe("Laptop Pro");
 
         // 6. Search for the product
         var searchResponse = await HttpClient.GetAsync(
             "/api/v1.0/products?name=Laptop",
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         searchResponse.EnsureSuccessStatusCode();
 
         var pagedResult = await searchResponse.Content.ReadFromJsonAsync<ProductsPagedResponse>(
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         pagedResult.ShouldNotBeNull();
         pagedResult.Items.ShouldContain(p => p.ProductId == product.ProductId);
     }

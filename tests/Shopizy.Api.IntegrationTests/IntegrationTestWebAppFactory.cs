@@ -1,47 +1,52 @@
-using Xunit;
+using System.Threading.RateLimiting;
+using Docker.DotNet.Models;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.Infrastructure.Common.Persistence.Interceptors;
-using Testcontainers.MsSql;
-using Shopizy.SharedKernel.Application.Caching;
-using Shopizy.SharedKernel.Application.Models;
+using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Application.Products.Common;
 using Shopizy.Domain.Users.ValueObjects;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Options;
-using System.Threading.RateLimiting;
-using ErrorOr;
-using Docker.DotNet.Models;
+using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Common.Persistence.Interceptors;
+using Shopizy.SharedKernel.Application.Caching;
+using Shopizy.SharedKernel.Application.Models;
+using Testcontainers.MsSql;
+using Xunit;
 
 namespace Shopizy.Api.IntegrationTests;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
-        .Build();
+    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder(
+        "mcr.microsoft.com/mssql/server:2022-latest"
+    ).Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         builder.UseEnvironment("Testing");
 
-        builder.ConfigureAppConfiguration((context, config) =>
-        {
-            config.AddInMemoryCollection(new Dictionary<string, string?>
+        builder.ConfigureAppConfiguration(
+            (context, config) =>
             {
-                ["JwtSettings:Secret"] = "super-secret-key-that-is-at-least-32-chars-long",
-                ["JwtSettings:Issuer"] = "Shopizy",
-                ["JwtSettings:Audience"] = "Shopizy",
-                ["JwtSettings:TokenExpirationMinutes"] = "60",
-                ["RedisCacheSettings:Endpoint"] = "localhost",
-                ["RedisCacheSettings:Port"] = "6379"
-            });
-        });
+                config.AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                        ["JwtSettings:Secret"] = "super-secret-key-that-is-at-least-32-chars-long",
+                        ["JwtSettings:Issuer"] = "Shopizy",
+                        ["JwtSettings:Audience"] = "Shopizy",
+                        ["JwtSettings:TokenExpirationMinutes"] = "60",
+                        ["RedisCacheSettings:Endpoint"] = "localhost",
+                        ["RedisCacheSettings:Port"] = "6379",
+                    }
+                );
+            }
+        );
 
         builder.ConfigureTestServices(services =>
         {
@@ -49,28 +54,43 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             // Remove the existing DbContext registration (if any)
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
 
-            services.AddDbContext<AppDbContext>((sp, options) =>
-            {
-                var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
-                options.UseSqlServer(_dbContainer.GetConnectionString(),
-                        o =>
-                        {
-                            o.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                            o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                        })
-                    .AddInterceptors(interceptor);
-            });
+            services.AddDbContext<AppDbContext>(
+                (sp, options) =>
+                {
+                    var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
+                    options
+                        .UseSqlServer(
+                            _dbContainer.GetConnectionString(),
+                            o =>
+                            {
+                                o.EnableRetryOnFailure(
+                                    maxRetryCount: 3,
+                                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                                    errorNumbersToAdd: null
+                                );
+                                o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                            }
+                        )
+                        .AddInterceptors(interceptor);
+                }
+            );
 
             // Override JWT validation for testing
             services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(
-                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme,
+                Microsoft
+                    .AspNetCore
+                    .Authentication
+                    .JwtBearer
+                    .JwtBearerDefaults
+                    .AuthenticationScheme,
                 options =>
                 {
                     options.TokenValidationParameters.ValidateIssuer = false;
                     options.TokenValidationParameters.ValidateAudience = false;
                     options.TokenValidationParameters.ValidateIssuerSigningKey = false;
                     options.RequireHttpsMetadata = false;
-                });
+                }
+            );
 
             // Replace Redis cache with In-Memory stub
             services.RemoveAll(typeof(ICacheHelper));
@@ -97,21 +117,27 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             services.RemoveAll<IConfigureOptions<RateLimiterOptions>>();
             services.Configure<RateLimiterOptions>(options =>
             {
-                options.AddFixedWindowLimiter("auth", o =>
-                {
-                    o.Window = TimeSpan.FromSeconds(1);
-                    o.PermitLimit = 10000;
-                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                    o.QueueLimit = 0;
-                });
-                options.AddSlidingWindowLimiter("api", o =>
-                {
-                    o.Window = TimeSpan.FromSeconds(1);
-                    o.SegmentsPerWindow = 1;
-                    o.PermitLimit = 10000;
-                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                    o.QueueLimit = 0;
-                });
+                options.AddFixedWindowLimiter(
+                    "auth",
+                    o =>
+                    {
+                        o.Window = TimeSpan.FromSeconds(1);
+                        o.PermitLimit = 10000;
+                        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                        o.QueueLimit = 0;
+                    }
+                );
+                options.AddSlidingWindowLimiter(
+                    "api",
+                    o =>
+                    {
+                        o.Window = TimeSpan.FromSeconds(1);
+                        o.SegmentsPerWindow = 1;
+                        o.PermitLimit = 10000;
+                        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                        o.QueueLimit = 0;
+                    }
+                );
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
         });
@@ -119,15 +145,26 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public class InMemoryRefreshTokenStore : IRefreshTokenStore
     {
-        private readonly System.Collections.Concurrent.ConcurrentDictionary<string, UserId> _tokens = new(StringComparer.Ordinal);
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<
+            string,
+            UserId
+        > _tokens = new(StringComparer.Ordinal);
 
-        public Task StoreAsync(string token, UserId userId, TimeSpan ttl, CancellationToken cancellationToken = default)
+        public Task StoreAsync(
+            string token,
+            UserId userId,
+            TimeSpan ttl,
+            CancellationToken cancellationToken = default
+        )
         {
             _tokens[token] = userId;
             return Task.CompletedTask;
         }
 
-        public Task<UserId?> ConsumeAsync(string token, CancellationToken cancellationToken = default)
+        public Task<UserId?> ConsumeAsync(
+            string token,
+            CancellationToken cancellationToken = default
+        )
         {
             _tokens.TryRemove(token, out var userId);
             return Task.FromResult(userId);
@@ -139,7 +176,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             return Task.CompletedTask;
         }
 
-        public Task RevokeAllForUserAsync(UserId userId, CancellationToken cancellationToken = default)
+        public Task RevokeAllForUserAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default
+        )
         {
             ArgumentNullException.ThrowIfNull(userId);
             foreach (var entry in _tokens.Where(kvp => kvp.Value.Value == userId.Value).ToList())
@@ -152,15 +192,26 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public class InMemoryIdempotencyStore : IIdempotencyStore
     {
-        private readonly System.Collections.Concurrent.ConcurrentDictionary<string, IdempotencyRecord> _records = new(StringComparer.Ordinal);
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<
+            string,
+            IdempotencyRecord
+        > _records = new(StringComparer.Ordinal);
 
-        public Task<IdempotencyRecord?> TryGetAsync(string key, CancellationToken cancellationToken = default)
+        public Task<IdempotencyRecord?> TryGetAsync(
+            string key,
+            CancellationToken cancellationToken = default
+        )
         {
             _records.TryGetValue(key, out var record);
             return Task.FromResult<IdempotencyRecord?>(record);
         }
 
-        public Task StoreAsync(string key, IdempotencyRecord record, TimeSpan ttl, CancellationToken cancellationToken = default)
+        public Task StoreAsync(
+            string key,
+            IdempotencyRecord record,
+            TimeSpan ttl,
+            CancellationToken cancellationToken = default
+        )
         {
             _records[key] = record;
             return Task.CompletedTask;
@@ -192,14 +243,21 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public class MockPaymentService : IPaymentService
     {
-        public Task<ErrorOr.ErrorOr<CustomerResource>> CreateCustomer(string email, string name, CancellationToken cancellationToken)
+        public Task<ErrorOr.ErrorOr<CustomerResource>> CreateCustomer(
+            string email,
+            string name,
+            CancellationToken cancellationToken
+        )
         {
             return Task.FromResult<ErrorOr.ErrorOr<CustomerResource>>(
                 new CustomerResource("cus_mock_123", email, name)
             );
         }
 
-        public Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken) => throw new NotImplementedException();
+        public Task<ErrorOr<Success>> CreateRefundAsync(
+            string chargeId,
+            CancellationToken cancellationToken
+        ) => throw new NotImplementedException();
 
         public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
         {
@@ -219,7 +277,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                     PaymentMethodId = request.PaymentMethodId,
                     PaymentMethodTypes = request.PaymentMethodTypes ?? Array.Empty<string>(),
                     Status = "succeeded",
-                    Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                    Metadata = new Dictionary<string, string>(StringComparer.Ordinal),
                 }
             );
         }
@@ -227,7 +285,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public class MockMediaUploader : IMediaUploader
     {
-        public Task<ErrorOr.ErrorOr<PhotoUploadResult>> UploadPhotoAsync(IFormFile file, CancellationToken cancellationToken = default)
+        public Task<ErrorOr.ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
+            IFormFile file,
+            CancellationToken cancellationToken = default
+        )
         {
             return Task.FromResult<ErrorOr.ErrorOr<PhotoUploadResult>>(
                 new PhotoUploadResult("https://mock.cloudinary.com/image.jpg", "mock_public_id")

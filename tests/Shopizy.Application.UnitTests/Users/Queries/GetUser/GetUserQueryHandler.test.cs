@@ -1,6 +1,6 @@
 using Moq;
-using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Users.Queries.GetUser;
 using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Users.Queries.GetUser;
@@ -15,9 +15,7 @@ public class GetUserQueryHandlerTestsRefactored
     {
         _mockUserRepository = new Mock<IUserRepository>();
         _mockOrderRepository = new Mock<IOrderRepository>();
-        _handler = new GetUserQueryHandler(
-            _mockUserRepository.Object,
-            _mockOrderRepository.Object);
+        _handler = new GetUserQueryHandler(_mockUserRepository.Object, _mockOrderRepository.Object);
     }
 
     private UserDto CreateSampleUserDto(Guid userId)

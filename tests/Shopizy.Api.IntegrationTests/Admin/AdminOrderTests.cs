@@ -18,30 +18,56 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
         var catResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/categories",
             new CreateCategoryRequest($"AdminOrd Cat {Guid.NewGuid().ToString()[..4]}", null),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         catResponse.EnsureSuccessStatusCode();
-        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(TestContext.Current.CancellationToken);
+        var category = await catResponse.Content.ReadFromJsonAsync<CategoryResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         var prodResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/admin/products",
             new CreateProductRequest(
-                $"AdminOrd Prod {Guid.NewGuid().ToString()[..4]}", "Short", "Full", category!.Id,
-                99.00m, 1, 0m, $"AO-{Guid.NewGuid().ToString()[..6]}", null,
-                "Red", "M", "admin,order", Guid.NewGuid().ToString()[..8], 100, null),
-            TestContext.Current.CancellationToken);
+                $"AdminOrd Prod {Guid.NewGuid().ToString()[..4]}",
+                "Short",
+                "Full",
+                category!.Id,
+                99.00m,
+                1,
+                0m,
+                $"AO-{Guid.NewGuid().ToString()[..6]}",
+                null,
+                "Red",
+                "M",
+                "admin,order",
+                Guid.NewGuid().ToString()[..8],
+                100,
+                null
+            ),
+            TestContext.Current.CancellationToken
+        );
         prodResponse.EnsureSuccessStatusCode();
-        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(TestContext.Current.CancellationToken);
+        var product = await prodResponse.Content.ReadFromJsonAsync<ProductResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         // Customer places order
         var (_, customerId) = await AuthenticateAsNewUserAsync("AO", "Customer");
         var orderResponse = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/orders/checkout",
-            new CreateOrderRequest("", 1, new Price(5.00m, "USD"),
+            new CreateOrderRequest(
+                "",
+                1,
+                new Price(5.00m, "USD"),
                 [new OrderItemRequest(product!.ProductId, "Red", "M", 1)],
-                new Address("1 Test St", "City", "ST", "Country", "11111")),
-            TestContext.Current.CancellationToken);
+                new Address("1 Test St", "City", "ST", "Country", "11111")
+            ),
+            TestContext.Current.CancellationToken
+        );
         orderResponse.EnsureSuccessStatusCode();
-        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await orderResponse.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
 
         // Re-authenticate as admin for the test assertions
         await AuthenticateAsAdminAsync();
@@ -57,11 +83,15 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         paged.Items.ShouldNotBeEmpty();
     }
@@ -74,7 +104,9 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -88,7 +120,9 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/orders?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -102,11 +136,15 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/admin/orders/{orderId}", TestContext.Current.CancellationToken);
+            $"/api/v1.0/admin/orders/{orderId}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order = await response.Content.ReadFromJsonAsync<OrderDetailResponse>(
+            TestContext.Current.CancellationToken
+        );
         order.ShouldNotBeNull();
         order.OrderId.ShouldBe(orderId);
     }
@@ -119,7 +157,9 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act
         var response = await HttpClient.GetAsync(
-            $"/api/v1.0/admin/orders/{Guid.NewGuid()}", TestContext.Current.CancellationToken);
+            $"/api/v1.0/admin/orders/{Guid.NewGuid()}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -135,11 +175,14 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/admin/orders/{orderId}/status",
             OrderStatus.Processing,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SuccessResult>(
+            TestContext.Current.CancellationToken
+        );
         result.ShouldNotBeNull();
         result.Message.ShouldNotBeNullOrEmpty();
     }
@@ -154,7 +197,8 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/admin/orders/{orderId}/status",
             OrderStatus.Shipped,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -170,7 +214,8 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/admin/orders/{Guid.NewGuid()}/status",
             OrderStatus.Cancelled,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -184,11 +229,15 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
 
         // Act — filter by Pending status (1)
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/orders?pageNumber=1&pageSize=20&status=1", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/orders?pageNumber=1&pageSize=20&status=1",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(TestContext.Current.CancellationToken);
+        var paged = await response.Content.ReadFromJsonAsync<PagedResponse<OrderResponse>>(
+            TestContext.Current.CancellationToken
+        );
         paged.ShouldNotBeNull();
         // All returned orders should have Pending status
         paged.Items.All(o => o.OrderStatus == "Pending").ShouldBeTrue();

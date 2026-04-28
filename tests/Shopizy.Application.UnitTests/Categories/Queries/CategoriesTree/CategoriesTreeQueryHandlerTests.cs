@@ -1,8 +1,8 @@
 using Moq;
-using Shouldly;
 using Shopizy.Application.Categories.Queries.CategoriesTree;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Categories.Queries.CategoriesTree;
 
@@ -55,11 +55,11 @@ public class CategoriesTreeQueryHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         result.Value.Count.ShouldBe(2);
-        
+
         var root1Node = result.Value.First(x => x.Id == root1.Id.Value);
         root1Node.Children.Count.ShouldBe(1);
         root1Node.Children[0].Id.ShouldBe(sub1.Id.Value);
-        
+
         var root2Node = result.Value.First(x => x.Id == root2.Id.Value);
         root2Node.Children.ShouldBeEmpty();
     }

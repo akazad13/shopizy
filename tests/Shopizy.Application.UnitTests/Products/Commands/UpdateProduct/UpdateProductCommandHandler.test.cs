@@ -59,7 +59,10 @@ public class UpdateProductCommandHandlerTests
 
         // Assert
         Assert.True(result.IsError);
-        Assert.Equal(Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotFound, result.FirstError);
+        Assert.Equal(
+            Shopizy.Domain.Common.CustomErrors.CustomErrors.Product.ProductNotFound,
+            result.FirstError
+        );
 
         _mockProductRepository.Verify(
             x => x.GetProductByIdForUpdateAsync(It.IsAny<ProductId>()),

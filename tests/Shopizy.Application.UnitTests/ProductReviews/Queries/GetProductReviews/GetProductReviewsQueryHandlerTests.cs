@@ -5,7 +5,6 @@ using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products.ValueObjects;
 using Shouldly;
 
-
 namespace Shopizy.Application.ProductReviews.Queries.GetProductReviews.UnitTests;
 
 /// <summary>
@@ -21,7 +20,10 @@ public class GetProductReviewsQueryHandlerTests
     {
         _mockProductReviewRepository = new Mock<IProductReviewRepository>();
         _mockProductRepository = new Mock<IProductRepository>();
-        _sut = new GetProductReviewsQueryHandler(_mockProductReviewRepository.Object, _mockProductRepository.Object);
+        _sut = new GetProductReviewsQueryHandler(
+            _mockProductReviewRepository.Object,
+            _mockProductRepository.Object
+        );
     }
 
     /// <summary>
@@ -46,8 +48,14 @@ public class GetProductReviewsQueryHandlerTests
         result.Errors.ShouldNotBeEmpty();
         result.Errors[0].ShouldBe(CustomErrors.Product.ProductNotFound);
         _mockProductReviewRepository.Verify(
-            x => x.GetReviewsByProductIdAsync(It.IsAny<ProductId>(), It.IsAny<int>(), It.IsAny<int>()),
-            Times.Never);
+            x =>
+                x.GetReviewsByProductIdAsync(
+                    It.IsAny<ProductId>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>()
+                ),
+            Times.Never
+        );
     }
 
     /// <summary>
@@ -66,7 +74,9 @@ public class GetProductReviewsQueryHandlerTests
             .ReturnsAsync(true);
 
         _mockProductReviewRepository
-            .Setup(x => x.GetReviewsByProductIdAsync(It.Is<ProductId>(p => p.Value == productId), 1, 10))
+            .Setup(x =>
+                x.GetReviewsByProductIdAsync(It.Is<ProductId>(p => p.Value == productId), 1, 10)
+            )
             .ReturnsAsync(emptyReviews);
 
         // Act
@@ -89,7 +99,10 @@ public class GetProductReviewsQueryHandlerTests
     [InlineData(5, 50)]
     [InlineData(10, 100)]
     [InlineData(1, 1)]
-    public async Task Handle_WithVariousPaginationParameters_ShouldPassCorrectParametersToRepository(int pageNumber, int pageSize)
+    public async Task Handle_WithVariousPaginationParameters_ShouldPassCorrectParametersToRepository(
+        int pageNumber,
+        int pageSize
+    )
     {
         // Arrange
         var productId = Guid.NewGuid();
@@ -110,8 +123,14 @@ public class GetProductReviewsQueryHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         _mockProductReviewRepository.Verify(
-            x => x.GetReviewsByProductIdAsync(It.Is<ProductId>(p => p.Value == productId), pageNumber, pageSize),
-            Times.Once);
+            x =>
+                x.GetReviewsByProductIdAsync(
+                    It.Is<ProductId>(p => p.Value == productId),
+                    pageNumber,
+                    pageSize
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -158,7 +177,8 @@ public class GetProductReviewsQueryHandlerTests
         result.IsError.ShouldBeTrue();
         _mockProductRepository.Verify(
             x => x.IsProductExistAsync(It.Is<ProductId>(p => p.Value == productId)),
-            Times.Once);
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -173,7 +193,10 @@ public class GetProductReviewsQueryHandlerTests
     [InlineData(1, -1)]
     [InlineData(int.MaxValue, int.MaxValue)]
     [InlineData(int.MinValue, int.MinValue)]
-    public async Task Handle_WithExtremePaginationValues_ShouldPassParametersToRepository(int pageNumber, int pageSize)
+    public async Task Handle_WithExtremePaginationValues_ShouldPassParametersToRepository(
+        int pageNumber,
+        int pageSize
+    )
     {
         // Arrange
         var productId = Guid.NewGuid();
@@ -194,8 +217,14 @@ public class GetProductReviewsQueryHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         _mockProductReviewRepository.Verify(
-            x => x.GetReviewsByProductIdAsync(It.Is<ProductId>(p => p.Value == productId), pageNumber, pageSize),
-            Times.Once);
+            x =>
+                x.GetReviewsByProductIdAsync(
+                    It.Is<ProductId>(p => p.Value == productId),
+                    pageNumber,
+                    pageSize
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -218,9 +247,16 @@ public class GetProductReviewsQueryHandlerTests
         // Assert
         _mockProductRepository.Verify(
             x => x.IsProductExistAsync(It.Is<ProductId>(p => p.Value == productId)),
-            Times.Once);
+            Times.Once
+        );
         _mockProductReviewRepository.Verify(
-            x => x.GetReviewsByProductIdAsync(It.IsAny<ProductId>(), It.IsAny<int>(), It.IsAny<int>()),
-            Times.Never);
+            x =>
+                x.GetReviewsByProductIdAsync(
+                    It.IsAny<ProductId>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>()
+                ),
+            Times.Never
+        );
     }
 }

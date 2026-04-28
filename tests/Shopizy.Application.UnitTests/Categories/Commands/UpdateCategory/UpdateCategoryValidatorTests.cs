@@ -16,15 +16,13 @@ public class UpdateCategoryValidatorTests
     public async Task Should_HaveError_When_NameIsEmpty()
     {
         // Arrange
-        var command = new UpdateCategoryCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            "",
-            null
-        );
+        var command = new UpdateCategoryCommand(Guid.NewGuid(), Guid.NewGuid(), "", null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -34,15 +32,13 @@ public class UpdateCategoryValidatorTests
     public async Task Should_HaveError_When_NameIsNull()
     {
         // Arrange
-        var command = new UpdateCategoryCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            null!,
-            null
-        );
+        var command = new UpdateCategoryCommand(Guid.NewGuid(), Guid.NewGuid(), null!, null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -53,15 +49,13 @@ public class UpdateCategoryValidatorTests
     {
         // Arrange
         var longName = new string('A', 101);
-        var command = new UpdateCategoryCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            longName,
-            null
-        );
+        var command = new UpdateCategoryCommand(Guid.NewGuid(), Guid.NewGuid(), longName, null);
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Name);
@@ -79,7 +73,10 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -98,7 +95,10 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Name);
@@ -116,7 +116,10 @@ public class UpdateCategoryValidatorTests
         );
 
         // Act
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();

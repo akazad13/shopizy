@@ -15,7 +15,8 @@ public class LayerDependencyTests
     [Fact]
     public void Domain_ShouldNotDependOn_OuterLayers()
     {
-        var result = Types.InAssembly(typeof(global::Shopizy.Domain.Products.Product).Assembly)
+        var result = Types
+            .InAssembly(typeof(global::Shopizy.Domain.Products.Product).Assembly)
             .ShouldNot()
             .HaveDependencyOnAny(Application, Infrastructure, Api, Contracts)
             .GetResult();
@@ -26,7 +27,8 @@ public class LayerDependencyTests
     [Fact]
     public void Application_ShouldNotDependOn_InfrastructureOrApi()
     {
-        var result = Types.InAssembly(typeof(global::Shopizy.Application.DependencyInjectionRegister).Assembly)
+        var result = Types
+            .InAssembly(typeof(global::Shopizy.Application.DependencyInjectionRegister).Assembly)
             .ShouldNot()
             .HaveDependencyOnAny(Infrastructure, Api)
             .GetResult();
@@ -37,7 +39,8 @@ public class LayerDependencyTests
     [Fact]
     public void Infrastructure_ShouldNotDependOn_Api()
     {
-        var result = Types.InAssembly(typeof(global::Shopizy.Infrastructure.DependencyInjectionRegister).Assembly)
+        var result = Types
+            .InAssembly(typeof(global::Shopizy.Infrastructure.DependencyInjectionRegister).Assembly)
             .ShouldNot()
             .HaveDependencyOn(Api)
             .GetResult();
@@ -48,7 +51,8 @@ public class LayerDependencyTests
     [Fact]
     public void Contracts_ShouldNotDependOn_OtherLayers()
     {
-        var result = Types.InAssembly(typeof(global::Shopizy.Contracts.Authentication.AuthResponse).Assembly)
+        var result = Types
+            .InAssembly(typeof(global::Shopizy.Contracts.Authentication.AuthResponse).Assembly)
             .ShouldNot()
             .HaveDependencyOnAny(Application, Infrastructure, Api, Domain)
             .GetResult();

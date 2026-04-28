@@ -68,9 +68,6 @@ public class RemoveProductFromCartCommandHandlerTests
             cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)),
             Times.Once
         );
-        _mockCartRepository.Verify(
-            x => x.Update(It.IsAny<Cart>()),
-            Times.Never
-        );
+        _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
     }
 }

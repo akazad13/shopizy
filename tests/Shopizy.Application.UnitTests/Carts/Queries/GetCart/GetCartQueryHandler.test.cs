@@ -1,9 +1,9 @@
 using Moq;
-using Shouldly;
 using Shopizy.Application.Carts.Queries.GetCart;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Carts;
 using Shopizy.Domain.Users.ValueObjects;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Carts.Queries.GetCart;
 
@@ -26,7 +26,8 @@ public class GetCartQueryHandlerTestsRefactored
         var cart = Cart.Create(UserId.Create(userId));
         var query = new GetCartQuery(userId);
 
-        _mockCartRepository.Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
+        _mockCartRepository
+            .Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
             .ReturnsAsync(cart);
 
         // Act
@@ -44,7 +45,8 @@ public class GetCartQueryHandlerTestsRefactored
         var userId = Guid.NewGuid();
         var query = new GetCartQuery(userId);
 
-        _mockCartRepository.Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
+        _mockCartRepository
+            .Setup(r => r.GetCartByUserIdAsync(It.IsAny<UserId>()))
             .ReturnsAsync((Cart?)null);
 
         // Act

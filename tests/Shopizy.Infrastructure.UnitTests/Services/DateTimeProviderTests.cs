@@ -4,7 +4,6 @@ using Xunit;
 
 namespace Shopizy.Infrastructure.UnitTests.Services;
 
-
 public class DateTimeProviderTests
 {
     [Fact]

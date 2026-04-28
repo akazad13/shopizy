@@ -7,9 +7,8 @@ namespace Shopizy.Api.IntegrationTests.Users;
 
 public class GetUserTests : BaseIntegrationTest
 {
-    public GetUserTests(IntegrationTestWebAppFactory factory) : base(factory)
-    {
-    }
+    public GetUserTests(IntegrationTestWebAppFactory factory)
+        : base(factory) { }
 
     [Fact]
     public async Task GetUser_WhenAuthenticated_ReturnsUser()
@@ -18,11 +17,16 @@ public class GetUserTests : BaseIntegrationTest
         var (token, userId) = await AuthenticateAsNewUserAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{userId}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var userDetails = await response.Content.ReadFromJsonAsync<UserDetails>(TestContext.Current.CancellationToken);
+        var userDetails = await response.Content.ReadFromJsonAsync<UserDetails>(
+            TestContext.Current.CancellationToken
+        );
         userDetails.ShouldNotBeNull();
         userDetails.Id.ShouldBe(userId);
     }
@@ -33,11 +37,14 @@ public class GetUserTests : BaseIntegrationTest
         // Arrange
         var (_, user1Id) = await AuthenticateAsNewUserAsync("User1", "Test", "user1@test.com");
         var (_, user2Id) = await AuthenticateAsNewUserAsync("User2", "Test", "user2@test.com");
-        
+
         // We are currently authenticated as user2. Try to access user1.
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{user1Id}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{user1Id}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -48,10 +55,19 @@ public class GetUserTests : BaseIntegrationTest
     {
         // Arrange
         var (_, userId) = await AuthenticateAsNewUserAsync("Test", "User", "test@example.com");
-        var updateRequest = new UpdateUserRequest("Updated", "Name", "1234567890", new UpdateAddressRequest { Street = "123 St" });
+        var updateRequest = new UpdateUserRequest(
+            "Updated",
+            "Name",
+            "1234567890",
+            new UpdateAddressRequest { Street = "123 St" }
+        );
 
         // Act
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}", updateRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/users/{userId}",
+            updateRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -64,7 +80,10 @@ public class GetUserTests : BaseIntegrationTest
         var (_, userId) = await AuthenticateAsNewUserAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/orders", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{userId}/orders",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -75,11 +94,24 @@ public class GetUserTests : BaseIntegrationTest
     {
         // Arrange
         var password = "Password123!";
-        var (token, userId) = await AuthenticateAsNewUserAsync("Test", "User", "pass@test.com", password);
-        var updateRequest = new UpdatePasswordRequest { OldPassword = password, NewPassword = "NewPassword123!" };
+        var (token, userId) = await AuthenticateAsNewUserAsync(
+            "Test",
+            "User",
+            "pass@test.com",
+            password
+        );
+        var updateRequest = new UpdatePasswordRequest
+        {
+            OldPassword = password,
+            NewPassword = "NewPassword123!",
+        };
 
         // Act
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}/password", updateRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/users/{userId}/password",
+            updateRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

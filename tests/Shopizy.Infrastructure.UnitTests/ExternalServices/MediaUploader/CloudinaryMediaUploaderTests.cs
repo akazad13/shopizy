@@ -1,10 +1,10 @@
-using Xunit;
-using Moq;
-using Shouldly;
-using Microsoft.AspNetCore.Http;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
+using Moq;
 using Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryService;
+using Shouldly;
+using Xunit;
 
 namespace Shopizy.Infrastructure.UnitTests.ExternalServices.MediaUploader;
 
@@ -40,14 +40,18 @@ public class CloudinaryMediaUploaderTests
         {
             StatusCode = System.Net.HttpStatusCode.OK,
             Url = new Uri("http://example.com/test.jpg"),
-            PublicId = "test_id"
+            PublicId = "test_id",
         };
 
-        _mockCloudinary.Setup(c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()))
+        _mockCloudinary
+            .Setup(c => c.UploadAsync(It.IsAny<ImageUploadParams>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(uploadResult);
 
         // Act
-        var result = await _uploader.UploadPhotoAsync(fileMock.Object, TestContext.Current.CancellationToken);
+        var result = await _uploader.UploadPhotoAsync(
+            fileMock.Object,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         result.IsError.ShouldBeFalse();
@@ -60,12 +64,10 @@ public class CloudinaryMediaUploaderTests
     {
         // Arrange
         var publicId = "test_id";
-        var deletionResult = new DeletionResult
-        {
-            Result = "ok"
-        };
+        var deletionResult = new DeletionResult { Result = "ok" };
 
-        _mockCloudinary.Setup(c => c.DestroyAsync(It.IsAny<DeletionParams>()))
+        _mockCloudinary
+            .Setup(c => c.DestroyAsync(It.IsAny<DeletionParams>()))
             .ReturnsAsync(deletionResult);
 
         // Act

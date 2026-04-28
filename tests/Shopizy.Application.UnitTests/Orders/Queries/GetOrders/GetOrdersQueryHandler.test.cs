@@ -1,13 +1,13 @@
 using Moq;
-using Shouldly;
-using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Application.Common.Interfaces.Persistence;
-using Shopizy.Domain.Orders;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Orders.Enums;
-using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Application.Orders.Queries.GetOrders;
 using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
+using Shopizy.Domain.Orders.Enums;
+using Shopizy.Domain.Users.ValueObjects;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Orders.Queries.GetOrders;
 
@@ -28,12 +28,11 @@ public class GetOrdersQueryHandlerTestsRefactored
         // Arrange
         var userId = Guid.NewGuid();
         var query = new GetOrdersQuery(userId, null, null, null, 1, 10);
-        
+
         var orders = new List<Order> { CreateSampleOrder(UserId.Create(userId)) };
 
-        _mockOrderRepository.Setup(r => r.GetOrdersAsync(
-            It.IsAny<UserId?>(), 
-            null, null, null, 1, 10))
+        _mockOrderRepository
+            .Setup(r => r.GetOrdersAsync(It.IsAny<UserId?>(), null, null, null, 1, 10))
             .ReturnsAsync(orders);
 
         // Act

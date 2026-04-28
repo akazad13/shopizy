@@ -42,7 +42,9 @@ public class RegisterCommandHandlerTests
         _mockPasswordManager = new Mock<IPasswordManager>();
         _mockPermissionLookup = new Mock<IPermissionLookup>();
         _mockPermissionLookup
-            .Setup(p => p.GetIdsByNamesAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .Setup(p =>
+                p.GetIdsByNamesAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(SeededPermissionIds);
         _handler = new RegisterCommandHandler(
             _mockUserRepository.Object,
@@ -59,7 +61,16 @@ public class RegisterCommandHandlerTests
 
         _mockUserRepository
             .Setup(r => r.GetUserByEmailAsync(command.Email))
-            .ReturnsAsync(User.Create("Existing", "User", command.Email, "hashedPassword", UserRole.Customer, []));
+            .ReturnsAsync(
+                User.Create(
+                    "Existing",
+                    "User",
+                    command.Email,
+                    "hashedPassword",
+                    UserRole.Customer,
+                    []
+                )
+            );
 
         // Act
         var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
@@ -79,8 +90,12 @@ public class RegisterCommandHandlerTests
         var hashedPassword = "hashedPassword123";
         var expectedPermissionIds = SeededPermissionIds;
 
-        _mockUserRepository.Setup(r => r.GetUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
-        _mockPasswordManager.Setup(pm => pm.CreateHashString(It.IsAny<string>(), It.IsAny<int>())).Returns(hashedPassword);
+        _mockUserRepository
+            .Setup(r => r.GetUserByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync((User?)null);
+        _mockPasswordManager
+            .Setup(pm => pm.CreateHashString(It.IsAny<string>(), It.IsAny<int>()))
+            .Returns(hashedPassword);
         _mockUserRepository.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
         // Act
@@ -97,8 +112,11 @@ public class RegisterCommandHandlerTests
                         && u.Email == command.Email
                         && u.Password == hashedPassword
                         && u.Role == UserRole.Customer
-                        && u.PermissionIds.Select(p => p.Value).OrderBy(v => v)
-                            .SequenceEqual(expectedPermissionIds.Select(p => p.Value).OrderBy(v => v))
+                        && u.PermissionIds.Select(p => p.Value)
+                            .OrderBy(v => v)
+                            .SequenceEqual(
+                                expectedPermissionIds.Select(p => p.Value).OrderBy(v => v)
+                            )
                     )
                 ),
             Times.Once
@@ -132,10 +150,7 @@ public class RegisterCommandHandlerTests
         _mockUserRepository.Verify(
             r =>
                 r.AddAsync(
-                    It.Is<User>(u =>
-                        u.PermissionIds.Count == 15
-                        && u.Role == UserRole.Customer
-                    )
+                    It.Is<User>(u => u.PermissionIds.Count == 15 && u.Role == UserRole.Customer)
                 ),
             Times.Once
         );
@@ -189,7 +204,10 @@ public class RegisterCommandHandlerTests
         // Assert
         Assert.False(result.IsError);
         Assert.IsType<Success>(result.Value);
-        _mockPasswordManager.Verify(pm => pm.CreateHashString(command.Password, It.IsAny<int>()), Times.Once);
+        _mockPasswordManager.Verify(
+            pm => pm.CreateHashString(command.Password, It.IsAny<int>()),
+            Times.Once
+        );
         _mockUserRepository.Verify(
             r => r.AddAsync(It.Is<User>(u => u.Password == hashedPassword)),
             Times.Once
@@ -206,7 +224,16 @@ public class RegisterCommandHandlerTests
         _mockUserRepository
             .SetupSequence(r => r.GetUserByEmailAsync(command.Email))
             .ReturnsAsync((User?)null)
-            .ReturnsAsync(User.Create("Existing", "User", command.Email, "existingHash", UserRole.Customer, []));
+            .ReturnsAsync(
+                User.Create(
+                    "Existing",
+                    "User",
+                    command.Email,
+                    "existingHash",
+                    UserRole.Customer,
+                    []
+                )
+            );
 
         _mockPasswordManager
             .Setup(pm => pm.CreateHashString(command.Password, It.IsAny<int>()))

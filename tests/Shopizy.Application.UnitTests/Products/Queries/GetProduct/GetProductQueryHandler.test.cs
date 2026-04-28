@@ -1,13 +1,13 @@
 using Moq;
-using Shouldly;
-using Shopizy.Application.Products.Queries.GetProduct;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Products.Queries.GetProduct;
+using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Common.Enums;
+using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
-using Shopizy.Domain.Common.CustomErrors;
-using Shopizy.Domain.Categories.ValueObjects;
-using Shopizy.Domain.Common.ValueObjects;
-using Shopizy.Domain.Common.Enums;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Products.Queries.GetProduct;
 
@@ -28,11 +28,24 @@ public class GetProductQueryHandlerTestsRefactored
         // Arrange
         var productId = Guid.NewGuid();
         var product = Product.Create(
-            "Name", "Short", "Long", CategoryId.CreateUnique(), "SKU", 100,
-            Price.CreateNew(10, Currency.usd), null, null, "B", "C", "S", "T");
+            "Name",
+            "Short",
+            "Long",
+            CategoryId.CreateUnique(),
+            "SKU",
+            100,
+            Price.CreateNew(10, Currency.usd),
+            null,
+            null,
+            "B",
+            "C",
+            "S",
+            "T"
+        );
         var query = new GetProductQuery(productId);
 
-        _mockProductRepository.Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
+        _mockProductRepository
+            .Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
             .ReturnsAsync(product);
 
         // Act
@@ -49,7 +62,8 @@ public class GetProductQueryHandlerTestsRefactored
         // Arrange
         var query = new GetProductQuery(Guid.NewGuid());
 
-        _mockProductRepository.Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
+        _mockProductRepository
+            .Setup(r => r.GetProductByIdAsync(It.IsAny<ProductId>()))
             .ReturnsAsync((Product?)null);
 
         // Act

@@ -11,7 +11,10 @@ public class BulkDeleteProductsCommandValidatorTests
     public async Task Should_HaveError_When_ProductIdsIsEmpty()
     {
         var command = new BulkDeleteProductsCommand([]);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.ProductIds);
     }
 
@@ -19,7 +22,10 @@ public class BulkDeleteProductsCommandValidatorTests
     public async Task Should_HaveError_When_ProductIdsContainsEmptyGuid()
     {
         var command = new BulkDeleteProductsCommand([Guid.NewGuid(), Guid.Empty]);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor("ProductIds[1]");
     }
 
@@ -27,7 +33,10 @@ public class BulkDeleteProductsCommandValidatorTests
     public async Task Should_NotHaveError_When_AllProductIdsAreValid()
     {
         var command = new BulkDeleteProductsCommand([Guid.NewGuid(), Guid.NewGuid()]);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

@@ -11,7 +11,10 @@ public class AddProductToCartCommandValidatorTests
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = new AddProductToCartCommand(Guid.Empty, Guid.NewGuid(), "Red", "M", 1);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -19,7 +22,10 @@ public class AddProductToCartCommandValidatorTests
     public async Task Should_HaveError_When_ProductIdIsEmpty()
     {
         var command = new AddProductToCartCommand(Guid.NewGuid(), Guid.Empty, "Red", "M", 1);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.ProductId);
     }
 
@@ -27,7 +33,10 @@ public class AddProductToCartCommandValidatorTests
     public async Task Should_HaveError_When_ColorIsEmpty()
     {
         var command = new AddProductToCartCommand(Guid.NewGuid(), Guid.NewGuid(), "", "M", 1);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Color);
     }
 
@@ -35,7 +44,10 @@ public class AddProductToCartCommandValidatorTests
     public async Task Should_HaveError_When_SizeIsEmpty()
     {
         var command = new AddProductToCartCommand(Guid.NewGuid(), Guid.NewGuid(), "Red", "", 1);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Size);
     }
 
@@ -44,8 +56,17 @@ public class AddProductToCartCommandValidatorTests
     [InlineData(-1)]
     public async Task Should_HaveError_When_QuantityIsNotPositive(int quantity)
     {
-        var command = new AddProductToCartCommand(Guid.NewGuid(), Guid.NewGuid(), "Red", "M", quantity);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var command = new AddProductToCartCommand(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "Red",
+            "M",
+            quantity
+        );
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Quantity);
     }
 
@@ -53,7 +74,10 @@ public class AddProductToCartCommandValidatorTests
     public async Task Should_NotHaveErrors_When_AllFieldsAreValid()
     {
         var command = new AddProductToCartCommand(Guid.NewGuid(), Guid.NewGuid(), "Red", "M", 2);
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

@@ -2,7 +2,6 @@
 using Shouldly;
 using Xunit;
 
-
 namespace Shopizy.Api.Endpoints.ProductReviews.UnitTests;
 
 /// <summary>
@@ -26,13 +25,19 @@ public class DeleteProductReviewEndpointTests
         var mockEndpointDataSource = new Mock<EndpointDataSource>();
 
         mockEndpointRouteBuilder.Setup(x => x.ServiceProvider).Returns(mockServiceProvider.Object);
-        mockEndpointRouteBuilder.Setup(x => x.CreateApplicationBuilder()).Returns(new Mock<IApplicationBuilder>().Object);
-        mockEndpointRouteBuilder.Setup(x => x.DataSources).Returns(new List<EndpointDataSource> { mockEndpointDataSource.Object });
+        mockEndpointRouteBuilder
+            .Setup(x => x.CreateApplicationBuilder())
+            .Returns(new Mock<IApplicationBuilder>().Object);
+        mockEndpointRouteBuilder
+            .Setup(x => x.DataSources)
+            .Returns(new List<EndpointDataSource> { mockEndpointDataSource.Object });
 
         var endpoint = new DeleteProductReviewEndpoint();
 
         // Act
-        var exception = Record.Exception(() => endpoint.MapEndpoint(mockEndpointRouteBuilder.Object));
+        var exception = Record.Exception(() =>
+            endpoint.MapEndpoint(mockEndpointRouteBuilder.Object)
+        );
 
         // Assert
         exception.ShouldBeNull();

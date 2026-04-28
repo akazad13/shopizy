@@ -19,11 +19,14 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         // Assert
         token.ShouldNotBeNullOrEmpty();
-        
+
         // Verify token works by making an authenticated request
         SetAuthToken(token);
-        var response = await HttpClient.GetAsync("/api/v1.0/products", TestContext.Current.CancellationToken);
-        
+        var response = await HttpClient.GetAsync(
+            "/api/v1.0/products",
+            TestContext.Current.CancellationToken
+        );
+
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -39,7 +42,11 @@ public class LoginTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         var loginRequest = new LoginRequest(email, "WrongPassword");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/auth/login",
+            loginRequest,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);

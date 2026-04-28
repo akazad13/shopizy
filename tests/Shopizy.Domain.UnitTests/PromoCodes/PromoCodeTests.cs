@@ -1,6 +1,6 @@
+using Shopizy.Domain.PromoCodes;
 using Shouldly;
 using Xunit;
-using Shopizy.Domain.PromoCodes;
 
 namespace Shopizy.Domain.UnitTests.PromoCodes;
 

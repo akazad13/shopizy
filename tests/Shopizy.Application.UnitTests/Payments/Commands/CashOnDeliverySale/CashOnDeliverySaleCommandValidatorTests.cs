@@ -14,7 +14,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = ValidCommand() with { UserId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -22,7 +25,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_OrderIdIsEmpty()
     {
         var command = ValidCommand() with { OrderId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.OrderId);
     }
 
@@ -32,7 +38,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_AmountIsNotPositive(decimal amount)
     {
         var command = ValidCommand() with { Amount = amount };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Amount);
     }
 
@@ -40,7 +49,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_CurrencyIsEmpty()
     {
         var command = ValidCommand() with { Currency = "" };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Currency);
     }
 
@@ -48,7 +60,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_CurrencyExceedsMaxLength()
     {
         var command = ValidCommand() with { Currency = new string('X', 11) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Currency);
     }
 
@@ -56,7 +71,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_PaymentMethodIsEmpty()
     {
         var command = ValidCommand() with { PaymentMethod = "" };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.PaymentMethod);
     }
 
@@ -64,7 +82,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_HaveError_When_PaymentMethodExceedsMaxLength()
     {
         var command = ValidCommand() with { PaymentMethod = new string('X', 51) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.PaymentMethod);
     }
 
@@ -72,7 +93,10 @@ public class CashOnDeliverySaleCommandValidatorTests
     public async Task Should_NotHaveErrors_When_AllFieldsAreValid()
     {
         var command = ValidCommand();
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

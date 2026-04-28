@@ -8,7 +8,6 @@ using Xunit;
 
 namespace Shopizy.Domain.UnitTests.ProductReviews;
 
-
 public class ProductReviewTests
 {
     [Fact]
@@ -73,7 +72,9 @@ public class ProductReviewTests
         productReview.Delete();
 
         // Assert
-        var domainEvent = productReview.DomainEvents.OfType<ProductReviewDeletedDomainEvent>().FirstOrDefault();
+        var domainEvent = productReview
+            .DomainEvents.OfType<ProductReviewDeletedDomainEvent>()
+            .FirstOrDefault();
         domainEvent.ShouldNotBeNull();
         domainEvent.ProductId.ShouldBe(productId);
         domainEvent.Rating.ShouldBe(rating);
@@ -98,7 +99,9 @@ public class ProductReviewTests
         productReview.Delete();
 
         // Assert
-        var deletedEvents = productReview.DomainEvents.OfType<ProductReviewDeletedDomainEvent>().ToList();
+        var deletedEvents = productReview
+            .DomainEvents.OfType<ProductReviewDeletedDomainEvent>()
+            .ToList();
         deletedEvents.Count.ShouldBe(2);
         deletedEvents[0].ProductId.ShouldBe(productId);
         deletedEvents[0].Rating.ShouldBe(rating);
@@ -151,7 +154,9 @@ public class ProductReviewTests
         // Assert
         productReview.DomainEvents.ShouldNotBeEmpty();
         productReview.DomainEvents.ShouldContain(e => e is ProductReviewCreatedDomainEvent);
-        var domainEvent = productReview.DomainEvents.OfType<ProductReviewCreatedDomainEvent>().FirstOrDefault();
+        var domainEvent = productReview
+            .DomainEvents.OfType<ProductReviewCreatedDomainEvent>()
+            .FirstOrDefault();
         domainEvent.ShouldNotBeNull();
     }
 
@@ -266,7 +271,9 @@ public class ProductReviewTests
     [InlineData(2.5)]
     [InlineData(5)]
     [InlineData(10)]
-    public void Create_WithVariousRatingValues_ReturnsProductReviewWithCorrectRating(decimal ratingValue)
+    public void Create_WithVariousRatingValues_ReturnsProductReviewWithCorrectRating(
+        decimal ratingValue
+    )
     {
         // Arrange
         var userId = UserId.CreateUnique();

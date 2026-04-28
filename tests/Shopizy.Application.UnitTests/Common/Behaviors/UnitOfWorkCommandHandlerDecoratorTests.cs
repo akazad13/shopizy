@@ -11,7 +11,10 @@ public class UnitOfWorkCommandHandlerDecoratorTests
 {
     private readonly Mock<ICommandHandler<TestUowCommand, ErrorOr<TestUowResponse>>> _mockHandler;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly UnitOfWorkCommandHandlerDecorator<TestUowCommand, ErrorOr<TestUowResponse>> _sut;
+    private readonly UnitOfWorkCommandHandlerDecorator<
+        TestUowCommand,
+        ErrorOr<TestUowResponse>
+    > _sut;
 
     public UnitOfWorkCommandHandlerDecoratorTests()
     {
@@ -19,7 +22,8 @@ public class UnitOfWorkCommandHandlerDecoratorTests
         _mockUnitOfWork = new Mock<IUnitOfWork>();
         _sut = new UnitOfWorkCommandHandlerDecorator<TestUowCommand, ErrorOr<TestUowResponse>>(
             _mockHandler.Object,
-            _mockUnitOfWork.Object);
+            _mockUnitOfWork.Object
+        );
     }
 
     [Fact]
@@ -65,5 +69,6 @@ public class UnitOfWorkCommandHandlerDecoratorTests
     }
 
     public class TestUowCommand : ICommand<ErrorOr<TestUowResponse>> { }
+
     public class TestUowResponse { }
 }

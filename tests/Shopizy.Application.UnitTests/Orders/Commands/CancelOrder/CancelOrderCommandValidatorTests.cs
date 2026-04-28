@@ -14,7 +14,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_HaveError_When_UserIdIsEmpty()
     {
         var command = ValidCommand() with { UserId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -22,7 +25,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_HaveError_When_OrderIdIsEmpty()
     {
         var command = ValidCommand() with { OrderId = Guid.Empty };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.OrderId);
     }
 
@@ -30,7 +36,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_HaveError_When_ReasonIsEmpty()
     {
         var command = ValidCommand() with { Reason = "" };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Reason);
     }
 
@@ -38,7 +47,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_HaveError_When_ReasonExceedsMaxLength()
     {
         var command = ValidCommand() with { Reason = new string('A', 501) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldHaveValidationErrorFor(x => x.Reason);
     }
 
@@ -46,7 +58,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_NotHaveErrors_When_AllFieldsAreValid()
     {
         var command = ValidCommand();
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -54,7 +69,10 @@ public class CancelOrderCommandValidatorTests
     public async Task Should_NotHaveError_When_ReasonIsAtMaxLength()
     {
         var command = ValidCommand() with { Reason = new string('A', 500) };
-        var result = await _validator.TestValidateAsync(command, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await _validator.TestValidateAsync(
+            command,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
         result.ShouldNotHaveValidationErrorFor(x => x.Reason);
     }
 }

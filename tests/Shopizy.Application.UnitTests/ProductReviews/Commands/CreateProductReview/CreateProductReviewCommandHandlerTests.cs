@@ -3,7 +3,6 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.ProductReviews;
 using Shouldly;
 
-
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview.UnitTests;
 
 /// <summary>
@@ -25,7 +24,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -54,7 +54,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -92,7 +93,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -115,7 +117,9 @@ public class CreateProductReviewCommandHandlerTests
     [InlineData("   ")]
     [InlineData("Normal comment")]
     [InlineData("A")]
-    [InlineData("This is a very long comment that contains a lot of text to test edge cases with lengthy user input")]
+    [InlineData(
+        "This is a very long comment that contains a lot of text to test edge cases with lengthy user input"
+    )]
     [InlineData("Comment with special chars: !@#$%^&*()_+-=[]{}|;':\",./<>?")]
     [InlineData("\n\r\t")]
     public async Task Handle_WithVariousComments_ShouldCreateReview(string comment)
@@ -127,7 +131,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -155,7 +160,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -185,7 +191,8 @@ public class CreateProductReviewCommandHandlerTests
 
         ProductReview? capturedReview = null;
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Callback<ProductReview>(review => capturedReview = review)
             .Returns(Task.CompletedTask);
 
@@ -214,7 +221,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -242,7 +250,8 @@ public class CreateProductReviewCommandHandlerTests
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
         var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
@@ -271,7 +280,8 @@ public class CreateProductReviewCommandHandlerTests
 
         ProductReview? repositoryReview = null;
         var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository.Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
+        mockRepository
+            .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Callback<ProductReview>(review => repositoryReview = review)
             .Returns(Task.CompletedTask);
 

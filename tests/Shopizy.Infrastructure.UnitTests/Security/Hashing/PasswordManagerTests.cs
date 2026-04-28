@@ -1,6 +1,6 @@
-using Xunit;
 using Shopizy.Infrastructure.Security.Hashing;
 using Shouldly;
+using Xunit;
 
 namespace Shopizy.Infrastructure.UnitTests.Security.Hashing;
 

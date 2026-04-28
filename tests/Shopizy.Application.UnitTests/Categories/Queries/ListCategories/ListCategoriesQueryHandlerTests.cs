@@ -1,8 +1,8 @@
 using Moq;
-using Shouldly;
 using Shopizy.Application.Categories.Queries.ListCategories;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Categories;
+using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Categories.Queries.ListCategories;
 
@@ -42,7 +42,7 @@ public class ListCategoriesQueryHandlerTests
         var categories = new List<Category>
         {
             Category.Create("Cat 1", null),
-            Category.Create("Cat 2", null)
+            Category.Create("Cat 2", null),
         };
 
         _mockCategoryRepository.Setup(x => x.GetCategoriesAsync()).ReturnsAsync(categories);

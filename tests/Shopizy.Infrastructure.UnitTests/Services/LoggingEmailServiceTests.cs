@@ -4,7 +4,6 @@ using Shopizy.Infrastructure.Services;
 using Shouldly;
 using Xunit;
 
-
 namespace Shopizy.Infrastructure.UnitTests.Services;
 
 /// <summary>
@@ -32,13 +31,16 @@ public class LoggingEmailServiceTests
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            static x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            static x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -55,7 +57,8 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_EmptyStrings_CompletesSuccessfullyAndLogsInformation(
         string to,
         string subject,
-        string body)
+        string body
+    )
     {
         // Arrange
         var mockLogger = new Mock<ILogger<LoggingEmailService>>();
@@ -68,13 +71,16 @@ public class LoggingEmailServiceTests
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -91,7 +97,8 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_WhitespaceStrings_CompletesSuccessfullyAndLogsInformation(
         string to,
         string subject,
-        string body)
+        string body
+    )
     {
         // Arrange
         var mockLogger = new Mock<ILogger<LoggingEmailService>>();
@@ -104,13 +111,16 @@ public class LoggingEmailServiceTests
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -120,13 +130,18 @@ public class LoggingEmailServiceTests
     /// <param name="subject">Email subject with special characters.</param>
     /// <param name="body">Email body with special characters.</param>
     [Theory]
-    [InlineData("user+tag@example.com", "Subject: <Test> & \"Quotes\"", "Body with <html> tags & special chars: {braces}")]
+    [InlineData(
+        "user+tag@example.com",
+        "Subject: <Test> & \"Quotes\"",
+        "Body with <html> tags & special chars: {braces}"
+    )]
     [InlineData("user@example.com", "Subject with 日本語", "Body with émojis 🎉🎊")]
     [InlineData("test@test.com", "Subject\nwith\nnewlines", "Body\twith\ttabs")]
     public async Task SendAsync_SpecialCharacters_CompletesSuccessfullyAndLogsInformation(
         string to,
         string subject,
-        string body)
+        string body
+    )
     {
         // Arrange
         var mockLogger = new Mock<ILogger<LoggingEmailService>>();
@@ -139,13 +154,16 @@ public class LoggingEmailServiceTests
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -160,19 +178,27 @@ public class LoggingEmailServiceTests
         var longString = new string('a', 10000);
 
         // Act
-        var task = service.SendAsync(longString, longString, longString, TestContext.Current.CancellationToken);
+        var task = service.SendAsync(
+            longString,
+            longString,
+            longString,
+            TestContext.Current.CancellationToken
+        );
         await task;
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -187,19 +213,27 @@ public class LoggingEmailServiceTests
         await new CancellationTokenSource().CancelAsync();
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body", new CancellationTokenSource().Token);
+        var task = service.SendAsync(
+            "to@example.com",
+            "subject",
+            "body",
+            new CancellationTokenSource().Token
+        );
         await task;
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 
     /// <summary>
@@ -213,7 +247,12 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body", TestContext.Current.CancellationToken);
+        var task = service.SendAsync(
+            "to@example.com",
+            "subject",
+            "body",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
@@ -231,18 +270,26 @@ public class LoggingEmailServiceTests
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
-        var task = service.SendAsync("to@example.com", "subject", "body", TestContext.Current.CancellationToken);
+        var task = service.SendAsync(
+            "to@example.com",
+            "subject",
+            "body",
+            TestContext.Current.CancellationToken
+        );
         await task;
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
         mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
 }

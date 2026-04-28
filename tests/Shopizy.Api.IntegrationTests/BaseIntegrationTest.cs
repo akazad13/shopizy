@@ -1,16 +1,16 @@
-using Xunit;
-using Shopizy.SharedKernel.Application.Messaging;
-using Shopizy.Infrastructure.Common.Persistence;
-using Shopizy.Infrastructure.Outbox;
 using System.Net.Http.Headers;
-using Shopizy.Contracts.Authentication;
-using Shopizy.Domain.Users.ValueObjects;
-using Shopizy.Domain.Users;
-using Shopizy.Domain.Users.Enums;
-using Shopizy.Domain.Permissions.ValueObjects;
-using Shopizy.Domain.Carts;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Shopizy.Contracts.Authentication;
+using Shopizy.Domain.Carts;
+using Shopizy.Domain.Permissions.ValueObjects;
+using Shopizy.Domain.Users;
+using Shopizy.Domain.Users.Enums;
+using Shopizy.Domain.Users.ValueObjects;
+using Shopizy.Infrastructure.Common.Persistence;
+using Shopizy.Infrastructure.Outbox;
+using Shopizy.SharedKernel.Application.Messaging;
+using Xunit;
 
 namespace Shopizy.Api.IntegrationTests;
 
@@ -25,7 +25,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
     {
         ArgumentNullException.ThrowIfNull(factory);
-        
+
         _scope = factory.Services.CreateScope();
         Sender = _scope.ServiceProvider.GetRequiredService<IDispatcher>();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -40,10 +40,15 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         string firstName,
         string lastName,
         string email,
-        string password)
+        string password
+    )
     {
         var registerRequest = new RegisterRequest(firstName, lastName, email, password);
-        return await HttpClient.PostAsJsonAsync("/api/v1.0/auth/register", registerRequest, TestContext.Current.CancellationToken);
+        return await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/auth/register",
+            registerRequest,
+            TestContext.Current.CancellationToken
+        );
     }
 
     /// <summary>
@@ -52,15 +57,24 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task<string> LoginAndGetTokenAsync(string email, string password)
     {
         var loginRequest = new LoginRequest(email, password);
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/auth/login",
+            loginRequest,
+            TestContext.Current.CancellationToken
+        );
         if (!response.IsSuccessStatusCode)
         {
-            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            throw new InvalidOperationException($"Login failed ({(int)response.StatusCode}): {body}");
+            var body = await response.Content.ReadAsStringAsync(
+                TestContext.Current.CancellationToken
+            );
+            throw new InvalidOperationException(
+                $"Login failed ({(int)response.StatusCode}): {body}"
+            );
         }
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        return authResponse?.Token ?? throw new InvalidOperationException("Failed to get auth token");
+        return authResponse?.Token
+            ?? throw new InvalidOperationException("Failed to get auth token");
     }
 
     /// <summary>
@@ -68,8 +82,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected void SetAuthToken(string token)
     {
-        HttpClient.DefaultRequestHeaders.Authorization = 
-            new AuthenticationHeaderValue("Bearer", token);
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            token
+        );
     }
 
     /// <summary>
@@ -92,23 +108,45 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         using (var scope = _scope.ServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var passwordManager = scope.ServiceProvider.GetRequiredService<Shopizy.Application.Common.Interfaces.Authentication.IPasswordManager>();
+            var passwordManager =
+                scope.ServiceProvider.GetRequiredService<Shopizy.Application.Common.Interfaces.Authentication.IPasswordManager>();
 
-            var existingUser = (await dbContext.Users.FindAsync([UserId.Create(adminId)], TestContext.Current.CancellationToken));
+            var existingUser = (
+                await dbContext.Users.FindAsync(
+                    [UserId.Create(adminId)],
+                    TestContext.Current.CancellationToken
+                )
+            );
             if (existingUser is null)
             {
-                var allPermissionIds = await dbContext.Permissions
-                    .Select(p => p.Id)
-                    .ToListAsync();
+                var allPermissionIds = await dbContext.Permissions.Select(p => p.Id).ToListAsync();
 
                 var hashedPassword = passwordManager.CreateHashString(password);
                 var constructor = typeof(User).GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
                     null,
-                    [typeof(UserId), typeof(string), typeof(string), typeof(string), typeof(string), typeof(UserRole), typeof(IList<PermissionId>)],
-                    null);
+                    [
+                        typeof(UserId),
+                        typeof(string),
+                        typeof(string),
+                        typeof(string),
+                        typeof(string),
+                        typeof(UserRole),
+                        typeof(IList<PermissionId>),
+                    ],
+                    null
+                );
 
-                var user = (User)constructor!.Invoke([UserId.Create(adminId), "System", "Admin", email, hashedPassword, UserRole.Admin, allPermissionIds]);
+                var user = (User)
+                    constructor!.Invoke([
+                        UserId.Create(adminId),
+                        "System",
+                        "Admin",
+                        email,
+                        hashedPassword,
+                        UserRole.Admin,
+                        allPermissionIds,
+                    ]);
                 dbContext.Users.Add(user);
                 dbContext.Carts.Add(Cart.Create(user.Id));
                 await dbContext.SaveChangesAsync();
@@ -116,11 +154,19 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         }
 
         var loginRequest = new LoginRequest(email, password);
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/auth/login", loginRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/auth/login",
+            loginRequest,
+            TestContext.Current.CancellationToken
+        );
         if (!response.IsSuccessStatusCode)
         {
-            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            throw new InvalidOperationException($"Admin login failed ({(int)response.StatusCode}): {body}");
+            var body = await response.Content.ReadAsStringAsync(
+                TestContext.Current.CancellationToken
+            );
+            throw new InvalidOperationException(
+                $"Admin login failed ({(int)response.StatusCode}): {body}"
+            );
         }
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
@@ -136,14 +182,15 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         string firstName = "Test",
         string lastName = "User",
         string? email = null,
-        string password = "Password123!")
+        string password = "Password123!"
+    )
     {
         email ??= $"{Guid.NewGuid().ToString()[..8]}@test.com";
-        
+
         await RegisterUserAsync(firstName, lastName, email, password);
         var token = await LoginAndGetTokenAsync(email, password);
         SetAuthToken(token);
-        
+
         var userId = GetUserIdFromToken(token);
         return (token, userId);
     }
@@ -158,7 +205,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         decimal price,
         Guid categoryId,
         string sku = "TEST-SKU",
-        int stockQuantity = 100)
+        int stockQuantity = 100
+    )
     {
         var createRequest = new
         {
@@ -175,25 +223,41 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             sizes = "S,M,L",
             tags = "Test",
             barcode = Guid.NewGuid().ToString()[..8],
-            stockQuantity
+            stockQuantity,
         };
 
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/products", createRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/products",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var product = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductDetailResponse>(TestContext.Current.CancellationToken);
-        return product?.ProductId ?? throw new InvalidOperationException("Failed to create product");
+        var product =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductDetailResponse>(
+                TestContext.Current.CancellationToken
+            );
+        return product?.ProductId
+            ?? throw new InvalidOperationException("Failed to create product");
     }
 
     /// <summary>
     /// Gets a product by ID via API.
     /// </summary>
-    protected async Task<Shopizy.Contracts.Product.ProductDetailResponse> GetProductAsync(Guid productId)
+    protected async Task<Shopizy.Contracts.Product.ProductDetailResponse> GetProductAsync(
+        Guid productId
+    )
     {
-        var response = await HttpClient.GetAsync($"/api/v1.0/products/{productId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/products/{productId}",
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var product = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductDetailResponse>(TestContext.Current.CancellationToken);
+        var product =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductDetailResponse>(
+                TestContext.Current.CancellationToken
+            );
         return product ?? throw new InvalidOperationException("Failed to get product");
     }
 
@@ -204,7 +268,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         string? name = null,
         Guid? categoryId = null,
         int pageNumber = 1,
-        int pageSize = 10)
+        int pageSize = 10
+    )
     {
         var queryParams = new List<string> { $"pageNumber={pageNumber}", $"pageSize={pageSize}" };
         if (!string.IsNullOrEmpty(name))
@@ -217,10 +282,16 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         }
 
         var query = string.Join("&", queryParams);
-        var response = await HttpClient.GetAsync($"/api/v1.0/products?{query}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/products?{query}",
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductsPagedResponse>(TestContext.Current.CancellationToken);
+        var result =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Product.ProductsPagedResponse>(
+                TestContext.Current.CancellationToken
+            );
         return result ?? new Shopizy.Contracts.Product.ProductsPagedResponse([], 0, 0, 0);
     }
 
@@ -234,10 +305,17 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     protected async Task<Guid> CreateCategoryAsync(string name, Guid? parentId = null)
     {
         var createRequest = new { name, parentId };
-        var response = await HttpClient.PostAsJsonAsync("/api/v1.0/admin/categories", createRequest, TestContext.Current.CancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/categories",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var category = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Category.CategoryResponse>(TestContext.Current.CancellationToken);
+        var category =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Category.CategoryResponse>(
+                TestContext.Current.CancellationToken
+            );
         return category?.Id ?? throw new InvalidOperationException("Failed to create category");
     }
 
@@ -246,10 +324,15 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<List<Shopizy.Contracts.Category.CategoryResponse>> ListCategoriesAsync()
     {
-        var response = await HttpClient.GetAsync("/api/v1.0/categories", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            "/api/v1.0/categories",
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var categories = await response.Content.ReadFromJsonAsync<List<Shopizy.Contracts.Category.CategoryResponse>>(TestContext.Current.CancellationToken);
+        var categories = await response.Content.ReadFromJsonAsync<
+            List<Shopizy.Contracts.Category.CategoryResponse>
+        >(TestContext.Current.CancellationToken);
         return categories ?? [];
     }
 
@@ -262,10 +345,15 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<Shopizy.Contracts.Cart.CartResponse> GetCartAsync(Guid userId)
     {
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/cart", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{userId}/cart",
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(TestContext.Current.CancellationToken);
+        var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(
+            TestContext.Current.CancellationToken
+        );
         return cart ?? throw new InvalidOperationException("Failed to get cart");
     }
 
@@ -277,15 +365,29 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         Guid productId,
         int quantity = 1,
         string color = "Red",
-        string size = "M")
+        string size = "M"
+    )
     {
-        var addRequest = new { productId, color, size, quantity };
-        var response = await HttpClient.PatchAsJsonAsync($"/api/v1.0/users/{userId}/cart/items", addRequest, TestContext.Current.CancellationToken);
+        var addRequest = new
+        {
+            productId,
+            color,
+            size,
+            quantity,
+        };
+        var response = await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/users/{userId}/cart/items",
+            addRequest,
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(TestContext.Current.CancellationToken);
+        var cart = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Cart.CartResponse>(
+            TestContext.Current.CancellationToken
+        );
         var addedItem = cart?.CartItems.FirstOrDefault(i => i.ProductId == productId);
-        return addedItem?.CartItemId ?? throw new InvalidOperationException("Failed to add item to cart");
+        return addedItem?.CartItemId
+            ?? throw new InvalidOperationException("Failed to add item to cart");
     }
 
     /// <summary>
@@ -297,7 +399,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         var response = await HttpClient.PatchAsJsonAsync(
             $"/api/v1.0/users/{userId}/cart/items/{itemId}",
             updateRequest,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
     }
 
@@ -308,7 +411,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     {
         var response = await HttpClient.DeleteAsync(
             $"/api/v1.0/users/{userId}/cart/items/{itemId}",
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
     }
 
@@ -321,7 +425,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// </summary>
     protected async Task<Guid> PlaceOrderAsync(
         IEnumerable<object> orderItems,
-        object? shippingAddress = null)
+        object? shippingAddress = null
+    )
     {
         shippingAddress ??= new
         {
@@ -329,7 +434,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             city = "Test City",
             state = "TS",
             country = "Test Country",
-            zipCode = "12345"
+            zipCode = "12345",
         };
 
         var createOrderRequest = new
@@ -338,35 +443,51 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             deliveryMethod = 1,
             deliveryCharge = new { amount = 5.0, currency = "USD" },
             shippingAddress,
-            orderItems
+            orderItems,
         };
 
         var response = await HttpClient.PostAsJsonAsync(
             "/api/v1.0/orders/checkout",
             createOrderRequest,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var order = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Order.OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Order.OrderDetailResponse>(
+                TestContext.Current.CancellationToken
+            );
         return order?.OrderId ?? throw new InvalidOperationException("Failed to place order");
     }
 
     /// <summary>
     /// Gets an order by ID via API.
     /// </summary>
-    protected async Task<Shopizy.Contracts.Order.OrderDetailResponse> GetOrderAsync(Guid userId, Guid orderId)
+    protected async Task<Shopizy.Contracts.Order.OrderDetailResponse> GetOrderAsync(
+        Guid userId,
+        Guid orderId
+    )
     {
-        var response = await HttpClient.GetAsync($"/api/v1.0/users/{userId}/orders/{orderId}", TestContext.Current.CancellationToken);
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{userId}/orders/{orderId}",
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
-        var order = await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Order.OrderDetailResponse>(TestContext.Current.CancellationToken);
+        var order =
+            await response.Content.ReadFromJsonAsync<Shopizy.Contracts.Order.OrderDetailResponse>(
+                TestContext.Current.CancellationToken
+            );
         return order ?? throw new InvalidOperationException("Failed to get order");
     }
 
     /// <summary>
     /// Lists orders for a user via API.
     /// </summary>
-    protected async Task<List<Shopizy.Contracts.Order.OrderResponse>> ListOrdersAsync(Guid userId, string? status = null)
+    protected async Task<List<Shopizy.Contracts.Order.OrderResponse>> ListOrdersAsync(
+        Guid userId,
+        string? status = null
+    )
     {
         var url = $"/api/v1.0/users/{userId}/orders";
         if (!string.IsNullOrEmpty(status))
@@ -377,7 +498,9 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         var response = await HttpClient.GetAsync(url, TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var orders = await response.Content.ReadFromJsonAsync<List<Shopizy.Contracts.Order.OrderResponse>>(TestContext.Current.CancellationToken);
+        var orders = await response.Content.ReadFromJsonAsync<
+            List<Shopizy.Contracts.Order.OrderResponse>
+        >(TestContext.Current.CancellationToken);
         return orders ?? [];
     }
 
@@ -393,7 +516,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         Guid orderId,
         decimal amount,
         string paymentMethod = "card",
-        string currency = "USD")
+        string currency = "USD"
+    )
     {
         var paymentRequest = new
         {
@@ -401,13 +525,14 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             paymentMethod,
             amount,
             currency,
-            token = "tok_visa"
+            token = "tok_visa",
         };
 
         var response = await HttpClient.PostAsJsonAsync(
             $"/api/v1.0/users/{userId}/payments",
             paymentRequest,
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
         response.EnsureSuccessStatusCode();
     }
 
@@ -434,10 +559,12 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var jwtToken = handler.ReadJwtToken(token);
         var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "id");
-        
+
         if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
         {
-            throw new InvalidOperationException($"Failed to extract user ID from token. Claims present: {string.Join(", ", jwtToken.Claims.Select(c => $"{c.Type}={c.Value}"))}");
+            throw new InvalidOperationException(
+                $"Failed to extract user ID from token. Claims present: {string.Join(", ", jwtToken.Claims.Select(c => $"{c.Type}={c.Value}"))}"
+            );
         }
 
         return userId;

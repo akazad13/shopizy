@@ -1,8 +1,8 @@
-using Xunit;
-using Shouldly;
+using Shopizy.Domain.Permissions.ValueObjects;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Users.Enums;
-using Shopizy.Domain.Permissions.ValueObjects;
+using Shouldly;
+using Xunit;
 
 namespace Shopizy.Domain.UnitTests.Users;
 
@@ -19,7 +19,14 @@ public class UserTests
         var permissions = new List<PermissionId>();
 
         // Act
-        var user = User.Create(firstName, lastName, email, password, UserRole.Customer, permissions);
+        var user = User.Create(
+            firstName,
+            lastName,
+            email,
+            password,
+            UserRole.Customer,
+            permissions
+        );
 
         // Assert
         user.ShouldNotBeNull();
@@ -53,7 +60,14 @@ public class UserTests
     public void UpdatePassword_ShouldUpdatePassword()
     {
         // Arrange
-        var user = User.Create("U", "U", "e@e.com", "old", UserRole.Customer, new List<PermissionId>());
+        var user = User.Create(
+            "U",
+            "U",
+            "e@e.com",
+            "old",
+            UserRole.Customer,
+            new List<PermissionId>()
+        );
         var newPassword = "new_hashed_password";
 
         // Act

@@ -74,12 +74,12 @@ public class AddProductToCartCommandHandlerTests
         Assert.Equal(existingCart, cart.Value);
         Assert.Single(cart.Value.CartItems);
         Assert.IsType<ProductId>(cart.Value.CartItems[0].ProductId);
-        Assert.Contains(cart.Value.CartItems, li => li.ProductId == ProductId.Create(command.ProductId));
-        Assert.Equal(command.Quantity, cart.Value.CartItems[0].Quantity);
-        _mockCartRepository.Verify(
-            x => x.Update(It.IsAny<Cart>()),
-            Times.Never
+        Assert.Contains(
+            cart.Value.CartItems,
+            li => li.ProductId == ProductId.Create(command.ProductId)
         );
+        Assert.Equal(command.Quantity, cart.Value.CartItems[0].Quantity);
+        _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
     }
 
     // Should add new line item for another product
@@ -118,10 +118,12 @@ public class AddProductToCartCommandHandlerTests
         Assert.Equal(2, cart.Value.CartItems.Count);
         Assert.IsType<ProductId>(cart.Value.CartItems[0].ProductId);
         Assert.Equal(1, cart.Value.CartItems[0].Quantity);
-        _mockCartRepository.Verify(
-            x => x.Update(It.IsAny<Cart>()),
-            Times.Never
+        _mockCartRepository.Verify(x => x.Update(It.IsAny<Cart>()), Times.Never);
+        Assert.Contains(
+            cart.Value.CartItems,
+            li =>
+                li.ProductId == ProductId.Create(command.ProductId)
+                && li.Quantity == command.Quantity
         );
-        Assert.Contains(cart.Value.CartItems, li => li.ProductId == ProductId.Create(command.ProductId) && li.Quantity == command.Quantity);
     }
 }

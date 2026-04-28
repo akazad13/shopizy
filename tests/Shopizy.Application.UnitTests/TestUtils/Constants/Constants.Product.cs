@@ -1,5 +1,5 @@
-using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Brands.ValueObjects;
+using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.TestUtils.Constants;

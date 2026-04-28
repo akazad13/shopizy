@@ -1,6 +1,5 @@
 ﻿using Shouldly;
 
-
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview.UnitTests;
 
 /// <summary>
@@ -20,7 +19,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 3m,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -42,7 +42,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.Empty,
             ProductId: Guid.NewGuid(),
             Rating: 3m,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -65,7 +66,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.Empty,
             Rating: 3m,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -93,7 +95,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: rating,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -121,7 +124,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: rating,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -144,7 +148,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 1m,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -166,7 +171,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 5m,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -194,7 +200,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: rating,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -216,7 +223,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 3m,
-            Comment: new string('a', 1001));
+            Comment: new string('a', 1001)
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -239,7 +247,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 3m,
-            Comment: new string('a', 1000));
+            Comment: new string('a', 1000)
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -265,7 +274,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: 3m,
-            Comment: comment!);
+            Comment: comment!
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -287,7 +297,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.Empty,
             ProductId: Guid.Empty,
             Rating: 0m,
-            Comment: new string('a', 1001));
+            Comment: new string('a', 1001)
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -313,7 +324,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: decimal.MinValue,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);
@@ -336,7 +348,8 @@ public class CreateProductReviewCommandValidatorTests
             UserId: Guid.NewGuid(),
             ProductId: Guid.NewGuid(),
             Rating: decimal.MaxValue,
-            Comment: "Great product!");
+            Comment: "Great product!"
+        );
 
         // Act
         var result = validator.Validate(command);

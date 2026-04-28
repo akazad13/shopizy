@@ -19,11 +19,16 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", request, TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(TestContext.Current.CancellationToken);
+        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
         giftCard.ShouldNotBeNull();
         giftCard.Code.ShouldBe(request.Code);
         giftCard.InitialBalance.ShouldBe(request.InitialBalance);
@@ -38,7 +43,10 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", CreateRequest(), TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            CreateRequest(),
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -52,7 +60,10 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", CreateRequest(), TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            CreateRequest(),
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
@@ -67,12 +78,18 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Create the first gift card
         var firstResponse = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", request, TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            request,
+            TestContext.Current.CancellationToken
+        );
         firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Act — attempt to create a second gift card with the same code
         var secondResponse = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", request, TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            request,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         secondResponse.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -84,15 +101,22 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         // Arrange
         await AuthenticateAsAdminAsync();
         await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", CreateRequest(), TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            CreateRequest(),
+            TestContext.Current.CancellationToken
+        );
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/gift-cards?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var giftCards = await response.Content.ReadFromJsonAsync<IReadOnlyList<GiftCardResponse>>(TestContext.Current.CancellationToken);
+        var giftCards = await response.Content.ReadFromJsonAsync<IReadOnlyList<GiftCardResponse>>(
+            TestContext.Current.CancellationToken
+        );
         giftCards.ShouldNotBeNull();
         giftCards.ShouldNotBeEmpty();
     }
@@ -105,7 +129,9 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.GetAsync(
-            "/api/v1.0/admin/gift-cards?pageNumber=1&pageSize=10", TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards?pageNumber=1&pageSize=10",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
@@ -118,7 +144,10 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         await AuthenticateAsAdminAsync();
         var createRequest = CreateRequest();
         var createResponse = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/admin/gift-cards", createRequest, TestContext.Current.CancellationToken);
+            "/api/v1.0/admin/gift-cards",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
         createResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Authenticate as customer to validate
@@ -126,11 +155,16 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/gift-cards/validate", createRequest.Code, TestContext.Current.CancellationToken);
+            "/api/v1.0/gift-cards/validate",
+            createRequest.Code,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(TestContext.Current.CancellationToken);
+        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
         giftCard.ShouldNotBeNull();
         giftCard.Code.ShouldBe(createRequest.Code);
         giftCard.IsActive.ShouldBeTrue();
@@ -144,7 +178,10 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/gift-cards/validate", "NONEXISTENT-CODE", TestContext.Current.CancellationToken);
+            "/api/v1.0/gift-cards/validate",
+            "NONEXISTENT-CODE",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -158,7 +195,10 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(
-            "/api/v1.0/gift-cards/validate", "ANY-CODE", TestContext.Current.CancellationToken);
+            "/api/v1.0/gift-cards/validate",
+            "ANY-CODE",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);

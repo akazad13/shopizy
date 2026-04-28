@@ -3,8 +3,8 @@ using Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Carts.TestUtils;
 using Shopizy.Domain.Carts;
-using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Common.CustomErrors;
+using Shopizy.Domain.Users.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Carts.Commands.UpdateProductQuantity;
 

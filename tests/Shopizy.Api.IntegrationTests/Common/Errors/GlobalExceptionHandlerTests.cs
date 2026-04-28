@@ -1,9 +1,9 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Shopizy.Api.Common.Errors;
 using Shouldly;
-using System.Text.Json;
 using Xunit;
 
 namespace Shopizy.Api.IntegrationTests.Common.Errors;
@@ -25,7 +25,11 @@ public class GlobalExceptionHandlerTests
         var exception = new Exception("Internal error details that should NOT be exposed");
 
         // Act
-        var handled = await _sut.TryHandleAsync(httpContext, exception, TestContext.Current.CancellationToken);
+        var handled = await _sut.TryHandleAsync(
+            httpContext,
+            exception,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         handled.ShouldBeTrue();
@@ -45,7 +49,11 @@ public class GlobalExceptionHandlerTests
         var exception = new DbUpdateConcurrencyException("Concurrency conflict");
 
         // Act
-        var handled = await _sut.TryHandleAsync(httpContext, exception, TestContext.Current.CancellationToken);
+        var handled = await _sut.TryHandleAsync(
+            httpContext,
+            exception,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         handled.ShouldBeTrue();
@@ -65,7 +73,11 @@ public class GlobalExceptionHandlerTests
         var exception = new OperationCanceledException("Client closed request");
 
         // Act
-        var handled = await _sut.TryHandleAsync(httpContext, exception, TestContext.Current.CancellationToken);
+        var handled = await _sut.TryHandleAsync(
+            httpContext,
+            exception,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         handled.ShouldBeTrue();
@@ -100,7 +112,8 @@ public class GlobalExceptionHandlerTests
     {
         // Arrange
         var httpContext = CreateHttpContext();
-        var sensitiveMessage = "Sensitive internal error: connection string = Server=prod;Password=secret";
+        var sensitiveMessage =
+            "Sensitive internal error: connection string = Server=prod;Password=secret";
         var exception = new Exception(sensitiveMessage);
 
         // Act
@@ -118,14 +131,16 @@ public class GlobalExceptionHandlerTests
         return context;
     }
 
-    private static async Task<ProblemDetails?> ReadProblemDetailsAsync(DefaultHttpContext httpContext)
+    private static async Task<ProblemDetails?> ReadProblemDetailsAsync(
+        DefaultHttpContext httpContext
+    )
     {
         httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
         var body = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
-        return JsonSerializer.Deserialize<ProblemDetails>(body, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return JsonSerializer.Deserialize<ProblemDetails>(
+            body,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
     }
 
     private static async Task<string> ReadResponseBodyAsync(DefaultHttpContext httpContext)
