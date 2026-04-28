@@ -11,6 +11,28 @@ namespace Shopizy.Infrastructure.UnitTests.Services;
 /// </summary>
 public class LoggingEmailServiceTests
 {
+    private static Mock<ILogger<LoggingEmailService>> CreateLoggerMock()
+    {
+        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        mockLogger.Setup(x => x.IsEnabled(LogLevel.Information)).Returns(true);
+        return mockLogger;
+    }
+
+    private static void VerifyEmailLogged(Mock<ILogger<LoggingEmailService>> mockLogger)
+    {
+        mockLogger.Verify(
+            x =>
+                x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception?>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
+    }
+
     /// <summary>
     /// Tests that SendAsync completes successfully and logs the email information with valid inputs.
     /// </summary>
@@ -18,7 +40,7 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_ValidInputs_CompletesSuccessfullyAndLogsInformation()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
         var to = "user@example.com";
         var subject = "Test Subject";
@@ -30,17 +52,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            static x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -61,7 +73,7 @@ public class LoggingEmailServiceTests
     )
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
@@ -70,17 +82,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -101,7 +103,7 @@ public class LoggingEmailServiceTests
     )
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
@@ -110,17 +112,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -144,7 +136,7 @@ public class LoggingEmailServiceTests
     )
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
@@ -153,17 +145,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -173,7 +155,7 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_VeryLongStrings_CompletesSuccessfullyAndLogsInformation()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
         var longString = new string('a', 10000);
 
@@ -188,17 +170,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -208,7 +180,7 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_CancelledCancellationToken_CompletesSuccessfullyAndIgnoresCancellation()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
         await new CancellationTokenSource().CancelAsync();
 
@@ -223,17 +195,7 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 
     /// <summary>
@@ -266,7 +228,7 @@ public class LoggingEmailServiceTests
     public async Task SendAsync_DefaultCancellationToken_CompletesSuccessfully()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoggingEmailService>>();
+        var mockLogger = CreateLoggerMock();
         var service = new LoggingEmailService(mockLogger.Object);
 
         // Act
@@ -280,16 +242,6 @@ public class LoggingEmailServiceTests
 
         // Assert
         task.IsCompleted.ShouldBeTrue();
-        mockLogger.Verify(
-            x =>
-                x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ),
-            Times.Once
-        );
+        VerifyEmailLogged(mockLogger);
     }
 }

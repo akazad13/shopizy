@@ -22,9 +22,14 @@ namespace Shopizy.Api.IntegrationTests;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder(
+    private static readonly MsSqlContainer SharedDbContainer = new MsSqlBuilder(
         "mcr.microsoft.com/mssql/server:2022-latest"
     ).Build();
+
+    private static readonly SemaphoreSlim ContainerLock = new(1, 1);
+    private static bool ContainerStarted;
+
+    private readonly string _databaseName = $"Shopizy_Integration_{Guid.NewGuid():N}";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -58,9 +63,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 (sp, options) =>
                 {
                     var interceptor = sp.GetRequiredService<UpdateAuditableEntitiesInterceptor>();
+                    var connectionString = BuildConnectionString();
                     options
                         .UseSqlServer(
-                            _dbContainer.GetConnectionString(),
+                            connectionString,
                             o =>
                             {
                                 o.EnableRetryOnFailure(
@@ -303,7 +309,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public async ValueTask InitializeAsync()
     {
-        await _dbContainer.StartAsync();
+        await EnsureContainerStartedAsync();
 
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -320,6 +326,41 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public new async ValueTask DisposeAsync()
     {
-        await _dbContainer.StopAsync();
+        await ValueTask.CompletedTask;
+    }
+
+    private string BuildConnectionString()
+    {
+        var connectionString = SharedDbContainer.GetConnectionString();
+        return connectionString.Contains("Database=", StringComparison.OrdinalIgnoreCase)
+            ? System.Text.RegularExpressions.Regex.Replace(
+                connectionString,
+                "Database=[^;]*",
+                $"Database={_databaseName}",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+            )
+            : $"{connectionString};Database={_databaseName}";
+    }
+
+    private static async Task EnsureContainerStartedAsync()
+    {
+        if (ContainerStarted)
+        {
+            return;
+        }
+
+        await ContainerLock.WaitAsync();
+        try
+        {
+            if (!ContainerStarted)
+            {
+                await SharedDbContainer.StartAsync();
+                ContainerStarted = true;
+            }
+        }
+        finally
+        {
+            ContainerLock.Release();
+        }
     }
 }
