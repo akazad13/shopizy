@@ -21,6 +21,11 @@ public sealed class OutboxDrainer(
     private readonly IDispatcher _dispatcher = dispatcher;
     private readonly ILogger<OutboxDrainer> _logger = logger;
 
+    private static readonly Action<ILogger, Guid, string, Exception?> _outboxDrainFailed = LoggerMessage.Define<Guid, string>(
+        LogLevel.Error,
+        new EventId(1, nameof(OutboxDrainer)),
+        "Outbox drain: failed to process message {MessageId} ({Type}).");
+
     public async Task<int> DrainAsync(CancellationToken cancellationToken = default)
     {
         var pending = await _dbContext.OutboxMessages
@@ -64,7 +69,7 @@ public sealed class OutboxDrainer(
             catch (Exception ex)
 #pragma warning restore CA1031
             {
-                _logger.LogError(ex, "Outbox drain: failed to process message {MessageId} ({Type}).", message.Id, message.Type);
+                _outboxDrainFailed(_logger, message.Id, message.Type, ex);
             }
         }
 

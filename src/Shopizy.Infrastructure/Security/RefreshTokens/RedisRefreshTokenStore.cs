@@ -14,6 +14,26 @@ public sealed class RedisRefreshTokenStore(
     private const string KeyPrefix = "refresh:";
     private const string UserIndexPrefix = "refresh-user:";
 
+    private static readonly Action<ILogger, string, Exception?> _redisStoreRefreshTokenUnavailable = LoggerMessage.Define<string>(
+        LogLevel.Warning,
+        new EventId(1, nameof(RedisRefreshTokenStore)),
+        "Redis unavailable while storing refresh token for {UserId}");
+
+    private static readonly Action<ILogger, Exception?> _redisConsumeRefreshTokenUnavailable = LoggerMessage.Define(
+        LogLevel.Warning,
+        new EventId(2, nameof(RedisRefreshTokenStore)),
+        "Redis unavailable while consuming refresh token");
+
+    private static readonly Action<ILogger, Exception?> _redisRevokeRefreshTokenUnavailable = LoggerMessage.Define(
+        LogLevel.Warning,
+        new EventId(3, nameof(RedisRefreshTokenStore)),
+        "Redis unavailable while revoking refresh token");
+
+    private static readonly Action<ILogger, string, Exception?> _redisRevokeAllRefreshTokensUnavailable = LoggerMessage.Define<string>(
+        LogLevel.Warning,
+        new EventId(4, nameof(RedisRefreshTokenStore)),
+        "Redis unavailable while revoking refresh tokens for {UserId}");
+
     public async Task StoreAsync(string token, UserId userId, TimeSpan ttl, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(userId);
@@ -32,7 +52,7 @@ public sealed class RedisRefreshTokenStore(
         }
         catch (RedisConnectionException ex)
         {
-            logger.LogWarning(ex, "Redis unavailable while storing refresh token for {UserId}", userId.Value);
+            _redisStoreRefreshTokenUnavailable(logger, userId.Value.ToString(), ex);
         }
     }
 
@@ -52,7 +72,7 @@ public sealed class RedisRefreshTokenStore(
         }
         catch (RedisConnectionException ex)
         {
-            logger.LogWarning(ex, "Redis unavailable while consuming refresh token");
+            _redisConsumeRefreshTokenUnavailable(logger, ex);
             return null;
         }
     }
@@ -67,7 +87,7 @@ public sealed class RedisRefreshTokenStore(
         }
         catch (RedisConnectionException ex)
         {
-            logger.LogWarning(ex, "Redis unavailable while revoking refresh token");
+            _redisRevokeRefreshTokenUnavailable(logger, ex);
         }
     }
 
@@ -89,7 +109,7 @@ public sealed class RedisRefreshTokenStore(
         }
         catch (RedisConnectionException ex)
         {
-            logger.LogWarning(ex, "Redis unavailable while revoking refresh tokens for {UserId}", userId.Value);
+            _redisRevokeAllRefreshTokensUnavailable(logger, userId.Value.ToString(), ex);
         }
     }
 
