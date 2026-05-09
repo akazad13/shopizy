@@ -44,7 +44,7 @@ jobs:
         awk -v c="$line" 'BEGIN { if (c+0 < 70) { print "Coverage below 70% threshold"; exit 1 } else { print "Coverage above threshold"; exit 0 } }'
       shell: bash
     - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v6
       with:
         files: ./coverage/**/coverage.cobertura.xml
         fail_ci_if_error: false
