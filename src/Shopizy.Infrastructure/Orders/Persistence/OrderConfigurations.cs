@@ -38,7 +38,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             pb =>
             {
                 pb.Property(p => p.Amount).HasPrecision(18, 2);
-                pb.Property(p => p.Currency).HasConversion<string>();
+                pb.Property(p => p.Currency).HasConversion<int>();
             }
         );
         builder.OwnsOne(
@@ -86,6 +86,8 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                 ib.Property(oi => oi.PictureUrl).IsRequired(false);
                 ib.Property(oi => oi.Quantity);
                 ib.Property(oi => oi.Discount).HasPrecision(18, 2);
+                ib.Property(oi => oi.Color).HasMaxLength(10).IsRequired(false);
+                ib.Property(oi => oi.Size).HasMaxLength(5).IsRequired(false);
 
                 ib.OwnsOne(
                     oi => oi.UnitPrice,
