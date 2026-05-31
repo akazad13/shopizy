@@ -5,12 +5,6 @@ namespace Shopizy.Application.UnitTests.Carts.TestUtils;
 
 public static class UpdateProductQuantityCommandUtils
 {
-    public static UpdateProductQuantityCommand CreateCommand(int quantity)
-    {
-        return new UpdateProductQuantityCommand(
-            Constants.User.Id.Value,
-            Constants.CartItem.Id.Value,
-            quantity
-        );
-    }
+    public static UpdateProductQuantityCommand CreateCommand(int quantity) =>
+        new(Constants.User.Id.Value, Constants.CartItem.Id.Value, quantity);
 }

@@ -8,8 +8,7 @@ namespace Shopizy.Infrastructure.Migrations
     public partial class AddProductIdToOrderItem : Migration
     {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) =>
             migrationBuilder.AddColumn<Guid>(
                 name: "ProductId",
                 table: "OrderItems",
@@ -17,12 +16,9 @@ namespace Shopizy.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000")
             );
-        }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) =>
             migrationBuilder.DropColumn(name: "ProductId", table: "OrderItems");
-        }
     }
 }

@@ -8,6 +8,8 @@ namespace Shopizy.Infrastructure.Common.Caching;
 /// <summary>
 /// Helper class for interacting with Redis cache.
 /// </summary>
+/// <param name="connectionMultiplexer"></param>
+/// <param name="logger"></param>
 public class RedisCacheHelper(
     IConnectionMultiplexer connectionMultiplexer,
     ILogger<RedisCacheHelper> logger
@@ -24,6 +26,7 @@ public class RedisCacheHelper(
     /// <summary>
     /// Gets the cached value for the specified key.
     /// </summary>
+    /// <param name="key"></param>
     /// <returns>The cache result containing the value if found; otherwise, a miss result.</returns>
     public async Task<CacheResult<T>> GetAsync<T>(string key)
     {

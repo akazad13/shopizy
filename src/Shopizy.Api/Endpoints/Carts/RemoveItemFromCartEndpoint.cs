@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Carts;
 
 public class RemoveItemFromCartEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/users/{userId:guid}/cart/items/{itemId:guid}",
                 async (
@@ -48,5 +47,4 @@ public class RemoveItemFromCartEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

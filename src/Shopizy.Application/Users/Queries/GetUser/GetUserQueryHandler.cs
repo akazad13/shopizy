@@ -10,6 +10,8 @@ namespace Shopizy.Application.Users.Queries.GetUser;
 /// <summary>
 /// Handles the <see cref="GetUserQuery"/> to retrieve user information.
 /// </summary>
+/// <param name="userRepository"></param>
+/// <param name="orderRepository"></param>
 public class GetUserQueryHandler(IUserRepository userRepository, IOrderRepository orderRepository)
     : IQueryHandler<GetUserQuery, ErrorOr<UserDto>>
 {

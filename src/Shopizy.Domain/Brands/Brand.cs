@@ -26,14 +26,18 @@ public sealed class Brand : AggregateRoot<BrandId, Guid>
     /// <summary>
     /// Creates a new brand.
     /// </summary>
-    public static Brand Create(string name, string? logoUrl, string country)
-    {
-        return new Brand(BrandId.CreateUnique(), name, logoUrl, country);
-    }
+    /// <param name="name"></param>
+    /// <param name="logoUrl"></param>
+    /// <param name="country"></param>
+    public static Brand Create(string name, string? logoUrl, string country) =>
+        new(BrandId.CreateUnique(), name, logoUrl, country);
 
     /// <summary>
     /// Updates the brand information.
     /// </summary>
+    /// <param name="name"></param>
+    /// <param name="logoUrl"></param>
+    /// <param name="country"></param>
     public void Update(string name, string? logoUrl, string country)
     {
         Name = name;

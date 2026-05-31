@@ -12,6 +12,8 @@ namespace Shopizy.Application.Carts.Commands.AddProductToCart;
 /// <summary>
 /// Handles the <see cref="AddProductToCartCommand"/> to add products to a cart.
 /// </summary>
+/// <param name="cartRepository"></param>
+/// <param name="productRepository"></param>
 public class AddProductToCartCommandHandler(
     ICartRepository cartRepository,
     IProductRepository productRepository

@@ -6,9 +6,8 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class CreateProductCommandUtils
 {
-    public static CreateProductCommand CreateCommand()
-    {
-        return new CreateProductCommand(
+    public static CreateProductCommand CreateCommand() =>
+        new(
             Constants.User.Id.Value,
             Constants.Product.Name,
             Constants.Product.ShortDescription,
@@ -25,11 +24,9 @@ public static class CreateProductCommandUtils
             Constants.Product.Barcode,
             []
         );
-    }
 
-    public static CreateProductCommand CreateCommandWithEmptyProductName()
-    {
-        return new CreateProductCommand(
+    public static CreateProductCommand CreateCommandWithEmptyProductName() =>
+        new(
             Constants.User.Id.Value,
             "",
             Constants.Product.ShortDescription,
@@ -46,5 +43,4 @@ public static class CreateProductCommandUtils
             Constants.Product.Barcode,
             []
         );
-    }
 }

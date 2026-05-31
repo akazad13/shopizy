@@ -5,8 +5,5 @@ namespace Shopizy.Application.UnitTests.Carts.TestUtils;
 
 public static class GetCartQueryUtils
 {
-    public static GetCartQuery CreateQuery()
-    {
-        return new GetCartQuery(Constants.User.Id.Value);
-    }
+    public static GetCartQuery CreateQuery() => new(Constants.User.Id.Value);
 }

@@ -53,15 +53,9 @@ public class CartMappingConfig : IRegister
             .NewConfig<CartItem, CartItemResponse>()
             .Map(dest => dest.CartItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)
+            .Map(dest => dest.Color, src => src.Color)
+            .Map(dest => dest.Size, src => src.Size)
             .Map(dest => dest.Quantity, src => src.Quantity)
-            .Map(dest => dest.Product, src => src.Product)
-            .Map(
-                dest => dest.Product.ProductImages,
-                src =>
-                    src.Product.ProductImages == null
-                        ? null
-                        : src.Product.ProductImages.Select(pi => pi.ImageUrl)
-            )
-            .Map(dest => dest.Product.Price, src => src.Product.UnitPrice.Amount);
+            .Ignore(dest => dest.Product);
     }
 }

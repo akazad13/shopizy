@@ -13,8 +13,7 @@ namespace Shopizy.Api.Endpoints.Products;
 /// </summary>
 public class SearchProductsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/products",
                 async (
@@ -44,5 +43,4 @@ public class SearchProductsEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

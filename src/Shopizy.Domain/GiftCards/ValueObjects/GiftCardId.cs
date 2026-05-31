@@ -11,15 +11,9 @@ public sealed class GiftCardId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static GiftCardId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static GiftCardId CreateUnique() => new(Guid.NewGuid());
 
-    public static GiftCardId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static GiftCardId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

@@ -35,8 +35,6 @@ public class AuditLogRepository(AppDbContext dbContext) : IAuditLogRepository
             .ToListAsync();
     }
 
-    public async Task AddAsync(AuditLog auditLog)
-    {
+    public async Task AddAsync(AuditLog auditLog) =>
         await _dbContext.Set<AuditLog>().AddAsync(auditLog);
-    }
 }

@@ -1,5 +1,4 @@
 using System.Threading.RateLimiting;
-using Docker.DotNet.Models;
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.RateLimiting;
@@ -229,22 +228,15 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         // No-op cache for integration tests - always returns cache miss
         // This ensures tests always get fresh data from the database
 
-        public Task<CacheResult<T>> GetAsync<T>(string key)
-        {
+        public Task<CacheResult<T>> GetAsync<T>(string key) =>
             // Always return cache miss
-            return Task.FromResult(CacheResult<T>.Miss());
-        }
+            Task.FromResult(CacheResult<T>.Miss());
 
-        public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
-        {
+        public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) =>
             // Don't actually cache anything in tests
-            return Task.CompletedTask;
-        }
+            Task.CompletedTask;
 
-        public Task RemoveAsync(string key)
-        {
-            return Task.CompletedTask;
-        }
+        public Task RemoveAsync(string key) => Task.CompletedTask;
     }
 
     public class MockPaymentService : IPaymentService
@@ -253,12 +245,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             string email,
             string name,
             CancellationToken cancellationToken
-        )
-        {
-            return Task.FromResult<ErrorOr.ErrorOr<CustomerResource>>(
+        ) =>
+            Task.FromResult<ErrorOr.ErrorOr<CustomerResource>>(
                 new CustomerResource("cus_mock_123", email, name)
             );
-        }
 
         public Task<ErrorOr<Success>> CreateRefundAsync(
             string chargeId,
@@ -294,17 +284,13 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         public Task<ErrorOr.ErrorOr<PhotoUploadResult>> UploadPhotoAsync(
             IFormFile file,
             CancellationToken cancellationToken = default
-        )
-        {
-            return Task.FromResult<ErrorOr.ErrorOr<PhotoUploadResult>>(
+        ) =>
+            Task.FromResult<ErrorOr.ErrorOr<PhotoUploadResult>>(
                 new PhotoUploadResult("https://mock.cloudinary.com/image.jpg", "mock_public_id")
             );
-        }
 
-        public Task<ErrorOr.ErrorOr<Success>> DeletePhotoAsync(string publicId)
-        {
-            return Task.FromResult<ErrorOr.ErrorOr<Success>>(Result.Success);
-        }
+        public Task<ErrorOr.ErrorOr<Success>> DeletePhotoAsync(string publicId) =>
+            Task.FromResult<ErrorOr.ErrorOr<Success>>(Result.Success);
     }
 
     public async ValueTask InitializeAsync()
@@ -324,10 +310,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         }
     }
 
-    public new async ValueTask DisposeAsync()
-    {
-        await ValueTask.CompletedTask;
-    }
+    public new async ValueTask DisposeAsync() => await ValueTask.CompletedTask;
 
     private string BuildConnectionString()
     {

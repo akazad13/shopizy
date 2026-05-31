@@ -5,12 +5,10 @@ namespace Shopizy.Application.UnitTests.Orders.TestUtils;
 
 public static class CancelOrderCommandUtils
 {
-    public static CancelOrderCommand CreateCommand(Guid? orderId = null)
-    {
-        return new CancelOrderCommand(
+    public static CancelOrderCommand CreateCommand(Guid? orderId = null) =>
+        new(
             Constants.User.Id.Value,
             orderId ?? Constants.Order.Id.Value,
             Constants.Order.CancellationReason
         );
-    }
 }

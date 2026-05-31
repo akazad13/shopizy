@@ -18,8 +18,7 @@ public class LoggingEmailServiceTests
         return mockLogger;
     }
 
-    private static void VerifyEmailLogged(Mock<ILogger<LoggingEmailService>> mockLogger)
-    {
+    private static void VerifyEmailLogged(Mock<ILogger<LoggingEmailService>> mockLogger) =>
         mockLogger.Verify(
             x =>
                 x.Log(
@@ -31,7 +30,6 @@ public class LoggingEmailServiceTests
                 ),
             Times.Once
         );
-    }
 
     /// <summary>
     /// Tests that SendAsync completes successfully and logs the email information with valid inputs.

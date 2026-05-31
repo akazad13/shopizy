@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Orders;
 
 public class GetShipmentEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/users/{userId:guid}/orders/{orderId:guid}/shipments",
                 async (
@@ -47,5 +46,4 @@ public class GetShipmentEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

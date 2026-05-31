@@ -7,14 +7,14 @@ public sealed class SecurityHeadersMiddleware(RequestDelegate next)
         ArgumentNullException.ThrowIfNull(context);
 
         var headers = context.Response.Headers;
-        headers["X-Content-Type-Options"] = "nosniff";
-        headers["X-Frame-Options"] = "DENY";
+        headers.XContentTypeOptions = "nosniff";
+        headers.XFrameOptions = "DENY";
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         headers["Cross-Origin-Opener-Policy"] = "same-origin";
         headers["Cross-Origin-Resource-Policy"] = "same-origin";
         headers["Permissions-Policy"] =
             "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()";
-        headers["Content-Security-Policy"] =
+        headers.ContentSecurityPolicy =
             "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'";
 
         headers.Remove("X-Powered-By");

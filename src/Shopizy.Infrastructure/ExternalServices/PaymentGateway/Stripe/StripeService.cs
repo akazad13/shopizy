@@ -9,6 +9,9 @@ namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 /// <summary>
 /// Service for integrating with Stripe payment gateway.
 /// </summary>
+/// <param name="customerService"></param>
+/// <param name="paymentIntentService"></param>
+/// <param name="refundService"></param>
 [ExcludeFromCodeCoverage]
 public class StripeService(
     CustomerService customerService,
@@ -179,9 +182,8 @@ public class StripeService(
         );
     }
 
-    private static string FormatStripeException(StripeException e)
-    {
-        return e.StripeError.Type switch
+    private static string FormatStripeException(StripeException e) =>
+        e.StripeError.Type switch
         {
             "card_error" => $"A payment error occurred: {e.StripeError.Message}",
             "api_connection_error" =>
@@ -194,5 +196,4 @@ public class StripeService(
             "validation_error" => $"A validation error occurred: {e.StripeError.Message}",
             _ => $"An unknown error occured: {e.StripeError.Message}",
         };
-    }
 }

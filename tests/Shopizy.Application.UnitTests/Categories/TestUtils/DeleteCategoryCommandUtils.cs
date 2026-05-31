@@ -5,8 +5,6 @@ namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 
 public static class DeleteCategoryCommandUtils
 {
-    public static DeleteCategoryCommand CreateCommand()
-    {
-        return new DeleteCategoryCommand(Constants.User.Id.Value, Constants.Category.Id.Value);
-    }
+    public static DeleteCategoryCommand CreateCommand() =>
+        new(Constants.User.Id.Value, Constants.Category.Id.Value);
 }

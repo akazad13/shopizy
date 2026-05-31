@@ -34,10 +34,23 @@ app.MapEndpoints();
 app.MapHealthChecks("/healthz").DisableRateLimiting();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-{
-    app.UseSwagger().UseSwaggerUI();
-}
+app.UseSwagger();
+
+// Redirect plain /swagger or /swagger/ requests to /swagger/index.html so the UI loads
+app.Use(
+    async (context, next) =>
+    {
+        if (context.Request.Path == "" || context.Request.Path == "/")
+        {
+            context.Response.Redirect($"{context.Request.PathBase}/swagger/index.html");
+            return;
+        }
+
+        await next();
+    }
+);
+
+app.UseSwaggerUI();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<RequestBufferingMiddleware>();

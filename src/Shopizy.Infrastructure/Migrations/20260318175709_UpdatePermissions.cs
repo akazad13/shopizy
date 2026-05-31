@@ -8,8 +8,7 @@ namespace Shopizy.Infrastructure.Migrations
     public partial class UpdatePermissions : Migration
     {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) =>
             migrationBuilder.UpdateData(
                 table: "Permissions",
                 keyColumn: "Id",
@@ -17,11 +16,9 @@ namespace Shopizy.Infrastructure.Migrations
                 column: "Name",
                 value: "create:wishlist"
             );
-        }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) =>
             migrationBuilder.UpdateData(
                 table: "Permissions",
                 keyColumn: "Id",
@@ -29,6 +26,5 @@ namespace Shopizy.Infrastructure.Migrations
                 column: "Name",
                 value: "delete:wishlist"
             );
-        }
     }
 }

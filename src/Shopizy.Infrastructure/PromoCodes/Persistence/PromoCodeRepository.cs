@@ -10,38 +10,24 @@ public class PromoCodeRepository(AppDbContext dbContext) : IPromoCodeRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync(int pageNumber, int pageSize)
-    {
-        return await _dbContext
+    public async Task<IReadOnlyList<PromoCode>> GetPromoCodesAsync(int pageNumber, int pageSize) =>
+        await _dbContext
             .PromoCodes.AsNoTracking()
             .OrderByDescending(pc => pc.CreatedOn)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-    }
 
-    public Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id)
-    {
-        return _dbContext.PromoCodes.FirstOrDefaultAsync(c => c.Id == id);
-    }
+    public Task<PromoCode?> GetPromoCodeByIdAsync(PromoCodeId id) =>
+        _dbContext.PromoCodes.FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task AddAsync(PromoCode promoCode)
-    {
+    public async Task AddAsync(PromoCode promoCode) =>
         await _dbContext.PromoCodes.AddAsync(promoCode);
-    }
 
-    public Task<PromoCode?> GetByCodeAsync(string code)
-    {
-        return _dbContext.PromoCodes.FirstOrDefaultAsync(pc => pc.Code == code);
-    }
+    public Task<PromoCode?> GetByCodeAsync(string code) =>
+        _dbContext.PromoCodes.FirstOrDefaultAsync(pc => pc.Code == code);
 
-    public void Update(PromoCode promoCode)
-    {
-        _dbContext.PromoCodes.Update(promoCode);
-    }
+    public void Update(PromoCode promoCode) => _dbContext.PromoCodes.Update(promoCode);
 
-    public void Remove(PromoCode promoCode)
-    {
-        _dbContext.PromoCodes.Remove(promoCode);
-    }
+    public void Remove(PromoCode promoCode) => _dbContext.PromoCodes.Remove(promoCode);
 }

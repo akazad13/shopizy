@@ -10,6 +10,7 @@ namespace Shopizy.Infrastructure.Payments.Persistence;
 /// <summary>
 /// Repository for managing payment data persistence.
 /// </summary>
+/// <param name="dbContext"></param>
 public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
@@ -18,41 +19,29 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
     /// Retrieves all payments from the database.
     /// </summary>
     /// <returns>A list of all payments.</returns>
-    public async Task<IReadOnlyList<Payment>> GetPaymentsAsync()
-    {
-        return await _dbContext.Payments.AsNoTracking().ToListAsync();
-    }
+    public async Task<IReadOnlyList<Payment>> GetPaymentsAsync() =>
+        await _dbContext.Payments.AsNoTracking().ToListAsync();
 
     /// <summary>
     /// Retrieves a payment by its unique identifier.
     /// </summary>
     /// <param name="id">The payment identifier.</param>
     /// <returns>The payment if found; otherwise, null.</returns>
-    public Task<Payment?> GetPaymentByIdAsync(PaymentId id)
-    {
-        return _dbContext.Payments.FirstOrDefaultAsync(c => c.Id == id);
-    }
+    public Task<Payment?> GetPaymentByIdAsync(PaymentId id) =>
+        _dbContext.Payments.FirstOrDefaultAsync(c => c.Id == id);
 
-    public Task<Payment?> GetPaymentByOrderIdAsync(OrderId orderId)
-    {
-        return _dbContext.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
-    }
+    public Task<Payment?> GetPaymentByOrderIdAsync(OrderId orderId) =>
+        _dbContext.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
 
     /// <summary>
     /// Adds a new payment to the database.
     /// </summary>
     /// <param name="payment">The payment to add.</param>
-    public async Task AddAsync(Payment payment)
-    {
-        await _dbContext.Payments.AddAsync(payment);
-    }
+    public async Task AddAsync(Payment payment) => await _dbContext.Payments.AddAsync(payment);
 
     /// <summary>
     /// Updates an existing payment in the database.
     /// </summary>
     /// <param name="payment">The payment to update.</param>
-    public void Update(Payment payment)
-    {
-        _dbContext.Update(payment);
-    }
+    public void Update(Payment payment) => _dbContext.Update(payment);
 }

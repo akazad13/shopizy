@@ -11,5 +11,6 @@ public interface IOutboxDrainer
     /// Processes every pending (unprocessed and not dead-lettered) outbox message immediately,
     /// regardless of age, and returns the number of messages successfully dispatched.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     Task<int> DrainAsync(CancellationToken cancellationToken = default);
 }

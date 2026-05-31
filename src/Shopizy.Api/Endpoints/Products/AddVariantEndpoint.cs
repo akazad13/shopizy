@@ -13,8 +13,7 @@ namespace Shopizy.Api.Endpoints.Products;
 /// </summary>
 public class AddVariantEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/products/{productId:guid}/variants",
                 async (
@@ -46,5 +45,4 @@ public class AddVariantEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

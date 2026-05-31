@@ -91,7 +91,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Gets the average rating of the product.
     /// </summary>
-    public AverageRating AverageRating { get; private set; } = null!;
+    public AverageRating AverageRating { get; } = null!;
 
     /// <summary>
     /// Gets whether the product is active.
@@ -232,83 +232,66 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// Reduces the stock quantity by the specified amount.
     /// </summary>
     /// <param name="quantity">The quantity to deduct from stock.</param>
-    public void ReduceStock(int quantity)
-    {
-        StockQuantity -= quantity;
-    }
+    public void ReduceStock(int quantity) => StockQuantity -= quantity;
 
     /// <summary>
     /// Adds multiple product images.
     /// </summary>
     /// <param name="productImages">The list of product images to add.</param>
-    public void AddProductImages(IReadOnlyList<ProductImage> productImages)
-    {
+    public void AddProductImages(IReadOnlyList<ProductImage> productImages) =>
         _productImages.AddRange(productImages);
-    }
 
     /// <summary>
     /// Adds a single product image.
     /// </summary>
     /// <param name="productImage">The product image to add.</param>
-    public void AddProductImage(ProductImage productImage)
-    {
-        _productImages.Add(productImage);
-    }
+    public void AddProductImage(ProductImage productImage) => _productImages.Add(productImage);
 
     /// <summary>
     /// Removes a product image.
     /// </summary>
     /// <param name="productImage">The product image to remove.</param>
-    public void RemoveProductImage(ProductImage productImage)
-    {
+    public void RemoveProductImage(ProductImage productImage) =>
         _productImages.Remove(productImage);
-    }
 
     /// <summary>
     /// Increments the favorite count for this product.
     /// </summary>
-    public void UpdateFavourite()
-    {
-        Favourites += 1;
-    }
+    public void UpdateFavourite() => Favourites += 1;
 
     /// <summary>
     /// Incorporates a new review rating into the product's average.
     /// </summary>
-    public void AddReviewRating(Rating rating)
-    {
-        AverageRating.AddNewRating(rating);
-    }
+    /// <param name="rating"></param>
+    public void AddReviewRating(Rating rating) => AverageRating.AddNewRating(rating);
 
     /// <summary>
     /// Removes a review rating from the product's average.
     /// </summary>
-    public void RemoveReviewRating(Rating rating)
-    {
-        AverageRating.RemoveRating(rating);
-    }
+    /// <param name="rating"></param>
+    public void RemoveReviewRating(Rating rating) => AverageRating.RemoveRating(rating);
 
     /// <summary>
     /// Sets the active status of the product.
     /// </summary>
     /// <param name="isActive">Whether the product should be active.</param>
-    public void SetIsActive(bool isActive)
-    {
-        IsActive = isActive;
-    }
+    public void SetIsActive(bool isActive) => IsActive = isActive;
 
     /// <summary>
     /// Adds a product variant.
     /// </summary>
     /// <param name="variant">The variant to add.</param>
-    public void AddVariant(ProductVariant variant)
-    {
-        _productVariants.Add(variant);
-    }
+    public void AddVariant(ProductVariant variant) => _productVariants.Add(variant);
 
     /// <summary>
     /// Updates an existing product variant.
     /// </summary>
+    /// <param name="variantId"></param>
+    /// <param name="name"></param>
+    /// <param name="sku"></param>
+    /// <param name="unitPrice"></param>
+    /// <param name="stockQuantity"></param>
+    /// <param name="isActive"></param>
     public DomainResult<ProductVariant> UpdateVariant(
         ProductVariantId variantId,
         string name,
@@ -331,6 +314,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     /// <summary>
     /// Removes a product variant.
     /// </summary>
+    /// <param name="variantId"></param>
     public DomainResult<bool> RemoveVariant(ProductVariantId variantId)
     {
         var variant = _productVariants.FirstOrDefault(v => v.Id == variantId);

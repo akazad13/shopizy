@@ -9,6 +9,7 @@ namespace Shopizy.Infrastructure.Users.Persistence;
 /// <summary>
 /// Repository for managing user data persistence.
 /// </summary>
+/// <param name="dbContext"></param>
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
@@ -18,59 +19,40 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     /// </summary>
     /// <param name="email">The user's email address.</param>
     /// <returns>The user if found; otherwise, null.</returns>
-    public Task<User?> GetUserByEmailAsync(string email)
-    {
-        return _dbContext
-            .Users.Include(u => u.PermissionIds)
-            .SingleOrDefaultAsync(u => u.Email == email);
-    }
+    public Task<User?> GetUserByEmailAsync(string email) =>
+        _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Email == email);
 
     /// <summary>
     /// Retrieves a user by their unique identifier.
     /// </summary>
     /// <param name="id">The user's unique identifier.</param>
     /// <returns>The user if found; otherwise, null.</returns>
-    public Task<User?> GetUserByIdAsync(UserId id)
-    {
-        return _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
-    }
+    public Task<User?> GetUserByIdAsync(UserId id) =>
+        _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
 
-    public Task<User?> GetUserByResetTokenAsync(string token)
-    {
-        return _dbContext.Users.SingleOrDefaultAsync(u => u.PasswordResetToken == token);
-    }
+    public Task<User?> GetUserByResetTokenAsync(string token) =>
+        _dbContext.Users.SingleOrDefaultAsync(u => u.PasswordResetToken == token);
 
-    public Task<int> GetTotalUsersCountAsync()
-    {
-        return _dbContext.Users.CountAsync();
-    }
+    public Task<int> GetTotalUsersCountAsync() => _dbContext.Users.CountAsync();
 
-    public async Task<IReadOnlyList<User>> ListUsersAsync(int pageNumber, int pageSize)
-    {
-        return await _dbContext
+    public async Task<IReadOnlyList<User>> ListUsersAsync(int pageNumber, int pageSize) =>
+        await _dbContext
             .Users.Include(u => u.PermissionIds)
             .OrderByDescending(u => u.FirstName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
             .ToListAsync();
-    }
 
     /// <summary>
     /// Adds a new user to the database.
     /// </summary>
     /// <param name="user">The user to add.</param>
-    public async Task AddAsync(User user)
-    {
-        await _dbContext.Users.AddAsync(user);
-    }
+    public async Task AddAsync(User user) => await _dbContext.Users.AddAsync(user);
 
     /// <summary>
     /// Updates an existing user in the database.
     /// </summary>
     /// <param name="user">The user to update.</param>
-    public void Update(User user)
-    {
-        _dbContext.Users.Update(user);
-    }
+    public void Update(User user) => _dbContext.Users.Update(user);
 }

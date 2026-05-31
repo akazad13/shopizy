@@ -5,8 +5,5 @@ namespace Shopizy.Application.UnitTests.Users.TestUtils;
 
 public static class GetUserQueryUtils
 {
-    public static GetUserQuery CreateQuery()
-    {
-        return new GetUserQuery(Constants.User.Id.Value);
-    }
+    public static GetUserQuery CreateQuery() => new(Constants.User.Id.Value);
 }

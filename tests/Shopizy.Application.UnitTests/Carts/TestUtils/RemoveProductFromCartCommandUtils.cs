@@ -5,11 +5,6 @@ namespace Shopizy.Application.UnitTests.Carts.TestUtils;
 
 public static class RemoveProductFromCartCommandUtils
 {
-    public static RemoveProductFromCartCommand CreateCommand()
-    {
-        return new RemoveProductFromCartCommand(
-            Constants.User.Id.Value,
-            Constants.CartItem.Id.Value
-        );
-    }
+    public static RemoveProductFromCartCommand CreateCommand() =>
+        new(Constants.User.Id.Value, Constants.CartItem.Id.Value);
 }

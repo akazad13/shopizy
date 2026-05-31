@@ -5,11 +5,11 @@ namespace Shopizy.Domain.Orders.ValueObjects;
 
 public sealed class Address : ValueObject
 {
-    public string Street { get; private set; }
-    public string City { get; private set; }
-    public string State { get; private set; }
-    public string Country { get; private set; }
-    public string ZipCode { get; private set; }
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string Country { get; }
+    public string ZipCode { get; }
 
     [JsonConstructor]
     private Address(string street, string city, string state, string country, string zipCode)
@@ -27,10 +27,7 @@ public sealed class Address : ValueObject
         string state,
         string country,
         string zipCode
-    )
-    {
-        return new(street, city, state, country, zipCode);
-    }
+    ) => new(street, city, state, country, zipCode);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

@@ -16,9 +16,9 @@ public class BulkUpdateOrderStatusCommandHandler(IOrderRepository orderRepositor
         CancellationToken cancellationToken
     )
     {
-        var orders = await _orderRepository.GetOrdersByIdsAsync(
-            request.OrderIds.Select(OrderId.Create).ToList()
-        );
+        var orders = await _orderRepository.GetOrdersByIdsAsync([
+            .. request.OrderIds.Select(OrderId.Create),
+        ]);
 
         foreach (var order in orders)
         {

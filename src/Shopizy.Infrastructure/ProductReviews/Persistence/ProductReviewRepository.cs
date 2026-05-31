@@ -11,18 +11,15 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<ProductReview>> GetProductReviewsAsync()
-    {
-        return await _dbContext.ProductReviews.AsNoTracking().ToListAsync();
-    }
+    public async Task<IReadOnlyList<ProductReview>> GetProductReviewsAsync() =>
+        await _dbContext.ProductReviews.AsNoTracking().ToListAsync();
 
     public async Task<IReadOnlyList<ProductReview>> GetReviewsByProductIdAsync(
         ProductId productId,
         int pageNumber,
         int pageSize
-    )
-    {
-        return await _dbContext
+    ) =>
+        await _dbContext
             .ProductReviews.AsNoTracking()
             .Include(r => r.User)
             .Where(r => r.ProductId == productId)
@@ -30,25 +27,16 @@ public class ProductReviewRepository(AppDbContext dbContext) : IProductReviewRep
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-    }
 
-    public Task<ProductReview?> GetProductReviewByIdAsync(ProductReviewId id)
-    {
-        return _dbContext.ProductReviews.FirstOrDefaultAsync(c => c.Id == id);
-    }
+    public Task<ProductReview?> GetProductReviewByIdAsync(ProductReviewId id) =>
+        _dbContext.ProductReviews.FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task AddAsync(ProductReview productReview)
-    {
+    public async Task AddAsync(ProductReview productReview) =>
         await _dbContext.ProductReviews.AddAsync(productReview);
-    }
 
-    public void Update(ProductReview productReview)
-    {
+    public void Update(ProductReview productReview) =>
         _dbContext.ProductReviews.Update(productReview);
-    }
 
-    public void Remove(ProductReview productReview)
-    {
+    public void Remove(ProductReview productReview) =>
         _dbContext.ProductReviews.Remove(productReview);
-    }
 }

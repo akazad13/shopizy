@@ -18,6 +18,8 @@ namespace Shopizy.Infrastructure.Common.Middleware;
 /// (no out-of-band side effects without the outbox) and may be retried by the EF execution strategy.
 /// </para>
 /// </summary>
+/// <param name="Next"></param>
+/// <param name="logger"></param>
 public class EventualConsistencyMiddleware(
     RequestDelegate Next,
     ILogger<EventualConsistencyMiddleware> logger

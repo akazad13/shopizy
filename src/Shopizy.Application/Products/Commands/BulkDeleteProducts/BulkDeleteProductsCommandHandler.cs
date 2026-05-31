@@ -25,7 +25,7 @@ public class BulkDeleteProductsCommandHandler(IProductRepository productReposito
             return (Error)CustomErrors.Product.ProductNotFound;
         }
 
-        _productRepository.RemoveRange(products.ToList());
+        _productRepository.RemoveRange([.. products]);
 
         return Result.Deleted;
     }

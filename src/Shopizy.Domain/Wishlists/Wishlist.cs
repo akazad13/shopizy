@@ -10,17 +10,15 @@ public sealed class Wishlist : AggregateRoot<WishlistId, Guid>, IAuditable
 {
     private readonly List<WishlistItem> _wishlistItems = [];
 
-    public UserId UserId { get; private set; } = null!;
+    public UserId UserId { get; } = null!;
     public string? Name { get; private set; }
     public bool IsPublic { get; private set; }
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     public DateTime? ModifiedOn { get; private set; }
     public IReadOnlyList<WishlistItem> WishlistItems => _wishlistItems.AsReadOnly();
 
-    public static Wishlist Create(UserId userId, string? name = null, bool isPublic = false)
-    {
-        return new Wishlist(WishlistId.CreateUnique(), userId, name, isPublic);
-    }
+    public static Wishlist Create(UserId userId, string? name = null, bool isPublic = false) =>
+        new(WishlistId.CreateUnique(), userId, name, isPublic);
 
     public void UpdateSettings(string? name, bool isPublic)
     {
@@ -28,10 +26,7 @@ public sealed class Wishlist : AggregateRoot<WishlistId, Guid>, IAuditable
         IsPublic = isPublic;
     }
 
-    public void AddItem(ProductId productId)
-    {
-        _wishlistItems.Add(WishlistItem.Create(productId));
-    }
+    public void AddItem(ProductId productId) => _wishlistItems.Add(WishlistItem.Create(productId));
 
     public void RemoveItem(ProductId productId)
     {

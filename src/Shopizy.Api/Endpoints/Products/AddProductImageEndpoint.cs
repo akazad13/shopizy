@@ -11,8 +11,7 @@ namespace Shopizy.Api.Endpoints.Products;
 
 public class AddProductImageEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/products/{productId:guid}/image",
                 async (
@@ -48,5 +47,4 @@ public class AddProductImageEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

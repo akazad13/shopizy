@@ -104,9 +104,8 @@ public class ProductTests
         product.Favourites.ShouldBe(initialFavourites + 1);
     }
 
-    private Shopizy.Domain.Products.Product CreateSampleProduct()
-    {
-        return Shopizy.Domain.Products.Product.Create(
+    private Shopizy.Domain.Products.Product CreateSampleProduct() =>
+        Shopizy.Domain.Products.Product.Create(
             "Name",
             "Short",
             "Long",
@@ -121,5 +120,4 @@ public class ProductTests
             "Sizes",
             "Tags"
         );
-    }
 }

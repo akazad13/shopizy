@@ -8,9 +8,8 @@ public static class PasswordRules
 
     public static IRuleBuilderOptions<T, string> StrongPassword<T>(
         this IRuleBuilder<T, string> rule
-    )
-    {
-        return rule.NotEmpty()
+    ) =>
+        rule.NotEmpty()
             .MinimumLength(MinLength)
             .WithMessage($"Password must be at least {MinLength} characters long.")
             .Matches("[A-Z]")
@@ -21,5 +20,4 @@ public static class PasswordRules
             .WithMessage("Password must contain at least one digit.")
             .Matches("[^a-zA-Z0-9]")
             .WithMessage("Password must contain at least one special character.");
-    }
 }

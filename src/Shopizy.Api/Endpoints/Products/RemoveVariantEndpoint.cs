@@ -11,8 +11,7 @@ namespace Shopizy.Api.Endpoints.Products;
 /// </summary>
 public class RemoveVariantEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/admin/products/{productId:guid}/variants/{variantId:guid}",
                 async (
@@ -44,5 +43,4 @@ public class RemoveVariantEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

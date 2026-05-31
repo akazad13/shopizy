@@ -8,8 +8,7 @@ namespace Shopizy.Infrastructure.Migrations
     public partial class UpdateEmailSize : Migration
     {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) =>
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
                 table: "Users",
@@ -20,11 +19,9 @@ namespace Shopizy.Infrastructure.Migrations
                 oldType: "nvarchar(50)",
                 oldMaxLength: 50
             );
-        }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) =>
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
                 table: "Users",
@@ -35,6 +32,5 @@ namespace Shopizy.Infrastructure.Migrations
                 oldType: "nvarchar(254)",
                 oldMaxLength: 254
             );
-        }
     }
 }

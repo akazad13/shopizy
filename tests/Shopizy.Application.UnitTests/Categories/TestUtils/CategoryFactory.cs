@@ -5,8 +5,6 @@ namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 
 public static class CategoryFactory
 {
-    public static Category Create()
-    {
-        return Category.Create(Constants.Category.Name, Constants.Category.ParentId);
-    }
+    public static Category Create() =>
+        Category.Create(Constants.Category.Name, Constants.Category.ParentId);
 }

@@ -11,15 +11,9 @@ public sealed class ProductReviewId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static ProductReviewId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static ProductReviewId CreateUnique() => new(Guid.NewGuid());
 
-    public static ProductReviewId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static ProductReviewId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

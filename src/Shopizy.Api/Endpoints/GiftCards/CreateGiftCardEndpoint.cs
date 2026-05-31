@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.GiftCards;
 
 public class CreateGiftCardEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/gift-cards",
                 async (
@@ -41,5 +40,4 @@ public class CreateGiftCardEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

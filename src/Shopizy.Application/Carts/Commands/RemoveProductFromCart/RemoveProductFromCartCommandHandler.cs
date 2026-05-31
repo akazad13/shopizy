@@ -10,6 +10,7 @@ namespace Shopizy.Application.Carts.Commands.RemoveProductFromCart;
 /// <summary>
 /// Handles the <see cref="RemoveProductFromCartCommand"/> to remove items from a cart.
 /// </summary>
+/// <param name="cartRepository"></param>
 public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
     : ICommandHandler<RemoveProductFromCartCommand, ErrorOr<Cart>>
 {

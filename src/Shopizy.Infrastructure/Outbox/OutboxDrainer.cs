@@ -11,6 +11,9 @@ namespace Shopizy.Infrastructure.Outbox;
 /// Shared implementation used by both <see cref="OutboxProcessor"/> (background) and
 /// integration tests. Processes every pending outbox message that is not yet dead-lettered.
 /// </summary>
+/// <param name="dbContext"></param>
+/// <param name="dispatcher"></param>
+/// <param name="logger"></param>
 public sealed class OutboxDrainer(
     AppDbContext dbContext,
     IDispatcher dispatcher,
@@ -92,9 +95,8 @@ public sealed class OutboxDrainer(
         return processed;
     }
 
-    private Task MarkDeadLetterAsync(Guid id, string reason, CancellationToken cancellationToken)
-    {
-        return _dbContext
+    private Task MarkDeadLetterAsync(Guid id, string reason, CancellationToken cancellationToken) =>
+        _dbContext
             .OutboxMessages.Where(m => m.Id == id)
             .ExecuteUpdateAsync(
                 s =>
@@ -102,5 +104,4 @@ public sealed class OutboxDrainer(
                         .SetProperty(p => p.DeadLetterReason, reason),
                 cancellationToken
             );
-    }
 }

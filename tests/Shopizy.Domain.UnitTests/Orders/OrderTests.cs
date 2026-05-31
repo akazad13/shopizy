@@ -123,9 +123,8 @@ public class OrderTests
         order.PaymentStatus.ShouldBe(PaymentStatus.Payed);
     }
 
-    private Order CreateSampleOrder()
-    {
-        return Order.Create(
+    private Order CreateSampleOrder() =>
+        Order.Create(
             UserId.CreateUnique(),
             "",
             (int)DeliveryMethods.Standard,
@@ -133,5 +132,4 @@ public class OrderTests
             Address.CreateNew("S", "C", "ST", "CO", "Z"),
             new List<OrderItem>()
         );
-    }
 }

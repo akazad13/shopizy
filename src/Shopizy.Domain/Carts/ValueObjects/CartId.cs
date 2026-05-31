@@ -11,15 +11,9 @@ public sealed class CartId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static CartId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static CartId CreateUnique() => new(Guid.NewGuid());
 
-    public static CartId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static CartId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

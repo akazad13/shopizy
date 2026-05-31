@@ -12,6 +12,21 @@ namespace Shopizy.Application.Products.Commands.CreateProduct;
 /// <see cref="BrandId"/>) instead of primitives — the mapping layer converts the contract DTO
 /// into typed inputs so handlers don't repeat construction logic.
 /// </summary>
+/// <param name="UserId"></param>
+/// <param name="Name"></param>
+/// <param name="ShortDescription"></param>
+/// <param name="Description"></param>
+/// <param name="CategoryId"></param>
+/// <param name="UnitPrice"></param>
+/// <param name="Discount"></param>
+/// <param name="Sku"></param>
+/// <param name="StockQuantity"></param>
+/// <param name="BrandId"></param>
+/// <param name="Colors"></param>
+/// <param name="Sizes"></param>
+/// <param name="Tags"></param>
+/// <param name="Barcode"></param>
+/// <param name="SpecificationIds"></param>
 public record CreateProductCommand(
     Guid UserId,
     string Name,

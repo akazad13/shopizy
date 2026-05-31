@@ -8,8 +8,7 @@ namespace Shopizy.Api.Endpoints.ProductReviews;
 
 public class DeleteProductReviewEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/admin/products/{productId:guid}/reviews/{reviewId:guid}",
                 async (
@@ -36,5 +35,4 @@ public class DeleteProductReviewEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

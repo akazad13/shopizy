@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Products;
 
 public class GetBrandsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/brands",
                 async ([FromServices] IDispatcher mediator, ILogger<GetBrandsEndpoint> logger) =>
@@ -37,5 +36,4 @@ public class GetBrandsEndpoint : ApiEndpoint
             .WithDescription("Retrieves a list of all brands available in the catalog.")
             .Produces<List<BrandResponse>>(StatusCodes.Status200OK)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

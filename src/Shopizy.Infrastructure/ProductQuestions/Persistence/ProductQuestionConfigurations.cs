@@ -9,10 +9,8 @@ namespace Shopizy.Infrastructure.ProductQuestions.Persistence;
 
 public sealed class ProductQuestionConfigurations : IEntityTypeConfiguration<ProductQuestion>
 {
-    public void Configure(EntityTypeBuilder<ProductQuestion> builder)
-    {
+    public void Configure(EntityTypeBuilder<ProductQuestion> builder) =>
         ConfigureProductQuestionsTable(builder);
-    }
 
     private static void ConfigureProductQuestionsTable(EntityTypeBuilder<ProductQuestion> builder)
     {

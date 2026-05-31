@@ -7,14 +7,14 @@ namespace Shopizy.Domain.Orders.Entities;
 
 public sealed class OrderItem : Entity<OrderItemId>
 {
-    public ProductId ProductId { get; private set; } = null!;
-    public string Name { get; private set; } = null!;
-    public string PictureUrl { get; private set; } = null!;
-    public Price UnitPrice { get; private set; } = null!;
-    public string Color { get; private set; } = null!;
-    public string Size { get; private set; } = null!;
-    public int Quantity { get; private set; }
-    public decimal Discount { get; private set; }
+    public ProductId ProductId { get; } = null!;
+    public string Name { get; } = null!;
+    public string PictureUrl { get; } = null!;
+    public Price UnitPrice { get; } = null!;
+    public string Color { get; } = null!;
+    public string Size { get; } = null!;
+    public int Quantity { get; }
+    public decimal Discount { get; }
 
     public static OrderItem Create(
         ProductId productId,
@@ -25,9 +25,8 @@ public sealed class OrderItem : Entity<OrderItemId>
         string color,
         string size,
         decimal? discount
-    )
-    {
-        return new OrderItem(
+    ) =>
+        new(
             OrderItemId.CreateUnique(),
             productId,
             name,
@@ -38,7 +37,6 @@ public sealed class OrderItem : Entity<OrderItemId>
             size,
             discount
         );
-    }
 
     private OrderItem(
         OrderItemId orderItemId,
@@ -65,13 +63,8 @@ public sealed class OrderItem : Entity<OrderItemId>
 
     private OrderItem() { }
 
-    public Price TotalPrice()
-    {
-        return Price.CreateNew(UnitPrice.Amount * Quantity, UnitPrice.Currency);
-    }
+    public Price TotalPrice() => Price.CreateNew(UnitPrice.Amount * Quantity, UnitPrice.Currency);
 
-    public Price TotalDiscount()
-    {
-        return Price.CreateNew(UnitPrice.Amount * (Discount / 100) * Quantity, UnitPrice.Currency);
-    }
+    public Price TotalDiscount() =>
+        Price.CreateNew(UnitPrice.Amount * (Discount / 100) * Quantity, UnitPrice.Currency);
 }

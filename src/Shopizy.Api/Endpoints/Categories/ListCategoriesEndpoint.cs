@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Categories;
 
 public class ListCategoriesEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/categories",
                 async (
@@ -37,5 +36,4 @@ public class ListCategoriesEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

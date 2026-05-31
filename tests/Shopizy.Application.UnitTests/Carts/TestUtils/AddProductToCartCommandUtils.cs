@@ -5,14 +5,12 @@ namespace Shopizy.Application.UnitTests.Carts.TestUtils;
 
 public static class AddProductToCartCommandUtils
 {
-    public static AddProductToCartCommand CreateCommand()
-    {
-        return new AddProductToCartCommand(
+    public static AddProductToCartCommand CreateCommand() =>
+        new(
             Constants.User.Id.Value,
             Constants.Product.Id.Value,
             Constants.CartItem.Color,
             Constants.CartItem.Size,
             Constants.CartItem.Quantity
         );
-    }
 }

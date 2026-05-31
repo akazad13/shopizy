@@ -5,19 +5,16 @@ namespace Shopizy.Domain.Common.ValueObjects;
 
 public sealed class Price : ValueObject
 {
-    public decimal Amount { get; private set; }
-    public Currency Currency { get; private set; }
+    public decimal Amount { get; }
+    public Currency Currency { get; }
 
-    private Price(decimal amount, Currency currency)
+    private Price(decimal Amount, Currency Currency)
     {
-        Amount = amount;
-        Currency = currency;
+        this.Amount = Amount;
+        this.Currency = Currency;
     }
 
-    public static Price CreateNew(decimal amount, Currency currency)
-    {
-        return new(amount, currency);
-    }
+    public static Price CreateNew(decimal amount, Currency currency) => new(amount, currency);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

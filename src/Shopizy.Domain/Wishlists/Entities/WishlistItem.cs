@@ -6,12 +6,10 @@ namespace Shopizy.Domain.Wishlists.Entities;
 
 public sealed class WishlistItem : Entity<WishlistItemId>
 {
-    public ProductId ProductId { get; private set; } = null!;
+    public ProductId ProductId { get; } = null!;
 
-    public static WishlistItem Create(ProductId productId)
-    {
-        return new WishlistItem(WishlistItemId.CreateUnique(), productId);
-    }
+    public static WishlistItem Create(ProductId productId) =>
+        new(WishlistItemId.CreateUnique(), productId);
 
     private WishlistItem(WishlistItemId id, ProductId productId)
         : base(id)

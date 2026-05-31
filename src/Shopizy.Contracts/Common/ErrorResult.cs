@@ -18,7 +18,7 @@ public class ErrorResult
     internal ErrorResult(IEnumerable<string> errors)
     {
         Message = "Error occured";
-        Errors = errors.ToArray();
+        Errors = [.. errors];
     }
 
     /// <summary>

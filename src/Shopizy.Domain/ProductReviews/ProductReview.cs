@@ -73,10 +73,8 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
         return review;
     }
 
-    public void Delete()
-    {
+    public void Delete() =>
         AddDomainEvent(new Events.ProductReviewDeletedDomainEvent(ProductId, Rating));
-    }
 
     private ProductReview(
         ProductReviewId productReviewId,

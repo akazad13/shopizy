@@ -12,6 +12,14 @@ namespace Shopizy.Application.Auth.Queries.login;
 /// <summary>
 /// Handles the <see cref="LoginQuery"/> to authenticate users and generate JWT tokens.
 /// </summary>
+/// <param name="userRepository"></param>
+/// <param name="permissionRepository"></param>
+/// <param name="jwtTokenGenerator"></param>
+/// <param name="refreshTokenGenerator"></param>
+/// <param name="refreshTokenStore"></param>
+/// <param name="passwordManager"></param>
+/// <param name="cartRepository"></param>
+/// <param name="unitOfWork"></param>
 public class LoginQueryHandler(
     IUserRepository userRepository,
     IPermissionRepository permissionRepository,

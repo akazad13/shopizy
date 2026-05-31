@@ -36,6 +36,7 @@ public static partial class LogSanitizer
     /// Returns a copy of <paramref name="value"/> with email addresses, phone numbers,
     /// payment-card-shaped digit runs, and bearer/token segments masked.
     /// </summary>
+    /// <param name="value"></param>
     public static string Sanitize(string? value)
     {
         if (string.IsNullOrEmpty(value))

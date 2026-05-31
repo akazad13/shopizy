@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Orders;
 
 public class AddShipmentEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/orders/{orderId:guid}/shipment",
                 async (
@@ -49,5 +48,4 @@ public class AddShipmentEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

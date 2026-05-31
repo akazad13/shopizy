@@ -6,9 +6,8 @@ namespace Shopizy.Application.UnitTests.Users.TestUtils;
 
 public static class UserFactory
 {
-    public static User CreateUser()
-    {
-        return User.Create(
+    public static User CreateUser() =>
+        User.Create(
             Constants.User.FirstName,
             Constants.User.LastName,
             Constants.User.Email,
@@ -16,7 +15,6 @@ public static class UserFactory
             UserRole.Customer,
             Constants.User.PermissionIds
         );
-    }
 
     public static User UpdateAddress(User user)
     {

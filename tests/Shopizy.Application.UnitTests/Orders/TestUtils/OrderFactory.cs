@@ -5,9 +5,8 @@ namespace Shopizy.Application.UnitTests.Orders.TestUtils;
 
 public static class OrderFactory
 {
-    public static Order CreateOrder()
-    {
-        return Order.Create(
+    public static Order CreateOrder() =>
+        Order.Create(
             Constants.User.Id,
             Constants.Order.PromoCode,
             Constants.Order.DeliveryMethod,
@@ -15,5 +14,4 @@ public static class OrderFactory
             Constants.User.Address,
             []
         );
-    }
 }

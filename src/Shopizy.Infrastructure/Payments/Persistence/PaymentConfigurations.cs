@@ -9,10 +9,7 @@ namespace Shopizy.Infrastructure.Payments.Persistence;
 
 public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
 {
-    public void Configure(EntityTypeBuilder<Payment> builder)
-    {
-        ConfigurePaymentsTable(builder);
-    }
+    public void Configure(EntityTypeBuilder<Payment> builder) => ConfigurePaymentsTable(builder);
 
     private static void ConfigurePaymentsTable(EntityTypeBuilder<Payment> builder)
     {
@@ -36,6 +33,7 @@ public sealed class PaymentConfigurations : IEntityTypeConfiguration<Payment>
             pb =>
             {
                 pb.Property(p => p.Amount).HasPrecision(18, 2);
+                pb.Property(p => p.Currency).HasConversion<int>();
             }
         );
         builder.OwnsOne(

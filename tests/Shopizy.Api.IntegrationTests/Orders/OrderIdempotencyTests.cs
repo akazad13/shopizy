@@ -1,7 +1,5 @@
 using System.Net;
-using System.Net.Http.Headers;
 using Shopizy.Contracts.Category;
-using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Shopizy.Contracts.Product;
 using Shouldly;

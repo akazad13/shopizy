@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Users;
 
 public class SetDefaultAddressEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPatch(
                 "api/v1.0/users/{userId:guid}/addresses/{addressId:guid}/set-default",
                 async (
@@ -47,5 +46,4 @@ public class SetDefaultAddressEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

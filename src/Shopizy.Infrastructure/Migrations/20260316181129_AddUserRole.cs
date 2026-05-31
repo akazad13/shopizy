@@ -8,8 +8,7 @@ namespace Shopizy.Infrastructure.Migrations;
 public partial class AddUserRole : Migration
 {
     /// <inheritdoc />
-    protected override void Up(MigrationBuilder migrationBuilder)
-    {
+    protected override void Up(MigrationBuilder migrationBuilder) =>
         migrationBuilder.AddColumn<string>(
             name: "Role",
             table: "Users",
@@ -18,11 +17,8 @@ public partial class AddUserRole : Migration
             nullable: false,
             defaultValue: ""
         );
-    }
 
     /// <inheritdoc />
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
+    protected override void Down(MigrationBuilder migrationBuilder) =>
         migrationBuilder.DropColumn(name: "Role", table: "Users");
-    }
 }

@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Users;
 
 public class GetUserEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/users/{userId:guid}",
                 async (
@@ -46,5 +45,4 @@ public class GetUserEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

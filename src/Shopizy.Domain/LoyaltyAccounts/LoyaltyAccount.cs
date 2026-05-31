@@ -11,16 +11,14 @@ public sealed class LoyaltyAccount : AggregateRoot<LoyaltyAccountId, Guid>, IAud
 {
     private readonly List<LoyaltyTransaction> _transactions = [];
 
-    public UserId UserId { get; private set; } = null!;
+    public UserId UserId { get; } = null!;
     public int TotalPoints { get; private set; }
     public IReadOnlyList<LoyaltyTransaction> Transactions => _transactions.AsReadOnly();
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     public DateTime? ModifiedOn { get; private set; }
 
-    public static LoyaltyAccount Create(UserId userId)
-    {
-        return new LoyaltyAccount(LoyaltyAccountId.CreateUnique(), userId);
-    }
+    public static LoyaltyAccount Create(UserId userId) =>
+        new(LoyaltyAccountId.CreateUnique(), userId);
 
     public void EarnPoints(int points, string description)
     {

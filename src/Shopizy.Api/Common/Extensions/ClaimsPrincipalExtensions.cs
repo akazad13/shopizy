@@ -8,6 +8,8 @@ public static class ClaimsPrincipalExtensions
     /// <summary>
     /// Returns true if the authenticated principal owns the resource keyed by the given user id.
     /// </summary>
+    /// <param name="user"></param>
+    /// <param name="userId"></param>
     public static bool IsAuthorized(this ClaimsPrincipal user, Guid userId)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -26,18 +28,19 @@ public static class ClaimsPrincipalExtensions
     /// if (user.AuthorizeOwner(userId, "this order") is { } forbidden) return forbidden;
     /// </code>
     /// </summary>
+    /// <param name="user"></param>
+    /// <param name="userId"></param>
+    /// <param name="resourceName"></param>
     public static IResult? AuthorizeOwner(
         this ClaimsPrincipal user,
         Guid userId,
         string resourceName
-    )
-    {
-        return user.IsAuthorized(userId)
+    ) =>
+        user.IsAuthorized(userId)
             ? null
             : CustomResults.Problem([
                 ErrorOr.Error.Forbidden(
                     description: $"You are not authorized to access {resourceName}."
                 ),
             ]);
-    }
 }

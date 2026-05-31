@@ -5,13 +5,11 @@ namespace Shopizy.Application.UnitTests.Categories.TestUtils;
 
 public static class UpdateCategoryCommandUtils
 {
-    public static UpdateCategoryCommand CreateCommand()
-    {
-        return new UpdateCategoryCommand(
+    public static UpdateCategoryCommand CreateCommand() =>
+        new(
             Constants.User.Id.Value,
             Constants.Category.Id.Value,
             Constants.Category.Name,
             Constants.Category.ParentId
         );
-    }
 }

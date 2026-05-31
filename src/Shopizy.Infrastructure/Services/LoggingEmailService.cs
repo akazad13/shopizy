@@ -7,6 +7,7 @@ namespace Shopizy.Infrastructure.Services;
 /// Email service stub that logs emails instead of sending them.
 /// Replace with a real implementation (SendGrid, SMTP, etc.) when ready.
 /// </summary>
+/// <param name="logger"></param>
 public class LoggingEmailService(ILogger<LoggingEmailService> logger) : IEmailService
 {
     private static readonly Action<ILogger, string, string, string, Exception?> s_emailLogged =

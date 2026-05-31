@@ -10,23 +10,13 @@ public class PermissionRepository(AppDbContext dbContext) : IPermissionRepositor
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<Permission>> GetAsync()
-    {
-        return await _dbContext.Permissions.AsNoTracking().ToListAsync();
-    }
+    public async Task<IReadOnlyList<Permission>> GetAsync() =>
+        await _dbContext.Permissions.AsNoTracking().ToListAsync();
 
-    public Task<Permission?> GetByIdAsync(PermissionId id)
-    {
-        return _dbContext.Permissions.SingleOrDefaultAsync(p => p.Id == id);
-    }
+    public Task<Permission?> GetByIdAsync(PermissionId id) =>
+        _dbContext.Permissions.SingleOrDefaultAsync(p => p.Id == id);
 
-    public async Task AddAsync(Permission user)
-    {
-        await _dbContext.Permissions.AddAsync(user);
-    }
+    public async Task AddAsync(Permission user) => await _dbContext.Permissions.AddAsync(user);
 
-    public void Update(Permission permission)
-    {
-        _dbContext.Permissions.Update(permission);
-    }
+    public void Update(Permission permission) => _dbContext.Permissions.Update(permission);
 }

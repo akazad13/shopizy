@@ -62,9 +62,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
                 Detail: "One or more validation rules failed.",
                 Type: "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 IsServerSide: false,
-                Errors: ve.Errors.Select(e => new { e.PropertyName, e.ErrorMessage })
-                    .Cast<object>()
-                    .ToArray()
+                Errors:
+                [
+                    .. ve.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }).Cast<object>(),
+                ]
             ),
 
             DbUpdateConcurrencyException => new ProblemDescriptor(

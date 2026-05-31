@@ -11,15 +11,9 @@ public sealed class PaymentId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static PaymentId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static PaymentId CreateUnique() => new(Guid.NewGuid());
 
-    public static PaymentId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static PaymentId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

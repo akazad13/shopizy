@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Products;
 
 public class DeleteProductImageEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/admin/products/{productId:guid}/image/{imageId:guid}",
                 async (
@@ -47,5 +46,4 @@ public class DeleteProductImageEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

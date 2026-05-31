@@ -4,6 +4,7 @@ namespace Shopizy.Api.Common.Middleware;
 /// Enables request-body buffering on mutation requests so downstream endpoint filters
 /// (e.g. the idempotency filter) can re-read the body after parameter binding has consumed it.
 /// </summary>
+/// <param name="next"></param>
 public sealed class RequestBufferingMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)

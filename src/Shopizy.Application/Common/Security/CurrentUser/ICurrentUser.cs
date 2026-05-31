@@ -9,5 +9,6 @@ public interface ICurrentUser
     /// Returns false when there is no active HTTP context or the "id" claim is absent
     /// (e.g. anonymous or unauthenticated requests).
     /// </summary>
+    /// <param name="userId"></param>
     bool TryGetCurrentUserId(out Guid userId);
 }

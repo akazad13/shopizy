@@ -11,15 +11,9 @@ public sealed class LoyaltyTransactionId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static LoyaltyTransactionId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static LoyaltyTransactionId CreateUnique() => new(Guid.NewGuid());
 
-    public static LoyaltyTransactionId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static LoyaltyTransactionId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

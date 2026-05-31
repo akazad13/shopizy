@@ -5,14 +5,11 @@ namespace Shopizy.Application.UnitTests.Auth.TestUtils;
 
 public static class AuthFactory
 {
-    public static IReadOnlyList<Permission> GetPermissions()
-    {
-        return
+    public static IReadOnlyList<Permission> GetPermissions() =>
         [
             Constants.PermissionConstants.GetCategoryPermission,
             Constants.PermissionConstants.GetProductPermission,
             Constants.PermissionConstants.GetCartPermission,
             Constants.PermissionConstants.GetOrderPermission,
         ];
-    }
 }

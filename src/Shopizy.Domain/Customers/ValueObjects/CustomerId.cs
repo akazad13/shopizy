@@ -11,15 +11,9 @@ public sealed class CustomerId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static CustomerId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static CustomerId CreateUnique() => new(Guid.NewGuid());
 
-    public static CustomerId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static CustomerId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

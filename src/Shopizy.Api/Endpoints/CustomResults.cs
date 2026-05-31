@@ -44,11 +44,9 @@ public static class CustomResults
         return Results.Json(ErrorResult.Failure([error.Description]), statusCode: statusCode);
     }
 
-    private static IResult ValidationProblem(IList<Error> errors)
-    {
-        return Results.Json(
+    private static IResult ValidationProblem(IList<Error> errors) =>
+        Results.Json(
             ErrorResult.Failure(errors.Select(error => error.Description).ToList()),
             statusCode: StatusCodes.Status400BadRequest
         );
-    }
 }

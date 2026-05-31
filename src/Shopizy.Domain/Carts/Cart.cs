@@ -20,7 +20,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the cart was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
 
     /// <summary>
     /// Gets the date and time when the cart was last modified.
@@ -37,10 +37,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     /// </summary>
     /// <param name="userId">The user ID who owns the cart.</param>
     /// <returns>A new <see cref="Cart"/> instance.</returns>
-    public static Cart Create(UserId userId)
-    {
-        return new Cart(CartId.CreateUnique(), userId);
-    }
+    public static Cart Create(UserId userId) => new(CartId.CreateUnique(), userId);
 
     /// <summary>
     /// Adds an item to the cart.
@@ -66,20 +63,15 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     /// Removes all items from the cart without raising per-item domain events.
     /// Used for system-initiated clearing (e.g. after order placement).
     /// </summary>
-    public void Clear()
-    {
-        _cartItems.Clear();
-    }
+    public void Clear() => _cartItems.Clear();
 
     /// <summary>
     /// Updates the quantity of a cart item.
     /// </summary>
     /// <param name="cartItemId">The cart item identifier.</param>
     /// <param name="quantity">The new quantity.</param>
-    public void UpdateLineItem(CartItemId cartItemId, int quantity)
-    {
+    public void UpdateLineItem(CartItemId cartItemId, int quantity) =>
         _cartItems.Find(li => li.Id == cartItemId)?.UpdateQuantity(quantity);
-    }
 
     private Cart(CartId cartId, UserId userId)
         : base(cartId)

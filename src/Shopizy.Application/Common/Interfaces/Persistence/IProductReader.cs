@@ -12,12 +12,15 @@ public interface IProductReader
     /// <summary>
     /// Returns the total number of products. Used by the admin dashboard metrics.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns up to 10 products whose stock has dropped to or below <paramref name="threshold"/>,
     /// ordered by stock ascending. Used by the low-stock dashboard alert.
     /// </summary>
+    /// <param name="threshold"></param>
+    /// <param name="cancellationToken"></param>
     Task<IReadOnlyList<Product>> GetLowStockAsync(
         int threshold,
         CancellationToken cancellationToken = default
@@ -26,5 +29,6 @@ public interface IProductReader
     /// <summary>
     /// Returns the distinct brand names referenced by products, suitable for filter UIs.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     Task<IReadOnlyList<string>> GetBrandNamesAsync(CancellationToken cancellationToken = default);
 }

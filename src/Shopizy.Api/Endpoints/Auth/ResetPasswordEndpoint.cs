@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Auth;
 
 public class ResetPasswordEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/auth/reset-password",
                 async (
@@ -41,5 +40,4 @@ public class ResetPasswordEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

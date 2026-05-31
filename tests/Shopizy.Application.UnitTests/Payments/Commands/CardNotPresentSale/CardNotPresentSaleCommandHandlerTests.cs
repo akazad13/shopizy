@@ -104,9 +104,8 @@ public class CardNotPresentSaleCommandHandlerTests
         _mockOrderRepository.Verify(r => r.Update(order), Times.Never);
     }
 
-    private static CardNotPresentSaleCommand CreateCommand()
-    {
-        return new CardNotPresentSaleCommand(
+    private static CardNotPresentSaleCommand CreateCommand() =>
+        new(
             Constants.User.Id.Value,
             Constants.Order.Id.Value,
             100m,
@@ -118,5 +117,4 @@ public class CardNotPresentSaleCommandHandlerTests
             2025,
             "4242"
         );
-    }
 }

@@ -10,6 +10,8 @@ namespace Shopizy.SharedKernel.Application.Behaviors;
 /// Wrapped after <see cref="UnitOfWorkCommandHandlerDecorator{TCommand, TResponse}"/>
 /// so cache eviction only happens once the write is durable.
 /// </summary>
+/// <param name="innerHandler"></param>
+/// <param name="cacheHelper"></param>
 public class CacheInvalidationCommandHandlerDecorator<TCommand, TResponse>(
     ICommandHandler<TCommand, TResponse> innerHandler,
     ICacheHelper cacheHelper

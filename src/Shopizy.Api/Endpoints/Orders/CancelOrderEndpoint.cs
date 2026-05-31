@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Orders;
 
 public class CancelOrderEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPatch(
                 "api/v1.0/users/{userId:guid}/orders/{orderId:guid}/cancel",
                 async (
@@ -49,5 +48,4 @@ public class CancelOrderEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

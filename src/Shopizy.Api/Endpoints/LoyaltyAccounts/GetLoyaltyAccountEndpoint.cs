@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.LoyaltyAccounts;
 
 public class GetLoyaltyAccountEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/users/{userId:guid}/loyalty",
                 async (
@@ -44,5 +43,4 @@ public class GetLoyaltyAccountEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

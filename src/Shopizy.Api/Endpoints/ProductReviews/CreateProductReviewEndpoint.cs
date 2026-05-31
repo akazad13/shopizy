@@ -11,8 +11,7 @@ namespace Shopizy.Api.Endpoints.ProductReviews;
 
 public class CreateProductReviewEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/products/{productId:guid}/reviews",
                 async (
@@ -48,5 +47,4 @@ public class CreateProductReviewEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

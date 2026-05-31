@@ -13,15 +13,9 @@ public sealed class UserId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static UserId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static UserId CreateUnique() => new(Guid.NewGuid());
 
-    public static UserId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static UserId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

@@ -7,10 +7,8 @@ namespace Shopizy.Infrastructure.PromoCodes.Persistence;
 
 public sealed class PromoCodeConfigurations : IEntityTypeConfiguration<PromoCode>
 {
-    public void Configure(EntityTypeBuilder<PromoCode> builder)
-    {
+    public void Configure(EntityTypeBuilder<PromoCode> builder) =>
         ConfigurePromoCodesTable(builder);
-    }
 
     private static void ConfigurePromoCodesTable(EntityTypeBuilder<PromoCode> builder)
     {

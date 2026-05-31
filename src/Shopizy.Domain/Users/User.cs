@@ -22,17 +22,17 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the user's first name.
     /// </summary>
-    public string FirstName { get; private set; } = null!;
+    public string FirstName { get; private set; } = string.Empty;
 
     /// <summary>
     /// Gets the user's last name.
     /// </summary>
-    public string LastName { get; private set; } = null!;
+    public string LastName { get; private set; } = string.Empty;
 
     /// <summary>
     /// Gets the user's email address.
     /// </summary>
-    public string Email { get; private set; } = null!;
+    public required string Email { get; init; }
 
     /// <summary>
     /// Gets the user's role.
@@ -47,12 +47,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the user's phone number.
     /// </summary>
-    public string Phone { get; private set; } = null!;
+    public string? Phone { get; private set; }
 
     /// <summary>
     /// Gets the credential information for this user (password, reset token, 2FA).
     /// </summary>
-    public UserCredential Credentials { get; private set; } = null!;
+    public required UserCredential Credentials { get; init; }
 
     /// <summary>Gets the user's hashed password.</summary>
     public string? Password => Credentials.Password;
@@ -72,7 +72,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Gets the user's customer ID for payment processing.
     /// </summary>
-    public string? CustomerId { get; private set; } = null;
+    public string? CustomerId { get; private set; }
 
     /// <summary>
     /// Gets the user's address.
@@ -128,40 +128,23 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         IList<PermissionId> permissionIds
     )
     {
-        var user = new User(
-            UserId.CreateUnique(),
-            firstName,
-            lastName,
-            email,
-            password,
-            role,
-            permissionIds
-        );
+        var user = new User
+        {
+            Id = UserId.CreateUnique(),
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Credentials = new UserCredential(password),
+            Role = role,
+        };
+
+        user._permissionIds.AddRange(permissionIds);
         user.AddDomainEvent(new Events.UserRegisteredDomainEvent(user));
 
         return user;
     }
 
     private User() { }
-
-    private User(
-        UserId userId,
-        string firstName,
-        string lastName,
-        string email,
-        string? password,
-        UserRole role,
-        IList<PermissionId> permissionIds
-    )
-        : base(userId)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-        Email = email;
-        Credentials = new UserCredential(password);
-        Role = role;
-        _permissionIds = [.. permissionIds];
-    }
 
     /// <summary>
     /// Updates the user's address information.
@@ -177,10 +160,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
         string state,
         string country,
         string zipCode
-    )
-    {
-        Address = Address.CreateNew(street, city, state, country, zipCode);
-    }
+    ) => Address = Address.CreateNew(street, city, state, country, zipCode);
 
     /// <summary>
     /// Updates the user's password.
@@ -203,37 +183,25 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// Updates the user's phone.
     /// </summary>
     /// <param name="phone">The user's phone.</param>
-    public void UpdatePhone(string phone)
-    {
-        Phone = phone;
-    }
+    public void UpdatePhone(string phone) => Phone = phone;
 
     /// <summary>
     /// Updates the user's profile picture.
     /// </summary>
     /// <param name="profileImageUrl">The user's profile picture.</param>
-    public void UpdateProfileImageUrl(string profileImageUrl)
-    {
-        ProfileImageUrl = profileImageUrl;
-    }
+    public void UpdateProfileImageUrl(string profileImageUrl) => ProfileImageUrl = profileImageUrl;
 
     /// <summary>
     /// Updates the user's customer ID for payment processing.
     /// </summary>
     /// <param name="customerId">The customer ID from the payment provider.</param>
-    public void UpdateCustomerId(string customerId)
-    {
-        CustomerId = customerId;
-    }
+    public void UpdateCustomerId(string customerId) => CustomerId = customerId;
 
     /// <summary>
     /// Updates the user's role.
     /// </summary>
     /// <param name="role">The new role.</param>
-    public void UpdateRole(UserRole role)
-    {
-        Role = role;
-    }
+    public void UpdateRole(UserRole role) => Role = role;
 
     /// <summary>
     /// Updates the user's permissions.
@@ -248,6 +216,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Adds a new address to the user's address book.
     /// </summary>
+    /// <param name="street"></param>
+    /// <param name="city"></param>
+    /// <param name="state"></param>
+    /// <param name="country"></param>
+    /// <param name="zipCode"></param>
+    /// <param name="isDefault"></param>
     public UserAddress AddAddress(
         string street,
         string city,
@@ -271,6 +245,12 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Updates an existing address.
     /// </summary>
+    /// <param name="addressId"></param>
+    /// <param name="street"></param>
+    /// <param name="city"></param>
+    /// <param name="state"></param>
+    /// <param name="country"></param>
+    /// <param name="zipCode"></param>
     public DomainResult<UserAddress> UpdateAddress(
         UserAddressId addressId,
         string street,
@@ -290,6 +270,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Removes an address from the user's address book.
     /// </summary>
+    /// <param name="addressId"></param>
     public DomainResult<bool> RemoveAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
@@ -302,6 +283,7 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     /// <summary>
     /// Sets the default address for the user.
     /// </summary>
+    /// <param name="addressId"></param>
     public DomainResult<bool> SetDefaultAddress(UserAddressId addressId)
     {
         var address = _addresses.FirstOrDefault(a => a.Id == addressId);
@@ -314,10 +296,13 @@ public sealed class User : AggregateRoot<UserId, Guid>, IAuditable
     }
 
     /// <summary>Sets the password reset token and expiry.</summary>
+    /// <param name="token"></param>
+    /// <param name="expiry"></param>
     public void SetPasswordResetToken(string token, DateTime expiry) =>
         Credentials.SetPasswordResetToken(token, expiry);
 
     /// <summary>Returns true when the reset token matches and has not expired.</summary>
+    /// <param name="token"></param>
     public bool IsPasswordResetTokenValid(string token) =>
         Credentials.IsPasswordResetTokenValid(token);
 

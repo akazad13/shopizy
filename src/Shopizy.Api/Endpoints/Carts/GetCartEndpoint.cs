@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Carts;
 
 public class GetCartEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/users/{userId:guid}/cart",
                 async (
@@ -46,5 +45,4 @@ public class GetCartEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

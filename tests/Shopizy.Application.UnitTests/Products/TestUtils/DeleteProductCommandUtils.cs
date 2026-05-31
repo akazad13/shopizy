@@ -5,8 +5,6 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class DeleteProductCommandUtils
 {
-    public static DeleteProductCommand CreateCommand()
-    {
-        return new DeleteProductCommand(Constants.User.Id.Value, Constants.Product.Id.Value);
-    }
+    public static DeleteProductCommand CreateCommand() =>
+        new(Constants.User.Id.Value, Constants.Product.Id.Value);
 }

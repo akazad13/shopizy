@@ -30,12 +30,12 @@ public sealed class UserCredential
     private UserCredential() { }
 
     /// <summary>Updates the hashed password.</summary>
-    public void UpdatePassword(string password)
-    {
-        Password = password;
-    }
+    /// <param name="password"></param>
+    public void UpdatePassword(string password) => Password = password;
 
     /// <summary>Sets the password reset token and its expiry.</summary>
+    /// <param name="token"></param>
+    /// <param name="expiry"></param>
     public void SetPasswordResetToken(string token, DateTime expiry)
     {
         PasswordResetToken = token;
@@ -43,6 +43,7 @@ public sealed class UserCredential
     }
 
     /// <summary>Returns true when <paramref name="token"/> matches and has not expired.</summary>
+    /// <param name="token"></param>
     public bool IsPasswordResetTokenValid(string token) =>
         PasswordResetToken == token && PasswordResetTokenExpiry > DateTime.UtcNow;
 
@@ -62,10 +63,7 @@ public sealed class UserCredential
     }
 
     /// <summary>Marks 2FA as fully enabled after code verification.</summary>
-    public void ConfirmTwoFactor()
-    {
-        IsTwoFactorEnabled = true;
-    }
+    public void ConfirmTwoFactor() => IsTwoFactorEnabled = true;
 
     /// <summary>Removes the TOTP secret and disables 2FA.</summary>
     public void DisableTwoFactor()

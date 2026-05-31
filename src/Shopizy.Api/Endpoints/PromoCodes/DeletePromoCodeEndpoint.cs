@@ -8,8 +8,7 @@ namespace Shopizy.Api.Endpoints.PromoCodes;
 
 public class DeletePromoCodeEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/admin/promo-codes/{id:guid}",
                 async (
@@ -35,5 +34,4 @@ public class DeletePromoCodeEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

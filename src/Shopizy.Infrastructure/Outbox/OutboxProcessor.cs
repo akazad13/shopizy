@@ -14,6 +14,8 @@ namespace Shopizy.Infrastructure.Outbox;
 /// but never successfully dispatched (e.g., because the process crashed after the
 /// transaction committed but before the in-process handler ran).
 /// </summary>
+/// <param name="scopeFactory"></param>
+/// <param name="logger"></param>
 public sealed class OutboxProcessor(
     IServiceScopeFactory scopeFactory,
     ILogger<OutboxProcessor> logger

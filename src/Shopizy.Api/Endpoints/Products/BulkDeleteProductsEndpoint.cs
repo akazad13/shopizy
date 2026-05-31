@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Products;
 
 public class BulkDeleteProductsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/products/bulk-delete",
                 async (
@@ -37,5 +36,4 @@ public class BulkDeleteProductsEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

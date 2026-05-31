@@ -10,6 +10,8 @@ namespace Shopizy.Application.Users.Commands.UpdatePassword;
 /// <summary>
 /// Handles the <see cref="UpdatePasswordCommand"/> to update user passwords.
 /// </summary>
+/// <param name="userRepository"></param>
+/// <param name="passwordManager"></param>
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager

@@ -9,6 +9,7 @@ namespace Shopizy.Application.Categories.Commands.CreateCategory;
 /// <summary>
 /// Handles the <see cref="CreateCategoryCommand"/> to create new categories.
 /// </summary>
+/// <param name="categoryRepository"></param>
 public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
     : ICommandHandler<CreateCategoryCommand, ErrorOr<Category>>
 {

@@ -11,15 +11,9 @@ public sealed class OrderItemId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static OrderItemId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static OrderItemId CreateUnique() => new(Guid.NewGuid());
 
-    public static OrderItemId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static OrderItemId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.LoyaltyAccounts;
 
 public class EarnPointsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/users/{userId:guid}/loyalty/earn",
                 async (
@@ -40,5 +39,4 @@ public class EarnPointsEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

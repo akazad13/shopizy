@@ -10,8 +10,7 @@ namespace Shopizy.Infrastructure.Migrations
     public partial class AddNewPermissions : Migration
     {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) =>
             migrationBuilder.InsertData(
                 table: "Permissions",
                 columns: new[] { "Id", "Name" },
@@ -23,7 +22,6 @@ namespace Shopizy.Infrastructure.Migrations
                     { new Guid("d99cab25-5af2-4b9c-9fad-385e4715d7f2"), "delete:wishlist" },
                 }
             );
-        }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)

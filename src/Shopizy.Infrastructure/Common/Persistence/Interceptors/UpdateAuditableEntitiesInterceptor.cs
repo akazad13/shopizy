@@ -8,6 +8,7 @@ namespace Shopizy.Infrastructure.Common.Persistence.Interceptors;
 /// <summary>
 /// Interceptor for automatically setting <see cref="IAuditable.CreatedOn"/> and <see cref="IAuditable.ModifiedOn"/> properties.
 /// </summary>
+/// <param name="dateTimeProvider"></param>
 public class UpdateAuditableEntitiesInterceptor(IDateTimeProvider dateTimeProvider)
     : SaveChangesInterceptor
 {

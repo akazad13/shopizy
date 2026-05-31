@@ -12,30 +12,21 @@ public class WishlistRepository(AppDbContext dbContext) : IWishlistRepository
     public async Task<Wishlist?> GetWishlistByUserIdAsync(
         UserId userId,
         CancellationToken cancellationToken
-    )
-    {
-        return await dbContext
+    ) =>
+        await dbContext
             .Wishlists.Include(w => w.WishlistItems)
             .FirstOrDefaultAsync(w => w.UserId == userId, cancellationToken);
-    }
 
     public async Task<Wishlist?> GetWishlistByIdAsync(
         WishlistId id,
         CancellationToken cancellationToken = default
-    )
-    {
-        return await dbContext
+    ) =>
+        await dbContext
             .Wishlists.Include(w => w.WishlistItems)
             .FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
-    }
 
-    public async Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken)
-    {
+    public async Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken) =>
         await dbContext.Wishlists.AddAsync(wishlist, cancellationToken);
-    }
 
-    public void Update(Wishlist wishlist)
-    {
-        dbContext.Update(wishlist);
-    }
+    public void Update(Wishlist wishlist) => dbContext.Update(wishlist);
 }

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;

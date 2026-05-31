@@ -7,10 +7,7 @@ namespace Shopizy.Infrastructure.Permissions.Persistence;
 
 public sealed class PermissionConfigurations : IEntityTypeConfiguration<Permission>
 {
-    public void Configure(EntityTypeBuilder<Permission> builder)
-    {
-        ConfigureUsersTable(builder);
-    }
+    public void Configure(EntityTypeBuilder<Permission> builder) => ConfigureUsersTable(builder);
 
     private static void ConfigureUsersTable(EntityTypeBuilder<Permission> builder)
     {

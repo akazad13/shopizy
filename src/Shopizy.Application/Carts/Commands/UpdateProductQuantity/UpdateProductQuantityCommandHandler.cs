@@ -11,6 +11,7 @@ namespace Shopizy.Application.Carts.Commands.UpdateProductQuantity;
 /// <summary>
 /// Handles the <see cref="UpdateProductQuantityCommand"/> to update item quantities in a cart.
 /// </summary>
+/// <param name="cartRepository"></param>
 public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
     : ICommandHandler<UpdateProductQuantityCommand, ErrorOr<Cart>>
 {

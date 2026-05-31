@@ -33,15 +33,9 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
     /// </summary>
     protected Entity() { }
 
-    public override bool Equals(object? obj)
-    {
-        return obj is Entity<TId> entity && Id.Equals(entity.Id);
-    }
+    public override bool Equals(object? obj) => obj is Entity<TId> entity && Id.Equals(entity.Id);
 
-    public bool Equals(Entity<TId>? other)
-    {
-        return Equals((object?)other);
-    }
+    public bool Equals(Entity<TId>? other) => Equals((object?)other);
 
     public static bool operator ==(Entity<TId> left, Entity<TId> right)
     {
@@ -53,19 +47,13 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
         return !Equals(left, right);
     }
 
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
+    public override int GetHashCode() => Id.GetHashCode();
 
     /// <summary>
     /// Adds a domain event to the entity's event collection.
     /// </summary>
     /// <param name="domainEvent">The domain event to add.</param>
-    public void AddDomainEvent(IDomainEvent domainEvent)
-    {
-        _domainEvents.Add(domainEvent);
-    }
+    public void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 
     /// <summary>
     /// Retrieves and clears all domain events from the entity.

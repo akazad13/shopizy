@@ -12,17 +12,12 @@ public sealed class ProductVariant : Entity<ProductVariantId>
     public int StockQuantity { get; private set; }
     public bool IsActive { get; private set; }
 
-    public static ProductVariant Create(string name, string sku, Price unitPrice, int stockQuantity)
-    {
-        return new ProductVariant(
-            ProductVariantId.CreateUnique(),
-            name,
-            sku,
-            unitPrice,
-            stockQuantity,
-            isActive: true
-        );
-    }
+    public static ProductVariant Create(
+        string name,
+        string sku,
+        Price unitPrice,
+        int stockQuantity
+    ) => new(ProductVariantId.CreateUnique(), name, sku, unitPrice, stockQuantity, isActive: true);
 
     public void Update(string name, string sku, Price unitPrice, int stockQuantity, bool isActive)
     {

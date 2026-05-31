@@ -6,24 +6,16 @@ namespace Shopizy.Domain.LoyaltyAccounts.Entities;
 
 public sealed class LoyaltyTransaction : Entity<LoyaltyTransactionId>
 {
-    public int Points { get; private set; }
-    public LoyaltyTransactionType Type { get; private set; }
-    public string Description { get; private set; } = null!;
-    public DateTime CreatedOn { get; private set; }
+    public int Points { get; }
+    public LoyaltyTransactionType Type { get; }
+    public string Description { get; } = null!;
+    public DateTime CreatedOn { get; }
 
     public static LoyaltyTransaction Create(
         int points,
         LoyaltyTransactionType type,
         string description
-    )
-    {
-        return new LoyaltyTransaction(
-            LoyaltyTransactionId.CreateUnique(),
-            points,
-            type,
-            description
-        );
-    }
+    ) => new(LoyaltyTransactionId.CreateUnique(), points, type, description);
 
     private LoyaltyTransaction(
         LoyaltyTransactionId id,

@@ -43,9 +43,8 @@ public class GetOrdersQueryHandlerTestsRefactored
         result.Value.ShouldNotBeNull();
     }
 
-    private static Order CreateSampleOrder(UserId userId)
-    {
-        return Order.Create(
+    private static Order CreateSampleOrder(UserId userId) =>
+        Order.Create(
             userId,
             "",
             (int)DeliveryMethods.Standard,
@@ -53,5 +52,4 @@ public class GetOrdersQueryHandlerTestsRefactored
             Shopizy.Domain.Orders.ValueObjects.Address.CreateNew("S", "C", "ST", "CO", "Z"),
             new List<OrderItem>()
         );
-    }
 }

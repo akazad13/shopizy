@@ -63,17 +63,7 @@ public sealed class PromoCode : AggregateRoot<PromoCodeId, Guid>, IAuditable
         decimal discount,
         bool isPercentage,
         bool isActive
-    )
-    {
-        return new PromoCode(
-            PromoCodeId.CreateUnique(),
-            code,
-            description,
-            discount,
-            isPercentage,
-            isActive
-        );
-    }
+    ) => new(PromoCodeId.CreateUnique(), code, description, discount, isPercentage, isActive);
 
     public void Update(
         string code,

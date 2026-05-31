@@ -7,20 +7,18 @@ namespace Shopizy.Domain.GiftCards;
 
 public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
 {
-    public string Code { get; private set; } = null!;
-    public decimal InitialBalance { get; private set; }
-    public decimal RemainingBalance { get; private set; }
+    public string Code { get; } = null!;
+    public decimal InitialBalance { get; }
+    public decimal RemainingBalance { get; }
     public bool IsActive { get; private set; }
     public DateTime? ExpiresOn { get; private set; }
     public UserId? RedeemedByUserId { get; private set; }
     public DateTime? RedeemedOn { get; private set; }
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     public DateTime? ModifiedOn { get; private set; }
 
-    public static GiftCard Create(string code, decimal initialBalance, DateTime? expiresOn)
-    {
-        return new GiftCard(GiftCardId.CreateUnique(), code, initialBalance, expiresOn);
-    }
+    public static GiftCard Create(string code, decimal initialBalance, DateTime? expiresOn) =>
+        new(GiftCardId.CreateUnique(), code, initialBalance, expiresOn);
 
     public DomainResult<bool> Redeem(UserId userId)
     {

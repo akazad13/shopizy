@@ -27,6 +27,8 @@ namespace Shopizy.Infrastructure.Common.Persistence;
 /// The application's database context for Entity Framework Core.
 /// Handles domain events and eventual consistency.
 /// </summary>
+/// <param name="options"></param>
+/// <param name="_httpContextAccessor"></param>
 public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor)
     : DbContext(options),
         IUnitOfWork
@@ -138,6 +140,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     /// Creates <see cref="OutboxMessage"/> rows for each domain event so they are
     /// committed atomically with the aggregate change.
     /// </summary>
+    /// <param name="domainEvents"></param>
     private List<OutboxMessage> WriteEventsToOutbox(List<IDomainEvent> domainEvents)
     {
         var messages = domainEvents

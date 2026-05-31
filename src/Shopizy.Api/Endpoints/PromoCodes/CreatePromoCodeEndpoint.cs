@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.PromoCodes;
 
 public class CreatePromoCodeEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/promo-codes",
                 async (
@@ -41,5 +40,4 @@ public class CreatePromoCodeEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

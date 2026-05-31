@@ -6,12 +6,12 @@ namespace Shopizy.Domain.AuditLogs;
 public sealed class AuditLog : Entity<AuditLogId>
 {
     public Guid? UserId { get; private set; }
-    public string Action { get; private set; } = null!;
-    public string EntityName { get; private set; } = null!;
-    public string EntityId { get; private set; } = null!;
-    public string? OldValues { get; private set; }
-    public string? NewValues { get; private set; }
-    public DateTime Timestamp { get; private set; }
+    public string Action { get; } = null!;
+    public string EntityName { get; } = null!;
+    public string EntityId { get; } = null!;
+    public string? OldValues { get; }
+    public string? NewValues { get; }
+    public DateTime Timestamp { get; }
 
     public static AuditLog Create(
         Guid? userId,
@@ -20,18 +20,7 @@ public sealed class AuditLog : Entity<AuditLogId>
         string entityId,
         string? oldValues,
         string? newValues
-    )
-    {
-        return new AuditLog(
-            AuditLogId.CreateUnique(),
-            userId,
-            action,
-            entityName,
-            entityId,
-            oldValues,
-            newValues
-        );
-    }
+    ) => new(AuditLogId.CreateUnique(), userId, action, entityName, entityId, oldValues, newValues);
 
     private AuditLog(
         AuditLogId id,

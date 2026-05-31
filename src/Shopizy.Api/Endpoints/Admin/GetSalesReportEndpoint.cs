@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Admin;
 
 public class GetSalesReportEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/admin/reports/sales",
                 async (
@@ -38,5 +37,4 @@ public class GetSalesReportEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

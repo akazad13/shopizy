@@ -12,6 +12,7 @@ namespace Shopizy.Infrastructure.Security.TokenGenerator;
 /// <summary>
 /// Generates JWT tokens for authentication.
 /// </summary>
+/// <param name="jwtOptoins"></param>
 [ExcludeFromCodeCoverage]
 public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGenerator
 {

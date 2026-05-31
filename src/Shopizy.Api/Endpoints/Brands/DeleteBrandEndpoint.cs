@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Brands;
 
 public class DeleteBrandEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapDelete(
                 "api/v1.0/admin/brands/{brandId:guid}",
                 async (
@@ -36,5 +35,4 @@ public class DeleteBrandEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

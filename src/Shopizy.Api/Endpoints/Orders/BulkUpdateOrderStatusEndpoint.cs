@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Orders;
 
 public class BulkUpdateOrderStatusEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/admin/orders/bulk-status",
                 async (
@@ -39,5 +38,4 @@ public class BulkUpdateOrderStatusEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

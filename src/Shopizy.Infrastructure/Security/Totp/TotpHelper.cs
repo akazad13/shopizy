@@ -56,6 +56,6 @@ public class TotpHelper : ITotpHelper
                 buffer &= (1 << bitsLeft) - 1;
             }
         }
-        return result.ToArray();
+        return [.. result];
     }
 }

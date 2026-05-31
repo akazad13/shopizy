@@ -9,10 +9,8 @@ namespace Shopizy.Infrastructure.ProductReviews.Persistence;
 
 public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductReview>
 {
-    public void Configure(EntityTypeBuilder<ProductReview> builder)
-    {
+    public void Configure(EntityTypeBuilder<ProductReview> builder) =>
         ConfigureProductReviewsTable(builder);
-    }
 
     private static void ConfigureProductReviewsTable(EntityTypeBuilder<ProductReview> builder)
     {

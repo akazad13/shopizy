@@ -67,6 +67,7 @@ public sealed class ProductReviewIdTests
     /// <summary>
     /// Tests that Create method works correctly with various Guid values including boundary cases.
     /// </summary>
+    /// <param name="guid"></param>
     [Theory]
     [MemberData(nameof(GetVariousGuidValues))]
     public void Create_WithVariousGuidValues_ShouldCreateInstanceWithCorrectValue(Guid guid)
@@ -79,9 +80,8 @@ public sealed class ProductReviewIdTests
         result.Value.ShouldBe(guid);
     }
 
-    public static TheoryData<Guid> GetVariousGuidValues()
-    {
-        return new TheoryData<Guid>
+    public static TheoryData<Guid> GetVariousGuidValues() =>
+        new()
         {
             Guid.Empty,
             Guid.NewGuid(),
@@ -89,7 +89,6 @@ public sealed class ProductReviewIdTests
             new Guid("00000000-0000-0000-0000-000000000001"),
             new Guid("12345678-1234-1234-1234-123456789012"),
         };
-    }
 
     /// <summary>
     /// Tests that GetEqualityComponents returns an enumerable containing exactly one element

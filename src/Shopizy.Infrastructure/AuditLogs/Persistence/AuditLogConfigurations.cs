@@ -7,10 +7,7 @@ namespace Shopizy.Infrastructure.AuditLogs.Persistence;
 
 public sealed class AuditLogConfigurations : IEntityTypeConfiguration<AuditLog>
 {
-    public void Configure(EntityTypeBuilder<AuditLog> builder)
-    {
-        ConfigureAuditLogsTable(builder);
-    }
+    public void Configure(EntityTypeBuilder<AuditLog> builder) => ConfigureAuditLogsTable(builder);
 
     private static void ConfigureAuditLogsTable(EntityTypeBuilder<AuditLog> builder)
     {

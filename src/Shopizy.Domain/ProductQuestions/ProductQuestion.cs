@@ -9,23 +9,19 @@ namespace Shopizy.Domain.ProductQuestions;
 
 public sealed class ProductQuestion : AggregateRoot<ProductQuestionId, Guid>, IAuditable
 {
-    public ProductId ProductId { get; private set; } = null!;
-    public UserId AskedByUserId { get; private set; } = null!;
-    public string Question { get; private set; } = null!;
+    public ProductId ProductId { get; } = null!;
+    public UserId AskedByUserId { get; } = null!;
+    public string Question { get; } = null!;
     public ProductAnswer? Answer { get; private set; }
     public bool IsAnswered { get; private set; }
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     public DateTime? ModifiedOn { get; private set; }
 
-    public static ProductQuestion Create(ProductId productId, UserId askedByUserId, string question)
-    {
-        return new ProductQuestion(
-            ProductQuestionId.CreateUnique(),
-            productId,
-            askedByUserId,
-            question
-        );
-    }
+    public static ProductQuestion Create(
+        ProductId productId,
+        UserId askedByUserId,
+        string question
+    ) => new(ProductQuestionId.CreateUnique(), productId, askedByUserId, question);
 
     public DomainResult<bool> AddAnswer(UserId answeredByUserId, string answer)
     {

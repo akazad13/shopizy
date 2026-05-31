@@ -8,8 +8,5 @@ public static class DeleteProductImageCommandUtils
         Guid userId,
         Guid productId,
         Guid productImageId
-    )
-    {
-        return new DeleteProductImageCommand(userId, productId, productImageId);
-    }
+    ) => new(userId, productId, productImageId);
 }

@@ -41,9 +41,7 @@ internal sealed class ErrorOrConverter<T> : JsonConverter<ErrorOr<T>>
         Utf8JsonWriter writer,
         ErrorOr<T> errorOr,
         JsonSerializerOptions options
-    )
-    {
+    ) =>
         // Serialize only the inner value; error results should not be cached.
         JsonSerializer.Serialize(writer, errorOr.IsError ? default : errorOr.Value, options);
-    }
 }

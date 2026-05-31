@@ -13,8 +13,7 @@ namespace Shopizy.Api.Endpoints.Products;
 /// </summary>
 public class GetProductVariantsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/products/{productId:guid}/variants",
                 async (
@@ -42,5 +41,4 @@ public class GetProductVariantsEndpoint : ApiEndpoint
             .Produces<IReadOnlyList<ProductVariantResponse>>(StatusCodes.Status200OK)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

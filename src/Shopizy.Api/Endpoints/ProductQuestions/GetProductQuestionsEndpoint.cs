@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.ProductQuestions;
 
 public class GetProductQuestionsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/products/{productId:guid}/questions",
                 async (
@@ -40,5 +39,4 @@ public class GetProductQuestionsEndpoint : ApiEndpoint
             .WithDescription("Returns a paginated list of questions and answers for a product.")
             .Produces<IReadOnlyList<ProductQuestionResponse>>(StatusCodes.Status200OK)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

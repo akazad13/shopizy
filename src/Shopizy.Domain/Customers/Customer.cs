@@ -12,7 +12,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
     /// <summary>
     /// Gets the customer's profile image URL.
     /// </summary>
-    public string? ProfileImageUrl { get; private set; }
+    public string? ProfileImageUrl { get; }
 
     /// <summary>
     /// Gets or sets the customer's address.
@@ -22,7 +22,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
     /// <summary>
     /// Gets the date and time when the customer was created.
     /// </summary>
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
 
     /// <summary>
     /// Gets the date and time when the customer was last modified.
@@ -35,10 +35,8 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
     /// <param name="profileImageUrl">The profile image URL.</param>
     /// <param name="address">The customer's address.</param>
     /// <returns>A new <see cref="Customer"/> instance.</returns>
-    public static Customer Create(string? profileImageUrl, Address address)
-    {
-        return new Customer(CustomerId.CreateUnique(), profileImageUrl, address);
-    }
+    public static Customer Create(string? profileImageUrl, Address address) =>
+        new(CustomerId.CreateUnique(), profileImageUrl, address);
 
     private Customer(CustomerId customerId, string? profileImageUrl, Address address)
         : base(customerId)

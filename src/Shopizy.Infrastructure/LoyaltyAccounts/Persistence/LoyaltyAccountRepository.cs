@@ -10,18 +10,11 @@ public class LoyaltyAccountRepository(AppDbContext dbContext) : ILoyaltyAccountR
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<LoyaltyAccount?> GetByUserIdAsync(UserId userId)
-    {
-        return _dbContext.Set<LoyaltyAccount>().FirstOrDefaultAsync(la => la.UserId == userId);
-    }
+    public Task<LoyaltyAccount?> GetByUserIdAsync(UserId userId) =>
+        _dbContext.Set<LoyaltyAccount>().FirstOrDefaultAsync(la => la.UserId == userId);
 
-    public async Task AddAsync(LoyaltyAccount account)
-    {
+    public async Task AddAsync(LoyaltyAccount account) =>
         await _dbContext.Set<LoyaltyAccount>().AddAsync(account);
-    }
 
-    public void Update(LoyaltyAccount account)
-    {
-        _dbContext.Set<LoyaltyAccount>().Update(account);
-    }
+    public void Update(LoyaltyAccount account) => _dbContext.Set<LoyaltyAccount>().Update(account);
 }

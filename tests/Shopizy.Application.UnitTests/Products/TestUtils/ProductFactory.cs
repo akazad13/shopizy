@@ -6,9 +6,8 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class ProductFactory
 {
-    public static Product CreateProduct()
-    {
-        return Product.Create(
+    public static Product CreateProduct() =>
+        Product.Create(
             Constants.Product.Name,
             Constants.Product.ShortDescription,
             Constants.Product.Description,
@@ -23,14 +22,11 @@ public static class ProductFactory
             Constants.Product.Sizes,
             Constants.Product.Tags
         );
-    }
 
-    public static ProductImage CreateProductImage()
-    {
-        return ProductImage.Create(
+    public static ProductImage CreateProductImage() =>
+        ProductImage.Create(
             Constants.ProductImage.ImageUrl,
             Constants.ProductImage.Seq,
             Constants.ProductImage.PublicId
         );
-    }
 }

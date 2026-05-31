@@ -5,9 +5,8 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class UpdateProductCommandUtils
 {
-    public static UpdateProductCommand CreateCommand()
-    {
-        return new UpdateProductCommand(
+    public static UpdateProductCommand CreateCommand() =>
+        new(
             Constants.User.Id.Value,
             Constants.Product.Id.Value,
             Constants.Product.Name,
@@ -26,5 +25,4 @@ public static class UpdateProductCommandUtils
             Constants.Product.StockQuantity,
             []
         );
-    }
 }

@@ -5,8 +5,5 @@ namespace Shopizy.Application.UnitTests.Auth.TestUtils;
 
 public static class LoginQueryUtils
 {
-    public static LoginQuery CreateQuery()
-    {
-        return new LoginQuery(Constants.User.Email, Constants.User.Password);
-    }
+    public static LoginQuery CreateQuery() => new(Constants.User.Email, Constants.User.Password);
 }

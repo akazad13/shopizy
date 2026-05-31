@@ -1,3 +1,4 @@
+using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Common.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
@@ -18,17 +19,17 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the user ID who placed the order.
     /// </summary>
-    public UserId UserId { get; private set; } = null!;
+    public required UserId UserId { get; init; }
 
     /// <summary>
     /// Gets the delivery method.
     /// </summary>
-    public DeliveryMethods DeliveryMethod { get; private set; }
+    public required DeliveryMethods DeliveryMethod { get; init; }
 
     /// <summary>
     /// Gets the delivery charge.
     /// </summary>
-    public Price DeliveryCharge { get; private set; }
+    public required Price DeliveryCharge { get; init; }
 
     /// <summary>
     /// Gets the current order status.
@@ -43,12 +44,12 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Gets the promotional code applied to the order.
     /// </summary>
-    public string PromoCode { get; private set; } = null!;
+    public required string PromoCode { get; init; }
 
     /// <summary>
     /// Gets the shipping address.
     /// </summary>
-    public Address ShippingAddress { get; private set; } = null!;
+    public required Address ShippingAddress { get; init; }
 
     /// <summary>
     /// Gets the payment status.
@@ -94,40 +95,26 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         IReadOnlyList<OrderItem> orderItems
     )
     {
-        var order = new Order(
-            OrderId.CreateUnique(),
-            userId,
-            promoCode,
-            deliveryMethod,
-            deliveryCharge,
-            shippingAddress,
-            orderItems
-        );
+        var order = new Order
+        {
+            Id = OrderId.CreateUnique(),
+            UserId = userId,
+            PromoCode = promoCode,
+            DeliveryMethod = (DeliveryMethods)deliveryMethod,
+            DeliveryCharge = deliveryCharge,
+            ShippingAddress = shippingAddress,
+            OrderStatus = OrderStatus.Pending,
+            PaymentStatus = PaymentStatus.Pending,
+        };
+
+        foreach (var item in orderItems)
+        {
+            order._orderItems.Add(item);
+        }
 
         order.AddDomainEvent(new Events.OrderCreatedDomainEvent(order));
 
         return order;
-    }
-
-    private Order(
-        OrderId orderId,
-        UserId userId,
-        string promoCode,
-        int deliveryMethod,
-        Price deliveryCharge,
-        Address shippingAddress,
-        IReadOnlyList<OrderItem> orderItems
-    )
-        : base(orderId)
-    {
-        UserId = userId;
-        OrderStatus = OrderStatus.Pending;
-        PromoCode = promoCode;
-        DeliveryMethod = (DeliveryMethods)deliveryMethod;
-        DeliveryCharge = deliveryCharge;
-        ShippingAddress = shippingAddress;
-        _orderItems = orderItems.ToList();
-        PaymentStatus = PaymentStatus.Pending;
     }
 
     private Order() { }
@@ -162,19 +149,13 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// Updates the payment status of the order.
     /// </summary>
     /// <param name="status">The new payment status.</param>
-    public void UpdatePaymentStatus(PaymentStatus status)
-    {
-        PaymentStatus = status;
-    }
+    public void UpdatePaymentStatus(PaymentStatus status) => PaymentStatus = status;
 
     /// <summary>
     /// Updates the order status.
     /// </summary>
     /// <param name="status">The new order status.</param>
-    public void UpdateOrderStatus(OrderStatus status)
-    {
-        OrderStatus = status;
-    }
+    public void UpdateOrderStatus(OrderStatus status) => OrderStatus = status;
 
     /// <summary>
     /// Marks the order payment as complete, transitions to Processing status,
@@ -192,6 +173,9 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Adds a shipment to the order.
     /// </summary>
+    /// <param name="carrier"></param>
+    /// <param name="trackingNumber"></param>
+    /// <param name="estimatedDelivery"></param>
     public DomainResult<Shipment> AddShipment(
         string carrier,
         string trackingNumber,
@@ -210,6 +194,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <summary>
     /// Updates the shipment associated with the order.
     /// </summary>
+    /// <param name="carrier"></param>
+    /// <param name="trackingNumber"></param>
+    /// <param name="estimatedDelivery"></param>
+    /// <param name="status"></param>
     public DomainResult<bool> UpdateShipment(
         string carrier,
         string trackingNumber,

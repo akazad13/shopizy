@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Auth;
 
 public class EnableTwoFactorEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/auth/2fa/enable",
                 async (
@@ -42,5 +41,4 @@ public class EnableTwoFactorEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

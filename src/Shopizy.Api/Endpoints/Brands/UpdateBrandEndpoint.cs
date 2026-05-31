@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Brands;
 
 public class UpdateBrandEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPatch(
                 "api/v1.0/admin/brands/{brandId:guid}",
                 async (
@@ -45,5 +44,4 @@ public class UpdateBrandEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

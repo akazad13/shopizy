@@ -55,6 +55,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
             pb =>
             {
                 pb.Property(p => p.Amount).HasPrecision(18, 2);
+                pb.Property(p => p.Currency).HasConversion<int>();
                 pb.HasIndex(p => p.Amount);
             }
         );
@@ -90,8 +91,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder.Property<byte[]>("RowVersion");
     }
 
-    private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder)
-    {
+    private static void ConfigureProductImagesTable(EntityTypeBuilder<Product> builder) =>
         builder.OwnsMany(
             p => p.ProductImages,
             pib =>
@@ -108,10 +108,8 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                 pib.Property(pi => pi.ImageUrl).IsRequired();
             }
         );
-    }
 
-    private static void ConfigureProductVariantsTable(EntityTypeBuilder<Product> builder)
-    {
+    private static void ConfigureProductVariantsTable(EntityTypeBuilder<Product> builder) =>
         builder.OwnsMany(
             p => p.ProductVariants,
             pvb =>
@@ -131,9 +129,9 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
                     pb =>
                     {
                         pb.Property(p => p.Amount).HasPrecision(18, 2);
+                        pb.Property(p => p.Currency).HasConversion<int>();
                     }
                 );
             }
         );
-    }
 }

@@ -11,15 +11,9 @@ public sealed class BrandId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static BrandId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static BrandId CreateUnique() => new(Guid.NewGuid());
 
-    public static BrandId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static BrandId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

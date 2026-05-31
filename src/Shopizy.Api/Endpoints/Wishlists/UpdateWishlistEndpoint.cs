@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Wishlists;
 
 public class UpdateWishlistEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPatch(
                 "api/v1.0/users/{userId:guid}/wishlist",
                 async (
@@ -51,5 +50,4 @@ public class UpdateWishlistEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

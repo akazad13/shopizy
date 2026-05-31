@@ -8,8 +8,7 @@ namespace Shopizy.Infrastructure.Migrations;
 public partial class AddPermissions : Migration
 {
     /// <inheritdoc />
-    protected override void Up(MigrationBuilder migrationBuilder)
-    {
+    protected override void Up(MigrationBuilder migrationBuilder) =>
         migrationBuilder.InsertData(
             table: "Permissions",
             columns: new[] { "Id", "Name" },
@@ -37,7 +36,6 @@ public partial class AddPermissions : Migration
                 { new Guid("f49bbc15-aa8b-4752-af66-e3e00afc173d"), "create:category" },
             }
         );
-    }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)

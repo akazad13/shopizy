@@ -10,6 +10,7 @@ namespace Shopizy.Infrastructure.Permissions.Persistence;
 /// Singleton-cached permission name → id lookup. Permissions are seeded data and rarely change,
 /// so the map is loaded once on first use and reloaded on <see cref="Invalidate"/>.
 /// </summary>
+/// <param name="scopeFactory"></param>
 public sealed class PermissionLookup(IServiceScopeFactory scopeFactory) : IPermissionLookup
 {
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;

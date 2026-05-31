@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Auth;
 
 public class DisableTwoFactorEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/auth/2fa/disable",
                 async (
@@ -43,5 +42,4 @@ public class DisableTwoFactorEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

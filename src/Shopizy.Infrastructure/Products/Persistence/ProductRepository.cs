@@ -9,6 +9,7 @@ namespace Shopizy.Infrastructure.Products.Persistence;
 /// <summary>
 /// Repository for managing product data persistence.
 /// </summary>
+/// <param name="dbContext"></param>
 public class ProductRepository(AppDbContext dbContext) : IProductRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
@@ -16,45 +17,31 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Retrieves a product by its unique identifier, including reviews.
     /// </summary>
-    public Task<Product?> GetProductByIdAsync(ProductId id)
-    {
-        return _dbContext
+    /// <param name="id"></param>
+    public Task<Product?> GetProductByIdAsync(ProductId id) =>
+        _dbContext
             .Products.Include(p => p.ProductImages)
             .Include(p => p.ProductReviews)
                 .ThenInclude(p => p.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
-    }
 
-    public Task<Product?> GetProductByIdForUpdateAsync(ProductId id)
-    {
-        return _dbContext
-            .Products.Include(p => p.ProductImages)
-            .FirstOrDefaultAsync(p => p.Id == id);
-    }
+    public Task<Product?> GetProductByIdForUpdateAsync(ProductId id) =>
+        _dbContext.Products.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == id);
 
     /// <summary>
     /// Retrieves multiple products by their identifiers.
     /// </summary>
-    public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids)
-    {
-        return await _dbContext
-            .Products.Where(p => ids.Contains(p.Id))
-            .AsNoTracking()
-            .ToListAsync();
-    }
+    /// <param name="ids"></param>
+    public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IReadOnlyList<ProductId> ids) =>
+        await _dbContext.Products.Where(p => ids.Contains(p.Id)).AsNoTracking().ToListAsync();
 
     public async Task<IReadOnlyList<Product>> GetProductsByIdsForUpdateAsync(
         IReadOnlyList<ProductId> ids
-    )
-    {
-        return await _dbContext.Products.Where(p => ids.Contains(p.Id)).ToListAsync();
-    }
+    ) => await _dbContext.Products.Where(p => ids.Contains(p.Id)).ToListAsync();
 
-    public Task<bool> IsProductExistAsync(ProductId id)
-    {
-        return _dbContext.Products.AnyAsync(p => p.Id == id);
-    }
+    public Task<bool> IsProductExistAsync(ProductId id) =>
+        _dbContext.Products.AnyAsync(p => p.Id == id);
 
     public async Task<(IReadOnlyList<Product> Products, int TotalCount)> GetProductsWithCountAsync(
         ProductSearchCriteria criteria
@@ -87,34 +74,26 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     /// <summary>
     /// Adds a new product to the database.
     /// </summary>
-    public async Task AddAsync(Product product)
-    {
-        await _dbContext.Products.AddAsync(product);
-    }
+    /// <param name="product"></param>
+    public async Task AddAsync(Product product) => await _dbContext.Products.AddAsync(product);
 
     /// <summary>
     /// Updates an existing product in the database.
     /// </summary>
-    public void Update(Product product)
-    {
-        _dbContext.Update(product);
-    }
+    /// <param name="product"></param>
+    public void Update(Product product) => _dbContext.Update(product);
 
     /// <summary>
     /// Removes a product from the database.
     /// </summary>
-    public void Remove(Product product)
-    {
-        _dbContext.Remove(product);
-    }
+    /// <param name="product"></param>
+    public void Remove(Product product) => _dbContext.Remove(product);
 
     /// <summary>
     /// Removes multiple products from the database.
     /// </summary>
-    public void RemoveRange(IList<Product> products)
-    {
-        _dbContext.RemoveRange(products);
-    }
+    /// <param name="products"></param>
+    public void RemoveRange(IList<Product> products) => _dbContext.RemoveRange(products);
 
     private IQueryable<Product> BuildProductCriteriaQuery(ProductSearchCriteria criteria)
     {

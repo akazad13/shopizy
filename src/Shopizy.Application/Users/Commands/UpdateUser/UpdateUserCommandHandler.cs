@@ -10,6 +10,8 @@ namespace Shopizy.Application.Users.Commands.UpdateUser;
 /// <summary>
 /// Handles the <see cref="UpdateUserCommand"/> to update user information.
 /// </summary>
+/// <param name="userRepository"></param>
+/// <param name="cacheHelper"></param>
 public class UpdateUserCommandHandler(IUserRepository userRepository, ICacheHelper cacheHelper)
     : ICommandHandler<UpdateUserCommand, ErrorOr<Success>>
 {

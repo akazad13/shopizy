@@ -11,8 +11,7 @@ namespace Shopizy.Api.Endpoints.ProductQuestions;
 
 public class AskQuestionEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/products/{productId:guid}/questions",
                 async (
@@ -43,5 +42,4 @@ public class AskQuestionEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status404NotFound)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

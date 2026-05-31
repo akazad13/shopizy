@@ -9,6 +9,7 @@ namespace Shopizy.Api.IntegrationTests.Workflows;
 /// Simple end-to-end test demonstrating the correct approach using actual contract types.
 /// Use this as a template for fixing other workflow tests.
 /// </summary>
+/// <param name="factory"></param>
 public class SimpleWorkflowTest(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
     [Fact]

@@ -9,8 +9,7 @@ namespace Shopizy.Api.Endpoints.Auth;
 
 public class ForgotPasswordEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/auth/forgot-password",
                 async (
@@ -37,5 +36,4 @@ public class ForgotPasswordEndpoint : ApiEndpoint
             .Produces<ForgotPasswordResponse>(StatusCodes.Status200OK)
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

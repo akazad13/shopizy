@@ -11,6 +11,8 @@ public interface IPermissionLookup
     /// Returns the <see cref="PermissionId"/> values for the supplied permission names.
     /// Unknown names are skipped silently — pass a curated whitelist.
     /// </summary>
+    /// <param name="names"></param>
+    /// <param name="cancellationToken"></param>
     Task<IReadOnlyList<PermissionId>> GetIdsByNamesAsync(
         IEnumerable<string> names,
         CancellationToken cancellationToken = default

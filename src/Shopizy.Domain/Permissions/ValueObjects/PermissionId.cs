@@ -11,15 +11,9 @@ public sealed class PermissionId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static PermissionId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static PermissionId CreateUnique() => new(Guid.NewGuid());
 
-    public static PermissionId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static PermissionId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

@@ -36,6 +36,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Registers a new user and returns the registration response.
     /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
     protected async Task<HttpResponseMessage> RegisterUserAsync(
         string firstName,
         string lastName,
@@ -54,6 +58,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Logs in a user and returns the JWT token.
     /// </summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
     protected async Task<string> LoginAndGetTokenAsync(string email, string password)
     {
         var loginRequest = new LoginRequest(email, password);
@@ -80,21 +86,17 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Sets the Authorization header with the provided JWT token.
     /// </summary>
-    protected void SetAuthToken(string token)
-    {
+    /// <param name="token"></param>
+    protected void SetAuthToken(string token) =>
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
             "Bearer",
             token
         );
-    }
 
     /// <summary>
     /// Clears the Authorization header.
     /// </summary>
-    protected void ClearAuthToken()
-    {
-        HttpClient.DefaultRequestHeaders.Authorization = null;
-    }
+    protected void ClearAuthToken() => HttpClient.DefaultRequestHeaders.Authorization = null;
 
     /// <summary>
     /// Seeds an admin user if not exists and authenticates.
@@ -178,6 +180,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Registers a user, logs in, and sets the auth token in one call.
     /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
     protected async Task<(string Token, Guid UserId)> AuthenticateAsNewUserAsync(
         string firstName = "Test",
         string lastName = "User",
@@ -200,6 +206,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Creates a product via API and returns the product ID.
     /// </summary>
+    /// <param name="name"></param>
+    /// <param name="price"></param>
+    /// <param name="categoryId"></param>
+    /// <param name="sku"></param>
+    /// <param name="stockQuantity"></param>
     protected async Task<Guid> CreateProductAsync(
         string name,
         decimal price,
@@ -244,6 +255,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Gets a product by ID via API.
     /// </summary>
+    /// <param name="productId"></param>
     protected async Task<Shopizy.Contracts.Product.ProductDetailResponse> GetProductAsync(
         Guid productId
     )
@@ -264,6 +276,10 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Searches for products via API.
     /// </summary>
+    /// <param name="name"></param>
+    /// <param name="categoryId"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
     protected async Task<Shopizy.Contracts.Product.ProductsPagedResponse> SearchProductsAsync(
         string? name = null,
         Guid? categoryId = null,
@@ -302,6 +318,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Creates a category via API and returns the category ID.
     /// </summary>
+    /// <param name="name"></param>
+    /// <param name="parentId"></param>
     protected async Task<Guid> CreateCategoryAsync(string name, Guid? parentId = null)
     {
         var createRequest = new { name, parentId };
@@ -343,6 +361,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Gets the user's cart via API.
     /// </summary>
+    /// <param name="userId"></param>
     protected async Task<Shopizy.Contracts.Cart.CartResponse> GetCartAsync(Guid userId)
     {
         var response = await HttpClient.GetAsync(
@@ -360,6 +379,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Adds an item to the cart via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="productId"></param>
+    /// <param name="quantity"></param>
+    /// <param name="color"></param>
+    /// <param name="size"></param>
     protected async Task<Guid> AddToCartAsync(
         Guid userId,
         Guid productId,
@@ -393,6 +417,9 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Updates cart item quantity via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="itemId"></param>
+    /// <param name="quantity"></param>
     protected async Task UpdateCartItemQuantityAsync(Guid userId, Guid itemId, int quantity)
     {
         var updateRequest = new { quantity };
@@ -407,6 +434,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Removes an item from the cart via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="itemId"></param>
     protected async Task RemoveFromCartAsync(Guid userId, Guid itemId)
     {
         var response = await HttpClient.DeleteAsync(
@@ -423,6 +452,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Places an order via API and returns the order ID.
     /// </summary>
+    /// <param name="orderItems"></param>
+    /// <param name="shippingAddress"></param>
     protected async Task<Guid> PlaceOrderAsync(
         IEnumerable<object> orderItems,
         object? shippingAddress = null
@@ -463,6 +494,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Gets an order by ID via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="orderId"></param>
     protected async Task<Shopizy.Contracts.Order.OrderDetailResponse> GetOrderAsync(
         Guid userId,
         Guid orderId
@@ -484,6 +517,8 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Lists orders for a user via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="status"></param>
     protected async Task<List<Shopizy.Contracts.Order.OrderResponse>> ListOrdersAsync(
         Guid userId,
         string? status = null
@@ -511,6 +546,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Processes payment for an order via API.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="orderId"></param>
+    /// <param name="amount"></param>
+    /// <param name="paymentMethod"></param>
+    /// <param name="currency"></param>
     protected async Task ProcessPaymentAsync(
         Guid userId,
         Guid orderId,
@@ -544,6 +584,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// Drains all pending outbox messages synchronously. Use instead of polling/Sleep when a test
     /// needs to assert on side-effects of background-dispatched domain events.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     protected async Task<int> DrainOutboxAsync(CancellationToken cancellationToken = default)
     {
         using var scope = _scope.ServiceProvider.CreateScope();
@@ -554,6 +595,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     /// <summary>
     /// Extracts user ID from authentication token.
     /// </summary>
+    /// <param name="token"></param>
     protected static Guid GetUserIdFromToken(string token)
     {
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();

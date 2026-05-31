@@ -13,6 +13,7 @@ namespace Shopizy.Infrastructure.Orders.Persistence;
 /// <summary>
 /// Repository for managing order data persistence.
 /// </summary>
+/// <param name="dbContext"></param>
 public class OrderRepository(AppDbContext dbContext) : IOrderRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
@@ -20,6 +21,13 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
     /// <summary>
     /// Retrieves a paginated list of orders based on search criteria.
     /// </summary>
+    /// <param name="customerId"></param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="status"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="orderType"></param>
     public async Task<IReadOnlyList<Order>> GetOrdersAsync(
         UserId? customerId,
         DateTime? startDate,
@@ -53,10 +61,7 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .ToListAsync();
     }
 
-    public Task<int> GetTotalOrdersCountAsync()
-    {
-        return _dbContext.Orders.CountAsync();
-    }
+    public Task<int> GetTotalOrdersCountAsync() => _dbContext.Orders.CountAsync();
 
     public Task<int> GetOrdersCountAsync(
         UserId? customerId,
@@ -79,33 +84,24 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         return query.CountAsync();
     }
 
-    public async Task<decimal> GetTotalRevenueAsync()
-    {
-        return await _dbContext
+    public async Task<decimal> GetTotalRevenueAsync() =>
+        await _dbContext
             .Orders.AsSingleQuery()
             .SelectMany(o => o.OrderItems)
             .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
-    }
 
-    public Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end)
-    {
-        return _dbContext
-            .Orders.Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
-            .CountAsync();
-    }
+    public Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end) =>
+        _dbContext.Orders.Where(o => o.CreatedOn >= start && o.CreatedOn <= end).CountAsync();
 
-    public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end)
-    {
-        return await _dbContext
+    public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end) =>
+        await _dbContext
             .Orders.AsSingleQuery()
             .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
             .SelectMany(o => o.OrderItems)
             .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
-    }
 
-    public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count)
-    {
-        return await _dbContext
+    public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count) =>
+        await _dbContext
             .Orders.AsSingleQuery()
             .SelectMany(o => o.OrderItems)
             .GroupBy(item => item.Name)
@@ -117,7 +113,6 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .OrderByDescending(p => p.Revenue)
             .Take(count)
             .ToListAsync();
-    }
 
     public async Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count)
     {
@@ -151,49 +146,42 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .ToList();
     }
 
-    public async Task<IReadOnlyList<Order>> GetOrdersByIdsAsync(IList<OrderId> ids)
-    {
-        return await _dbContext
+    public async Task<IReadOnlyList<Order>> GetOrdersByIdsAsync(IList<OrderId> ids) =>
+        await _dbContext
             .Orders.Include(o => o.OrderItems)
             .Where(o => ids.Contains(o.Id))
             .ToListAsync();
-    }
 
     /// <summary>
     /// Retrieves an order by its unique identifier.
     /// </summary>
-    public Task<Order?> GetOrderByIdAsync(OrderId id)
-    {
-        return _dbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
-    }
+    /// <param name="id"></param>
+    public Task<Order?> GetOrderByIdAsync(OrderId id) =>
+        _dbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
 
     /// <summary>
     /// Retrieves all orders for a specific user asynchronously.
     /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
     public async Task<IReadOnlyList<Order>> GetOrdersByUserIdAsync(
         UserId userId,
         CancellationToken cancellationToken = default
-    )
-    {
-        return await _dbContext
+    ) =>
+        await _dbContext
             .Orders.Where(o => o.UserId == userId)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
-    }
 
     /// <summary>
     /// Adds a new order to the database.
     /// </summary>
-    public async Task AddAsync(Order order)
-    {
-        await _dbContext.Orders.AddAsync(order);
-    }
+    /// <param name="order"></param>
+    public async Task AddAsync(Order order) => await _dbContext.Orders.AddAsync(order);
 
     /// <summary>
     /// Updates an existing order in the database.
     /// </summary>
-    public void Update(Order order)
-    {
-        _dbContext.Update(order);
-    }
+    /// <param name="order"></param>
+    public void Update(Order order) => _dbContext.Update(order);
 }

@@ -18,9 +18,8 @@ public class GetUserQueryHandlerTestsRefactored
         _handler = new GetUserQueryHandler(_mockUserRepository.Object, _mockOrderRepository.Object);
     }
 
-    private UserDto CreateSampleUserDto(Guid userId)
-    {
-        return new UserDto(
+    private UserDto CreateSampleUserDto(Guid userId) =>
+        new(
             UserId.Create(userId),
             "First",
             "Last",
@@ -35,5 +34,4 @@ public class GetUserQueryHandlerTestsRefactored
             DateTime.UtcNow,
             null
         );
-    }
 }

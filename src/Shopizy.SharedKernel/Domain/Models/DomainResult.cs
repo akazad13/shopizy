@@ -32,6 +32,7 @@ public readonly struct DomainResult<T>
     public static implicit operator DomainResult<T>(DomainError error) => new(error);
 
     /// <summary>Converts to the Application-layer <see cref="ErrorOr{T}"/> type.</summary>
+    /// <param name="result"></param>
     public static implicit operator ErrorOr<T>(DomainResult<T> result) =>
         result.IsError ? result.Error.ToError() : result.Value!;
 }

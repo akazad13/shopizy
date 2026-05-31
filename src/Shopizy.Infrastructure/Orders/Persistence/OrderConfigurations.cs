@@ -38,6 +38,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
             pb =>
             {
                 pb.Property(p => p.Amount).HasPrecision(18, 2);
+                pb.Property(p => p.Currency).HasConversion<string>();
             }
         );
         builder.OwnsOne(
@@ -91,6 +92,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                     pb =>
                     {
                         pb.Property(p => p.Amount).HasPrecision(18, 2);
+                        pb.Property(p => p.Currency).HasConversion<int>();
                     }
                 );
             }
@@ -98,8 +100,7 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.Navigation(p => p.OrderItems).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
-    private static void ConfigureShipmentTable(EntityTypeBuilder<Order> builder)
-    {
+    private static void ConfigureShipmentTable(EntityTypeBuilder<Order> builder) =>
         builder.OwnsOne(
             o => o.Shipment,
             sb =>
@@ -118,5 +119,4 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                 sb.Property(s => s.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
             }
         );
-    }
 }

@@ -11,6 +11,9 @@ namespace Shopizy.Application.Auth.Commands.Register;
 /// <summary>
 /// Handles the <see cref="RegisterCommand"/> to create a new user account.
 /// </summary>
+/// <param name="userRepository"></param>
+/// <param name="passwordManager"></param>
+/// <param name="permissionLookup"></param>
 public class RegisterCommandHandler(
     IUserRepository userRepository,
     IPasswordManager passwordManager,

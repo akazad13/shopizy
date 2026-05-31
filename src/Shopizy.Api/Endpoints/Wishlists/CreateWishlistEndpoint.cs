@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Wishlists;
 
 public class CreateWishlistEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/users/{userId:guid}/wishlist",
                 async (
@@ -52,5 +51,4 @@ public class CreateWishlistEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

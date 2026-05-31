@@ -12,8 +12,7 @@ namespace Shopizy.Api.Endpoints.Users;
 
 public class UpdatePasswordEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPatch(
                 "api/v1.0/users/{userId:guid}/password",
                 async (
@@ -49,5 +48,4 @@ public class UpdatePasswordEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.AuditLogs;
 
 public class GetAuditLogsEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapGet(
                 "api/v1.0/admin/audit-logs",
                 async (
@@ -42,5 +41,4 @@ public class GetAuditLogsEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status403Forbidden)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }

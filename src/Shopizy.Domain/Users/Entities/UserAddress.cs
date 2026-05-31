@@ -11,7 +11,7 @@ public sealed class UserAddress : Entity<UserAddressId>
     public string Country { get; private set; } = null!;
     public string ZipCode { get; private set; } = null!;
     public bool IsDefault { get; private set; }
-    public DateTime CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; }
     public DateTime? ModifiedOn { get; private set; }
 
     public static UserAddress Create(
@@ -21,18 +21,7 @@ public sealed class UserAddress : Entity<UserAddressId>
         string country,
         string zipCode,
         bool isDefault
-    )
-    {
-        return new UserAddress(
-            UserAddressId.CreateUnique(),
-            street,
-            city,
-            state,
-            country,
-            zipCode,
-            isDefault
-        );
-    }
+    ) => new(UserAddressId.CreateUnique(), street, city, state, country, zipCode, isDefault);
 
     public void Update(string street, string city, string state, string country, string zipCode)
     {
@@ -43,10 +32,7 @@ public sealed class UserAddress : Entity<UserAddressId>
         ZipCode = zipCode;
     }
 
-    public void SetDefault(bool isDefault)
-    {
-        IsDefault = isDefault;
-    }
+    public void SetDefault(bool isDefault) => IsDefault = isDefault;
 
     private UserAddress(
         UserAddressId id,

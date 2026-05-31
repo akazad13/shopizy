@@ -11,15 +11,9 @@ public sealed class CategoryId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static CategoryId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static CategoryId CreateUnique() => new(Guid.NewGuid());
 
-    public static CategoryId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static CategoryId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

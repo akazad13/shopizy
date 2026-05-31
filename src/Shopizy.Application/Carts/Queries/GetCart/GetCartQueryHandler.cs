@@ -10,6 +10,7 @@ namespace Shopizy.Application.Carts.Queries.GetCart;
 /// <summary>
 /// Handles the <see cref="GetCartQuery"/> to retrieve a user's shopping cart.
 /// </summary>
+/// <param name="cartRepository"></param>
 public class GetCartQueryHandler(ICartRepository cartRepository)
     : IQueryHandler<GetCartQuery, ErrorOr<Cart>>
 {

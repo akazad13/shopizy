@@ -11,15 +11,9 @@ public sealed class WishlistItemId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static WishlistItemId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static WishlistItemId CreateUnique() => new(Guid.NewGuid());
 
-    public static WishlistItemId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static WishlistItemId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

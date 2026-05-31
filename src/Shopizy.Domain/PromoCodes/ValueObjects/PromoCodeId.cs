@@ -11,15 +11,9 @@ public sealed class PromoCodeId : AggregateRootId<Guid>
         Value = value;
     }
 
-    public static PromoCodeId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
+    public static PromoCodeId CreateUnique() => new(Guid.NewGuid());
 
-    public static PromoCodeId Create(Guid value)
-    {
-        return new(value);
-    }
+    public static PromoCodeId Create(Guid value) => new(value);
 
     public override IEnumerable<object> GetEqualityComponents()
     {

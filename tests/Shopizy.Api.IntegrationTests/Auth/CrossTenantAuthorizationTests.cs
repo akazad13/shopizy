@@ -1,7 +1,5 @@
 using System.Net;
-using System.Net.Http.Headers;
 using Shopizy.Contracts.Category;
-using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Order;
 using Shopizy.Contracts.Product;
 using Shouldly;
@@ -12,6 +10,7 @@ namespace Shopizy.Api.IntegrationTests.Auth;
 /// <summary>
 /// Asserts users cannot access another user's resources via path-bound user IDs.
 /// </summary>
+/// <param name="factory"></param>
 public class CrossTenantAuthorizationTests(IntegrationTestWebAppFactory factory)
     : BaseIntegrationTest(factory)
 {

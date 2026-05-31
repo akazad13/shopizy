@@ -8,6 +8,8 @@ namespace Shopizy.Infrastructure.Services;
 /// Runs pending EF Core migrations once at startup. Using a hosted service keeps the entry point
 /// free of scope plumbing and lets the host log/abort cleanly if migrations fail.
 /// </summary>
+/// <param name="scopeFactory"></param>
+/// <param name="hostEnvironment"></param>
 [ExcludeFromCodeCoverage]
 public sealed class DbMigrationsHostedService(
     IServiceScopeFactory scopeFactory,

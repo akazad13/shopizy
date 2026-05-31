@@ -5,8 +5,5 @@ namespace Shopizy.Application.UnitTests.Products.TestUtils;
 
 public static class GetProductQueryUtils
 {
-    public static GetProductQuery CreateQuery()
-    {
-        return new GetProductQuery(Constants.Product.Id.Value);
-    }
+    public static GetProductQuery CreateQuery() => new(Constants.Product.Id.Value);
 }

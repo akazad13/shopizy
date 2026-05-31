@@ -10,8 +10,7 @@ namespace Shopizy.Api.Endpoints.Auth;
 
 public class RefreshTokenEndpoint : ApiEndpoint
 {
-    public override void MapEndpoint(IEndpointRouteBuilder app)
-    {
+    public override void MapEndpoint(IEndpointRouteBuilder app) =>
         app.MapPost(
                 "api/v1.0/auth/refresh",
                 async (
@@ -42,5 +41,4 @@ public class RefreshTokenEndpoint : ApiEndpoint
             .Produces<ErrorResult>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ErrorResult>(StatusCodes.Status500InternalServerError);
-    }
 }
