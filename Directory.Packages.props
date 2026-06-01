@@ -51,7 +51,7 @@
     <PackageVersion Include="StackExchange.Redis" Version="2.13.1" />
     <PackageVersion Include="Stripe.net" Version="51.1.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.7" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.7" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="10.2.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.11.0" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
