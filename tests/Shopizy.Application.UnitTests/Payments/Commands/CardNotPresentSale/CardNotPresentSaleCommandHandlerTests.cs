@@ -55,6 +55,113 @@ public class CardNotPresentSaleCommandHandlerTests
     }
 
     [Fact]
+    public async Task Handle_WhenUserNotFound_ShouldReturnUserNotFoundError()
+    {
+        // Arrange
+        var command = CreateCommand();
+        var order = OrderFactory.CreateOrder();
+
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+            .ReturnsAsync(order);
+        _mockUserRepository
+            .Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>()))
+            .ReturnsAsync((Shopizy.Domain.Users.User?)null);
+
+        // Act
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        result.IsError.ShouldBeTrue();
+        result.FirstError.ShouldBe(CustomErrors.User.UserNotFound);
+        _mockPaymentService.Verify(
+            s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task Handle_WhenUserHasNoCustomerIdAndCreateCustomerFails_ShouldReturnError()
+    {
+        // Arrange
+        var command = CreateCommand();
+        var order = OrderFactory.CreateOrder();
+        var user = UserFactory.CreateUser(); // CustomerId is null by default
+
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+            .ReturnsAsync(order);
+        _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockPaymentService
+            .Setup(s =>
+                s.CreateCustomer(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
+            .ReturnsAsync(Error.Failure("customer.create_failed", "Failed to create customer."));
+
+        // Act
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        result.IsError.ShouldBeTrue();
+        result.FirstError.ShouldBe(CustomErrors.Payment.CustomerNotCreated);
+        _mockPaymentService.Verify(
+            s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task Handle_WhenUserHasNoCustomerIdAndCreateCustomerSucceeds_ShouldProceedWithSale()
+    {
+        // Arrange
+        var command = CreateCommand();
+        var order = OrderFactory.CreateOrder();
+        var user = UserFactory.CreateUser(); // CustomerId is null by default
+
+        _mockOrderRepository
+            .Setup(r => r.GetOrderByIdAsync(It.IsAny<OrderId>()))
+            .ReturnsAsync(order);
+        _mockUserRepository.Setup(r => r.GetUserByIdAsync(It.IsAny<UserId>())).ReturnsAsync(user);
+        _mockPaymentService
+            .Setup(s =>
+                s.CreateCustomer(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
+            .ReturnsAsync(
+                new CustomerResource("cus_new_123", user.Email, $"{user.FirstName} {user.LastName}")
+            );
+        _mockPaymentService
+            .Setup(s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()))
+            .ReturnsAsync(new CreateSaleResponse { ChargeId = "ch_new_456" });
+
+        // Act
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        result.IsError.ShouldBeFalse();
+        _mockPaymentService.Verify(
+            s =>
+                s.CreateCustomer(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()
+                ),
+            Times.Once
+        );
+        _mockPaymentService.Verify(
+            s => s.CreateSaleAsync(It.IsAny<CreateSaleRequest>()),
+            Times.Once
+        );
+    }
+
+    [Fact]
     public async Task Handle_WhenPaymentServiceFails_ShouldReturnError()
     {
         // Arrange
