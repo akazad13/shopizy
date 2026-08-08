@@ -89,4 +89,104 @@ public class UserTests
         // Assert
         user.Role.ShouldBe(UserRole.Admin);
     }
+
+    [Fact]
+    public void UpdatePhoneAndProfileImageUrlAndCustomerId_ShouldUpdateFields()
+    {
+        // Arrange
+        var user = User.Create("U", "U", "e@e.com", "pass", UserRole.Customer, []);
+
+        // Act
+        user.UpdatePhone("1234567890");
+        user.UpdateProfileImageUrl("https://example.com/img.png");
+        user.UpdateCustomerId("cus_123");
+
+        // Assert
+        user.Phone.ShouldBe("1234567890");
+        user.ProfileImageUrl.ShouldBe("https://example.com/img.png");
+        user.CustomerId.ShouldBe("cus_123");
+    }
+
+    [Fact]
+    public void AddressBook_AddUpdateRemoveSetDefault_ShouldManageAddressesCorrectly()
+    {
+        // Arrange
+        var user = User.Create("U", "U", "e@e.com", "pass", UserRole.Customer, []);
+
+        // Act - Add address
+        var addr1 = user.AddAddress("Main St", "City1", "State1", "Country1", "10001", true);
+        var addr2 = user.AddAddress("Second St", "City2", "State2", "Country2", "10002", false);
+
+        // Assert
+        user.Addresses.Count.ShouldBe(2);
+        addr1.IsDefault.ShouldBeTrue();
+        addr2.IsDefault.ShouldBeFalse();
+
+        // Act - SetDefault
+        user.SetDefaultAddress(addr2.Id);
+        addr1.IsDefault.ShouldBeFalse();
+        addr2.IsDefault.ShouldBeTrue();
+
+        // Act - UpdateAddress
+        var updateResult = user.UpdateAddress(
+            addr2.Id,
+            "Updated St",
+            "City2",
+            "State2",
+            "Country2",
+            "10002"
+        );
+        updateResult.IsError.ShouldBeFalse();
+        addr2.Street.ShouldBe("Updated St");
+
+        // Act - RemoveAddress
+        var removeResult = user.RemoveAddress(addr1.Id);
+        removeResult.IsError.ShouldBeFalse();
+        user.Addresses.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void PasswordResetToken_SetValidateClear_ShouldBehaveCorrectly()
+    {
+        // Arrange
+        var user = User.Create("U", "U", "e@e.com", "pass", UserRole.Customer, []);
+        var token = "token123";
+        var expiry = DateTime.UtcNow.AddHours(1);
+
+        // Act
+        user.SetPasswordResetToken(token, expiry);
+
+        // Assert
+        user.PasswordResetToken.ShouldBe(token);
+        user.PasswordResetTokenExpiry.ShouldBe(expiry);
+        user.IsPasswordResetTokenValid(token).ShouldBeTrue();
+        user.IsPasswordResetTokenValid("wrongtoken").ShouldBeFalse();
+
+        // Clear
+        user.ClearPasswordResetToken();
+        user.PasswordResetToken.ShouldBeNull();
+        user.PasswordResetTokenExpiry.ShouldBeNull();
+    }
+
+    [Fact]
+    public void TwoFactor_EnableConfirmDisable_ShouldManage2FAState()
+    {
+        // Arrange
+        var user = User.Create("U", "U", "e@e.com", "pass", UserRole.Customer, []);
+
+        // Enable
+        var secret = user.EnableTwoFactor();
+        secret.ShouldNotBeNullOrEmpty();
+        user.TwoFactorSecret.ShouldBe(secret);
+        user.IsTwoFactorEnabled.ShouldBeFalse(); // Pending confirmation
+
+        // Confirm
+        user.ConfirmTwoFactor();
+        user.IsTwoFactorEnabled.ShouldBeTrue();
+
+        // Disable
+        user.DisableTwoFactor();
+        user.IsTwoFactorEnabled.ShouldBeFalse();
+        user.TwoFactorSecret.ShouldBeNull();
+    }
 }
