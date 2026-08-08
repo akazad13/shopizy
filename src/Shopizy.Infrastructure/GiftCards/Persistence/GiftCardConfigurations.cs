@@ -36,7 +36,7 @@ public sealed class GiftCardConfigurations : IEntityTypeConfiguration<GiftCard>
         builder
             .Property(gc => gc.RedeemedByUserId)
             .HasConversion(
-                id => id == null ? (Guid?)null : id.Value,
+                id => (object?)id == null ? (Guid?)null : id.Value,
                 value => value.HasValue ? UserId.Create(value.Value) : null
             )
             .IsRequired(false);

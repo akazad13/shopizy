@@ -45,5 +45,7 @@ public sealed class Customer : AggregateRoot<CustomerId, Guid>, IAuditable
         Address = address;
     }
 
+#pragma warning disable CS8618 // EF Core parameterless constructor
     private Customer() { }
+#pragma warning restore CS8618
 }

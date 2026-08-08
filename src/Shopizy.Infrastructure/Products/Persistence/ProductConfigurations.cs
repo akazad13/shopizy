@@ -37,7 +37,7 @@ public sealed class ProductConfigurations : IEntityTypeConfiguration<Product>
         builder
             .Property(p => p.BrandId)
             .HasConversion(
-                id => id == null ? (Guid?)null : id.Value,
+                id => (object?)id == null ? (Guid?)null : id.Value,
                 value => value.HasValue ? BrandId.Create(value.Value) : null
             )
             .IsRequired(false);

@@ -36,7 +36,7 @@ public class ProductQuestionMappingConfig : IRegister
             .Map(dest => dest.QuestionId, src => src.Id.Value)
             .Map(dest => dest.Question, src => src.Question)
             .Map(dest => dest.IsAnswered, src => src.IsAnswered)
-            .Map(dest => dest.Answer, src => src.Answer != null ? src.Answer.Answer : null)
+            .Map(dest => dest.Answer, src => (object?)src.Answer != null ? src.Answer.Answer : null)
             .Map(dest => dest.CreatedOn, src => src.CreatedOn);
 #pragma warning restore CS8625
     }

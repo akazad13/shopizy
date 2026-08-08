@@ -91,7 +91,10 @@ public class ProductMappingConfig : IRegister
             .NewConfig<Product, ProductResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value)
             .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
-            .Map(dest => dest.BrandId, src => src.BrandId == null ? (Guid?)null : src.BrandId.Value)
+            .Map(
+                dest => dest.BrandId,
+                src => (object?)src.BrandId == null ? (Guid?)null : src.BrandId.Value
+            )
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
 
         config
@@ -99,7 +102,10 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ProductId, src => src.Id.Value)
             .Map(dest => dest.CategoryId, src => src.CategoryId.Value)
             .Map(dest => dest.Sku, src => src.SKU)
-            .Map(dest => dest.BrandId, src => src.BrandId == null ? (Guid?)null : src.BrandId.Value)
+            .Map(
+                dest => dest.BrandId,
+                src => (object?)src.BrandId == null ? (Guid?)null : src.BrandId.Value
+            )
             .Map(dest => dest.Price, src => src.UnitPrice.Amount.ToString());
 #pragma warning restore CS8625
 

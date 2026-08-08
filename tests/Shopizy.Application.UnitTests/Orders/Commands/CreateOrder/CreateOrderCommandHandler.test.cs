@@ -5,6 +5,7 @@ using Shopizy.Application.UnitTests.Orders.TestUtils;
 using Shopizy.Application.UnitTests.Products.TestUtils;
 using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
+using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
 
 namespace Shopizy.Application.UnitTests.Orders.Commands.CreateOrder;
@@ -63,7 +64,7 @@ public class CreateOrderCommandHandlerTests
 
         _mockProductRepository
             .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IReadOnlyList<ProductId>>()))
-            .ReturnsAsync(() => null);
+            .ReturnsAsync((IReadOnlyList<Product>)null!);
 
         // Act
         var result = await _sut.Handle(command, TestContext.Current.CancellationToken);

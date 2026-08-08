@@ -79,5 +79,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
         UserId = userId;
     }
 
+#pragma warning disable CS8618 // EF Core parameterless constructor
     private Cart() { }
+#pragma warning restore CS8618
 }

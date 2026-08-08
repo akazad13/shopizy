@@ -57,8 +57,8 @@ public class CategoriesTreeQueryHandlerTests
         result.Value.Count.ShouldBe(2);
 
         var root1Node = result.Value.First(x => x.Id == root1.Id.Value);
-        root1Node.Children.Count.ShouldBe(1);
-        root1Node.Children[0].Id.ShouldBe(sub1.Id.Value);
+        root1Node.Children!.Count.ShouldBe(1);
+        root1Node.Children![0].Id.ShouldBe(sub1.Id.Value);
 
         var root2Node = result.Value.First(x => x.Id == root2.Id.Value);
         root2Node.Children.ShouldBeEmpty();
@@ -84,8 +84,8 @@ public class CategoriesTreeQueryHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         result.Value.Count.ShouldBe(1);
-        result.Value[0].Children.Count.ShouldBe(1);
-        result.Value[0].Children[0].Children.Count.ShouldBe(1);
-        result.Value[0].Children[0].Children[0].Id.ShouldBe(level2.Id.Value);
+        result.Value[0].Children!.Count.ShouldBe(1);
+        result.Value[0].Children![0].Children!.Count.ShouldBe(1);
+        result.Value[0].Children![0].Children![0].Id.ShouldBe(level2.Id.Value);
     }
 }

@@ -77,7 +77,7 @@ public class LoginQueryHandlerTests
         var user = User.Create("John", "Doe", "test@test.com", "password", UserRole.Customer, []);
 
         _mockUserRepository.Setup(r => r.GetUserByEmailAsync(query.Email)).ReturnsAsync(user);
-        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password)).Returns(false);
+        _mockPasswordManager.Setup(p => p.Verify(query.Password, user.Password!)).Returns(false);
 
         // Act
         var result = await _handler.Handle(query, TestContext.Current.CancellationToken);

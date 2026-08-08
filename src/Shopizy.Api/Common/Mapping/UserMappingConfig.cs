@@ -48,7 +48,7 @@ public class UserMappingConfig : IRegister
             .Map(
                 dest => dest.Address,
                 src =>
-                    src.Address == null
+                    (object?)src.Address == null
                         ? null
                         : new Address(
                             src.Address.Street,

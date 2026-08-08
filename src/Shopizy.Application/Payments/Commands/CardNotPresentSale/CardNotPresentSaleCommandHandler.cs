@@ -76,7 +76,7 @@ public class CardNotPresentSaleCommandHandler(
 
         var req = new CreateSaleRequest()
         {
-            CustomerId = user.CustomerId,
+            CustomerId = user.CustomerId!,
             PaymentMethodId = request.PaymentMethodId,
             Amount = (long)(total.Amount * 100),
             Currency = request.Currency,

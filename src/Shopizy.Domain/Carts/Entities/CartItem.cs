@@ -33,5 +33,7 @@ public sealed class CartItem : Entity<CartItemId>
         Quantity = quantity;
     }
 
+#pragma warning disable CS8618 // EF Core parameterless constructor
     private CartItem() { }
+#pragma warning restore CS8618
 }
