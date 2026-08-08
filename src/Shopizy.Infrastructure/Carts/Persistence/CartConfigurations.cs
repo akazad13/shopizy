@@ -55,8 +55,8 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
 
-                ci.Property(oi => oi.Color).HasMaxLength(10).IsRequired(false);
-                ci.Property(oi => oi.Size).HasMaxLength(5).IsRequired(false);
+                ci.Property(oi => oi.Color).HasMaxLength(50).IsRequired(false);
+                ci.Property(oi => oi.Size).HasMaxLength(20).IsRequired(false);
 
                 ci.HasIndex(li => li.ProductId);
                 ci.HasOne(li => li.Product)

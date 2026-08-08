@@ -89,6 +89,11 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory)
             addToCartRequest,
             TestContext.Current.CancellationToken
         );
+        if (addToCartResponse.StatusCode != HttpStatusCode.OK)
+        {
+            var content = await addToCartResponse.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to add to cart: {content}");
+        }
         addToCartResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // 5. User Journey: Review Cart

@@ -113,42 +113,31 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             var passwordManager =
                 scope.ServiceProvider.GetRequiredService<Shopizy.Application.Common.Interfaces.Authentication.IPasswordManager>();
 
-            var existingUser = (
-                await dbContext.Users.FindAsync(
-                    [UserId.Create(adminId)],
-                    TestContext.Current.CancellationToken
-                )
+            var existingUser = await dbContext.Users.FindAsync(
+                new object[] { UserId.Create(adminId) },
+                TestContext.Current.CancellationToken
             );
             if (existingUser is null)
             {
                 var allPermissionIds = await dbContext.Permissions.Select(p => p.Id).ToListAsync();
 
                 var hashedPassword = passwordManager.CreateHashString(password);
-                var constructor = typeof(User).GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance,
-                    null,
-                    [
-                        typeof(UserId),
-                        typeof(string),
-                        typeof(string),
-                        typeof(string),
-                        typeof(string),
-                        typeof(UserRole),
-                        typeof(IList<PermissionId>),
-                    ],
-                    null
-                );
 
-                var user = (User)
-                    constructor!.Invoke([
-                        UserId.Create(adminId),
-                        "System",
-                        "Admin",
-                        email,
-                        hashedPassword,
-                        UserRole.Admin,
-                        allPermissionIds,
-                    ]);
+                // Create user using the domain factory method and then set the Id to the deterministic adminId
+                var user = User.Create(
+                    "System",
+                    "Admin",
+                    email,
+                    hashedPassword,
+                    UserRole.Admin,
+                    allPermissionIds
+                );
+                var idProperty = typeof(User).GetProperty(
+                    "Id",
+                    BindingFlags.Public | BindingFlags.Instance
+                );
+                idProperty!.SetValue(user, UserId.Create(adminId));
+
                 dbContext.Users.Add(user);
                 dbContext.Carts.Add(Cart.Create(user.Id));
                 await dbContext.SaveChangesAsync();

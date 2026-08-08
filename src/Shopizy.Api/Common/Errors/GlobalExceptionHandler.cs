@@ -9,9 +9,13 @@ using Shopizy.SharedKernel.Application.Logging;
 namespace Shopizy.Api.Common.Errors;
 
 [ExcludeFromCodeCoverage]
-public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+public class GlobalExceptionHandler(
+    ILogger<GlobalExceptionHandler> logger,
+    IHostEnvironment? env = null
+) : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger = logger;
+    private readonly IHostEnvironment? _env = env;
 
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -47,6 +51,12 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         if (problem.Errors is not null)
         {
             details.Extensions["errors"] = problem.Errors;
+        }
+
+        // During integration tests expose sanitized exception message to aid debugging
+        if (_env?.IsEnvironment("Testing") == true)
+        {
+            details.Extensions["internalException"] = LogSanitizer.Sanitize(exception.Message);
         }
 
         await httpContext.Response.WriteAsJsonAsync(details, cancellationToken);

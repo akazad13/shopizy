@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Domain.AuditLogs;
@@ -143,13 +144,19 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     /// <param name="domainEvents"></param>
     private List<OutboxMessage> WriteEventsToOutbox(List<IDomainEvent> domainEvents)
     {
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+
         var messages = domainEvents
             .Select(e => new OutboxMessage
             {
                 Id = Guid.NewGuid(),
                 OccurredOn = DateTime.UtcNow,
                 Type = e.GetType().AssemblyQualifiedName!,
-                Content = JsonSerializer.Serialize(e, e.GetType()),
+                Content = JsonSerializer.Serialize(e, e.GetType(), options),
             })
             .ToList();
 

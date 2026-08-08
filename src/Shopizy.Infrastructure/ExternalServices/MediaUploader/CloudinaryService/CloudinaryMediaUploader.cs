@@ -9,7 +9,7 @@ namespace Shopizy.Infrastructure.ExternalServices.MediaUploader.CloudinaryServic
 
 public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
 {
-    private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+    private const long s_maxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
 
     private readonly ICloudinary _cloudinary = cloudinary;
 
@@ -23,10 +23,10 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
             return ErrorOr.Error.Failure(description: "File not found!");
         }
 
-        if (file.Length > MaxFileSizeBytes)
+        if (file.Length > s_maxFileSizeBytes)
         {
             return ErrorOr.Error.Failure(
-                description: $"File size exceeds the maximum allowed size of {MaxFileSizeBytes / (1024 * 1024)} MB."
+                description: $"File size exceeds the maximum allowed size of {s_maxFileSizeBytes / (1024 * 1024)} MB."
             );
         }
 

@@ -86,8 +86,8 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
                 ib.Property(oi => oi.PictureUrl).IsRequired(false);
                 ib.Property(oi => oi.Quantity);
                 ib.Property(oi => oi.Discount).HasPrecision(18, 2);
-                ib.Property(oi => oi.Color).HasMaxLength(10).IsRequired(false);
-                ib.Property(oi => oi.Size).HasMaxLength(5).IsRequired(false);
+                ib.Property(oi => oi.Color).HasMaxLength(50).IsRequired(false);
+                ib.Property(oi => oi.Size).HasMaxLength(20).IsRequired(false);
 
                 ib.OwnsOne(
                     oi => oi.UnitPrice,

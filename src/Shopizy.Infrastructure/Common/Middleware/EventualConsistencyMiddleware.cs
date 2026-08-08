@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -51,7 +52,7 @@ public class EventualConsistencyMiddleware(
                 // Dispatch domain events INSIDE the transaction so handler side-effects
                 // commit atomically with the original aggregate change. A handler that throws
                 // aborts the whole request; OutboxMessages roll back with the rest.
-                await DispatchPendingEventsAsync(context, dispatcher, dbContext);
+                await dispatchPendingEventsAsync(context, dispatcher, dbContext);
 
                 await transaction.CommitAsync();
                 await transaction.DisposeAsync();
@@ -63,7 +64,7 @@ public class EventualConsistencyMiddleware(
         }
     }
 
-    private async Task DispatchPendingEventsAsync(
+    private async Task dispatchPendingEventsAsync(
         HttpContext context,
         IDispatcher dispatcher,
         AppDbContext dbContext
@@ -92,7 +93,12 @@ public class EventualConsistencyMiddleware(
                 // so the caller sees a 500 and there is no phantom write. Dead-letter alerting is
                 // surfaced by OutboxProcessor for any pre-existing rows that survive a crash.
                 var eventType = nextEvent.GetType().Name;
-                var payload = JsonSerializer.Serialize(nextEvent, nextEvent.GetType());
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                };
+                var payload = JsonSerializer.Serialize(nextEvent, nextEvent.GetType(), options);
                 _logger.DomainEventPublishingError(ex);
                 _logger.DomainEventDeadLettered(eventType, payload);
                 throw;

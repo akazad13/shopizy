@@ -15,12 +15,12 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
     private static readonly ConcurrentDictionary<
         (Type MessageType, Type ResponseType),
         (Type HandlerType, MethodInfo Method)
-    > _cache = new();
+    > s_cache = new();
 
     public async Task SendAsync(ICommand command, CancellationToken cancellationToken = default)
     {
         Type commandType = command.GetType();
-        var (handlerType, method) = _cache.GetOrAdd(
+        var (handlerType, method) = s_cache.GetOrAdd(
             (commandType, typeof(void)),
             static k =>
             {
@@ -46,7 +46,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
     )
     {
         Type commandType = command.GetType();
-        var (handlerType, method) = _cache.GetOrAdd(
+        var (handlerType, method) = s_cache.GetOrAdd(
             (commandType, typeof(TResponse)),
             static k =>
             {
@@ -74,7 +74,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
     )
     {
         Type queryType = query.GetType();
-        var (handlerType, method) = _cache.GetOrAdd(
+        var (handlerType, method) = s_cache.GetOrAdd(
             (queryType, typeof(TResponse)),
             static k =>
             {
@@ -118,7 +118,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider) : IDispatcher
         where TEvent : IDomainEvent
     {
         Type eventType = domainEvent.GetType();
-        var (handlerType, method) = _cache.GetOrAdd(
+        var (handlerType, method) = s_cache.GetOrAdd(
             (eventType, typeof(void)),
             static k =>
             {
