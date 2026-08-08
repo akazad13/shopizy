@@ -1,4 +1,5 @@
 using Shopizy.Domain.Customers;
+using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shouldly;
 using Xunit;
@@ -40,5 +41,13 @@ public class CustomerTests
 
         // Assert
         customer.Address.ShouldBe(newAddress);
+    }
+
+    [Fact]
+    public void CustomerId_Create_ShouldInitializeWithValue()
+    {
+        var rawGuid = Guid.NewGuid();
+        var id = CustomerId.Create(rawGuid);
+        id.Value.ShouldBe(rawGuid);
     }
 }
