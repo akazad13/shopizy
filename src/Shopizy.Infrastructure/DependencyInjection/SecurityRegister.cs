@@ -64,6 +64,7 @@ public static class SecurityRegister
             .AddPolicy("User.Modify", policy => policy.RequireClaim(claimName, "modify:user"))
             .AddPolicy("Admin", policy => policy.RequireRole(adminRole))
             .AddPolicy("Admin.View", policy => policy.RequireRole(adminRole))
+            .AddPolicy("Admin.Reports", policy => policy.RequireRole(adminRole))
             .AddPolicy("Admin.ViewOrder", policy => policy.RequireRole(adminRole))
             .AddPolicy("Admin.ViewOrders", policy => policy.RequireRole(adminRole))
             .AddPolicy("Admin.ViewUsers", policy => policy.RequireRole(adminRole))

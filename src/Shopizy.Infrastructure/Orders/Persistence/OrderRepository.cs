@@ -84,35 +84,56 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
         return query.CountAsync();
     }
 
-    public async Task<decimal> GetTotalRevenueAsync() =>
-        await _dbContext
-            .Orders.AsSingleQuery()
+    public async Task<decimal> GetTotalRevenueAsync()
+    {
+        var items = await _dbContext
+            .Orders.AsNoTracking()
             .SelectMany(o => o.OrderItems)
-            .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
+            .Select(i => new { i.UnitPrice.Amount, i.Quantity })
+            .ToListAsync();
+
+        return items.Sum(i => i.Amount * i.Quantity);
+    }
 
     public Task<int> GetOrdersCountByPeriodAsync(DateTime start, DateTime end) =>
         _dbContext.Orders.Where(o => o.CreatedOn >= start && o.CreatedOn <= end).CountAsync();
 
-    public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end) =>
-        await _dbContext
-            .Orders.AsSingleQuery()
+    public async Task<decimal> GetRevenueByPeriodAsync(DateTime start, DateTime end)
+    {
+        var items = await _dbContext
+            .Orders.AsNoTracking()
             .Where(o => o.CreatedOn >= start && o.CreatedOn <= end)
             .SelectMany(o => o.OrderItems)
-            .SumAsync(i => i.UnitPrice.Amount * i.Quantity);
+            .Select(i => new { i.UnitPrice.Amount, i.Quantity })
+            .ToListAsync();
 
-    public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count) =>
-        await _dbContext
-            .Orders.AsSingleQuery()
+        return items.Sum(i => i.Amount * i.Quantity);
+    }
+
+    public async Task<IReadOnlyList<TopProductDto>> GetTopProductsByRevenueAsync(int count)
+    {
+        var items = await _dbContext
+            .Orders.AsNoTracking()
             .SelectMany(o => o.OrderItems)
-            .GroupBy(item => item.Name)
+            .Select(i => new
+            {
+                i.Name,
+                i.Quantity,
+                Amount = i.UnitPrice.Amount,
+            })
+            .ToListAsync();
+
+        return items
+            .GroupBy(i => i.Name)
             .Select(g => new TopProductDto(
                 g.Key,
-                g.Sum(item => item.Quantity),
-                g.Sum(item => item.UnitPrice.Amount * item.Quantity)
+                g.Sum(i => i.Quantity),
+                g.Sum(i => i.Amount * i.Quantity)
             ))
             .OrderByDescending(p => p.Revenue)
             .Take(count)
-            .ToListAsync();
+            .ToList();
+    }
 
     public async Task<IReadOnlyList<TopCustomerDto>> GetTopCustomersBySpendAsync(int count)
     {
