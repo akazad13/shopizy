@@ -7,6 +7,16 @@ public sealed class CorrelationIdMiddleware(
 {
     public const string HeaderName = "X-Correlation-ID";
 
+    private static string SanitizeForLog(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Replace("\r", string.Empty).Replace("\n", string.Empty);
+    }
+
     public async Task InvokeAsync(HttpContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -14,7 +24,7 @@ public sealed class CorrelationIdMiddleware(
         var correlationId =
             context.Request.Headers.TryGetValue(HeaderName, out var incoming)
             && !string.IsNullOrWhiteSpace(incoming)
-                ? incoming.ToString()
+                ? SanitizeForLog(incoming.ToString())
                 : Guid.NewGuid().ToString("N");
 
         context.TraceIdentifier = correlationId;
@@ -29,9 +39,9 @@ public sealed class CorrelationIdMiddleware(
             {
                 ["CorrelationId"] = correlationId,
                 ["RequestPath"] = context.Request.Path.HasValue
-                    ? context.Request.Path.Value!
+                    ? SanitizeForLog(context.Request.Path.Value!)
                     : string.Empty,
-                ["RequestMethod"] = context.Request.Method,
+                ["RequestMethod"] = SanitizeForLog(context.Request.Method),
             }
         );
 
