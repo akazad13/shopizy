@@ -29,4 +29,6 @@ public class WishlistRepository(AppDbContext dbContext) : IWishlistRepository
         await dbContext.Wishlists.AddAsync(wishlist, cancellationToken);
 
     public void Update(Wishlist wishlist) => dbContext.Update(wishlist);
+
+    public void Remove(Wishlist wishlist) => dbContext.Wishlists.Remove(wishlist);
 }

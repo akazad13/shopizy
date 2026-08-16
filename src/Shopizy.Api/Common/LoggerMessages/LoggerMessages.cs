@@ -328,6 +328,13 @@ public static partial class LoggerMessages
     public static partial void WishlistUpdateError(this ILogger logger, Exception ex);
 
     [LoggerMessage(
+        EventId = 1045,
+        Level = LogLevel.Error,
+        Message = "An error occurred while deleting wishlist."
+    )]
+    public static partial void WishlistDeleteError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
         EventId = 1028,
         Level = LogLevel.Error,
         Message = "An error occurred while fetching dashboard metrics."

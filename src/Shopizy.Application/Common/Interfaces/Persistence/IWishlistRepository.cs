@@ -13,4 +13,5 @@ public interface IWishlistRepository
     );
     Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken);
     void Update(Wishlist wishlist);
+    void Remove(Wishlist wishlist);
 }

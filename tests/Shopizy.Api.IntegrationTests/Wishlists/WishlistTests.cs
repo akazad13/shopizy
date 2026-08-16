@@ -300,4 +300,91 @@ public class WishlistTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
     }
+
+    [Fact]
+    public async Task DeleteWishlist_WhenAuthenticated_ReturnsNoContent()
+    {
+        // Arrange
+        var (_, userId) = await AuthenticateAsNewUserAsync("WishDel", "User");
+        await HttpClient.PostAsJsonAsync(
+            $"/api/v1.0/users/{userId}/wishlist",
+            new { },
+            TestContext.Current.CancellationToken
+        );
+
+        // Act
+        var response = await HttpClient.DeleteAsync(
+            $"/api/v1.0/users/{userId}/wishlist",
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+
+        // Verify wishlist is gone
+        var getResponse = await HttpClient.GetAsync(
+            $"/api/v1.0/users/{userId}/wishlist",
+            TestContext.Current.CancellationToken
+        );
+        getResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteWishlist_ForAnotherUser_ReturnsForbidden()
+    {
+        // Arrange
+        var (_, user1Id) = await AuthenticateAsNewUserAsync("WishDelA", "User");
+        await HttpClient.PostAsJsonAsync(
+            $"/api/v1.0/users/{user1Id}/wishlist",
+            new { },
+            TestContext.Current.CancellationToken
+        );
+
+        var (_, user2Id) = await AuthenticateAsNewUserAsync("WishDelB", "User");
+
+        // Act
+        var response = await HttpClient.DeleteAsync(
+            $"/api/v1.0/users/{user1Id}/wishlist",
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task RemoveWishlistItem_DirectEndpoint_ReturnsOkWithoutItem()
+    {
+        // Arrange
+        var categoryId = await SetupCategoryAsync("WL Direct Cat");
+        var productId = await SetupProductAsync(categoryId, "WL Direct Product");
+
+        var (_, userId) = await AuthenticateAsNewUserAsync("WishDirRem", "User");
+        await HttpClient.PostAsJsonAsync(
+            $"/api/v1.0/users/{userId}/wishlist",
+            new { },
+            TestContext.Current.CancellationToken
+        );
+
+        // Add item first
+        await HttpClient.PatchAsJsonAsync(
+            $"/api/v1.0/users/{userId}/wishlist",
+            new UpdateWishlistRequest(productId, "Add"),
+            TestContext.Current.CancellationToken
+        );
+
+        // Act — DELETE /api/v1.0/users/{userId}/wishlist/items/{productId}
+        var response = await HttpClient.DeleteAsync(
+            $"/api/v1.0/users/{userId}/wishlist/items/{productId}",
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var wishlist = await response.Content.ReadFromJsonAsync<WishlistResponse>(
+            TestContext.Current.CancellationToken
+        );
+        wishlist.ShouldNotBeNull();
+        wishlist.WishlistItems.ShouldNotContain(i => i.ProductId == productId);
+    }
 }

@@ -60,6 +60,10 @@ public static class SecurityRegister
                 "Wishlist.Modify",
                 policy => policy.RequireClaim(claimName, "modify:wishlist")
             )
+            .AddPolicy(
+                "Wishlist.Delete",
+                policy => policy.RequireClaim(claimName, "delete:wishlist")
+            )
             .AddPolicy("User.Get", policy => policy.RequireClaim(claimName, "get:user"))
             .AddPolicy("User.Modify", policy => policy.RequireClaim(claimName, "modify:user"))
             .AddPolicy("Admin", policy => policy.RequireRole(adminRole))

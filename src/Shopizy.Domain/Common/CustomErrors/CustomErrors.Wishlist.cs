@@ -7,7 +7,7 @@ public static partial class CustomErrors
     public static class Wishlist
     {
         public static DomainError WishlistNotFound =>
-            DomainError.Validation(
+            DomainError.NotFound(
                 code: "Wishlist.WishlistNotFound",
                 description: "Wishlist is not found."
             );
