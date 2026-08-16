@@ -19,6 +19,7 @@ using Shopizy.Infrastructure.ProductQuestions.Persistence;
 using Shopizy.Infrastructure.ProductReviews.Persistence;
 using Shopizy.Infrastructure.Products.Persistence;
 using Shopizy.Infrastructure.PromoCodes.Persistence;
+using Shopizy.Infrastructure.Returns.Persistence;
 using Shopizy.Infrastructure.Services;
 using Shopizy.Infrastructure.Users.Persistence;
 using Shopizy.Infrastructure.Wishlists.Persistence;
@@ -86,7 +87,8 @@ public static class PersistenceRegister
             .AddScoped<ILoyaltyAccountRepository, LoyaltyAccountRepository>()
             .AddScoped<IGiftCardRepository, GiftCardRepository>()
             .AddScoped<IProductQuestionRepository, ProductQuestionRepository>()
-            .AddScoped<IAuditLogRepository, AuditLogRepository>();
+            .AddScoped<IAuditLogRepository, AuditLogRepository>()
+            .AddScoped<IReturnRequestRepository, ReturnRequestRepository>();
 
         return services;
     }

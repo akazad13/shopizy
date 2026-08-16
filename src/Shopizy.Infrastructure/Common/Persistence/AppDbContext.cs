@@ -15,6 +15,7 @@ using Shopizy.Domain.ProductQuestions;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.PromoCodes;
+using Shopizy.Domain.Returns;
 using Shopizy.Domain.Users;
 using Shopizy.Domain.Wishlists;
 using Shopizy.Infrastructure.Common.Middleware;
@@ -108,6 +109,11 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     /// Gets or sets the audit logs DbSet.
     /// </summary>
     public DbSet<AuditLog> AuditLogs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the return requests DbSet.
+    /// </summary>
+    public DbSet<ReturnRequest> ReturnRequests { get; set; }
 
     /// <summary>
     /// Gets or sets the outbox messages DbSet.
