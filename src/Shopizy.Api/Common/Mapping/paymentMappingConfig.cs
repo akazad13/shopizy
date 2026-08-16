@@ -53,5 +53,18 @@ public class PaymentMappingConfig : IRegister
             >()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
+        config
+            .NewConfig<Shopizy.Domain.Payments.Payment, PaymentDto>()
+            .Map(dest => dest.PaymentId, src => src.Id.Value)
+            .Map(dest => dest.OrderId, src => src.OrderId.Value)
+            .Map(dest => dest.UserId, src => src.UserId.Value)
+            .Map(dest => dest.PaymentStatus, src => src.PaymentStatus.ToString())
+            .Map(dest => dest.TotalAmount, src => src.Total.Amount)
+            .Map(dest => dest.Currency, src => src.Total.Currency.ToString())
+            .Map(dest => dest.BillingStreet, src => src.BillingAddress.Street)
+            .Map(dest => dest.BillingCity, src => src.BillingAddress.City)
+            .Map(dest => dest.BillingState, src => src.BillingAddress.State)
+            .Map(dest => dest.BillingCountry, src => src.BillingAddress.Country)
+            .Map(dest => dest.BillingZipCode, src => src.BillingAddress.ZipCode);
     }
 }

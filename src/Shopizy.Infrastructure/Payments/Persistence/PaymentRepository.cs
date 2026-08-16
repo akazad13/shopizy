@@ -3,6 +3,7 @@ using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.Orders.ValueObjects;
 using Shopizy.Domain.Payments;
 using Shopizy.Domain.Payments.ValueObjects;
+using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Infrastructure.Common.Persistence;
 
 namespace Shopizy.Infrastructure.Payments.Persistence;
@@ -32,6 +33,9 @@ public class PaymentRepository(AppDbContext dbContext) : IPaymentRepository
 
     public Task<Payment?> GetPaymentByOrderIdAsync(OrderId orderId) =>
         _dbContext.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
+
+    public async Task<IReadOnlyList<Payment>> GetPaymentsByUserIdAsync(UserId userId) =>
+        await _dbContext.Payments.Where(p => p.UserId == userId).AsNoTracking().ToListAsync();
 
     /// <summary>
     /// Adds a new payment to the database.
