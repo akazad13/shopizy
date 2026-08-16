@@ -4,6 +4,7 @@ using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.ResetPassword;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Users.Commands.ResetPassword;
@@ -12,15 +13,18 @@ public class ResetPasswordCommandHandlerTests
 {
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IPasswordManager> _mockPasswordManager;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly ResetPasswordCommandHandler _handler;
 
     public ResetPasswordCommandHandlerTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
         _mockPasswordManager = new Mock<IPasswordManager>();
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
         _handler = new ResetPasswordCommandHandler(
             _mockUserRepository.Object,
-            _mockPasswordManager.Object
+            _mockPasswordManager.Object,
+            _mockUnitOfWork.Object
         );
     }
 
@@ -83,5 +87,6 @@ public class ResetPasswordCommandHandlerTests
         result.Value.ShouldBe(Result.Success);
         user.Password.ShouldBe("hashed_new_password");
         user.PasswordResetToken.ShouldBeNull();
+        _mockUnitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

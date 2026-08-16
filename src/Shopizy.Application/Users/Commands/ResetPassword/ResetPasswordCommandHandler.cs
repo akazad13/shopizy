@@ -1,13 +1,15 @@
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Authentication;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.ResetPassword;
 
 public class ResetPasswordCommandHandler(
     IUserRepository userRepository,
-    IPasswordManager passwordManager
+    IPasswordManager passwordManager,
+    IUnitOfWork unitOfWork
 ) : ICommandHandler<ResetPasswordCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
@@ -35,6 +37,8 @@ public class ResetPasswordCommandHandler(
         var hashedPassword = passwordManager.CreateHashString(request.NewPassword);
         user.UpdatePassword(hashedPassword);
         user.ClearPasswordResetToken();
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

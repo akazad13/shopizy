@@ -31,7 +31,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         _dbContext.Users.Include(u => u.PermissionIds).SingleOrDefaultAsync(u => u.Id == id);
 
     public Task<User?> GetUserByResetTokenAsync(string token) =>
-        _dbContext.Users.SingleOrDefaultAsync(u => u.PasswordResetToken == token);
+        _dbContext.Users.SingleOrDefaultAsync(u => u.Credentials.PasswordResetToken == token);
 
     public Task<int> GetTotalUsersCountAsync() => _dbContext.Users.CountAsync();
 

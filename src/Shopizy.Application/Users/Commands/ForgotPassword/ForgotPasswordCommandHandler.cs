@@ -1,11 +1,12 @@
 using System.Security.Cryptography;
 using ErrorOr;
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.Users.Commands.ForgotPassword;
 
-public class ForgotPasswordCommandHandler(IUserRepository userRepository)
+public class ForgotPasswordCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<ForgotPasswordCommand, ErrorOr<string>>
 {
     public async Task<ErrorOr<string>> Handle(
@@ -25,8 +26,8 @@ public class ForgotPasswordCommandHandler(IUserRepository userRepository)
         var expiry = DateTime.UtcNow.AddHours(1);
 
         user.SetPasswordResetToken(token, expiry);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // In production, send token via email; here we return it directly for dev purposes
         return token;
     }
 }

@@ -3,6 +3,7 @@ using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Users.TestUtils;
 using Shopizy.Application.Users.Commands.ForgotPassword;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Users.Commands.ForgotPassword;
@@ -10,12 +11,17 @@ namespace Shopizy.Application.UnitTests.Users.Commands.ForgotPassword;
 public class ForgotPasswordCommandHandlerTests
 {
     private readonly Mock<IUserRepository> _mockUserRepository;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly ForgotPasswordCommandHandler _handler;
 
     public ForgotPasswordCommandHandlerTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
-        _handler = new ForgotPasswordCommandHandler(_mockUserRepository.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _handler = new ForgotPasswordCommandHandler(
+            _mockUserRepository.Object,
+            _mockUnitOfWork.Object
+        );
     }
 
     [Fact]
@@ -54,5 +60,6 @@ public class ForgotPasswordCommandHandlerTests
         user.PasswordResetToken.ShouldBe(result.Value);
         user.PasswordResetTokenExpiry.ShouldNotBeNull();
         user.PasswordResetTokenExpiry.Value.ShouldBeGreaterThan(DateTime.UtcNow);
+        _mockUnitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
