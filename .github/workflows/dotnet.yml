@@ -38,9 +38,10 @@ jobs:
         mkdir -p ./coverage
         for proj in $(find tests -name "*.csproj"); do
           name=$(basename "${proj%.csproj}")
-          dotnet test "$proj" --no-build --configuration Release --verbosity normal \
-            --coverage --coverage-output-format cobertura \
-            --coverage-output "./coverage/${name}.cobertura.xml"
+          dotnet tool run dotnet-coverage collect \
+            --output "./coverage/${name}.cobertura.xml" \
+            --output-format cobertura \
+            -- dotnet test "$proj" --no-build --configuration Release --verbosity normal
         done
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
