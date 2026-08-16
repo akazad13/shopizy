@@ -1,3 +1,4 @@
+using System.Reflection;
 using Shopizy.Domain.Customers;
 using Shopizy.Domain.Customers.ValueObjects;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -29,6 +30,21 @@ public class CustomerTests
     }
 
     [Fact]
+    public void Create_WithNullProfileImageUrl_ReturnsCustomerWithNullImage()
+    {
+        // Arrange
+        var address = Address.CreateNew("Street", "City", "State", "Country", "12345");
+
+        // Act
+        var customer = Customer.Create(null, address);
+
+        // Assert
+        customer.ShouldNotBeNull();
+        customer.ProfileImageUrl.ShouldBeNull();
+        customer.Address.ShouldBe(address);
+    }
+
+    [Fact]
     public void SetAddress_UpdatesAddressProperty()
     {
         // Arrange
@@ -44,10 +60,51 @@ public class CustomerTests
     }
 
     [Fact]
+    public void Customer_ParameterlessConstructor_CreatesInstanceForEFCore()
+    {
+        // Act
+        var constructor = typeof(Customer).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            null,
+            Type.EmptyTypes,
+            null
+        );
+
+        var instance = (Customer?)constructor?.Invoke(null);
+
+        // Assert
+        instance.ShouldNotBeNull();
+    }
+
+    [Fact]
     public void CustomerId_Create_ShouldInitializeWithValue()
     {
         var rawGuid = Guid.NewGuid();
         var id = CustomerId.Create(rawGuid);
+
         id.Value.ShouldBe(rawGuid);
+        id.GetEqualityComponents().ShouldContain(rawGuid);
+    }
+
+    [Fact]
+    public void CustomerId_CreateUnique_ShouldGenerateNewUniqueId()
+    {
+        var id1 = CustomerId.CreateUnique();
+        var id2 = CustomerId.CreateUnique();
+
+        id1.Value.ShouldNotBe(Guid.Empty);
+        id2.Value.ShouldNotBe(Guid.Empty);
+        id1.ShouldNotBe(id2);
+    }
+
+    [Fact]
+    public void CustomerId_Equality_ShouldBeEqual_WhenValuesAreSame()
+    {
+        var guid = Guid.NewGuid();
+        var id1 = CustomerId.Create(guid);
+        var id2 = CustomerId.Create(guid);
+
+        id1.ShouldBe(id2);
+        (id1 == id2).ShouldBeTrue();
     }
 }
