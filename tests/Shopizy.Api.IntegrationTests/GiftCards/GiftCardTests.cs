@@ -203,4 +203,102 @@ public class GiftCardTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task GetGiftCardById_AsAdmin_ReturnsOkWithGiftCard()
+    {
+        // Arrange
+        await AuthenticateAsAdminAsync();
+        var createRequest = CreateRequest();
+        var createResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/gift-cards",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
+        createResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var createdCard = await createResponse.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
+        createdCard.ShouldNotBeNull();
+
+        // Act
+        var response = await HttpClient.GetAsync(
+            $"/api/v1.0/admin/gift-cards/{createdCard.GiftCardId}",
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
+        giftCard.ShouldNotBeNull();
+        giftCard.GiftCardId.ShouldBe(createdCard.GiftCardId);
+    }
+
+    [Fact]
+    public async Task RedeemGiftCard_WithValidCode_ReturnsOkAndRedeemsCard()
+    {
+        // Arrange
+        await AuthenticateAsAdminAsync();
+        var createRequest = CreateRequest();
+        var createResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/gift-cards",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
+        createResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        // Authenticate as customer to redeem
+        await AuthenticateAsNewUserAsync("GCRedeem", "Customer");
+
+        // Act
+        var response = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/gift-cards/redeem",
+            new RedeemGiftCardRequest(createRequest.Code),
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
+        giftCard.ShouldNotBeNull();
+        giftCard.Code.ShouldBe(createRequest.Code);
+        giftCard.IsActive.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task DeactivateGiftCard_AsAdmin_ReturnsOkAndDeactivatesCard()
+    {
+        // Arrange
+        await AuthenticateAsAdminAsync();
+        var createRequest = CreateRequest();
+        var createResponse = await HttpClient.PostAsJsonAsync(
+            "/api/v1.0/admin/gift-cards",
+            createRequest,
+            TestContext.Current.CancellationToken
+        );
+        createResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var createdCard = await createResponse.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
+        createdCard.ShouldNotBeNull();
+
+        // Act
+        var response = await HttpClient.PatchAsync(
+            $"/api/v1.0/admin/gift-cards/{createdCard.GiftCardId}/deactivate",
+            null,
+            TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var giftCard = await response.Content.ReadFromJsonAsync<GiftCardResponse>(
+            TestContext.Current.CancellationToken
+        );
+        giftCard.ShouldNotBeNull();
+        giftCard.IsActive.ShouldBeFalse();
+    }
 }

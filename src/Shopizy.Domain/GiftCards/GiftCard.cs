@@ -22,14 +22,14 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
 
     public DomainResult<bool> Redeem(UserId userId)
     {
-        if (!IsActive)
-        {
-            return CustomErrors.GiftCard.GiftCardInactive;
-        }
-
         if (RedeemedByUserId is not null)
         {
             return CustomErrors.GiftCard.GiftCardAlreadyRedeemed;
+        }
+
+        if (!IsActive)
+        {
+            return CustomErrors.GiftCard.GiftCardInactive;
         }
 
         if (ExpiresOn.HasValue && ExpiresOn.Value < DateTime.UtcNow)

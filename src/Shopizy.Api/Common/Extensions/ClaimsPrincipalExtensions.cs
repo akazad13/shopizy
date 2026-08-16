@@ -21,6 +21,20 @@ public static class ClaimsPrincipalExtensions
     }
 
     /// <summary>
+    /// Returns the <see cref="Shopizy.Domain.Users.ValueObjects.UserId"/> for the authenticated principal.
+    /// </summary>
+    public static Shopizy.Domain.Users.ValueObjects.UserId? GetUserId(this ClaimsPrincipal user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var currentUserIdClaim =
+            user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? user.FindFirst("id")?.Value;
+
+        return currentUserIdClaim != null && Guid.TryParse(currentUserIdClaim, out var guid)
+            ? Shopizy.Domain.Users.ValueObjects.UserId.Create(guid)
+            : null;
+    }
+
+    /// <summary>
     /// Returns a <c>403 Forbidden</c> result if the principal does not own the resource;
     /// returns null when authorized so the caller can proceed.
     /// Usage:
