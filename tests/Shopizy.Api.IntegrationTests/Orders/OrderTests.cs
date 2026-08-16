@@ -59,6 +59,7 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
     {
         var orderRequest = new CreateOrderRequest(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Blue", "M", 1)],
@@ -88,6 +89,7 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
 
         var orderRequest = new CreateOrderRequest(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Blue", "M", 2)],
@@ -126,6 +128,7 @@ public class OrderTests(IntegrationTestWebAppFactory factory) : BaseIntegrationT
         ClearAuthToken();
         var orderRequest = new CreateOrderRequest(
             "",
+            null,
             1,
             new Price(0m, "USD"),
             [new OrderItemRequest(Guid.NewGuid(), "Red", "S", 1)],

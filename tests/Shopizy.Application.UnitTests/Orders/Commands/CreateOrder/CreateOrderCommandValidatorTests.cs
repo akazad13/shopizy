@@ -15,7 +15,7 @@ public class CreateOrderCommandValidatorTests
     private static OrderItemCommand ValidItem() => new(Guid.NewGuid(), "Red", "M", 2);
 
     private static CreateOrderCommand ValidCommand() =>
-        new(Guid.NewGuid(), "", 1, 5.99m, Currency.usd, [ValidItem()], ValidAddress());
+        new(Guid.NewGuid(), "", null, 1, 5.99m, Currency.usd, [ValidItem()], ValidAddress());
 
     [Fact]
     public async Task Should_HaveError_When_UserIdIsEmpty()

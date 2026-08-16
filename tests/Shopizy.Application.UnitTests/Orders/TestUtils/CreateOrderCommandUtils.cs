@@ -18,6 +18,7 @@ public static class CreateOrderCommandUtils
         return new CreateOrderCommand(
             Constants.User.Id.Value,
             Constants.Order.PromoCode,
+            null,
             Constants.Order.DeliveryMethod,
             Constants.Order.DeliveryCharge.Amount,
             Constants.Order.DeliveryCharge.Currency,

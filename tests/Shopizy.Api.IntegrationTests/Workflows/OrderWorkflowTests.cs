@@ -83,6 +83,7 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
         // Act — place order
         var orderRequest = new CreateOrderRequest(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Black", "L", 1)],
@@ -115,6 +116,7 @@ public class OrderWorkflowTests(IntegrationTestWebAppFactory factory) : BaseInte
         // Place order
         var orderRequest = new CreateOrderRequest(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Black", "L", 1)],

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Shopizy.Domain.GiftCards.ValueObjects;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -60,6 +61,13 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.HasIndex(o => o.OrderStatus);
         builder.HasIndex(o => o.CreatedOn);
         builder.HasIndex(o => new { o.UserId, o.CreatedOn });
+
+        builder
+            .Property(o => o.GiftCardId)
+            .IsRequired(false)
+            .HasConversion(id => id.Value, value => GiftCardId.Create(value));
+
+        builder.Property(o => o.GiftCardAmountApplied).HasPrecision(18, 2);
 
         builder.Property<byte[]>("RowVersion");
     }

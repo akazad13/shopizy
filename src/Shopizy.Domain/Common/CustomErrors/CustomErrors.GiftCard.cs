@@ -36,5 +36,10 @@ public static partial class CustomErrors
                 code: "GiftCard.DuplicateCode",
                 description: "A gift card with this code already exists."
             );
+        public static DomainError GiftCardInsufficientBalance =>
+            DomainError.Validation(
+                code: "GiftCard.GiftCardInsufficientBalance",
+                description: "This gift card does not have enough balance."
+            );
     }
 }

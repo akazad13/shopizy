@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Orders;
 using Shopizy.SharedKernel.Application.Messaging;
@@ -10,6 +10,7 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 /// </summary>
 /// <param name="UserId">The user's unique identifier.</param>
 /// <param name="PromoCode">The promotional code to apply (if any).</param>
+/// <param name="GiftCardCode">The gift card code to apply (if any).</param>
 /// <param name="DeliveryMethod">The delivery method identifier.</param>
 /// <param name="DeliveryChargeAmount">The delivery charge amount.</param>
 /// <param name="DeliveryChargeCurrency">The delivery charge currency.</param>
@@ -18,6 +19,7 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 public record CreateOrderCommand(
     Guid UserId,
     string PromoCode,
+    string? GiftCardCode,
     int DeliveryMethod,
     decimal DeliveryChargeAmount,
     Currency DeliveryChargeCurrency,

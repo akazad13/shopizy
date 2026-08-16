@@ -57,6 +57,7 @@ public class OrderIdempotencyTests(IntegrationTestWebAppFactory factory)
     private static CreateOrderRequest BuildOrder(Guid productId, int quantity = 1) =>
         new(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Blue", "M", quantity)],

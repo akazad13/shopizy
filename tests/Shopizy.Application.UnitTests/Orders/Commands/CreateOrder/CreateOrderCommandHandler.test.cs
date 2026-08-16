@@ -7,6 +7,7 @@ using Shopizy.Domain.Common.CustomErrors;
 using Shopizy.Domain.Orders;
 using Shopizy.Domain.Products;
 using Shopizy.Domain.Products.ValueObjects;
+using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 
 namespace Shopizy.Application.UnitTests.Orders.Commands.CreateOrder;
 
@@ -14,15 +15,21 @@ public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
+    private readonly Mock<IGiftCardRepository> _mockGiftCardRepository;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly CreateOrderCommandHandler _sut;
 
     public CreateOrderCommandHandlerTests()
     {
         _mockProductRepository = new Mock<IProductRepository>();
         _mockOrderRepository = new Mock<IOrderRepository>();
+        _mockGiftCardRepository = new Mock<IGiftCardRepository>();
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
         _sut = new CreateOrderCommandHandler(
             _mockProductRepository.Object,
-            _mockOrderRepository.Object
+            _mockOrderRepository.Object,
+            _mockGiftCardRepository.Object,
+            _mockUnitOfWork.Object
         );
     }
 

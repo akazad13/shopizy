@@ -182,6 +182,7 @@ public class CreateOrderRequestTests
         IList<OrderItemRequest> items = [OrderFactory.MakeItemRequest()];
         var sut = new CreateOrderRequest(
             "PROMO10",
+            null,
             1,
             OrderFactory.MakePrice(),
             items,
@@ -201,6 +202,7 @@ public class CreateOrderRequestTests
     {
         var sut = new CreateOrderRequest(
             "",
+            null,
             1,
             OrderFactory.MakePrice(),
             [],
@@ -220,6 +222,7 @@ public class CreateOrderRequestTests
         ];
         var sut = new CreateOrderRequest(
             "",
+            null,
             2,
             OrderFactory.MakePrice(),
             items,
@@ -234,8 +237,8 @@ public class CreateOrderRequestTests
         IList<OrderItemRequest> sharedItems = [OrderFactory.MakeItemRequest()];
         var addr = OrderFactory.MakeAddress();
         var price = OrderFactory.MakePrice();
-        var a = new CreateOrderRequest("X", 1, price, sharedItems, addr);
-        var b = new CreateOrderRequest("X", 1, price, sharedItems, addr);
+        var a = new CreateOrderRequest("X", null, 1, price, sharedItems, addr);
+        var b = new CreateOrderRequest("X", null, 1, price, sharedItems, addr);
         a.ShouldBe(b);
     }
 
@@ -244,6 +247,7 @@ public class CreateOrderRequestTests
     {
         var original = new CreateOrderRequest(
             "OLD",
+            null,
             1,
             OrderFactory.MakePrice(),
             [],

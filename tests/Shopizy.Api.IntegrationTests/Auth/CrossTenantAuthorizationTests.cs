@@ -60,6 +60,7 @@ public class CrossTenantAuthorizationTests(IntegrationTestWebAppFactory factory)
     {
         var orderRequest = new CreateOrderRequest(
             PromoCode: "",
+            GiftCardCode: null,
             DeliveryMethod: 1,
             DeliveryCharge: new Price(5.00m, "USD"),
             OrderItems: [new OrderItemRequest(productId, "Red", "S", 1)],

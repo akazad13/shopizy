@@ -1,5 +1,6 @@
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.GiftCards.ValueObjects;
 using Shopizy.Domain.Orders.Entities;
 using Shopizy.Domain.Orders.Enums;
 using Shopizy.Domain.Orders.ValueObjects;
@@ -57,6 +58,16 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     public PaymentStatus PaymentStatus { get; private set; }
 
     /// <summary>
+    /// Gets the gift card identifier applied to this order, if any.
+    /// </summary>
+    public GiftCardId? GiftCardId { get; init; }
+
+    /// <summary>
+    /// Gets the amount applied from the gift card to this order.
+    /// </summary>
+    public decimal GiftCardAmountApplied { get; init; }
+
+    /// <summary>
     /// Gets the date and time when the order was last modified.
     /// </summary>
     public DateTime? ModifiedOn { get; }
@@ -85,6 +96,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <param name="deliveryCharge">The delivery charge.</param>
     /// <param name="shippingAddress">The shipping address.</param>
     /// <param name="orderItems">The list of order items.</param>
+    /// <param name="giftCardId">The optional gift card ID applied.</param>
+    /// <param name="giftCardAmountApplied">The amount applied from the gift card.</param>
     /// <returns>A new <see cref="Order"/> instance.</returns>
     public static Order Create(
         UserId userId,
@@ -92,7 +105,9 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         int deliveryMethod,
         Price deliveryCharge,
         Address shippingAddress,
-        IReadOnlyList<OrderItem> orderItems
+        IReadOnlyList<OrderItem> orderItems,
+        GiftCardId? giftCardId = null,
+        decimal giftCardAmountApplied = 0
     )
     {
         var order = new Order
@@ -105,6 +120,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
             ShippingAddress = shippingAddress,
             OrderStatus = OrderStatus.Pending,
             PaymentStatus = PaymentStatus.Pending,
+            GiftCardId = giftCardId,
+            GiftCardAmountApplied = giftCardAmountApplied,
         };
 
         foreach (var item in orderItems)
@@ -140,7 +157,11 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         decimal totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
         decimal totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
 
-        decimal chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
+        decimal chargeAmount =
+            totalAmount - totalDiscount + DeliveryCharge.Amount - GiftCardAmountApplied;
+
+        if (chargeAmount < 0)
+            chargeAmount = 0;
 
         return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }

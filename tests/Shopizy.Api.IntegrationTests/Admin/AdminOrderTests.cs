@@ -57,6 +57,7 @@ public class AdminOrderTests(IntegrationTestWebAppFactory factory) : BaseIntegra
             "/api/v1.0/orders/checkout",
             new CreateOrderRequest(
                 "",
+                null,
                 1,
                 new Price(5.00m, "USD"),
                 [new OrderItemRequest(product!.ProductId, "Red", "M", 1)],

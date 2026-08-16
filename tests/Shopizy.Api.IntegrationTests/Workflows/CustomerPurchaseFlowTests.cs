@@ -116,6 +116,7 @@ public class CustomerPurchaseFlowTests(IntegrationTestWebAppFactory factory)
         };
         var createOrderRequest = new CreateOrderRequest(
             "",
+            null,
             1,
             deliveryCharge,
             orderItems,

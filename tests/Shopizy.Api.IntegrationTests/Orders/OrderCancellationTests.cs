@@ -57,6 +57,7 @@ public class OrderCancellationTests(IntegrationTestWebAppFactory factory)
             "/api/v1.0/orders/checkout",
             new CreateOrderRequest(
                 "",
+                null,
                 1,
                 new Price(0m, "USD"),
                 [new OrderItemRequest(product!.ProductId, "Black", "S", 1)],

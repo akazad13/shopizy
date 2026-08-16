@@ -9,7 +9,7 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
 {
     public string Code { get; } = null!;
     public decimal InitialBalance { get; }
-    public decimal RemainingBalance { get; }
+    public decimal RemainingBalance { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime? ExpiresOn { get; private set; }
     public UserId? RedeemedByUserId { get; private set; }
@@ -45,6 +45,34 @@ public sealed class GiftCard : AggregateRoot<GiftCardId, Guid>, IAuditable
         RedeemedByUserId = userId;
         RedeemedOn = DateTime.UtcNow;
         IsActive = false;
+        ModifiedOn = DateTime.UtcNow;
+
+        return true;
+    }
+
+    public DomainResult<bool> ApplyToOrder(decimal amount)
+    {
+        if (!IsActive)
+        {
+            return CustomErrors.GiftCard.GiftCardInactive;
+        }
+
+        if (ExpiresOn.HasValue && ExpiresOn.Value < DateTime.UtcNow)
+        {
+            return CustomErrors.GiftCard.GiftCardExpired;
+        }
+
+        if (RemainingBalance < amount)
+        {
+            return CustomErrors.GiftCard.GiftCardInsufficientBalance;
+        }
+
+        RemainingBalance -= amount;
+        if (RemainingBalance == 0)
+        {
+            IsActive = false;
+        }
+
         ModifiedOn = DateTime.UtcNow;
 
         return true;

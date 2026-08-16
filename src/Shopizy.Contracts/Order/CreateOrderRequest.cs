@@ -4,12 +4,14 @@ namespace Shopizy.Contracts.Order;
 /// Represents a request to create a new order.
 /// </summary>
 /// <param name="PromoCode">The promo code applied to the order.</param>
+/// <param name="GiftCardCode">The gift card code applied to the order.</param>
 /// <param name="DeliveryMethod">The selected delivery method.</param>
-/// <param name="DeliveryCharge">The delivery charge.</param>
+/// <param name="DeliveryCharge">The delivery charge amount and currency.</param>
 /// <param name="OrderItems">The list of items in the order.</param>
 /// <param name="ShippingAddress">The shipping address.</param>
 public record CreateOrderRequest(
     string PromoCode,
+    string? GiftCardCode,
     int DeliveryMethod,
     Price DeliveryCharge,
     IList<OrderItemRequest> OrderItems,
