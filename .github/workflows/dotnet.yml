@@ -32,13 +32,13 @@ jobs:
     - name: Build
       run: dotnet build Shopizy.sln --no-restore --configuration Release
     - name: Test with Coverage
-      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage;Format=cobertura;Exclude=[*.UnitTests]*,[*.IntegrationTests]*,[*.Architecture.Tests]*" --results-directory ./coverage
+      run: dotnet test Shopizy.sln --no-build --configuration Release --verbosity normal --coverage --coverage-output-format cobertura --coverage-output ./coverage/coverage.cobertura.xml
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
-      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
+      run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
     - name: Enforce coverage threshold
-      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/summary -reporttypes:TextSummary,Cobertura
+      run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/summary -reporttypes:TextSummary,Cobertura
       shell: bash
     - name: Check coverage minimum (line ≥ 70%)
       run: |
@@ -49,6 +49,6 @@ jobs:
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v7
       with:
-        files: ./coverage/**/coverage.cobertura.xml
+        files: ./coverage/coverage.cobertura.xml
         fail_ci_if_error: false
         verbose: true

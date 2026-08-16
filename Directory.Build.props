@@ -18,6 +18,9 @@
     <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
     <!-- Tests are allowed to use simpler logging / null patterns; don't fail their build on style warnings. -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Opt into the new dotnet test integration required by Microsoft.Testing.Platform on .NET 10 SDK.
+         Without this, VSTest is blocked when xunit.v3 pulls in Microsoft.Testing.Platform.MSBuild. -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <ItemGroup>
