@@ -46,9 +46,9 @@ jobs:
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
-      run: reportgenerator -reports:"./coverage/*.cobertura.xml" -targetdir:./coverage/report -reporttypes:Html
+      run: reportgenerator -reports:"./coverage/*.cobertura.xml" -targetdir:./coverage/report -reporttypes:Html "-assemblyfilters:+Shopizy.*;-Shopizy.*Tests*"
     - name: Enforce coverage threshold
-      run: reportgenerator -reports:"./coverage/*.cobertura.xml" -targetdir:./coverage/summary -reporttypes:TextSummary,Cobertura
+      run: reportgenerator -reports:"./coverage/*.cobertura.xml" -targetdir:./coverage/summary -reporttypes:TextSummary,Cobertura "-assemblyfilters:+Shopizy.*;-Shopizy.*Tests*"
       shell: bash
     - name: Check coverage minimum (line ≥ 70%)
       run: |
