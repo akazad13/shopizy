@@ -109,6 +109,17 @@ public static class ExternalServicesRegister
             Shopizy.Infrastructure.Realtime.Services.RealtimeNotifier
         >();
 
+        // Shipping Carrier Services
+        services.Configure<Shopizy.Infrastructure.Services.Shipping.ShippingSettings>(
+            configuration.GetSection(
+                Shopizy.Infrastructure.Services.Shipping.ShippingSettings.Section
+            )
+        );
+        services.AddScoped<
+            IShippingCarrierService,
+            Shopizy.Infrastructure.Services.Shipping.ShippingCarrierService
+        >();
+
         return services;
     }
 }
