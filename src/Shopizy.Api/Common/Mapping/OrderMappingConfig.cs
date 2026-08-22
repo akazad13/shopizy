@@ -55,7 +55,8 @@ public class OrderMappingConfig : IRegister
                     : Currency.usd
             )
             .Map(dest => dest.OrderItems, src => src.request.OrderItems)
-            .Map(dest => dest.ShippingAddress, src => src.request.ShippingAddress);
+            .Map(dest => dest.ShippingAddress, src => src.request.ShippingAddress)
+            .Map(dest => dest.LoyaltyPointsToRedeem, src => src.request.LoyaltyPointsToRedeem);
 
         config
             .NewConfig<(Guid UserId, Guid OrderId), GetOrderQuery>()

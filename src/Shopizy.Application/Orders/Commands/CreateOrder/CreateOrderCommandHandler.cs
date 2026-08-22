@@ -16,12 +16,14 @@ public class CreateOrderCommandHandler(
     IProductRepository productRepository,
     IOrderRepository orderRepository,
     IGiftCardRepository giftCardRepository,
+    ILoyaltyAccountRepository loyaltyAccountRepository,
     IUnitOfWork unitOfWork
 ) : ICommandHandler<CreateOrderCommand, ErrorOr<Order>>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IGiftCardRepository _giftCardRepository = giftCardRepository;
+    private readonly ILoyaltyAccountRepository _loyaltyAccountRepository = loyaltyAccountRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<ErrorOr<Order>> Handle(
@@ -46,6 +48,36 @@ public class CreateOrderCommandHandler(
             {
                 return (Error)CustomErrors.Product.InsufficientStock;
             }
+        }
+
+        int redeemedPoints = 0;
+        decimal loyaltyDiscountAmount = 0;
+
+        if (request.LoyaltyPointsToRedeem > 0)
+        {
+            var loyaltyAccount = await _loyaltyAccountRepository.GetByUserIdAsync(
+                UserId.Create(request.UserId)
+            );
+            if (
+                loyaltyAccount is null
+                || loyaltyAccount.TotalPoints < request.LoyaltyPointsToRedeem
+            )
+            {
+                return (Error)CustomErrors.LoyaltyAccount.InsufficientPoints;
+            }
+
+            var redeemResult = loyaltyAccount.RedeemPoints(
+                request.LoyaltyPointsToRedeem,
+                "Redeemed during order checkout"
+            );
+            if (redeemResult.IsError)
+            {
+                return redeemResult.Error.ToError();
+            }
+
+            redeemedPoints = request.LoyaltyPointsToRedeem;
+            loyaltyDiscountAmount = Math.Round(request.LoyaltyPointsToRedeem / 100m, 2);
+            _loyaltyAccountRepository.Update(loyaltyAccount);
         }
 
         var order = Order.Create(
@@ -83,7 +115,9 @@ public class CreateOrderCommandHandler(
                         size: item.Size,
                         discount: product.Discount
                     );
-                })
+                }),
+            loyaltyPointsRedeemed: redeemedPoints,
+            loyaltyDiscountApplied: loyaltyDiscountAmount
         );
 
         if (!string.IsNullOrWhiteSpace(request.GiftCardCode))
@@ -113,7 +147,9 @@ public class CreateOrderCommandHandler(
                     shippingAddress: order.ShippingAddress,
                     orderItems: order.OrderItems,
                     giftCardId: giftCard.Id,
-                    giftCardAmountApplied: amountToApply
+                    giftCardAmountApplied: amountToApply,
+                    loyaltyPointsRedeemed: redeemedPoints,
+                    loyaltyDiscountApplied: loyaltyDiscountAmount
                 );
 
                 _giftCardRepository.Update(giftCard);

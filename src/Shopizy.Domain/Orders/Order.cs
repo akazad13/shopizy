@@ -68,6 +68,16 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     public decimal GiftCardAmountApplied { get; init; }
 
     /// <summary>
+    /// Gets the loyalty points redeemed on this order.
+    /// </summary>
+    public int LoyaltyPointsRedeemed { get; init; }
+
+    /// <summary>
+    /// Gets the discount amount applied from redeemed loyalty points.
+    /// </summary>
+    public decimal LoyaltyDiscountApplied { get; init; }
+
+    /// <summary>
     /// Gets the date and time when the order was last modified.
     /// </summary>
     public DateTime? ModifiedOn { get; }
@@ -98,6 +108,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
     /// <param name="orderItems">The list of order items.</param>
     /// <param name="giftCardId">The optional gift card ID applied.</param>
     /// <param name="giftCardAmountApplied">The amount applied from the gift card.</param>
+    /// <param name="loyaltyPointsRedeemed">The loyalty points redeemed.</param>
+    /// <param name="loyaltyDiscountApplied">The discount applied from loyalty points.</param>
     /// <returns>A new <see cref="Order"/> instance.</returns>
     public static Order Create(
         UserId userId,
@@ -107,7 +119,9 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         Address shippingAddress,
         IReadOnlyList<OrderItem> orderItems,
         GiftCardId? giftCardId = null,
-        decimal giftCardAmountApplied = 0
+        decimal giftCardAmountApplied = 0,
+        int loyaltyPointsRedeemed = 0,
+        decimal loyaltyDiscountApplied = 0
     )
     {
         var order = new Order
@@ -122,6 +136,8 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
             PaymentStatus = PaymentStatus.Pending,
             GiftCardId = giftCardId,
             GiftCardAmountApplied = giftCardAmountApplied,
+            LoyaltyPointsRedeemed = loyaltyPointsRedeemed,
+            LoyaltyDiscountApplied = loyaltyDiscountApplied,
         };
 
         foreach (var item in orderItems)
@@ -158,7 +174,11 @@ public sealed class Order : AggregateRoot<OrderId, Guid>, IAuditable
         decimal totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
 
         decimal chargeAmount =
-            totalAmount - totalDiscount + DeliveryCharge.Amount - GiftCardAmountApplied;
+            totalAmount
+            - totalDiscount
+            + DeliveryCharge.Amount
+            - GiftCardAmountApplied
+            - LoyaltyDiscountApplied;
 
         if (chargeAmount < 0)
             chargeAmount = 0;

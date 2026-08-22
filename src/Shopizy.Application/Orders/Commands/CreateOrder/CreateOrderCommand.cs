@@ -16,6 +16,7 @@ namespace Shopizy.Application.Orders.Commands.CreateOrder;
 /// <param name="DeliveryChargeCurrency">The delivery charge currency.</param>
 /// <param name="OrderItems">The collection of order items.</param>
 /// <param name="ShippingAddress">The shipping address.</param>
+/// <param name="LoyaltyPointsToRedeem">Loyalty points to redeem for discount.</param>
 public record CreateOrderCommand(
     Guid UserId,
     string PromoCode,
@@ -24,7 +25,8 @@ public record CreateOrderCommand(
     decimal DeliveryChargeAmount,
     Currency DeliveryChargeCurrency,
     IEnumerable<OrderItemCommand> OrderItems,
-    AddressCommand ShippingAddress
+    AddressCommand ShippingAddress,
+    int LoyaltyPointsToRedeem = 0
 ) : ICommand<ErrorOr<Order>>;
 
 /// <summary>

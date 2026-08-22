@@ -1,0 +1,6 @@
+version: '3.8'
+
+services:
+  shopizy-api:
+    environment:
+      - ASPNETCORE_DETAILEDERRORS=true

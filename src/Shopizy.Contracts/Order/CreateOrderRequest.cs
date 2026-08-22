@@ -9,13 +9,15 @@ namespace Shopizy.Contracts.Order;
 /// <param name="DeliveryCharge">The delivery charge amount and currency.</param>
 /// <param name="OrderItems">The list of items in the order.</param>
 /// <param name="ShippingAddress">The shipping address.</param>
+/// <param name="LoyaltyPointsToRedeem">The loyalty points to redeem.</param>
 public record CreateOrderRequest(
     string PromoCode,
     string? GiftCardCode,
     int DeliveryMethod,
     Price DeliveryCharge,
     IList<OrderItemRequest> OrderItems,
-    Address ShippingAddress
+    Address ShippingAddress,
+    int LoyaltyPointsToRedeem = 0
 );
 
 /// <summary>

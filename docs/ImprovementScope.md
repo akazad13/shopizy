@@ -254,6 +254,14 @@ See [§9. Prioritized Roadmap](#9-prioritized-roadmap) for the per-item status.
 - [x] **P5** All 27 endpoints migrated to `AuthorizeOwner(userId, "<resource>")`.
 - [x] **Documentation** `ThreatModel.md`, `EventualConsistency.md`, `ProjectStructure.md` refresh, `Api.md` rewrite, `Domain.md` refresh.
 
+### Additional Feature Roadmap (#7 to #12 — Complete)
+- [x] **#7 Real Email Service**: `SmtpEmailService` implementing `IEmailService` with `EmailSettings` and `LoggingEmailService` fallback.
+- [x] **#8 `docker-compose.yml`**: Complete dev stack featuring SQL Server 2022, Redis 7, Mailpit SMTP UI, and Shopizy API.
+- [x] **#9 Loyalty Points in Checkout**: Added loyalty points redemption in `CreateOrderCommand`, updating balance and applying discount.
+- [x] **#10 Admin Analytics Export**: Added `ExportAnalyticsEndpoint` for CSV and PDF reports at `GET /api/v1.0/admin/dashboard/export`.
+- [x] **#11 Order Notifications**: Wired email notifications into `OrderCreated`, `OrderPaid`, and `OrderCancelled` domain event handlers.
+- [x] **#12 Product Variants**: Verified Minimal API CRUD endpoints for managing product variants (`AddVariant`, `UpdateVariant`, `RemoveVariant`, `GetProductVariants`).
+
 ### Outstanding (audit items not in original roadmap or surfaced during execution)
 - **OTel transitive advisory** — `OpenTelemetry.Api 1.12.0` flagged by `NU1902`; tracked via Dependabot, treated as warning.
 - **A1 / A2 follow-on slices** — Pattern is in place; remaining commands (Update*, Delete*) and read-only methods (`GetProductsAsync`, etc.) migrate as touched. Not blocking.

@@ -88,7 +88,19 @@ public static class ExternalServicesRegister
 
         services.AddHealthChecks().AddCheck<RedisHealthCheck>("redis");
 
-        services.AddScoped<IEmailService, LoggingEmailService>();
+        services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.Section));
+        var emailSettings =
+            configuration.GetSection(EmailSettings.Section).Get<EmailSettings>()
+            ?? new EmailSettings();
+
+        if (emailSettings.EnableRealEmail)
+        {
+            services.AddScoped<IEmailService, SmtpEmailService>();
+        }
+        else
+        {
+            services.AddScoped<IEmailService, LoggingEmailService>();
+        }
 
         return services;
     }

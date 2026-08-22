@@ -16,6 +16,7 @@ public class CreateOrderCommandHandlerTests
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
     private readonly Mock<IGiftCardRepository> _mockGiftCardRepository;
+    private readonly Mock<ILoyaltyAccountRepository> _mockLoyaltyAccountRepository;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly CreateOrderCommandHandler _sut;
 
@@ -24,11 +25,13 @@ public class CreateOrderCommandHandlerTests
         _mockProductRepository = new Mock<IProductRepository>();
         _mockOrderRepository = new Mock<IOrderRepository>();
         _mockGiftCardRepository = new Mock<IGiftCardRepository>();
+        _mockLoyaltyAccountRepository = new Mock<ILoyaltyAccountRepository>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
         _sut = new CreateOrderCommandHandler(
             _mockProductRepository.Object,
             _mockOrderRepository.Object,
             _mockGiftCardRepository.Object,
+            _mockLoyaltyAccountRepository.Object,
             _mockUnitOfWork.Object
         );
     }

@@ -65,9 +65,11 @@ public sealed class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder
             .Property(o => o.GiftCardId)
             .IsRequired(false)
-            .HasConversion(id => id.Value, value => GiftCardId.Create(value));
+            .HasConversion(id => id!.Value, value => GiftCardId.Create(value));
 
         builder.Property(o => o.GiftCardAmountApplied).HasPrecision(18, 2);
+        builder.Property(o => o.LoyaltyPointsRedeemed);
+        builder.Property(o => o.LoyaltyDiscountApplied).HasPrecision(18, 2);
 
         builder.Property<byte[]>("RowVersion");
     }
