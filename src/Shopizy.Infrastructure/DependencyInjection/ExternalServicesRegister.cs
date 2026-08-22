@@ -126,6 +126,22 @@ public static class ExternalServicesRegister
             Shopizy.Infrastructure.Services.Search.ProductSearchEngine
         >();
 
+        // Multi-channel notifications (SMS & Push)
+        services.Configure<Shopizy.Infrastructure.Services.Notifications.SmsSettings>(
+            configuration.GetSection(
+                Shopizy.Infrastructure.Services.Notifications.SmsSettings.Section
+            )
+        );
+        services.AddScoped<ISmsService, Shopizy.Infrastructure.Services.Notifications.SmsService>();
+        services.AddScoped<
+            IPushNotificationService,
+            Shopizy.Infrastructure.Services.Notifications.PushNotificationService
+        >();
+        services.AddScoped<
+            INotificationDispatcher,
+            Shopizy.Infrastructure.Services.Notifications.NotificationDispatcher
+        >();
+
         return services;
     }
 }
