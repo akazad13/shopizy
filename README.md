@@ -89,10 +89,12 @@ Once the API is running, you can explore the endpoints using Swagger UI.
 
 ## 📚 Documentation
 
-For more detailed information, please refer to:
+For detailed guides and architecture specifications, please refer to:
 
-*   **[API Documentation](docs/Api.md)**: Comprehensive details on all API endpoints, requests, and responses.
-*   **[Domain Models](docs/Domain.md)**: In-depth explanation of the domain aggregates and entities.
+*   **[Feature Documentation](docs/FeatureDocumentation.md)**: End-to-end guide of all platform features, workflows, and business logic.
+*   **[Technical Documentation](docs/TechnicalDocumentation.md)**: Architectural patterns, DDD design, CQRS messaging, caching, and infrastructure references.
+*   **[API Documentation](docs/Api.md)**: Comprehensive details on API endpoints, requests, and responses.
+*   **[Domain Models](docs/Domain.md)**: In-depth explanation of domain aggregates, entities, and value objects.
 
 ## 🏗️ Architecture
 
