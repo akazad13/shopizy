@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.Extensions;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Queries.GetPaymentHistory;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Payment;
@@ -31,7 +32,7 @@ public class GetPaymentHistoryEndpoint : ApiEndpoint
                         mediator,
                         query,
                         payments => Results.Ok(mapper.Map<IReadOnlyList<PaymentDto>>(payments)),
-                        ex => logger.LogError(ex, "Error getting payment history.")
+                        ex => logger.PaymentFetchError(ex)
                     );
                 }
             )

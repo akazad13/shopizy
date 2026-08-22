@@ -1,5 +1,6 @@
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Returns.Queries.GetPendingReturns;
 using Shopizy.Application.Returns.Queries.GetReturnById;
 using Shopizy.Application.Returns.Queries.GetReturnsByOrder;
@@ -26,7 +27,7 @@ public class GetReturnByIdEndpoint : ApiEndpoint
                         mediator,
                         query,
                         rr => Results.Ok(mapper.Map<ReturnRequestDto>(rr)),
-                        ex => logger.LogError(ex, "Error getting return request.")
+                        ex => logger.ReturnFetchError(ex)
                     );
                 }
             )
@@ -56,7 +57,7 @@ public class GetReturnsByOrderEndpoint : ApiEndpoint
                         mediator,
                         query,
                         returns => Results.Ok(mapper.Map<IReadOnlyList<ReturnRequestDto>>(returns)),
-                        ex => logger.LogError(ex, "Error getting returns for order.")
+                        ex => logger.ReturnFetchError(ex)
                     );
                 }
             )
@@ -84,7 +85,7 @@ public class GetPendingReturnsEndpoint : ApiEndpoint
                         mediator,
                         query,
                         returns => Results.Ok(mapper.Map<IReadOnlyList<ReturnRequestDto>>(returns)),
-                        ex => logger.LogError(ex, "Error getting pending returns.")
+                        ex => logger.ReturnFetchError(ex)
                     );
                 }
             )

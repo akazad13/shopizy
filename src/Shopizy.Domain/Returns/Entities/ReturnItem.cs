@@ -6,7 +6,7 @@ namespace Shopizy.Domain.Returns.Entities;
 
 public sealed class ReturnItem : Entity<ReturnItemId>
 {
-    public OrderItemId OrderItemId { get; private set; }
+    public OrderItemId OrderItemId { get; private set; } = null!;
     public int Quantity { get; private set; }
     public ReturnRequestId ReturnRequestId { get; private set; } = null!;
 

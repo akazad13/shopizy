@@ -253,7 +253,30 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         public Task<ErrorOr<Success>> CreateRefundAsync(
             string chargeId,
             CancellationToken cancellationToken
-        ) => throw new NotImplementedException();
+        ) => Task.FromResult<ErrorOr<Success>>(Result.Success);
+
+        public ErrorOr.ErrorOr<PaymentWebhookEvent> ParseWebhookEvent(
+            string jsonPayload,
+            string signatureHeader
+        )
+        {
+            if (signatureHeader.Contains("invalid", StringComparison.OrdinalIgnoreCase))
+            {
+                return ErrorOr.Error.Validation(
+                    code: "stripe.webhook_signature_invalid",
+                    description: "Invalid signature"
+                );
+            }
+
+            return new PaymentWebhookEvent(
+                PaymentWebhookEventType.PaymentSucceeded,
+                null,
+                "ch_mock_123",
+                "cus_mock_123",
+                "pi_mock_123",
+                null
+            );
+        }
 
         public Task<ErrorOr.ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request)
         {

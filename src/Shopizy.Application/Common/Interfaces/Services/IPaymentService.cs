@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Shopizy.SharedKernel.Application.Models;
 
 namespace Shopizy.Application.Common.Interfaces.Services;
@@ -12,4 +12,5 @@ public interface IPaymentService
     );
     Task<ErrorOr<CreateSaleResponse>> CreateSaleAsync(CreateSaleRequest request);
     Task<ErrorOr<Success>> CreateRefundAsync(string chargeId, CancellationToken cancellationToken);
+    ErrorOr<PaymentWebhookEvent> ParseWebhookEvent(string jsonPayload, string signatureHeader);
 }

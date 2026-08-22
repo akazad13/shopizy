@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Returns.Commands.ApproveReturn;
 using Shopizy.Contracts.Common;
 using Shopizy.SharedKernel.Application.Messaging;
@@ -27,7 +28,7 @@ public class ApproveReturnEndpoint : ApiEndpoint
                                     "Return request approved and refund initiated."
                                 )
                             ),
-                        ex => logger.LogError(ex, "Error approving return request.")
+                        ex => logger.ReturnApprovalError(ex)
                     );
                 }
             )

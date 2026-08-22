@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using ErrorOr;
+using Microsoft.Extensions.Options;
 using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.SharedKernel.Application.Models;
 using Stripe;
@@ -12,16 +13,19 @@ namespace Shopizy.Infrastructure.ExternalServices.PaymentGateway.Stripe;
 /// <param name="customerService"></param>
 /// <param name="paymentIntentService"></param>
 /// <param name="refundService"></param>
+/// <param name="stripeSettings"></param>
 [ExcludeFromCodeCoverage]
 public class StripeService(
     CustomerService customerService,
     PaymentIntentService paymentIntentService,
-    RefundService refundService
+    RefundService refundService,
+    IOptions<StripeSettings> stripeSettings
 ) : IPaymentService
 {
     private readonly CustomerService _customerService = customerService;
     private readonly PaymentIntentService _paymentIntentService = paymentIntentService;
     private readonly RefundService _refundService = refundService;
+    private readonly StripeSettings _stripeSettings = stripeSettings.Value;
 
     private static bool IsTransientStripeError(StripeException ex) =>
         ex.StripeError?.Code == "rate_limit_error"
@@ -179,6 +183,133 @@ public class StripeService(
         return Error.Failure(
             code: "500",
             description: "Stripe refund failed after maximum retry attempts."
+        );
+    }
+
+    /// <summary>
+    /// Validates and parses an incoming Stripe webhook event.
+    /// </summary>
+    /// <param name="jsonPayload">The raw JSON payload.</param>
+    /// <param name="signatureHeader">The Stripe-Signature header value.</param>
+    /// <returns>A normalized <see cref="PaymentWebhookEvent"/> or an error.</returns>
+    public ErrorOr<PaymentWebhookEvent> ParseWebhookEvent(
+        string jsonPayload,
+        string signatureHeader
+    )
+    {
+        try
+        {
+            var stripeEvent = EventUtility.ConstructEvent(
+                jsonPayload,
+                signatureHeader,
+                _stripeSettings.WebhookSecret,
+                throwOnApiVersionMismatch: false
+            );
+
+            return stripeEvent.Type switch
+            {
+                EventTypes.PaymentIntentSucceeded => ExtractFromPaymentIntent(
+                    stripeEvent.Data.Object as PaymentIntent,
+                    PaymentWebhookEventType.PaymentSucceeded
+                ),
+                EventTypes.PaymentIntentPaymentFailed => ExtractFromPaymentIntent(
+                    stripeEvent.Data.Object as PaymentIntent,
+                    PaymentWebhookEventType.PaymentFailed
+                ),
+                EventTypes.ChargeSucceeded => ExtractFromCharge(
+                    stripeEvent.Data.Object as Charge,
+                    PaymentWebhookEventType.PaymentSucceeded
+                ),
+                EventTypes.ChargeRefunded => ExtractFromCharge(
+                    stripeEvent.Data.Object as Charge,
+                    PaymentWebhookEventType.ChargeRefunded
+                ),
+                _ => new PaymentWebhookEvent(
+                    PaymentWebhookEventType.Unknown,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ),
+            };
+        }
+        catch (StripeException ex)
+        {
+            return Error.Validation(
+                code: "stripe.webhook_signature_invalid",
+                description: ex.Message
+            );
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(code: "stripe.webhook_processing_error", description: ex.Message);
+        }
+    }
+
+    private static PaymentWebhookEvent ExtractFromPaymentIntent(
+        PaymentIntent? intent,
+        PaymentWebhookEventType eventType
+    )
+    {
+        if (intent is null)
+        {
+            return new PaymentWebhookEvent(
+                PaymentWebhookEventType.Unknown,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
+        }
+
+        string? orderId = null;
+        if (intent.Metadata != null && intent.Metadata.TryGetValue("OrderId", out var value))
+        {
+            orderId = value;
+        }
+
+        return new PaymentWebhookEvent(
+            eventType,
+            orderId,
+            intent.LatestChargeId,
+            intent.CustomerId,
+            intent.Id,
+            intent.LastPaymentError?.Message
+        );
+    }
+
+    private static PaymentWebhookEvent ExtractFromCharge(
+        Charge? charge,
+        PaymentWebhookEventType eventType
+    )
+    {
+        if (charge is null)
+        {
+            return new PaymentWebhookEvent(
+                PaymentWebhookEventType.Unknown,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
+        }
+
+        string? orderId = null;
+        if (charge.Metadata != null && charge.Metadata.TryGetValue("OrderId", out var value))
+        {
+            orderId = value;
+        }
+
+        return new PaymentWebhookEvent(
+            eventType,
+            orderId,
+            charge.Id,
+            charge.CustomerId,
+            charge.PaymentIntentId,
+            charge.FailureMessage
         );
     }
 

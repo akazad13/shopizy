@@ -459,4 +459,46 @@ public static partial class LoggerMessages
         Message = "An error occurred while deleting brand."
     )]
     public static partial void BrandDeleteError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1055,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching payment."
+    )]
+    public static partial void PaymentFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1056,
+        Level = LogLevel.Error,
+        Message = "An error occurred while processing Stripe webhook."
+    )]
+    public static partial void StripeWebhookError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1057,
+        Level = LogLevel.Error,
+        Message = "An error occurred while fetching return request(s)."
+    )]
+    public static partial void ReturnFetchError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1058,
+        Level = LogLevel.Error,
+        Message = "An error occurred while creating return request."
+    )]
+    public static partial void ReturnCreationError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1059,
+        Level = LogLevel.Error,
+        Message = "An error occurred while approving return request."
+    )]
+    public static partial void ReturnApprovalError(this ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 1060,
+        Level = LogLevel.Error,
+        Message = "An error occurred while rejecting return request."
+    )]
+    public static partial void ReturnRejectionError(this ILogger logger, Exception ex);
 }

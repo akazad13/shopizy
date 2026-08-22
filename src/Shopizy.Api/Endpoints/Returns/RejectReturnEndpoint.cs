@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Returns.Commands.RejectReturn;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Returns;
@@ -24,7 +25,7 @@ public class RejectReturnEndpoint : ApiEndpoint
                         mediator,
                         command,
                         _ => Results.Ok(SuccessResult.Success("Return request rejected.")),
-                        ex => logger.LogError(ex, "Error rejecting return request.")
+                        ex => logger.ReturnRejectionError(ex)
                     );
                 }
             )

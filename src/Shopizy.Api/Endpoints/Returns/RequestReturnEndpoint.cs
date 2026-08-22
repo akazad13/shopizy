@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.Extensions;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Returns.Commands.RequestReturn;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Returns;
@@ -38,7 +39,7 @@ public class RequestReturnEndpoint : ApiEndpoint
                             Results.Ok(
                                 SuccessResult.Success($"Return request submitted. ID: {returnId}")
                             ),
-                        ex => logger.LogError(ex, "Error submitting return request.")
+                        ex => logger.ReturnCreationError(ex)
                     );
                 }
             )

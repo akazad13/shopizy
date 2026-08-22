@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Api.Common.Extensions;
+using Shopizy.Api.Common.LoggerMessages;
 using Shopizy.Application.Payments.Queries.GetPaymentByOrder;
 using Shopizy.Contracts.Common;
 using Shopizy.Contracts.Payment;
@@ -28,7 +29,7 @@ public class GetPaymentByOrderEndpoint : ApiEndpoint
                         mediator,
                         query,
                         payment => Results.Ok(mapper.Map<PaymentDto>(payment)),
-                        ex => logger.LogError(ex, "Error getting payment for order.")
+                        ex => logger.PaymentFetchError(ex)
                     );
                 }
             )
