@@ -22,9 +22,12 @@ public class ValidatePromoCodeQueryHandler(IPromoCodeRepository promoCodeReposit
             return (Error)CustomErrors.PromoCode.PromoCodeNotFound;
         }
 
-        if (!promoCode.IsActive)
+        if (!promoCode.IsValid(request.OrderSubtotal ?? 0, DateTime.UtcNow, out var failureReason))
         {
-            return (Error)CustomErrors.PromoCode.PromoCodeInactive;
+            return Error.Validation(
+                code: "PromoCode.Invalid",
+                description: failureReason ?? "Promo code cannot be applied."
+            );
         }
 
         return promoCode;

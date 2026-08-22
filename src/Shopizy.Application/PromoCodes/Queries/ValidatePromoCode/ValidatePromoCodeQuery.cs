@@ -4,4 +4,5 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.PromoCodes.Queries.ValidatePromoCode;
 
-public record ValidatePromoCodeQuery(string Code) : IQuery<ErrorOr<PromoCode>>;
+public record ValidatePromoCodeQuery(string Code, decimal? OrderSubtotal = null)
+    : IQuery<ErrorOr<PromoCode>>;

@@ -30,7 +30,21 @@ public class UpdatePromoCodeCommandHandler(IPromoCodeRepository promoCodeReposit
             request.Description,
             request.Discount,
             request.IsPercentage,
-            request.IsActive
+            request.IsActive,
+            request.PromoType,
+            request.MinimumOrderAmount,
+            request.MaxDiscountAmount,
+            request.TargetCategoryId.HasValue
+                ? Shopizy.Domain.Categories.ValueObjects.CategoryId.Create(
+                    request.TargetCategoryId.Value
+                )
+                : null,
+            request.BuyQuantity,
+            request.GetQuantity,
+            request.GetDiscountPercentage,
+            request.UsageLimit,
+            request.StartDate,
+            request.EndDate
         );
 
         return promoCode;

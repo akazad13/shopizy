@@ -48,7 +48,36 @@ public class ValidatePromoCodeQueryHandlerTests
 
         // Assert
         Assert.True(result.IsError);
-        Assert.Equal(CustomErrors.PromoCode.PromoCodeInactive, result.FirstError);
+        Assert.Contains(
+            "inactive",
+            result.FirstError.Description,
+            StringComparison.OrdinalIgnoreCase
+        );
+    }
+
+    [Fact]
+    public async Task Should_ReturnError_WhenMinimumOrderSubtotalNotMet()
+    {
+        // Arrange
+        var promoCode = PromoCode.Create(
+            "TIER100",
+            "Min $100",
+            10,
+            true,
+            true,
+            Shopizy.Domain.PromoCodes.Enums.PromoType.Standard,
+            minimumOrderAmount: 100m
+        );
+        var query = new ValidatePromoCodeQuery("TIER100", OrderSubtotal: 50m);
+
+        _mockRepo.Setup(x => x.GetByCodeAsync("TIER100")).ReturnsAsync(promoCode);
+
+        // Act
+        var result = await _sut.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsError);
+        Assert.Contains("Minimum order amount", result.FirstError.Description);
     }
 
     [Fact]
@@ -56,7 +85,7 @@ public class ValidatePromoCodeQueryHandlerTests
     {
         // Arrange
         var promoCode = PromoCode.Create("VALID20", "20% Off", 20, true, true);
-        var query = new ValidatePromoCodeQuery("VALID20");
+        var query = new ValidatePromoCodeQuery("VALID20", OrderSubtotal: 100m);
 
         _mockRepo.Setup(x => x.GetByCodeAsync("VALID20")).ReturnsAsync(promoCode);
 
