@@ -66,6 +66,11 @@ public static class PersistenceRegister
         services.AddHostedService<OutboxProcessor>();
         services.AddScoped<IOutboxDrainer, OutboxDrainer>();
 
+        services.Configure<Shopizy.Infrastructure.Orders.OrderSettings>(
+            configuration.GetSection(Shopizy.Infrastructure.Orders.OrderSettings.Section)
+        );
+        services.AddHostedService<Shopizy.Infrastructure.Orders.Services.PendingOrderExpirationWorker>();
+
         return services.AddRepositories();
     }
 

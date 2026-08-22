@@ -36,6 +36,11 @@ public interface IOrderRepository
         UserId userId,
         CancellationToken cancellationToken = default
     );
+    Task<IReadOnlyList<Order>> GetExpiredPendingOrdersAsync(
+        DateTime thresholdUtc,
+        int maxCount = 50,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Order order);
     void Update(Order order);
 }

@@ -8,40 +8,65 @@ using Shopizy.SharedKernel.Application.Messaging;
 namespace Shopizy.Application.Orders.Events;
 
 public class OrderCancelledDomainEventHandler(
+    IProductRepository productRepository,
     IPaymentRepository paymentRepository,
     IPaymentService paymentService,
     IUnitOfWork unitOfWork
 ) : IDomainEventHandler<OrderCancelledDomainEvent>
 {
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IPaymentRepository _paymentRepository = paymentRepository;
+    private readonly IPaymentService _paymentService = paymentService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
     public async Task Handle(
         OrderCancelledDomainEvent domainEvent,
         CancellationToken cancellationToken = default
     )
     {
-        var payment = await paymentRepository.GetPaymentByOrderIdAsync(domainEvent.Order.Id);
+        var hasChanges = false;
 
-        if (payment is null || payment.PaymentStatus != PaymentStatus.Payed)
+        // 1. Restore product inventory
+        var productIds = domainEvent.Order.OrderItems.Select(i => i.ProductId).ToList();
+        if (productIds.Count > 0)
         {
-            return;
+            var products = await _productRepository.GetProductsByIdsForUpdateAsync(productIds);
+            foreach (var item in domainEvent.Order.OrderItems)
+            {
+                var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                if (product is not null)
+                {
+                    product.IncreaseStock(item.Quantity);
+                    _productRepository.Update(product);
+                    hasChanges = true;
+                }
+            }
         }
 
-        if (string.IsNullOrEmpty(payment.TransactionId))
+        // 2. Refund payment if already completed
+        var payment = await _paymentRepository.GetPaymentByOrderIdAsync(domainEvent.Order.Id);
+        if (
+            payment is not null
+            && payment.PaymentStatus == PaymentStatus.Payed
+            && !string.IsNullOrEmpty(payment.TransactionId)
+        )
         {
-            return;
+            var refundResult = await _paymentService.CreateRefundAsync(
+                payment.TransactionId,
+                cancellationToken
+            );
+
+            if (!refundResult.IsError)
+            {
+                payment.UpdatePaymentStatus(PaymentStatus.Refunded);
+                _paymentRepository.Update(payment);
+                hasChanges = true;
+            }
         }
 
-        var refundResult = await paymentService.CreateRefundAsync(
-            payment.TransactionId,
-            cancellationToken
-        );
-
-        if (refundResult.IsError)
+        if (hasChanges)
         {
-            return;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
-        payment.UpdatePaymentStatus(PaymentStatus.Refunded);
-        paymentRepository.Update(payment);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

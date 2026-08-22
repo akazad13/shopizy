@@ -195,6 +195,20 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .ToListAsync(cancellationToken);
 
     /// <summary>
+    /// Retrieves pending orders created prior to the specified threshold.
+    /// </summary>
+    public async Task<IReadOnlyList<Order>> GetExpiredPendingOrdersAsync(
+        DateTime thresholdUtc,
+        int maxCount = 50,
+        CancellationToken cancellationToken = default
+    ) =>
+        await _dbContext
+            .Orders.Include(o => o.OrderItems)
+            .Where(o => o.OrderStatus == OrderStatus.Pending && o.CreatedOn < thresholdUtc)
+            .Take(maxCount)
+            .ToListAsync(cancellationToken);
+
+    /// <summary>
     /// Adds a new order to the database.
     /// </summary>
     /// <param name="order"></param>

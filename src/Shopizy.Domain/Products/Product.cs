@@ -235,6 +235,12 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     public void ReduceStock(int quantity) => StockQuantity -= quantity;
 
     /// <summary>
+    /// Increases the stock quantity by the specified amount (e.g., when an order is cancelled or expired).
+    /// </summary>
+    /// <param name="quantity">The quantity to restore to stock.</param>
+    public void IncreaseStock(int quantity) => StockQuantity += quantity;
+
+    /// <summary>
     /// Adds multiple product images.
     /// </summary>
     /// <param name="productImages">The list of product images to add.</param>
