@@ -18,6 +18,13 @@ public sealed class SendAbandonedCartRemindersCommandHandler(
     ILogger<SendAbandonedCartRemindersCommandHandler> logger
 ) : ICommandHandler<SendAbandonedCartRemindersCommand, ErrorOr<int>>
 {
+    private static readonly Action<ILogger, string, Guid, Exception?> s_sendReminderFailed =
+        LoggerMessage.Define<string, Guid>(
+            LogLevel.Error,
+            new EventId(1, nameof(SendAbandonedCartRemindersCommandHandler)),
+            "Failed to send abandoned cart reminder to {Email} for cart {CartId}."
+        );
+
     private readonly ICartRepository _cartRepository = cartRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IEmailService _emailService = emailService;
@@ -60,12 +67,7 @@ public sealed class SendAbandonedCartRemindersCommandHandler(
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(
-                        ex,
-                        "Failed to send abandoned cart reminder to {Email} for cart {CartId}.",
-                        user.Email,
-                        cart.Id.Value
-                    );
+                    s_sendReminderFailed(_logger, user.Email, cart.Id.Value, ex);
                 }
             }
 

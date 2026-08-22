@@ -1,3 +1,4 @@
+using Shopizy.Domain.Products.ValueObjects;
 using Shopizy.Domain.Users.ValueObjects;
 using Shopizy.Domain.Wishlists;
 using Shopizy.Domain.Wishlists.ValueObjects;
@@ -9,6 +10,10 @@ public interface IWishlistRepository
     Task<Wishlist?> GetWishlistByUserIdAsync(UserId userId, CancellationToken cancellationToken);
     Task<Wishlist?> GetWishlistByIdAsync(
         WishlistId id,
+        CancellationToken cancellationToken = default
+    );
+    Task<IReadOnlyList<Wishlist>> GetWishlistsByProductIdAsync(
+        ProductId productId,
         CancellationToken cancellationToken = default
     );
     Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken);

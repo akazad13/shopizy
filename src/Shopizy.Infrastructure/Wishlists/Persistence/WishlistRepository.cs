@@ -25,6 +25,15 @@ public class WishlistRepository(AppDbContext dbContext) : IWishlistRepository
             .Wishlists.Include(w => w.WishlistItems)
             .FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Wishlist>> GetWishlistsByProductIdAsync(
+        Shopizy.Domain.Products.ValueObjects.ProductId productId,
+        CancellationToken cancellationToken = default
+    ) =>
+        await dbContext
+            .Wishlists.Include(w => w.WishlistItems)
+            .Where(w => w.WishlistItems.Any(i => i.ProductId == productId))
+            .ToListAsync(cancellationToken);
+
     public async Task AddAsync(Wishlist wishlist, CancellationToken cancellationToken) =>
         await dbContext.Wishlists.AddAsync(wishlist, cancellationToken);
 

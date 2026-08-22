@@ -211,6 +211,9 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         int stockQuantity
     )
     {
+        var previousEffectivePrice = UnitPrice.Amount * (1 - (Discount ?? 0) / 100m);
+        var wasOutOfStock = StockQuantity == 0;
+
         Name = name;
         ShortDescription = shortDescription;
         Description = description;
@@ -226,6 +229,23 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
         StockQuantity = stockQuantity;
 
         AddDomainEvent(new Events.ProductUpdatedDomainEvent(this));
+
+        var currentEffectivePrice = UnitPrice.Amount * (1 - (Discount ?? 0) / 100m);
+        if (currentEffectivePrice < previousEffectivePrice)
+        {
+            AddDomainEvent(
+                new Events.ProductPriceDroppedDomainEvent(
+                    this,
+                    previousEffectivePrice,
+                    currentEffectivePrice
+                )
+            );
+        }
+
+        if (wasOutOfStock && StockQuantity > 0)
+        {
+            AddDomainEvent(new Events.ProductBackInStockDomainEvent(this));
+        }
     }
 
     /// <summary>
@@ -235,10 +255,19 @@ public sealed class Product : AggregateRoot<ProductId, Guid>, IAuditable
     public void ReduceStock(int quantity) => StockQuantity -= quantity;
 
     /// <summary>
-    /// Increases the stock quantity by the specified amount (e.g., when an order is cancelled or expired).
+    /// Increases the stock quantity by the specified amount (e.g., when an order is cancelled or restocked).
     /// </summary>
     /// <param name="quantity">The quantity to restore to stock.</param>
-    public void IncreaseStock(int quantity) => StockQuantity += quantity;
+    public void IncreaseStock(int quantity)
+    {
+        var wasOutOfStock = StockQuantity == 0;
+        StockQuantity += quantity;
+
+        if (wasOutOfStock && StockQuantity > 0)
+        {
+            AddDomainEvent(new Events.ProductBackInStockDomainEvent(this));
+        }
+    }
 
     /// <summary>
     /// Adds multiple product images.
