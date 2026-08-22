@@ -8,22 +8,37 @@ using Shopizy.SharedKernel.Application.Messaging;
 
 namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview;
 
-public class CreateProductReviewCommandHandler(IProductReviewRepository productReviewRepository)
-    : ICommandHandler<CreateProductReviewCommand, ErrorOr<ProductReview>>
+public class CreateProductReviewCommandHandler(
+    IProductReviewRepository productReviewRepository,
+    IOrderRepository orderRepository
+) : ICommandHandler<CreateProductReviewCommand, ErrorOr<ProductReview>>
 {
     private readonly IProductReviewRepository _productReviewRepository = productReviewRepository;
+    private readonly IOrderRepository _orderRepository = orderRepository;
 
     public async Task<ErrorOr<ProductReview>> Handle(
         CreateProductReviewCommand request,
         CancellationToken cancellationToken
     )
     {
+        var userId = UserId.Create(request.UserId);
+        var productId = ProductId.Create(request.ProductId);
         var rating = Rating.CreateNew(request.Rating);
+
+        var isVerifiedPurchase = await _orderRepository.HasUserPurchasedProductAsync(
+            userId,
+            productId,
+            cancellationToken
+        );
+
         var review = ProductReview.Create(
-            UserId.Create(request.UserId),
-            ProductId.Create(request.ProductId),
+            userId,
+            productId,
             rating,
-            request.Comment
+            request.Comment,
+            isVerifiedPurchase,
+            request.Headline,
+            request.ImageUrls
         );
 
         await _productReviewRepository.AddAsync(review);

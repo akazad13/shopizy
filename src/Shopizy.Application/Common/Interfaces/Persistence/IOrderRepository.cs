@@ -41,6 +41,11 @@ public interface IOrderRepository
         int maxCount = 50,
         CancellationToken cancellationToken = default
     );
+    Task<bool> HasUserPurchasedProductAsync(
+        UserId userId,
+        Shopizy.Domain.Products.ValueObjects.ProductId productId,
+        CancellationToken cancellationToken = default
+    );
     Task AddAsync(Order order);
     void Update(Order order);
 }

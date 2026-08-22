@@ -21,7 +21,22 @@ public class ProductReviewConfigurations : IEntityTypeConfiguration<ProductRevie
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProductReviewId.Create(value));
 
+        builder.Property(pr => pr.Headline).HasMaxLength(150).IsRequired(false);
         builder.Property(pr => pr.Comment).HasMaxLength(1000).IsRequired(false);
+        builder.Property(pr => pr.IsVerifiedPurchase).HasDefaultValue(false);
+        builder.Property(pr => pr.HelpfulVotesCount).HasDefaultValue(0);
+        builder
+            .Property(pr => pr.ImageUrls)
+            .HasConversion(
+                urls => string.Join(';', urls),
+                str =>
+                    string.IsNullOrEmpty(str)
+                        ? new List<string>()
+                        : str.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+            )
+            .HasField("_imageUrls")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .IsRequired(false);
         builder.Property(pr => pr.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(pr => pr.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 

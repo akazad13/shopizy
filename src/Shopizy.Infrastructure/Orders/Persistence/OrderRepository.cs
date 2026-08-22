@@ -209,6 +209,23 @@ public class OrderRepository(AppDbContext dbContext) : IOrderRepository
             .ToListAsync(cancellationToken);
 
     /// <summary>
+    /// Checks whether the specified user has completed an order containing the product.
+    /// </summary>
+    public async Task<bool> HasUserPurchasedProductAsync(
+        UserId userId,
+        Shopizy.Domain.Products.ValueObjects.ProductId productId,
+        CancellationToken cancellationToken = default
+    ) =>
+        await _dbContext
+            .Orders.Where(o =>
+                o.UserId == userId
+                && o.OrderStatus != OrderStatus.Cancelled
+                && o.OrderStatus != OrderStatus.Refunded
+                && o.OrderStatus != OrderStatus.Pending
+            )
+            .AnyAsync(o => o.OrderItems.Any(oi => oi.ProductId == productId), cancellationToken);
+
+    /// <summary>
     /// Adds a new order to the database.
     /// </summary>
     /// <param name="order"></param>

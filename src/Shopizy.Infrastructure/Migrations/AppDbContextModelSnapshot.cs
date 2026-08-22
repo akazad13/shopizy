@@ -504,6 +504,23 @@ namespace Shopizy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("smalldatetime");
 
+                    b.Property<string>("Headline")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("IsVerifiedPurchase")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("HelpfulVotesCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("ImageUrls")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("smalldatetime");
 

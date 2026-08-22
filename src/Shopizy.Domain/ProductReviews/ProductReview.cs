@@ -33,9 +33,31 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
     public Rating Rating { get; set; } = null!;
 
     /// <summary>
+    /// Gets or sets the review headline/title, if provided.
+    /// </summary>
+    public string? Headline { get; private set; }
+
+    /// <summary>
     /// Gets or sets the review comment.
     /// </summary>
     public string Comment { get; set; } = null!;
+
+    /// <summary>
+    /// Gets a value indicating whether this review was submitted by a verified buyer.
+    /// </summary>
+    public bool IsVerifiedPurchase { get; private set; }
+
+    /// <summary>
+    /// Gets the count of helpful upvotes given by other shoppers.
+    /// </summary>
+    public int HelpfulVotesCount { get; private set; }
+
+    private readonly List<string> _imageUrls = [];
+
+    /// <summary>
+    /// Gets the list of customer photos attached to this review.
+    /// </summary>
+    public IReadOnlyList<string> ImageUrls => _imageUrls.AsReadOnly();
 
     /// <summary>
     /// Gets or sets the date and time when the review was created.
@@ -48,18 +70,26 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
     public DateTime? ModifiedOn { get; set; }
 
     /// <summary>
-    /// Creates a new product review.
+    /// Creates a standard product review.
     /// </summary>
-    /// <param name="userId">The user identifier.</param>
-    /// <param name="productId">The product identifier.</param>
-    /// <param name="rating">The rating.</param>
-    /// <param name="comment">The review comment.</param>
-    /// <returns>A new <see cref="ProductReview"/> instance.</returns>
     public static ProductReview Create(
         UserId userId,
         ProductId productId,
         Rating rating,
         string comment
+    ) => Create(userId, productId, rating, comment, false, null, null);
+
+    /// <summary>
+    /// Creates a product review with verified purchase status, headline, and customer photos.
+    /// </summary>
+    public static ProductReview Create(
+        UserId userId,
+        ProductId productId,
+        Rating rating,
+        string comment,
+        bool isVerifiedPurchase,
+        string? headline = null,
+        IEnumerable<string>? imageUrls = null
     )
     {
         var review = new ProductReview(
@@ -67,11 +97,19 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
             userId,
             productId,
             rating,
-            comment
+            comment,
+            isVerifiedPurchase,
+            headline,
+            imageUrls
         );
         review.AddDomainEvent(new Events.ProductReviewCreatedDomainEvent(productId, rating));
         return review;
     }
+
+    /// <summary>
+    /// Upvotes this review as helpful.
+    /// </summary>
+    public void UpvoteHelpful() => HelpfulVotesCount++;
 
     public void Delete() =>
         AddDomainEvent(new Events.ProductReviewDeletedDomainEvent(ProductId, Rating));
@@ -81,7 +119,10 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
         UserId userId,
         ProductId productId,
         Rating rating,
-        string comment
+        string comment,
+        bool isVerifiedPurchase,
+        string? headline,
+        IEnumerable<string>? imageUrls
     )
         : base(productReviewId)
     {
@@ -89,6 +130,13 @@ public sealed class ProductReview : AggregateRoot<ProductReviewId, Guid>, IAudit
         ProductId = productId;
         Rating = rating;
         Comment = comment;
+        IsVerifiedPurchase = isVerifiedPurchase;
+        Headline = headline;
+        HelpfulVotesCount = 0;
+        if (imageUrls is not null)
+        {
+            _imageUrls.AddRange(imageUrls);
+        }
     }
 
     private ProductReview() { }

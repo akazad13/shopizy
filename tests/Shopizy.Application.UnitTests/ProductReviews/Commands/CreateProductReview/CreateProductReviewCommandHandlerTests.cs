@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.ProductReviews;
 using Shouldly;
@@ -10,6 +10,9 @@ namespace Shopizy.Application.ProductReviews.Commands.CreateProductReview.UnitTe
 /// </summary>
 public class CreateProductReviewCommandHandlerTests
 {
+    private readonly Mock<IProductReviewRepository> _mockProductReviewRepo = new();
+    private readonly Mock<IOrderRepository> _mockOrderRepo = new();
+
     /// <summary>
     /// Tests that Handle creates and returns a product review successfully with valid input.
     /// </summary>
@@ -23,12 +26,24 @@ public class CreateProductReviewCommandHandlerTests
         var comment = "Great product!";
         var command = new CreateProductReviewCommand(userId, productId, rating, comment);
 
-        var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository
+        _mockProductReviewRepo
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        _mockOrderRepo
+            .Setup(x =>
+                x.HasUserPurchasedProductAsync(
+                    It.IsAny<Shopizy.Domain.Users.ValueObjects.UserId>(),
+                    It.IsAny<Shopizy.Domain.Products.ValueObjects.ProductId>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
+            .ReturnsAsync(true);
+
+        var handler = new CreateProductReviewCommandHandler(
+            _mockProductReviewRepo.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -37,11 +52,12 @@ public class CreateProductReviewCommandHandlerTests
         result.IsError.ShouldBeFalse();
         result.Value.ShouldNotBeNull();
         result.Value.ShouldBeOfType<ProductReview>();
-        mockRepository.Verify(x => x.AddAsync(It.IsAny<ProductReview>()), Times.Once);
+        result.Value.IsVerifiedPurchase.ShouldBeTrue();
+        _mockProductReviewRepo.Verify(x => x.AddAsync(It.IsAny<ProductReview>()), Times.Once);
     }
 
     /// <summary>
-    /// Tests that Handle creates a review with correct properties matching the command.
+    /// Tests that Handle creates a review with correct properties matching the command including Headline and Images.
     /// </summary>
     [Fact]
     public async Task Handle_ShouldCreateReviewWithCorrectProperties()
@@ -51,14 +67,25 @@ public class CreateProductReviewCommandHandlerTests
         var productId = Guid.NewGuid();
         var rating = 3.5m;
         var comment = "Average product";
-        var command = new CreateProductReviewCommand(userId, productId, rating, comment);
+        var headline = "Not bad";
+        var images = new List<string> { "https://example.com/photo1.jpg" };
+        var command = new CreateProductReviewCommand(
+            userId,
+            productId,
+            rating,
+            comment,
+            headline,
+            images
+        );
 
-        var mockRepository = new Mock<IProductReviewRepository>();
-        mockRepository
+        _mockProductReviewRepo
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            _mockProductReviewRepo.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -68,6 +95,9 @@ public class CreateProductReviewCommandHandlerTests
         result.Value.ProductId.Value.ShouldBe(productId);
         result.Value.Rating.Value.ShouldBe(rating);
         result.Value.Comment.ShouldBe(comment);
+        result.Value.Headline.ShouldBe(headline);
+        result.Value.ImageUrls.Count.ShouldBe(1);
+        result.Value.ImageUrls[0].ShouldBe("https://example.com/photo1.jpg");
     }
 
     /// <summary>
@@ -97,7 +127,10 @@ public class CreateProductReviewCommandHandlerTests
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -135,7 +168,10 @@ public class CreateProductReviewCommandHandlerTests
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -164,7 +200,10 @@ public class CreateProductReviewCommandHandlerTests
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -196,7 +235,10 @@ public class CreateProductReviewCommandHandlerTests
             .Callback<ProductReview>(review => capturedReview = review)
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -225,7 +267,10 @@ public class CreateProductReviewCommandHandlerTests
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -254,7 +299,10 @@ public class CreateProductReviewCommandHandlerTests
             .Setup(x => x.AddAsync(It.IsAny<ProductReview>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -285,7 +333,10 @@ public class CreateProductReviewCommandHandlerTests
             .Callback<ProductReview>(review => repositoryReview = review)
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateProductReviewCommandHandler(mockRepository.Object);
+        var handler = new CreateProductReviewCommandHandler(
+            mockRepository.Object,
+            _mockOrderRepo.Object
+        );
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);

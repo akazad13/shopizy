@@ -8,5 +8,7 @@ public record CreateProductReviewCommand(
     Guid UserId,
     Guid ProductId,
     decimal Rating,
-    string Comment
+    string Comment,
+    string? Headline = null,
+    IReadOnlyList<string>? ImageUrls = null
 ) : ICommand<ErrorOr<ProductReview>>;
