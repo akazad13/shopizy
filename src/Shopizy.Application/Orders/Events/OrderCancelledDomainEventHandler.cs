@@ -11,12 +11,14 @@ public class OrderCancelledDomainEventHandler(
     IProductRepository productRepository,
     IPaymentRepository paymentRepository,
     IPaymentService paymentService,
+    IRealtimeNotifier realtimeNotifier,
     IUnitOfWork unitOfWork
 ) : IDomainEventHandler<OrderCancelledDomainEvent>
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IPaymentService _paymentService = paymentService;
+    private readonly IRealtimeNotifier _realtimeNotifier = realtimeNotifier;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task Handle(
@@ -68,5 +70,22 @@ public class OrderCancelledDomainEventHandler(
         {
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
+
+        await _realtimeNotifier.SendOrderStatusUpdateAsync(
+            domainEvent.Order.UserId.Value,
+            domainEvent.Order.Id.Value,
+            domainEvent.Order.OrderStatus.ToString(),
+            cancellationToken
+        );
+
+        await _realtimeNotifier.SendAdminMetricUpdateAsync(
+            "OrderCancelled",
+            new
+            {
+                OrderId = domainEvent.Order.Id.Value,
+                Reason = domainEvent.Order.CancellationReason,
+            },
+            cancellationToken
+        );
     }
 }

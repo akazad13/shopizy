@@ -102,6 +102,13 @@ public static class ExternalServicesRegister
             services.AddScoped<IEmailService, LoggingEmailService>();
         }
 
+        // Real-time notifications (SignalR)
+        services.AddSignalR();
+        services.AddScoped<
+            IRealtimeNotifier,
+            Shopizy.Infrastructure.Realtime.Services.RealtimeNotifier
+        >();
+
         return services;
     }
 }

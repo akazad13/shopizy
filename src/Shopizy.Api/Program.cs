@@ -31,6 +31,8 @@ var app = builder.Build();
 
 app.UseInfrastructure();
 app.MapEndpoints();
+app.MapHub<Shopizy.Infrastructure.Realtime.Hubs.OrderStatusHub>("/hubs/orders");
+app.MapHub<Shopizy.Infrastructure.Realtime.Hubs.AdminDashboardHub>("/hubs/admin-dashboard");
 app.MapHealthChecks("/healthz").DisableRateLimiting();
 
 // Configure the HTTP request pipeline.

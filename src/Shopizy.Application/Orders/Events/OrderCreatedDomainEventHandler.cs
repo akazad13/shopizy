@@ -1,4 +1,5 @@
 using Shopizy.Application.Common.Interfaces.Persistence;
+using Shopizy.Application.Common.Interfaces.Services;
 using Shopizy.Domain.Orders.Events;
 using Shopizy.SharedKernel.Application.Interfaces.Persistence;
 using Shopizy.SharedKernel.Application.Messaging;
@@ -8,6 +9,7 @@ namespace Shopizy.Application.Orders.Events;
 public class OrderCreatedDomainEventHandler(
     ICartRepository cartRepository,
     IProductRepository productRepository,
+    IRealtimeNotifier realtimeNotifier,
     IUnitOfWork unitOfWork
 ) : IDomainEventHandler<OrderCreatedDomainEvent>
 {
@@ -36,5 +38,23 @@ public class OrderCreatedDomainEventHandler(
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await realtimeNotifier.SendOrderStatusUpdateAsync(
+            domainEvent.Order.UserId.Value,
+            domainEvent.Order.Id.Value,
+            domainEvent.Order.OrderStatus.ToString(),
+            cancellationToken
+        );
+
+        await realtimeNotifier.SendAdminMetricUpdateAsync(
+            "OrderCreated",
+            new
+            {
+                OrderId = domainEvent.Order.Id.Value,
+                TotalAmount = domainEvent.Order.GetTotal().Amount,
+                ItemCount = domainEvent.Order.OrderItems.Count,
+            },
+            cancellationToken
+        );
     }
 }

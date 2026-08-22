@@ -16,6 +16,7 @@ public class OrderCreatedDomainEventHandlerTests
 {
     private readonly Mock<ICartRepository> _mockCartRepository;
     private readonly Mock<IProductRepository> _mockProductRepository;
+    private readonly Mock<Shopizy.Application.Common.Interfaces.Services.IRealtimeNotifier> _mockRealtimeNotifier;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly OrderCreatedDomainEventHandler _sut;
 
@@ -23,11 +24,14 @@ public class OrderCreatedDomainEventHandlerTests
     {
         _mockCartRepository = new Mock<ICartRepository>();
         _mockProductRepository = new Mock<IProductRepository>();
+        _mockRealtimeNotifier =
+            new Mock<Shopizy.Application.Common.Interfaces.Services.IRealtimeNotifier>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
 
         _sut = new OrderCreatedDomainEventHandler(
             _mockCartRepository.Object,
             _mockProductRepository.Object,
+            _mockRealtimeNotifier.Object,
             _mockUnitOfWork.Object
         );
     }

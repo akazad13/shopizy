@@ -20,6 +20,7 @@ public class OrderCancelledDomainEventHandlerTests
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IPaymentRepository> _mockPaymentRepository;
     private readonly Mock<IPaymentService> _mockPaymentService;
+    private readonly Mock<Shopizy.Application.Common.Interfaces.Services.IRealtimeNotifier> _mockRealtimeNotifier;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly OrderCancelledDomainEventHandler _sut;
 
@@ -28,12 +29,15 @@ public class OrderCancelledDomainEventHandlerTests
         _mockProductRepository = new Mock<IProductRepository>();
         _mockPaymentRepository = new Mock<IPaymentRepository>();
         _mockPaymentService = new Mock<IPaymentService>();
+        _mockRealtimeNotifier =
+            new Mock<Shopizy.Application.Common.Interfaces.Services.IRealtimeNotifier>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
 
         _sut = new OrderCancelledDomainEventHandler(
             _mockProductRepository.Object,
             _mockPaymentRepository.Object,
             _mockPaymentService.Object,
+            _mockRealtimeNotifier.Object,
             _mockUnitOfWork.Object
         );
     }
