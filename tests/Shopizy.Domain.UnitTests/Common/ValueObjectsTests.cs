@@ -25,10 +25,20 @@ public class ValueObjectsTests
         avg.Value.ShouldBe(4);
         avg.NumRatings.ShouldBe(2);
 
-        // Remove 3-star rating
-        avg.RemoveRating(Rating.CreateNew(3));
-        avg.Value.ShouldBe(5);
+        // Remove 5-star rating (leaving 1 rating of 3-star)
+        avg.RemoveRating(Rating.CreateNew(5));
+        avg.Value.ShouldBe(3);
         avg.NumRatings.ShouldBe(1);
+
+        // Remove final rating (when NumRatings <= 1)
+        avg.RemoveRating(Rating.CreateNew(3));
+        avg.Value.ShouldBe(0);
+        avg.NumRatings.ShouldBe(0);
+
+        var avg1 = AverageRating.CreateNew(4.5m, 10);
+        var avg2 = AverageRating.CreateNew(4.5m, 10);
+        avg1.ShouldBe(avg2);
+        avg1.GetHashCode().ShouldBe(avg2.GetHashCode());
     }
 
     [Fact]

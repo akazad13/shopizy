@@ -35,8 +35,11 @@ public class ShipmentTests
         var sId1 = ShipmentId.CreateUnique();
         var raw = Guid.NewGuid();
         var sId2 = ShipmentId.Create(raw);
+        var sId3 = ShipmentId.Create(raw);
 
         sId1.Value.ShouldNotBe(Guid.Empty);
         sId2.Value.ShouldBe(raw);
+        sId2.ShouldBe(sId3);
+        sId2.GetHashCode().ShouldBe(sId3.GetHashCode());
     }
 }

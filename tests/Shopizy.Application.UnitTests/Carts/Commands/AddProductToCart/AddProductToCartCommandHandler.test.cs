@@ -126,4 +126,42 @@ public class AddProductToCartCommandHandlerTests
                 && li.Quantity == command.Quantity
         );
     }
+
+    [Fact]
+    public async Task Should_ReturnError_WhenProductAlreadyExistsInCartWithSameColorAndSize()
+    {
+        var command = AddProductToCartCommandUtils.CreateCommand();
+        var existingCart = CartFactory.Create();
+        existingCart.AddLineItem(
+            CartItem.Create(ProductId.Create(command.ProductId), command.Color, command.Size, 1)
+        );
+
+        _mockCartRepository
+            .Setup(cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)))
+            .ReturnsAsync(existingCart);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.Cart.ProductAlreadyExistInCart, result.FirstError);
+    }
+
+    [Fact]
+    public async Task Should_ReturnError_WhenProductDoesNotExist()
+    {
+        var command = AddProductToCartCommandUtils.CreateCommand();
+        var existingCart = CartFactory.Create();
+
+        _mockCartRepository
+            .Setup(cr => cr.GetCartByUserIdForUpdateAsync(UserId.Create(command.UserId)))
+            .ReturnsAsync(existingCart);
+        _mockProductRepository
+            .Setup(x => x.IsProductExistAsync(It.IsAny<ProductId>()))
+            .ReturnsAsync(false);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.Product.ProductNotFound, result.FirstError);
+    }
 }

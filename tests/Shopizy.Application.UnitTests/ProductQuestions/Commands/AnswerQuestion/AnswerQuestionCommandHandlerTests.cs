@@ -64,4 +64,24 @@ public class AnswerQuestionCommandHandlerTests
         Assert.NotNull(result.Value.Answer);
         Assert.Equal("Yes, in stock!", result.Value.Answer.Answer);
     }
+
+    [Fact]
+    public async Task Should_ReturnError_WhenQuestionAlreadyAnswered()
+    {
+        var question = ProductQuestion.Create(
+            ProductId.CreateUnique(),
+            UserId.CreateUnique(),
+            "Is this available?"
+        );
+        question.AddAnswer(UserId.CreateUnique(), "Already answered");
+
+        var command = new AnswerQuestionCommand(question.Id.Value, Guid.NewGuid(), "Second answer");
+
+        _mockRepository.Setup(x => x.GetByIdAsync(question.Id)).ReturnsAsync(question);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.ProductQuestion.QuestionAlreadyAnswered, result.FirstError);
+    }
 }

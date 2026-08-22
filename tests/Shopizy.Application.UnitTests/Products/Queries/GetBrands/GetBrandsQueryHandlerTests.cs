@@ -34,5 +34,7 @@ public class GetBrandsQueryHandlerTests
         Assert.False(result.IsError);
         Assert.Equal(3, result.Value.Count);
         Assert.Contains("Nike", result.Value);
+        Assert.Equal("products:brands", query.CacheKey);
+        Assert.Equal(TimeSpan.FromMinutes(60), query.Expiration);
     }
 }

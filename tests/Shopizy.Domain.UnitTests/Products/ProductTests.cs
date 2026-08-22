@@ -1,6 +1,7 @@
 using Shopizy.Domain.Categories.ValueObjects;
 using Shopizy.Domain.Common.Enums;
 using Shopizy.Domain.Common.ValueObjects;
+using Shopizy.Domain.Products.Entities;
 using Shopizy.Domain.Products.Events;
 using Shouldly;
 using Xunit;
@@ -102,6 +103,66 @@ public class ProductTests
 
         // Assert
         product.Favourites.ShouldBe(initialFavourites + 1);
+    }
+
+    [Fact]
+    public void ProductImage_CreateAndProductImageManagement_ShouldWorkCorrectly()
+    {
+        var product = CreateSampleProduct();
+        var img1 = ProductImage.Create("http://example.com/1.jpg", 1, "pub-1");
+        var img2 = ProductImage.Create("http://example.com/2.jpg", 2, "pub-2");
+
+        img1.ImageUrl.ShouldBe("http://example.com/1.jpg");
+        img1.Seq.ShouldBe(1);
+        img1.PublicId.ShouldBe("pub-1");
+
+        product.AddProductImage(img1);
+        product.ProductImages.Count.ShouldBe(1);
+
+        product.AddProductImages(new List<ProductImage> { img2 });
+        product.ProductImages.Count.ShouldBe(2);
+
+        product.RemoveProductImage(img1);
+        product.ProductImages.Count.ShouldBe(1);
+        product.ProductImages.ShouldNotContain(img1);
+    }
+
+    [Fact]
+    public void StockAndPriceEvents_ShouldRaiseAppropriateEvents()
+    {
+        var product = CreateSampleProduct();
+        product.ReduceStock(100);
+        product.StockQuantity.ShouldBe(0);
+
+        product.IncreaseStock(50);
+        product.StockQuantity.ShouldBe(50);
+        product.DomainEvents.ShouldContain(e => e is ProductBackInStockDomainEvent);
+
+        // Price drop test
+        product.Update(
+            product.Name,
+            product.ShortDescription,
+            product.Description,
+            product.CategoryId,
+            product.SKU,
+            Price.CreateNew(5, Currency.usd),
+            null,
+            product.BrandId,
+            product.Barcode,
+            product.Colors,
+            product.Sizes,
+            product.Tags,
+            50
+        );
+        product.DomainEvents.ShouldContain(e => e is ProductPriceDroppedDomainEvent);
+
+        // Ratings & IsActive
+        product.AddReviewRating(Rating.CreateNew(4));
+        product.AverageRating.Value.ShouldBe(4);
+        product.RemoveReviewRating(Rating.CreateNew(4));
+
+        product.SetIsActive(false);
+        product.IsActive.ShouldBeFalse();
     }
 
     private Shopizy.Domain.Products.Product CreateSampleProduct() =>

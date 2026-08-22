@@ -4,6 +4,7 @@ using Shopizy.Application.Categories.Commands.DeleteCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
 using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.DeleteCategory;
@@ -38,5 +39,19 @@ public class DeleteCategoryCommandHandlerTests
         result.Value.ShouldBe(Result.Success);
 
         _mockCategoryRepository.Verify(x => x.Remove(category), Times.Once);
+    }
+
+    [Fact]
+    public async Task Should_ReturnCategoryNotFound_WhenCategoryDoesNotExist()
+    {
+        var command = DeleteCategoryCommandUtils.CreateCommand();
+        _mockCategoryRepository
+            .Setup(c => c.GetCategoryByIdAsync(It.IsAny<CategoryId>()))
+            .ReturnsAsync((Shopizy.Domain.Categories.Category?)null);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        result.IsError.ShouldBeTrue();
+        result.FirstError.Code.ShouldBe(CustomErrors.Category.CategoryNotFound.Code);
     }
 }

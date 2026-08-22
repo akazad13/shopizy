@@ -4,6 +4,7 @@ using Shopizy.Application.Categories.Commands.UpdateCategory;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Application.UnitTests.Categories.TestUtils;
 using Shopizy.Domain.Categories.ValueObjects;
+using Shopizy.Domain.Common.CustomErrors;
 using Shouldly;
 
 namespace Shopizy.Application.UnitTests.Categories.Commands.UpdateCategory;
@@ -36,5 +37,19 @@ public class UpdateCategoryCommandHandlerTests
         // Assert
         result.IsError.ShouldBeFalse();
         result.Value.ShouldBe(Result.Success);
+    }
+
+    [Fact]
+    public async Task Should_ReturnCategoryNotFound_WhenCategoryDoesNotExist()
+    {
+        var command = UpdateCategoryCommandUtils.CreateCommand();
+        _mockCategoryRepository
+            .Setup(c => c.GetCategoryByIdAsync(It.IsAny<CategoryId>()))
+            .ReturnsAsync((Shopizy.Domain.Categories.Category?)null);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        result.IsError.ShouldBeTrue();
+        result.FirstError.Code.ShouldBe(CustomErrors.Category.CategoryNotFound.Code);
     }
 }

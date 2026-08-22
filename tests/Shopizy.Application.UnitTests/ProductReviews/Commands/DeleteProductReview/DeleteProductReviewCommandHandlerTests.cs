@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Shopizy.Application.Common.Interfaces.Persistence;
 using Shopizy.Domain.ProductReviews;
 using Shopizy.Domain.ProductReviews.ValueObjects;
@@ -111,5 +111,37 @@ public class DeleteProductReviewCommandHandlerTests
             x => x.GetProductReviewByIdAsync(It.Is<ProductReviewId>(id => id.Value == reviewId)),
             Times.Once
         );
+    }
+
+    [Fact]
+    public async Task Handle_ExistingReview_DeletesAndRemovesReview()
+    {
+        // Arrange
+        var review = ProductReview.Create(
+            Shopizy.Domain.Users.ValueObjects.UserId.CreateUnique(),
+            Shopizy.Domain.Products.ValueObjects.ProductId.CreateUnique(),
+            Shopizy.Domain.Common.ValueObjects.Rating.CreateNew(5),
+            "Great product"
+        );
+        var command = new DeleteProductReviewCommand(review.ProductId.Value, review.Id.Value);
+
+        var mockRepository = new Mock<IProductReviewRepository>();
+        mockRepository
+            .Setup(x =>
+                x.GetProductReviewByIdAsync(
+                    It.Is<ProductReviewId>(id => id.Value == review.Id.Value)
+                )
+            )
+            .ReturnsAsync(review);
+
+        var handler = new DeleteProductReviewCommandHandler(mockRepository.Object);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsError.ShouldBeFalse();
+        result.Value.ShouldBe(ErrorOr.Result.Deleted);
+        mockRepository.Verify(x => x.Remove(review), Times.Once);
     }
 }

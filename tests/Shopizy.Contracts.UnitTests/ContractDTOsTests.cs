@@ -125,6 +125,15 @@ public class ContractDTOsTests
 
         var updVarReq = new UpdateVariantRequest("Var 1", "SKU1", 55m, "usd", 15, true);
         updVarReq.ShouldNotBeNull();
+
+        var bulkDeleteReq = new BulkDeleteProductsRequest([Guid.NewGuid(), Guid.NewGuid()]);
+        bulkDeleteReq.ShouldNotBeNull();
+        bulkDeleteReq.ProductIds.Count.ShouldBe(2);
+
+        var bulkStatusReq = new BulkUpdateProductStatusRequest([Guid.NewGuid()], true);
+        bulkStatusReq.ShouldNotBeNull();
+        bulkStatusReq.ProductIds.Count.ShouldBe(1);
+        bulkStatusReq.IsActive.ShouldBeTrue();
     }
 
     [Fact]
@@ -232,6 +241,215 @@ public class ContractDTOsTests
     {
         var updSettingsReq = new UpdateWishlistSettingsRequest("Favorites", true);
         updSettingsReq.ShouldNotBeNull();
+        updSettingsReq.Name.ShouldBe("Favorites");
+        updSettingsReq.IsPublic.ShouldBeTrue();
+
+        var createWishlistReq = new CreateWishlistRequest("My List", true);
+        createWishlistReq.Name.ShouldBe("My List");
+        createWishlistReq.IsPublic.ShouldBeTrue();
+
+        var updateWishlistReq = new UpdateWishlistRequest(Guid.NewGuid(), "Add");
+        updateWishlistReq.Action.ShouldBe("Add");
+
+        var itemRes = new WishlistItemResponse(Guid.NewGuid(), Guid.NewGuid());
+        itemRes.ProductId.ShouldNotBe(Guid.Empty);
+
+        var listRes = new WishlistResponse(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "My List",
+            true,
+            DateTime.UtcNow,
+            null,
+            [itemRes]
+        );
+        listRes.WishlistItems.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Category_Contracts_ShouldInitializeProperties()
+    {
+        var createCatReq = new CreateCategoryRequest("Electronics", null);
+        createCatReq.Name.ShouldBe("Electronics");
+
+        var updCatReq = new UpdateCategoryRequest("Gadgets", null);
+        updCatReq.Name.ShouldBe("Gadgets");
+
+        var catRes = new CategoryResponse(Guid.NewGuid(), "Electronics", null);
+        catRes.Name.ShouldBe("Electronics");
+
+        var catTree = new CategoryTreeResponse(Guid.NewGuid(), "Electronics", null, []);
+        catTree.Children!.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GiftCardAndLoyalty_Contracts_ShouldInitializeProperties()
+    {
+        var createGc = new CreateGiftCardRequest("GIFT100", 100m, null);
+        createGc.Code.ShouldBe("GIFT100");
+
+        var gcRes = new GiftCardResponse(
+            Guid.NewGuid(),
+            "GIFT100",
+            100m,
+            100m,
+            true,
+            null,
+            DateTime.UtcNow
+        );
+        gcRes.Code.ShouldBe("GIFT100");
+
+        var redeemGc = new RedeemGiftCardRequest("GIFT100");
+        redeemGc.Code.ShouldBe("GIFT100");
+
+        var earnPts = new EarnPointsRequest(100, "Purchase");
+        earnPts.Points.ShouldBe(100);
+
+        var redeemPts = new RedeemPointsRequest(50, "Order #1");
+        redeemPts.Points.ShouldBe(50);
+
+        var txRes = new LoyaltyTransactionResponse(
+            Guid.NewGuid(),
+            100,
+            "Earn",
+            "Purchase",
+            DateTime.UtcNow
+        );
+        txRes.Points.ShouldBe(100);
+
+        var loyaltyRes = new LoyaltyAccountResponse(Guid.NewGuid(), 500, [txRes]);
+        loyaltyRes.TotalPoints.ShouldBe(500);
+    }
+
+    [Fact]
+    public void Product_Contracts_ShouldInitializeProperties_Expanded()
+    {
+        var brandRes = new BrandResponse(Guid.NewGuid(), "Nike", "logo.png", "USA");
+        brandRes.Name.ShouldBe("Nike");
+
+        var createBrand = new CreateBrandRequest("Nike", "logo.png", "USA");
+        createBrand.Name.ShouldBe("Nike");
+
+        var updBrand = new UpdateBrandRequest("Nike Inc", "logo.png", "USA");
+        updBrand.Name.ShouldBe("Nike Inc");
+
+        var avgRating = new AverageRating(4.5m, 10);
+        var prodRes = new ProductResponse(
+            Guid.NewGuid(),
+            "Shoes",
+            "Short",
+            "Desc",
+            Guid.NewGuid(),
+            "$100",
+            0m,
+            Guid.NewGuid(),
+            "M",
+            "Red",
+            "Tag",
+            "123",
+            10,
+            avgRating,
+            []
+        );
+        prodRes.Name.ShouldBe("Shoes");
+
+        var prodDetail = new ProductDetailResponse(
+            Guid.NewGuid(),
+            "Shoes",
+            "Short",
+            "Long",
+            Guid.NewGuid(),
+            "$100",
+            0m,
+            "SKU1",
+            Guid.NewGuid(),
+            "M",
+            "Red",
+            "Tag",
+            "123",
+            10,
+            avgRating,
+            5,
+            [],
+            [],
+            []
+        );
+        prodDetail.Name.ShouldBe("Shoes");
+
+        var criteria = new ProductsCriteria(
+            null,
+            "Shoes",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1,
+            10
+        );
+        criteria.Name.ShouldBe("Shoes");
+
+        var pagedRes = new ProductsPagedResponse([prodRes], 1, 1, 1);
+        pagedRes.Items.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void UserAndAuth_Contracts_ShouldInitializeProperties()
+    {
+        var authRes = new AuthResponse(
+            Guid.NewGuid(),
+            "John",
+            "Doe",
+            "john@example.com",
+            "Customer",
+            "token",
+            "refresh",
+            DateTime.UtcNow
+        );
+        authRes.Token.ShouldBe("token");
+
+        var loginReq = new LoginRequest("john@example.com", "Password123!");
+        loginReq.Email.ShouldBe("john@example.com");
+
+        var regReq = new RegisterRequest("John", "Doe", "john@example.com", "Password123!");
+        regReq.FirstName.ShouldBe("John");
+
+        var updAddr = new UpdateAddressRequest
+        {
+            Street = "Main St",
+            City = "City",
+            State = "State",
+            Country = "Country",
+            ZipCode = "12345",
+        };
+        var updUser = new UpdateUserRequest("John", "Doe", "1234567890", updAddr);
+        updUser.FirstName.ShouldBe("John");
+
+        var updPass = new UpdatePasswordRequest
+        {
+            OldPassword = "Old123!",
+            NewPassword = "New123!",
+        };
+        updPass.OldPassword.ShouldBe("Old123!");
+
+        var userDetails = new UserDetails(
+            Guid.NewGuid(),
+            "John",
+            "Doe",
+            "john@example.com",
+            "img.png",
+            "1234567890",
+            null,
+            5,
+            2,
+            0,
+            0,
+            DateTime.UtcNow,
+            null
+        );
+        userDetails.TotalOrders.ShouldBe(5);
     }
 }
 

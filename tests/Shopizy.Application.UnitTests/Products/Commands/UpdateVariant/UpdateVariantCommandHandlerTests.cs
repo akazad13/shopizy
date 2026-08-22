@@ -83,4 +83,27 @@ public class UpdateVariantCommandHandlerTests
         Assert.Equal("Green / Large", result.Value.Name);
         Assert.Equal(35.00m, result.Value.UnitPrice.Amount);
     }
+
+    [Fact]
+    public async Task Should_ReturnVariantNotFound_WhenVariantDoesNotExistInProduct()
+    {
+        var product = ProductFactory.CreateProduct();
+        var command = new UpdateVariantCommand(
+            product.Id.Value,
+            Guid.NewGuid(),
+            "Green / Large",
+            "SKU-G-L-UPD",
+            35.00m,
+            Currency.usd,
+            20,
+            true
+        );
+
+        _mockRepo.Setup(x => x.GetProductByIdForUpdateAsync(product.Id)).ReturnsAsync(product);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.ProductVariant.VariantNotFound, result.FirstError);
+    }
 }

@@ -421,3 +421,5 @@ msbuild.log
 
 # Local development secrets - never commit
 src/Shopizy.Api/appsettings.Development.json
+.dotnet/*
+coverage-report/*

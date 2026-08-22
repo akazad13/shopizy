@@ -64,4 +64,19 @@ public class RemoveVariantCommandHandlerTests
         Assert.False(result.IsError);
         Assert.Equal(Result.Deleted, result.Value);
     }
+
+    [Fact]
+    public async Task Should_ReturnVariantNotFound_WhenVariantDoesNotExistInProduct()
+    {
+        var product = ProductFactory.CreateProduct();
+        var nonExistentVariantId = Guid.NewGuid();
+        var command = new RemoveVariantCommand(product.Id.Value, nonExistentVariantId);
+
+        _mockRepo.Setup(x => x.GetProductByIdForUpdateAsync(product.Id)).ReturnsAsync(product);
+
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        Assert.True(result.IsError);
+        Assert.Equal(CustomErrors.ProductVariant.VariantNotFound, result.FirstError);
+    }
 }

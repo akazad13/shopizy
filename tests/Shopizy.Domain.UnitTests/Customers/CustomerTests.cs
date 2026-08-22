@@ -77,6 +77,24 @@ public class CustomerTests
     }
 
     [Fact]
+    public void ModifiedOn_PrivateSetter_CanBeSet()
+    {
+        // Arrange
+        var customer = Customer.Create(
+            null,
+            Address.CreateNew("Street", "City", "State", "Country", "12345")
+        );
+        var modifiedOn = DateTime.UtcNow;
+
+        // Act
+        var propertyInfo = typeof(Customer).GetProperty(nameof(Customer.ModifiedOn));
+        propertyInfo?.SetValue(customer, modifiedOn);
+
+        // Assert
+        customer.ModifiedOn.ShouldBe(modifiedOn);
+    }
+
+    [Fact]
     public void CustomerId_Create_ShouldInitializeWithValue()
     {
         var rawGuid = Guid.NewGuid();

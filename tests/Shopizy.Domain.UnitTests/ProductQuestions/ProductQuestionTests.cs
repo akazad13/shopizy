@@ -64,15 +64,24 @@ public class ProductQuestionTests
     [Fact]
     public void ValueObjects_CreateUniqueAndCreate_ShouldInitialize()
     {
+        var raw1 = Guid.NewGuid();
         var qId1 = ProductQuestionId.CreateUnique();
-        var qId2 = ProductQuestionId.Create(Guid.NewGuid());
+        var qId2 = ProductQuestionId.Create(raw1);
+        var qId3 = ProductQuestionId.Create(raw1);
 
+        var raw2 = Guid.NewGuid();
         var aId1 = ProductAnswerId.CreateUnique();
-        var aId2 = ProductAnswerId.Create(Guid.NewGuid());
+        var aId2 = ProductAnswerId.Create(raw2);
+        var aId3 = ProductAnswerId.Create(raw2);
 
         qId1.Value.ShouldNotBe(Guid.Empty);
         qId2.Value.ShouldNotBe(Guid.Empty);
+        qId2.ShouldBe(qId3);
+        qId2.GetHashCode().ShouldBe(qId3.GetHashCode());
+
         aId1.Value.ShouldNotBe(Guid.Empty);
         aId2.Value.ShouldNotBe(Guid.Empty);
+        aId2.ShouldBe(aId3);
+        aId2.GetHashCode().ShouldBe(aId3.GetHashCode());
     }
 }
