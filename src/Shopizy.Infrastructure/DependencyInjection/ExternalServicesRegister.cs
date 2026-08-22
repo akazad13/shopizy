@@ -120,6 +120,12 @@ public static class ExternalServicesRegister
             Shopizy.Infrastructure.Services.Shipping.ShippingCarrierService
         >();
 
+        // Search Engine
+        services.AddScoped<
+            IProductSearchEngine,
+            Shopizy.Infrastructure.Services.Search.ProductSearchEngine
+        >();
+
         return services;
     }
 }
