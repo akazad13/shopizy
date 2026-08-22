@@ -52,6 +52,27 @@ public class CartRepository(AppDbContext dbContext) : ICartRepository
         _dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == id);
 
     /// <summary>
+    /// Retrieves inactive carts with items for which no reminder has been sent recently.
+    /// </summary>
+    public async Task<IReadOnlyList<Cart>> GetAbandonedCartsAsync(
+        DateTime inactiveBeforeUtc,
+        int maxCount = 50,
+        CancellationToken cancellationToken = default
+    ) =>
+        await _dbContext
+            .Carts.Include(c => c.CartItems)
+            .Where(c =>
+                c.CartItems.Any()
+                && (c.ModifiedOn ?? c.CreatedOn) < inactiveBeforeUtc
+                && (
+                    c.LastAbandonedReminderSentOn == null
+                    || c.LastAbandonedReminderSentOn < (c.ModifiedOn ?? c.CreatedOn)
+                )
+            )
+            .Take(maxCount)
+            .ToListAsync(cancellationToken);
+
+    /// <summary>
     /// Adds a new cart to the database.
     /// </summary>
     /// <param name="cart">The cart to add.</param>

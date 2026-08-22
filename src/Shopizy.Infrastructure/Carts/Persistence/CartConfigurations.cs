@@ -31,6 +31,10 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<Cart>
 
         builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
         builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        builder
+            .Property(c => c.LastAbandonedReminderSentOn)
+            .HasColumnType("smalldatetime")
+            .IsRequired(false);
 
         builder
             .Property(c => c.UserId)

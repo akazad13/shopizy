@@ -71,6 +71,11 @@ public static class PersistenceRegister
         );
         services.AddHostedService<Shopizy.Infrastructure.Orders.Services.PendingOrderExpirationWorker>();
 
+        services.Configure<Shopizy.Infrastructure.Carts.CartSettings>(
+            configuration.GetSection(Shopizy.Infrastructure.Carts.CartSettings.Section)
+        );
+        services.AddHostedService<Shopizy.Infrastructure.Carts.Services.AbandonedCartReminderWorker>();
+
         return services.AddRepositories();
     }
 

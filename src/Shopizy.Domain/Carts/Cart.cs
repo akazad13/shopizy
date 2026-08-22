@@ -28,6 +28,11 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     public DateTime? ModifiedOn { get; private set; }
 
     /// <summary>
+    /// Gets the timestamp when an abandoned cart reminder email was last dispatched.
+    /// </summary>
+    public DateTime? LastAbandonedReminderSentOn { get; private set; }
+
+    /// <summary>
     /// Gets the read-only list of items in the cart.
     /// </summary>
     public IReadOnlyList<CartItem> CartItems => _cartItems.AsReadOnly();
@@ -46,6 +51,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     public void AddLineItem(CartItem lineItem)
     {
         _cartItems.Add(lineItem);
+        LastAbandonedReminderSentOn = null;
         this.AddDomainEvent(new Events.CartItemAddedDomainEvent(this, lineItem));
     }
 
@@ -56,6 +62,7 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     public void RemoveLineItem(CartItem lineItem)
     {
         _cartItems.Remove(lineItem);
+        LastAbandonedReminderSentOn = null;
         this.AddDomainEvent(new Events.CartItemRemovedDomainEvent(this, lineItem));
     }
 
@@ -63,15 +70,29 @@ public sealed class Cart : AggregateRoot<CartId, Guid>, IAuditable
     /// Removes all items from the cart without raising per-item domain events.
     /// Used for system-initiated clearing (e.g. after order placement).
     /// </summary>
-    public void Clear() => _cartItems.Clear();
+    public void Clear()
+    {
+        _cartItems.Clear();
+        LastAbandonedReminderSentOn = null;
+    }
 
     /// <summary>
     /// Updates the quantity of a cart item.
     /// </summary>
     /// <param name="cartItemId">The cart item identifier.</param>
     /// <param name="quantity">The new quantity.</param>
-    public void UpdateLineItem(CartItemId cartItemId, int quantity) =>
+    public void UpdateLineItem(CartItemId cartItemId, int quantity)
+    {
         _cartItems.Find(li => li.Id == cartItemId)?.UpdateQuantity(quantity);
+        LastAbandonedReminderSentOn = null;
+    }
+
+    /// <summary>
+    /// Records the timestamp when an abandoned cart reminder was sent.
+    /// </summary>
+    /// <param name="sentOnUtc">The UTC timestamp of the sent reminder.</param>
+    public void RecordAbandonedReminderSent(DateTime sentOnUtc) =>
+        LastAbandonedReminderSentOn = sentOnUtc;
 
     private Cart(CartId cartId, UserId userId)
         : base(cartId)
