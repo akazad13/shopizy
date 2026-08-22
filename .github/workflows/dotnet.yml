@@ -36,7 +36,7 @@ jobs:
       run: |
         set -e
         mkdir -p ./coverage
-        for proj in $(find tests -name "*.csproj"); do
+        for proj in $(find tests -name "*Tests.csproj" -o -name "*Test.csproj"); do
           name=$(basename "${proj%.csproj}")
           dotnet tool run dotnet-coverage collect \
             --output "./coverage/${name}.cobertura.xml" \
