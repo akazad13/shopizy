@@ -1,7 +1,7 @@
 # Shopizy - Online Store Management API
 
 [![.NET](https://github.com/akazad13/shopizy/actions/workflows/dotnet.yml/badge.svg)](https://github.com/akazad13/shopizy/actions/workflows/dotnet.yml)
-[![codecov](https://codecov.io/gh/akazad13/shopizy/branch/main/graph/badge.svg)](https://codecov.io/gh/akazad13/shopizy-api)
+[![codecov](https://codecov.io/gh/akazad13/shopizy-api/branch/main/graph/badge.svg)](https://codecov.io/gh/akazad13/shopizy-api)
 
 Shopizy is a robust and scalable Online Store Management API built with .NET 10, following the principles of Clean Architecture. It provides a comprehensive set of endpoints for managing products, categories, carts, orders, and users, designed to support modern e-commerce applications.
 
